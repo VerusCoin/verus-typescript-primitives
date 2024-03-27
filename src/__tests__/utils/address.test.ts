@@ -1,4 +1,4 @@
-import { nameAndParentAddrToIAddr, toIAddress } from "../../utils/address";
+import { toIAddress } from "../../utils/address";
 
 describe('Address tests', () => {
   test('toIAddress tests', async () => {
@@ -11,12 +11,5 @@ describe('Address tests', () => {
     expect(toIAddress("Test.VRSC-BTC.VRSCTEST@")).toBe("i9PCGgRJiaRvxbgZ8T5dd33qjFP4NVJvZm");
     expect(toIAddress("Test.VRSC-BTC@", "VRSCTEST")).toBe("i9PCGgRJiaRvxbgZ8T5dd33qjFP4NVJvZm");
     expect(toIAddress("The Verus Coin Foundation@", "VRSC")).toBe("iDV1KZA6vBXi9k6K3imiSLe5CsYG6MdH4V");
-  });
-
-  test('nameAndParentAddrToIAddr tests', async () => {
-    expect(nameAndParentAddrToIAddr("VRSCTEST")).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq");
-    expect(nameAndParentAddrToIAddr("Andromeda", "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu");
-    expect(nameAndParentAddrToIAddr("VRSC")).toBe("i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV");
-    expect(nameAndParentAddrToIAddr("The Verus Coin Foundation", "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")).toBe("iDV1KZA6vBXi9k6K3imiSLe5CsYG6MdH4V");
   });
 });

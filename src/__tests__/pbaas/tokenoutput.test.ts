@@ -1,6 +1,6 @@
 import { BN } from "bn.js";
 import { CurrencyValueMap } from "../../pbaas/CurrencyValueMap";
-import { TokenOutput, TOKEN_OUTPUT_VERSION_MULTIVALUE } from "../../pbaas/TokenOutput";
+import { TokenOutput, VERSION_MULTIVALUE } from "../../pbaas/TokenOutput";
 import { BigNumber } from "../../utils/types/BigNumber";
 
 describe('Serializes and deserializes token output properly', () => {
@@ -20,7 +20,7 @@ describe('Serializes and deserializes token output properly', () => {
         ]),
         multivalue: true
       }),
-      version: new BN(1, 10).xor(TOKEN_OUTPUT_VERSION_MULTIVALUE)
+      version: new BN(1, 10).xor(VERSION_MULTIVALUE)
     })
 
     expect(to_outbuf.toBuffer().toString('hex')).toBe(multivalue_vdata)

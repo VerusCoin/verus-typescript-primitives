@@ -1,5 +1,5 @@
 import { Hash160 } from "../../vdxf/classes/Hash160";
-import { IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
+import { ATTESTATION_READ_REQUEST, IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
 import { LoginConsentRequest, LoginConsentResponse } from "../../vdxf/classes";
 import { ProvisioningInfo, RedirectUri, RequestedPermission, Subject } from "../../vdxf/classes/Challenge";
 import { Context } from "../../vdxf/classes/Context";
@@ -18,7 +18,7 @@ describe('Serializes and deserializes signature objects properly', () => {
       },
       challenge: {
         challenge_id: "iKNufKJdLX3Xg8qFru9AuLBvivAEJ88PW4",
-        requested_access: [new RequestedPermission(IDENTITY_VIEW.vdxfid)],
+        requested_access: [new RequestedPermission("", IDENTITY_VIEW.vdxfid)],
         subject: [
           new Subject(
             "fully.qualified.name",
@@ -218,5 +218,71 @@ describe('Serializes and deserializes signature objects properly', () => {
 
     expect(_res.getDecisionHash(10000).toString('hex')).toBe(res.getDecisionHash(10000).toString('hex'))
     expect(_req.getChallengeHash().toString('hex')).toBe(req.getChallengeHash().toString('hex'))
+  });
+
+  test('attestation request', async () => {
+    const req = new LoginConsentRequest({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      challenge: {
+        challenge_id: "iKNufKJdLX3Xg8qFru9AuLBvivAEJ88PW4",
+        requested_access: [new RequestedPermission("", IDENTITY_VIEW.vdxfid),
+          new RequestedPermission({accepted_attestors:["iC9x9VZ2XMop7spFzeXqSKX8WqmrG9cu41"], attestation_keys:["iSSxdyTcCp8VALGBGKy8R7ATYSRuK15NkL","i3jWsqLVnYyJu78E7mw6pbD3TazwZJpuk4","i9MRw6YUhXtP6DT8eufGnB5oRQ34TjDsdb","iJvFSXk2EDeEu9BkJQSwAVeiochF6AYpfF"]}, ATTESTATION_READ_REQUEST.vdxfid)],
+        session_id: "iRQZGW36o3RcVR1xyVT1qWdAKdxp3wUyrh",
+        redirect_uris: [
+          new RedirectUri(
+            "https://www.verus.io",
+            LOGIN_CONSENT_REDIRECT_VDXF_KEY.vdxfid
+          ),
+        ],
+        created_at: 1664382484,
+        salt: "i6NawEzHMocZnU4h8pPkGpHApvsrHjxwXE",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+      },
+    });
+
+    const res = new LoginConsentResponse({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      decision: {
+        decision_id: "iBTMBHzDbsW3QG1MLBoYtmo6c1xuzn6xxb",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+        request: req,
+        created_at: 1664392484
+      }
+    })
+
+    const reqbuf = req.toBuffer()
+    const _req = new LoginConsentRequest()
+    _req.fromBuffer(reqbuf)
+
+    const resbuf = res.toBuffer()
+    const _res = new LoginConsentResponse()
+    _res.fromBuffer(resbuf)
+
+
+    expect(_res.toBuffer().toString('hex')).toBe(resbuf.toString('hex'));
+    expect(_req.toBuffer().toString('hex')).toBe(reqbuf.toString('hex'));
+
+    expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
+    expect(_req.getChallengeHash(10000, 1).toString('hex')).toBe(req.getChallengeHash(10000, 1).toString('hex'))
+    expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
+    expect(_req.getChallengeHash(10000, 2).toString('hex')).toBe(req.getChallengeHash(10000, 2).toString('hex'))
+
+    const uri = _req.toWalletDeeplinkUri()
+
+    expect(uri).toBe(LoginConsentRequest.fromWalletDeeplinkUri(uri).toWalletDeeplinkUri());
   });
 });

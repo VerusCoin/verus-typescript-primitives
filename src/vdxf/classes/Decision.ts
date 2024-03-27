@@ -1,7 +1,7 @@
 import { LOGIN_CONSENT_DECISION_VDXF_KEY, VDXFObject } from "..";
 import bufferutils from "../../utils/bufferutils";
 import varuint from "../../utils/varuint";
-import { Attestation } from "./Challenge";
+import { Attestation } from "./Attestation";
 import { Context } from "./Context";
 import { Hash160 } from "./Hash160";
 import { Request, RequestInterface } from "./Request";
@@ -35,7 +35,7 @@ export class Decision extends VDXFObject {
   request: Request;
   created_at: number;
   skipped?: boolean;
-  attestations: Array<any>;
+  attestations: Array<Attestation>;
   salt?: string;
 
   constructor(
@@ -66,7 +66,7 @@ export class Decision extends VDXFObject {
       : Hash160.getEmpty();
     const _request = this.request ? this.request : new Request();
     const _context = this.context ? this.context : new Context();
-    const _attestations = [];
+    const _attestations = this.attestations ? this.attestations : [];
 
     length += _challenge_id.byteLength();
 
@@ -78,6 +78,10 @@ export class Decision extends VDXFObject {
       length += 1; // skipped
 
       length += varuint.encodingLength(_attestations.length);
+      length += _attestations.reduce(
+        (sum, current) => sum + current.byteLength(),
+        0
+      );
     }
 
     length += _request.byteLength();
@@ -98,7 +102,7 @@ export class Decision extends VDXFObject {
       : Hash160.getEmpty();
     const _request = this.request ? this.request : new Request();
     const _context = this.context ? this.context : new Context();
-    const _attestations = [];
+    const _attestations = this.attestations ? this.attestations : [];
 
     writer.writeSlice(_decision_id.toBuffer());
 
@@ -150,9 +154,11 @@ export class Decision extends VDXFObject {
         this.attestations = [];
         const attestationsLength = reader.readCompactSize();
   
-        if (attestationsLength > 0) {
-          throw new Error("Attestations currently unsupported");
-        }  
+        for (let i = 0; i < attestationsLength; i++) {
+          const _att = new Attestation();
+          reader.offset = _att.fromBuffer(reader.buffer, reader.offset);
+          this.attestations.push(_att);
+        }
       }
 
       const _context = new Context();

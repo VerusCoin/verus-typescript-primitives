@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerusIDSignature = exports.Utf8OrBase58Object = exports.HexDataVdxfObject = exports.Utf8DataVdxfObject = exports.BufferDataVdxfObject = exports.VDXFObject = void 0;
+exports.PNGImageVdxfObject = exports.VerusIDSignature = exports.Utf8OrBase58Object = exports.HexDataVdxfObject = exports.Utf8DataVdxfObject = exports.BufferDataVdxfObject = exports.VDXFObject = void 0;
 const base64url_1 = require("base64url");
 const createHash = require("create-hash");
 const vdxf_1 = require("../constants/vdxf");
@@ -27,6 +27,8 @@ const keys_1 = require("./keys");
 const bn_js_1 = require("bn.js");
 __exportStar(require("./keys"), exports);
 __exportStar(require("./scopes"), exports);
+__exportStar(require("./keymap"), exports);
+__exportStar(require("./identityDataKeys"), exports);
 class VDXFObject {
     constructor(key = "", serializekey = true) {
         this.serializekey = true;
@@ -50,7 +52,7 @@ class VDXFObject {
         return Buffer.alloc(0);
     }
     fromDataBuffer(buffer, offset = 0) {
-        return offset;
+        return offset + 1;
     }
     isValidVersion() {
         return true;
@@ -86,9 +88,7 @@ class VDXFObject {
             writer.writeSlice(key.hash);
         }
         writer.writeVarInt(new bn_js_1.BN(this.version, 10));
-        if (dataLength) {
-            writer.writeVarSlice(this.toDataBuffer());
-        }
+        writer.writeVarSlice(this.toDataBuffer());
         return writer.buffer;
     }
     toSha256() {
@@ -208,3 +208,9 @@ class VerusIDSignature extends VDXFObject {
     }
 }
 exports.VerusIDSignature = VerusIDSignature;
+class PNGImageVdxfObject extends BufferDataVdxfObject {
+    constructor(data = "", vdxfkey = "") {
+        super(data, vdxfkey, "hex");
+    }
+}
+exports.PNGImageVdxfObject = PNGImageVdxfObject;

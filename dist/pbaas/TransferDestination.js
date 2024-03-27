@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TransferDestination = exports.FLAG_MASK = exports.FLAG_DEST_GATEWAY = exports.FLAG_DEST_AUX = exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW = exports.DEST_ETHNFT = exports.DEST_ETH = exports.DEST_NESTEDTRANSFER = exports.DEST_QUANTUM = exports.DEST_REGISTERCURRENCY = exports.DEST_FULLID = exports.DEST_ID = exports.DEST_SH = exports.DEST_PKH = exports.DEST_PK = exports.DEST_INVALID = void 0;
+exports.TransferDestination = exports.FLAG_MASK = exports.FLAG_DEST_GATEWAY = exports.FLAG_DEST_AUX = exports.AST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW = exports.DEST_ETHNFT = exports.DEST_ETH = exports.DEST_NESTEDTRANSFER = exports.DEST_QUANTUM = exports.DEST_REGISTERCURRENCY = exports.DEST_FULLID = exports.DEST_ID = exports.DEST_SH = exports.DEST_PKH = exports.DEST_PK = exports.DEST_INVALID = void 0;
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../utils/varuint");
@@ -19,10 +19,11 @@ exports.DEST_NESTEDTRANSFER = new bn_js_1.BN(8, 10); // used to chain transfers,
 exports.DEST_ETH = new bn_js_1.BN(9, 10);
 exports.DEST_ETHNFT = new bn_js_1.BN(10, 10); // used when defining a mapped NFT to gateway that uses an ETH compatible model
 exports.DEST_RAW = new bn_js_1.BN(11, 10);
-exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW;
+exports.AST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW;
 exports.FLAG_DEST_AUX = new bn_js_1.BN(64, 10);
 exports.FLAG_DEST_GATEWAY = new bn_js_1.BN(128, 10);
 exports.FLAG_MASK = exports.FLAG_DEST_AUX.add(exports.FLAG_DEST_GATEWAY);
+const UINT160_BYTE_SIZE = 20;
 class TransferDestination {
     constructor(data) {
         this.type = exports.DEST_INVALID;
@@ -89,9 +90,9 @@ class TransferDestination {
                 length += (0, address_1.fromBase58Check)(this.gateway_code).hash.length; // gateway_code
             }
             else {
-                length += 20;
+                length += UINT160_BYTE_SIZE;
             }
-            length += 8; // fees
+            length += 8; // fees int64
         }
         if (this.hasAuxDests()) {
             length += varuint_1.default.encodingLength(this.aux_dests.length); // aux dests compact size
@@ -113,7 +114,7 @@ class TransferDestination {
                 writer.writeSlice((0, address_1.fromBase58Check)(this.gateway_code).hash);
             }
             else {
-                writer.writeSlice(Buffer.alloc(20));
+                writer.writeSlice(Buffer.alloc(UINT160_BYTE_SIZE));
             }
             writer.writeInt64(this.fees);
         }

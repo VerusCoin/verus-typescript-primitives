@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Hash160SerEnt = exports.Hash160 = void 0;
+exports.Hash160 = void 0;
 const vdxf_1 = require("../../constants/vdxf");
 const address_1 = require("../../utils/address");
 const bufferutils_1 = require("../../utils/bufferutils");
 const varuint_1 = require("../../utils/varuint");
 class Hash160 {
-    constructor(hash = Buffer.alloc(20), version = vdxf_1.I_ADDR_VERSION, varlength = false) {
+    constructor(hash = Buffer.alloc(0), version = vdxf_1.I_ADDR_VERSION, varlength = false) {
         this.hash = hash;
         this.version = version;
         this.varlength = varlength;
@@ -25,13 +25,7 @@ class Hash160 {
         else
             return (0, address_1.toBase58Check)(this.hash, this.version);
     }
-    /**
-     * @deprecated The method has been replaced by getByteLength and will be removed in the future
-     */
     byteLength() {
-        return this.getByteLength();
-    }
-    getByteLength() {
         let length = 0;
         if (this.varlength) {
             length += varuint_1.default.encodingLength(this.hash.length);
@@ -43,7 +37,7 @@ class Hash160 {
         return length;
     }
     toBuffer() {
-        const buffer = Buffer.alloc(this.getByteLength());
+        const buffer = Buffer.alloc(this.byteLength());
         const writer = new bufferutils_1.default.BufferWriter(buffer);
         if (this.varlength) {
             writer.writeVarSlice(this.hash);
@@ -73,12 +67,3 @@ class Hash160 {
     }
 }
 exports.Hash160 = Hash160;
-class Hash160SerEnt extends Hash160 {
-    constructor(hash = Buffer.alloc(20), version = vdxf_1.I_ADDR_VERSION, varlength = false) {
-        super(hash, version, varlength);
-    }
-    fromBuffer(buffer, offset, varlength) {
-        return super.fromBuffer(buffer, varlength, offset);
-    }
-}
-exports.Hash160SerEnt = Hash160SerEnt;

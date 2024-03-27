@@ -5,6 +5,10 @@ export interface VDXFKeyInterface {
     name: string;
     namespace: string;
   };
+  bounddata?: {
+    vdxfkey: string;
+  }
+  indexid?: string;
 }
 
 export const VERUSPAY_INVOICE_VDXF_KEY: VDXFKeyInterface = {
@@ -96,6 +100,25 @@ export const LOGIN_CONSENT_WEBHOOK_VDXF_KEY: VDXFKeyInterface = {
     name: "vrsc::identity.authentication.loginconsent.webhook",
   },
 };
+
+export const LOGIN_CONSENT_ATTESTATION_WEBHOOK_VDXF_KEY: VDXFKeyInterface = {
+  vdxfid: "iEiQe3C68gKvAevZWAx6MLmoSR64hVqfMb",
+  hash160result: "6759ec3006891e89422e59fb613ab2653389497b",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.attestation.webhook",
+  },
+};
+
+export const LOGIN_CONSENT_PERSONALINFO_WEBHOOK_VDXF_KEY: VDXFKeyInterface ={
+  vdxfid: "i8RW9fcZHh1oaAqR2fWWLCB99mfNW6Q2mQ",
+  indexid: "xDFccU3e91EUCLiStMAfJahgBRgPHfYq74",
+  hash160result: "fe40712687cd6f9f288e535ced75b653624f4636",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.identitydata.webhook"
+  }
+}
 
 export const LOGIN_CONSENT_CONTEXT_VDXF_KEY: VDXFKeyInterface = {
   vdxfid: "iBMochrKPSQfua5yZYWyd6p4QnREakqU44",
@@ -332,14 +355,51 @@ export const SIGNED_SESSION_OBJECT: VDXFKeyInterface = {
 };
 
 export const CURRENCY_ADDRESS: VDXFKeyInterface = {
-  "vdxfid":"iBy2s9cQL9RadMVPjog6bbSV5ityBxTuNR",
-  "hash160result":"4fb4c86b8ce18e596e28f62bc9a78f43d738255d",
+  "vdxfid": "iBy2s9cQL9RadMVPjog6bbSV5ityBxTuNR",
+  "hash160result": "4fb4c86b8ce18e596e28f62bc9a78f43d738255d",
   "qualifiedname": {
-    "namespace":"i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-    "name":"vrsc::currency.address"
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::currency.address"
   }
 }
 
+export const ATTESTATION_RECIPIENT: VDXFKeyInterface = {
+  "vdxfid": "iF9W7VBoeB1qooRBhZnbx1edN45oT6N3T1",
+  "hash160result": "fd9b77f956447beae6e9eba1de71d855fa800880",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::attestation.recipient"
+  }
+};
+
+export const ATTESTATION_OBJECT: VDXFKeyInterface = {
+  "vdxfid": "iKzefmmS3nMXjLTsrQ1emigirJBTK7rBTP",
+  "hash160result": "5d57536b22b79ea267ae71852779db21258834b5",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::attestation.object"
+  }
+};
+
+export const ATTESTATION_VIEW_RESPONSE: VDXFKeyInterface = {
+  "vdxfid": "i5R9p3V1sxZ9p1NDV7nPkz1wvmQTUvuByY",
+  "hash160result": "872923256c56f6bda8256c5bb6a4c98d85f44c15",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::attestation.view.response"
+  }
+};
+
+export const ATTESTATION_TYPE: VDXFKeyInterface = {
+  "vdxfid": "iAJUD5mgT6MHz8ymF49XUtBDRS7uvYqNWZ",
+  "hash160result": "e56544849c038b7cfadb0a1074ac51df9207e24a",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::attestation.type"
+  }
+};
+
+// DATA TYPES
 export const DATA_TYPE_STRING: VDXFKeyInterface = 
   {
     "vdxfid": "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c",
@@ -349,3 +409,24 @@ export const DATA_TYPE_STRING: VDXFKeyInterface =
       "name": "vrsc::data.type.string"
     },
 };
+
+export const PROFILE_DATA_VIEW_REQUEST: VDXFKeyInterface = {
+  "vdxfid": "iFYznrRxyHaoJZ91cFDSYGT4szETf4RLRV",
+  "indexid": "xLP7Fes3pboTvj23TvsbWeybueFUatbQQh",
+  "hash160result": "d3f2168aad438c6c6eab8f3384458cbebf027a84",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::profile.data.view"
+  }
+}
+
+export const PROFILE_DATA_VIEW_RESPONSE: VDXFKeyInterface = {
+    "vdxfid": "i5CWyoGHTzCAtt8MZWnH5C4y2GiSyZd56R",
+    "indexid": "xA2dSbhNKJQqX41PRCSS3abW3vjTq9KDZw",
+    "hash160result": "1f8ffc67110757607bd7334034251405cd37e912",
+    "qualifiedname": {
+      "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      "name": "vrsc::profile.data.response"
+    }
+  
+}

@@ -4,7 +4,6 @@ import { CurrencyValueMap } from './CurrencyValueMap';
 import { BigNumber } from '../utils/types/BigNumber';
 import { TokenOutput } from './TokenOutput';
 import { TransferDestination } from './TransferDestination';
-import { SerializableEntity } from '../utils/types/SerializableEntity';
 export declare const RESERVE_TRANSFER_INVALID: import("bn.js");
 export declare const RESERVE_TRANSFER_VALID: import("bn.js");
 export declare const RESERVE_TRANSFER_CONVERT: import("bn.js");
@@ -22,7 +21,7 @@ export declare const RESERVE_TRANSFER_IDENTITY_EXPORT: import("bn.js");
 export declare const RESERVE_TRANSFER_CURRENCY_EXPORT: import("bn.js");
 export declare const RESERVE_TRANSFER_ARBITRAGE_ONLY: import("bn.js");
 export declare const RESERVE_TRANSFER_DESTINATION: TransferDestination;
-export declare class ReserveTransfer extends TokenOutput implements SerializableEntity {
+export declare class ReserveTransfer extends TokenOutput {
     flags: BigNumber;
     fee_currency_id: string;
     fee_amount: BigNumber;
