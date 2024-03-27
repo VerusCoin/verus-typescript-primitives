@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toIAddress = exports.nameAndParentAddrToIAddr = exports.toBase58Check = exports.fromBase58Check = void 0;
+exports.toIAddress = exports.toBase58Check = exports.fromBase58Check = void 0;
 const hash_1 = require("./hash");
 const bs58check = require("bs58check");
 const fromBase58Check = (address) => {
@@ -33,19 +33,6 @@ const toBase58Check = (hash, version) => {
     return bs58check.encode(payload);
 };
 exports.toBase58Check = toBase58Check;
-const nameAndParentAddrToIAddr = (name, parentIAddr) => {
-    let idHash;
-    const nameBuffer = Buffer.from(name.toLowerCase(), "utf8");
-    if (parentIAddr == null) {
-        idHash = (0, hash_1.hash)(nameBuffer);
-    }
-    else {
-        idHash = (0, hash_1.hash)(nameBuffer);
-        idHash = (0, hash_1.hash)((0, exports.fromBase58Check)(parentIAddr).hash, idHash);
-    }
-    return (0, exports.toBase58Check)((0, hash_1.hash160)(idHash), 102);
-};
-exports.nameAndParentAddrToIAddr = nameAndParentAddrToIAddr;
 const toIAddress = (fullyqualifiedname, rootSystemName = "") => {
     const splitFqnAt = fullyqualifiedname.split("@").filter(x => x.length > 0);
     if (splitFqnAt.length !== 1)

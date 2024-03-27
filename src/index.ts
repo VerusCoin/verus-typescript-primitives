@@ -10,9 +10,6 @@ export * from './vdxf/parser'
 export * from './utils/address'
 export * from './utils/bufferutils'
 export * from './utils/varuint'
-export * from './utils/ops'
-export * from './utils/evals'
-export * from './utils/script'
 
 export * from './pbaas/index'
 

@@ -1,7 +1,6 @@
 import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from "../../constants/vdxf";
 import { fromBase58Check, toBase58Check } from "../../utils/address";
 import bufferutils from "../../utils/bufferutils";
-import { SerializableEntity } from "../../utils/types/SerializableEntity";
 import varuint from "../../utils/varuint";
 
 export class Hash160 {
@@ -10,7 +9,7 @@ export class Hash160 {
   varlength: boolean;
 
   constructor(
-    hash: Buffer = Buffer.alloc(20),
+    hash: Buffer = Buffer.alloc(0),
     version: number = I_ADDR_VERSION,
     varlength: boolean = false
   ) {
@@ -35,14 +34,7 @@ export class Hash160 {
     } else return toBase58Check(this.hash, this.version);
   }
 
-  /**
-   * @deprecated The method has been replaced by getByteLength and will be removed in the future
-   */
   byteLength(): number {
-    return this.getByteLength()
-  }
-
-  getByteLength(): number {
     let length = 0;
 
     if (this.varlength) {
@@ -56,7 +48,7 @@ export class Hash160 {
   }
 
   toBuffer(): Buffer {
-    const buffer = Buffer.alloc(this.getByteLength());
+    const buffer = Buffer.alloc(this.byteLength());
     const writer = new bufferutils.BufferWriter(buffer);
 
     if (this.varlength) {
@@ -92,21 +84,5 @@ export class Hash160 {
       hash: this.hash,
       version: this.version,
     };
-  }
-}
-
-export class Hash160SerEnt extends Hash160 implements SerializableEntity {
-  constructor(
-    hash: Buffer = Buffer.alloc(20),
-    version: number = I_ADDR_VERSION,
-    varlength: boolean = false
-  ) {
-    super(hash, version, varlength);
-  }
-
-  fromBuffer(buffer: Buffer): number
-  fromBuffer(buffer: Buffer, offset?: number, varlength?: boolean): number
-  fromBuffer(buffer: Buffer, offset?: number, varlength?: boolean): number {
-    return super.fromBuffer(buffer, varlength, offset);
   }
 }

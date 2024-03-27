@@ -25,8 +25,7 @@
     "blake2b": "https://github.com/VerusCoin/blake2b",
     "bn.js": "5.2.1",
     "bs58check": "https://github.com/bitcoinjs/bs58check",
-    "create-hash": "1.2.0",
-    "bech32": "2.0.0"
+    "create-hash": "1.2.0"
   },
   "devDependencies": {
     "@types/bn.js": "5.1.1",

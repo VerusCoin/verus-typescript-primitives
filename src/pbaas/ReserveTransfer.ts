@@ -7,7 +7,6 @@ import { TokenOutput } from './TokenOutput';
 import { DEST_PKH, TransferDestination } from './TransferDestination';
 import { fromBase58Check, toBase58Check } from '../utils/address';
 import { I_ADDR_VERSION } from '../constants/vdxf';
-import { SerializableEntity } from '../utils/types/SerializableEntity';
 const { BufferReader, BufferWriter } = bufferutils
 
 export const RESERVE_TRANSFER_INVALID = new BN(0, 10)
@@ -32,7 +31,7 @@ export const RESERVE_TRANSFER_DESTINATION = new TransferDestination({
   destination_bytes: fromBase58Check("RTqQe58LSj2yr5CrwYFwcsAQ1edQwmrkUU").hash
 })
 
-export class ReserveTransfer extends TokenOutput implements SerializableEntity {
+export class ReserveTransfer extends TokenOutput {
   flags: BigNumber;
   fee_currency_id: string;
   fee_amount: BigNumber;

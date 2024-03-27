@@ -419,3 +419,14 @@ export const PROFILE_DATA_VIEW_REQUEST: VDXFKeyInterface = {
     "name": "vrsc::profile.data.view"
   }
 }
+
+export const PROFILE_DATA_VIEW_RESPONSE: VDXFKeyInterface = {
+    "vdxfid": "i5CWyoGHTzCAtt8MZWnH5C4y2GiSyZd56R",
+    "indexid": "xA2dSbhNKJQqX41PRCSS3abW3vjTq9KDZw",
+    "hash160result": "1f8ffc67110757607bd7334034251405cd37e912",
+    "qualifiedname": {
+      "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      "name": "vrsc::profile.data.response"
+    }
+  
+}

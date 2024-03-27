@@ -38,20 +38,6 @@ export const toBase58Check = (hash: Buffer, version: number): string => {
   return bs58check.encode(payload);
 };
 
-export const nameAndParentAddrToIAddr = (name: string, parentIAddr?: string): string => {
-  let idHash: Buffer;
-  const nameBuffer = Buffer.from(name.toLowerCase(), "utf8");
-
-  if (parentIAddr == null) {
-    idHash = hash(nameBuffer);
-  } else {
-    idHash = hash(nameBuffer);
-    idHash = hash(fromBase58Check(parentIAddr).hash, idHash);
-  }
-
-  return toBase58Check(hash160(idHash), 102);
-}
-
 export const toIAddress = (fullyqualifiedname: string, rootSystemName: string = ""): string => {
   const splitFqnAt = fullyqualifiedname.split("@").filter(x => x.length > 0);
 

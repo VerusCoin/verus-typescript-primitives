@@ -5,10 +5,9 @@ import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
 import { I_ADDR_VERSION } from '../constants/vdxf';
-import { SerializableEntity } from '../utils/types/SerializableEntity';
 const { BufferReader, BufferWriter } = bufferutils
 
-export class CurrencyValueMap implements SerializableEntity {
+export class CurrencyValueMap {
   value_map: Map<string,BigNumber>;
   multivalue: boolean;
 
@@ -55,7 +54,7 @@ export class CurrencyValueMap implements SerializableEntity {
     return bufferWriter.buffer
   }
 
-  fromBuffer (buffer: Buffer, offset: number = 0) {
+  fromBuffer (buffer, offset: number = 0) {
     const reader = new BufferReader(buffer, offset);
     let count: number;
 

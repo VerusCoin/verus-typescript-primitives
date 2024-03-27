@@ -4,7 +4,6 @@ import { BigNumber } from '../utils/types/BigNumber';
 import varuint from '../utils/varuint';
 import { fromBase58Check, toBase58Check } from '../utils/address';
 import { I_ADDR_VERSION, R_ADDR_VERSION } from '../constants/vdxf';
-import { SerializableEntity } from '../utils/types/SerializableEntity';
 const { BufferReader, BufferWriter } = bufferutils
 
 export const DEST_INVALID = new BN(0, 10)
@@ -19,7 +18,7 @@ export const DEST_NESTEDTRANSFER = new BN(8, 10)            // used to chain tra
 export const DEST_ETH = new BN(9, 10)
 export const DEST_ETHNFT = new BN(10, 10)                   // used when defining a mapped NFT to gateway that uses an ETH compatible model
 export const DEST_RAW = new BN(11, 10)
-export const LAST_VALID_TYPE_NO_FLAGS = DEST_RAW
+export const AST_VALID_TYPE_NO_FLAGS = DEST_RAW
 export const FLAG_DEST_AUX = new BN(64, 10)
 export const FLAG_DEST_GATEWAY = new BN(128, 10)
 export const FLAG_MASK = FLAG_DEST_AUX.add(FLAG_DEST_GATEWAY)
@@ -35,7 +34,7 @@ export type TransferDestinationJson = {
   aux_dests: Array<TransferDestinationJson>
 }
 
-export class TransferDestination implements SerializableEntity {
+export class TransferDestination {
   type: BigNumber;
   destination_bytes: Buffer;
   gateway_id: string;
