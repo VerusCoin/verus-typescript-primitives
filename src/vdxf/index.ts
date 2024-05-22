@@ -11,7 +11,9 @@ import { BN } from "bn.js";
 import { BigNumber } from "../utils/types/BigNumber";
 export * from './keys'
 export * from './scopes'
-
+export * from './keymap'
+export * from './identityDataKeys'
+export * from './vdxfDataKeys'
 export interface VDXFObjectInterface {
   vdxfkey: string;
   toString: () => string;
@@ -65,9 +67,9 @@ export class VDXFObject implements VDXFObjectInterface {
   toDataBuffer() {
     return Buffer.alloc(0);
   }
-  
+
   fromDataBuffer(buffer: Buffer, offset: number = 0) {
-    return offset;
+    return offset + 1;
   }
 
   isValidVersion() {
@@ -116,9 +118,9 @@ export class VDXFObject implements VDXFObjectInterface {
     
     writer.writeVarInt(new BN(this.version, 10));
 
-    if (dataLength) {      
-      writer.writeVarSlice(this.toDataBuffer());
-    }
+    
+    writer.writeVarSlice(this.toDataBuffer());
+    
 
     return writer.buffer;
   }
@@ -226,7 +228,7 @@ export class Utf8OrBase58Object extends VDXFObject {
     } else {
       this.data = reader.readVarSlice().toString('utf-8')
     }
-    
+
     return reader.offset
   }
 

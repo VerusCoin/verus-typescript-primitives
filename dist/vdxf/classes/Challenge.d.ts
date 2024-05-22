@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { Utf8DataVdxfObject, VDXFObject, Utf8OrBase58Object } from "../";
 import { Context } from "./Context";
+import { Attestation } from "./Attestation";
 export declare class RedirectUri extends VDXFObject {
     uri: string;
     constructor(uri?: string, vdxfkey?: string);
@@ -18,14 +19,9 @@ export declare class Subject extends Utf8OrBase58Object {
 export declare class ProvisioningInfo extends Utf8OrBase58Object {
     constructor(data?: string, vdxfkey?: string);
 }
-export declare class RequestedPermission extends Utf8DataVdxfObject {
-    constructor(vdxfkey?: string);
-}
 export declare class Audience extends Utf8DataVdxfObject {
 }
 export declare class AltAuthFactor extends Utf8DataVdxfObject {
-}
-export declare class Attestation extends Utf8DataVdxfObject {
 }
 export interface ChallengeInterface {
     challenge_id: string;
@@ -45,7 +41,7 @@ export interface ChallengeInterface {
 export declare class Challenge extends VDXFObject implements ChallengeInterface {
     challenge_id: string;
     requested_access?: Array<RequestedPermission> | null;
-    requested_access_audience?: Array<RequestedPermission> | null;
+    requested_access_audience?: Array<Audience> | null;
     subject?: Array<Subject>;
     provisioning_info?: Array<ProvisioningInfo>;
     alt_auth_factors?: Array<AltAuthFactor> | null;
@@ -64,7 +60,7 @@ export declare class Challenge extends VDXFObject implements ChallengeInterface 
         vdxfkey: string;
         challenge_id: string;
         requested_access: RequestedPermission[];
-        requested_access_audience: RequestedPermission[];
+        requested_access_audience: Audience[];
         subject: Subject[];
         provisioning_info: ProvisioningInfo[];
         alt_auth_factors: AltAuthFactor[];
@@ -79,4 +75,6 @@ export declare class Challenge extends VDXFObject implements ChallengeInterface 
         context: Context;
         skip: boolean;
     };
+}
+export declare class RequestedPermission extends Utf8DataVdxfObject {
 }

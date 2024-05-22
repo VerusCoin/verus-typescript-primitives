@@ -27,6 +27,9 @@ const keys_1 = require("./keys");
 const bn_js_1 = require("bn.js");
 __exportStar(require("./keys"), exports);
 __exportStar(require("./scopes"), exports);
+__exportStar(require("./keymap"), exports);
+__exportStar(require("./identityDataKeys"), exports);
+__exportStar(require("./vdxfDataKeys"), exports);
 class VDXFObject {
     constructor(key = "", serializekey = true) {
         this.serializekey = true;
@@ -50,7 +53,7 @@ class VDXFObject {
         return Buffer.alloc(0);
     }
     fromDataBuffer(buffer, offset = 0) {
-        return offset;
+        return offset + 1;
     }
     isValidVersion() {
         return true;
@@ -86,9 +89,7 @@ class VDXFObject {
             writer.writeSlice(key.hash);
         }
         writer.writeVarInt(new bn_js_1.BN(this.version, 10));
-        if (dataLength) {
-            writer.writeVarSlice(this.toDataBuffer());
-        }
+        writer.writeVarSlice(this.toDataBuffer());
         return writer.buffer;
     }
     toSha256() {

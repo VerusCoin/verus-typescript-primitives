@@ -59,5 +59,20 @@ class CurrencyValueMap {
         }
         return reader.offset;
     }
+    IsValid() {
+        for (let [key, value] of this.value_map) {
+            if (!key) {
+                return false;
+            }
+        }
+        return true;
+    }
+    toJson() {
+        const value_map = {};
+        for (let [key, value] of this.value_map) {
+            value_map[key] = value.toString();
+        }
+        return value_map;
+    }
 }
 exports.CurrencyValueMap = CurrencyValueMap;

@@ -4,6 +4,7 @@ exports.Decision = void 0;
 const __1 = require("..");
 const bufferutils_1 = require("../../utils/bufferutils");
 const varuint_1 = require("../../utils/varuint");
+const Attestation_1 = require("./Attestation");
 const Context_1 = require("./Context");
 const Hash160_1 = require("./Hash160");
 const Request_1 = require("./Request");
@@ -30,13 +31,14 @@ class Decision extends __1.VDXFObject {
             : Hash160_1.Hash160.getEmpty();
         const _request = this.request ? this.request : new Request_1.Request();
         const _context = this.context ? this.context : new Context_1.Context();
-        const _attestations = [];
+        const _attestations = this.attestations ? this.attestations : [];
         length += _challenge_id.byteLength();
         length += 8; // created_at
         length += _salt.byteLength();
         if (this.vdxfkey === __1.LOGIN_CONSENT_DECISION_VDXF_KEY.vdxfid) {
             length += 1; // skipped
             length += varuint_1.default.encodingLength(_attestations.length);
+            length += _attestations.reduce((sum, current) => sum + current.byteLength(), 0);
         }
         length += _request.byteLength();
         length += _context.byteLength();
@@ -52,7 +54,7 @@ class Decision extends __1.VDXFObject {
             : Hash160_1.Hash160.getEmpty();
         const _request = this.request ? this.request : new Request_1.Request();
         const _context = this.context ? this.context : new Context_1.Context();
-        const _attestations = [];
+        const _attestations = this.attestations ? this.attestations : [];
         writer.writeSlice(_decision_id.toBuffer());
         writer.writeUInt64(_created_at);
         writer.writeSlice(_salt.toBuffer());
@@ -82,8 +84,10 @@ class Decision extends __1.VDXFObject {
                 this.skipped = reader.readUInt8() === 1 ? true : false;
                 this.attestations = [];
                 const attestationsLength = reader.readCompactSize();
-                if (attestationsLength > 0) {
-                    throw new Error("Attestations currently unsupported");
+                for (let i = 0; i < attestationsLength; i++) {
+                    const _att = new Attestation_1.Attestation();
+                    reader.offset = _att.fromBuffer(reader.buffer, reader.offset);
+                    this.attestations.push(_att);
                 }
             }
             const _context = new Context_1.Context();

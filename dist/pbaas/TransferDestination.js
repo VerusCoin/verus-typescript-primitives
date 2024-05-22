@@ -23,6 +23,7 @@ exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW;
 exports.FLAG_DEST_AUX = new bn_js_1.BN(64, 10);
 exports.FLAG_DEST_GATEWAY = new bn_js_1.BN(128, 10);
 exports.FLAG_MASK = exports.FLAG_DEST_AUX.add(exports.FLAG_DEST_GATEWAY);
+const UINT160_BYTE_SIZE = 20;
 class TransferDestination {
     constructor(data) {
         this.type = exports.DEST_INVALID;
@@ -89,9 +90,9 @@ class TransferDestination {
                 length += (0, address_1.fromBase58Check)(this.gateway_code).hash.length; // gateway_code
             }
             else {
-                length += 20;
+                length += UINT160_BYTE_SIZE;
             }
-            length += 8; // fees
+            length += 8; // fees int64
         }
         if (this.hasAuxDests()) {
             length += varuint_1.default.encodingLength(this.aux_dests.length); // aux dests compact size
@@ -113,7 +114,7 @@ class TransferDestination {
                 writer.writeSlice((0, address_1.fromBase58Check)(this.gateway_code).hash);
             }
             else {
-                writer.writeSlice(Buffer.alloc(20));
+                writer.writeSlice(Buffer.alloc(UINT160_BYTE_SIZE));
             }
             writer.writeInt64(this.fees);
         }
@@ -161,6 +162,42 @@ class TransferDestination {
             fees: this.fees.toString(),
             aux_dests: this.aux_dests.map(x => x.toJson())
         };
+    }
+    IsValid() {
+        // verify aux dests
+        let valid = (((this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && this.aux_dests.length > 0) || (!(this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && !(this.aux_dests.length > 0)));
+        if (valid && this.aux_dests) {
+            for (let i = 0; i < this.aux_dests.length; i++) {
+                if (!this.GetAuxDest(i).IsValid()) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        return !!(valid &&
+            !this.typeNoFlags().eq(exports.DEST_INVALID) &&
+            this.typeNoFlags().lte(exports.LAST_VALID_TYPE_NO_FLAGS) &&
+            ((!(this.type.and(exports.FLAG_DEST_GATEWAY)) && !this.gateway_id) || this.gateway_id));
+    }
+    GetAuxDest(destNum) {
+        const retVal = this.aux_dests[destNum];
+        if (destNum >= 0 && destNum < this.aux_dests.length) {
+            if (retVal.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0)) || retVal.aux_dests.length > 0) {
+                retVal.type = exports.DEST_INVALID;
+            }
+            // no gateways or flags, only simple destinations work
+            switch (retVal.type) {
+                case exports.DEST_ID:
+                case exports.DEST_PK:
+                case exports.DEST_PKH:
+                case exports.DEST_ETH:
+                case exports.DEST_SH:
+                    break;
+                default:
+                    retVal.type = exports.DEST_INVALID;
+            }
+        }
+        return retVal;
     }
 }
 exports.TransferDestination = TransferDestination;
