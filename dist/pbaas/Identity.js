@@ -124,7 +124,7 @@ class Identity extends Principal_1.Principal {
         }
         return writer.buffer;
     }
-    fromBuffer(buffer, offset = 0, multimapKeylists = []) {
+    fromBuffer(buffer, offset = 0, parseVdxfObjects = false) {
         const reader = new BufferReader(buffer, offset);
         reader.offset = super.fromBuffer(reader.buffer, reader.offset);
         const _parent = new IdentityID_1.IdentityID();
@@ -134,7 +134,7 @@ class Identity extends Principal_1.Principal {
         //contentmultimap
         if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
             const multimap = new ContentMultiMap_1.ContentMultiMap();
-            reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, multimapKeylists);
+            reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
             this.content_multimap = multimap;
         }
         // contentmap

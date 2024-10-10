@@ -79,19 +79,18 @@ class ContentMultiMap {
         }
         return writer.buffer;
     }
-    fromBuffer(buffer, offset = 0, keylists = []) {
+    fromBuffer(buffer, offset = 0, parseVdxfObjects = false) {
         const reader = new BufferReader(buffer, offset);
-        const contentMultiMapSize = reader.readVarInt();
+        const contentMultiMapSize = reader.readCompactSize();
         this.kv_content = new Map();
-        for (var i = 0; i < contentMultiMapSize.toNumber(); i++) {
-            const keylist = i < keylists.length ? keylists[i] : null;
+        for (var i = 0; i < contentMultiMapSize; i++) {
             const contentMapKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
             const vector = [];
             const count = reader.readCompactSize();
             for (let j = 0; j < count; j++) {
-                if (keylist) {
+                if (parseVdxfObjects) {
                     const unival = new VdxfUniValue_1.VdxfUniValue();
-                    unival.fromBuffer(reader.readVarSlice(), 0, keylist);
+                    unival.fromBuffer(reader.readVarSlice(), 0);
                     vector.push(unival);
                 }
                 else

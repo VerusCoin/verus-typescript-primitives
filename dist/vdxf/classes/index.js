@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Context = exports.ProvisioningTxid = exports.Attestation = exports.AltAuthFactor = exports.Audience = exports.RequestedPermission = exports.ProvisioningInfo = exports.Subject = exports.RedirectUri = exports.Hash160 = exports.LoginConsentProvisioningResult = exports.LoginConsentProvisioningDecision = exports.LoginConsentProvisioningResponse = exports.LoginConsentProvisioningChallenge = exports.LoginConsentProvisioningRequest = exports.VerusPayInvoice = exports.VerusPayInvoiceDetails = exports.SignedSessionObjectData = exports.SignedSessionObject = exports.LoginConsentResponse = exports.LoginConsentRequest = exports.LoginConsentDecision = exports.LoginConsentChallenge = void 0;
+exports.DataCategory = exports.Context = exports.ProvisioningTxid = exports.Attestation = exports.AltAuthFactor = exports.Audience = exports.RequestedPermission = exports.ProvisioningInfo = exports.Subject = exports.RedirectUri = exports.Hash160 = exports.LoginConsentProvisioningResult = exports.LoginConsentProvisioningDecision = exports.LoginConsentProvisioningResponse = exports.LoginConsentProvisioningChallenge = exports.LoginConsentProvisioningRequest = exports.VerusPayInvoice = exports.VerusPayInvoiceDetails = exports.SignedSessionObjectData = exports.SignedSessionObject = exports.LoginConsentResponse = exports.LoginConsentRequest = exports.LoginConsentDecision = exports.LoginConsentChallenge = void 0;
 var Challenge_1 = require("./Challenge");
 Object.defineProperty(exports, "LoginConsentChallenge", { enumerable: true, get: function () { return Challenge_1.Challenge; } });
 var Decision_1 = require("./Decision");
@@ -36,8 +36,11 @@ Object.defineProperty(exports, "ProvisioningInfo", { enumerable: true, get: func
 Object.defineProperty(exports, "RequestedPermission", { enumerable: true, get: function () { return Challenge_2.RequestedPermission; } });
 Object.defineProperty(exports, "Audience", { enumerable: true, get: function () { return Challenge_2.Audience; } });
 Object.defineProperty(exports, "AltAuthFactor", { enumerable: true, get: function () { return Challenge_2.AltAuthFactor; } });
-Object.defineProperty(exports, "Attestation", { enumerable: true, get: function () { return Challenge_2.Attestation; } });
+var Attestation_1 = require("./Attestation");
+Object.defineProperty(exports, "Attestation", { enumerable: true, get: function () { return Attestation_1.Attestation; } });
 var ProvisioningResult_2 = require("./provisioning/ProvisioningResult");
 Object.defineProperty(exports, "ProvisioningTxid", { enumerable: true, get: function () { return ProvisioningResult_2.ProvisioningTxid; } });
 var Context_1 = require("./Context");
 Object.defineProperty(exports, "Context", { enumerable: true, get: function () { return Context_1.Context; } });
+var PersonalProfile_1 = require("./PersonalProfile");
+Object.defineProperty(exports, "DataCategory", { enumerable: true, get: function () { return PersonalProfile_1.DataCategory; } });

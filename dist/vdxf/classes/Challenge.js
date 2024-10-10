@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Challenge = exports.Attestation = exports.AltAuthFactor = exports.Audience = exports.RequestedPermission = exports.ProvisioningInfo = exports.Subject = exports.RedirectUri = void 0;
+exports.RequestedPermission = exports.Challenge = exports.AltAuthFactor = exports.Audience = exports.ProvisioningInfo = exports.Subject = exports.RedirectUri = void 0;
 const __1 = require("../");
 const bufferutils_1 = require("../../utils/bufferutils");
 const varuint_1 = require("../../utils/varuint");
 const Context_1 = require("./Context");
 const Hash160_1 = require("./Hash160");
+const Attestation_1 = require("./Attestation");
+const address_1 = require("../../utils/address");
 class RedirectUri extends __1.VDXFObject {
     constructor(uri = "", vdxfkey = "") {
         super(vdxfkey);
@@ -50,28 +52,17 @@ class ProvisioningInfo extends __1.Utf8OrBase58Object {
     }
 }
 exports.ProvisioningInfo = ProvisioningInfo;
-class RequestedPermission extends __1.Utf8DataVdxfObject {
-    constructor(vdxfkey = "") {
-        super("", vdxfkey);
-    }
-}
-exports.RequestedPermission = RequestedPermission;
 class Audience extends __1.Utf8DataVdxfObject {
 }
 exports.Audience = Audience;
 class AltAuthFactor extends __1.Utf8DataVdxfObject {
 }
 exports.AltAuthFactor = AltAuthFactor;
-class Attestation extends __1.Utf8DataVdxfObject {
-}
-exports.Attestation = Attestation;
 class Challenge extends __1.VDXFObject {
     constructor(challenge = { challenge_id: "", created_at: 0 }, vdxfkey = __1.LOGIN_CONSENT_CHALLENGE_VDXF_KEY.vdxfid) {
         super(vdxfkey);
         this.challenge_id = challenge.challenge_id;
-        this.requested_access = challenge.requested_access
-            ? challenge.requested_access.map((x) => new RequestedPermission(x.vdxfkey))
-            : challenge.requested_access;
+        this.requested_access = challenge.requested_access ? challenge.requested_access.map((x) => new RequestedPermission(x.vdxfkey, x.data)) : challenge.requested_access;
         this.requested_access_audience = challenge.requested_access_audience;
         this.subject = challenge.subject
             ? challenge.subject.map((x) => new Subject(x.data, x.vdxfkey))
@@ -109,7 +100,7 @@ class Challenge extends __1.VDXFObject {
         const _subject = this.subject ? this.subject : [];
         const _provisioning_info = this.provisioning_info ? this.provisioning_info : [];
         const _alt_auth_factors = [];
-        const _attestations = [];
+        const _attestations = this.attestations ? this.attestations : [];
         const _redirect_uris = this.redirect_uris ? this.redirect_uris : [];
         const _context = this.context ? this.context : new Context_1.Context({});
         length += _challenge_id.byteLength();
@@ -127,6 +118,7 @@ class Challenge extends __1.VDXFObject {
             length += _provisioning_info.reduce((sum, current) => sum + current.byteLength(), 0);
             length += varuint_1.default.encodingLength(_alt_auth_factors.length);
             length += varuint_1.default.encodingLength(_attestations.length);
+            length += _attestations.reduce((sum, current) => sum + current.byteLength(), 0);
             length += varuint_1.default.encodingLength(_redirect_uris.length);
             length += _redirect_uris.reduce((sum, current) => sum + current.byteLength(), 0);
         }
@@ -151,7 +143,7 @@ class Challenge extends __1.VDXFObject {
         const _subject = this.subject ? this.subject : [];
         const _provisioning_info = this.provisioning_info ? this.provisioning_info : [];
         const _alt_auth_factors = [];
-        const _attestations = [];
+        const _attestations = this.attestations ? this.attestations : [];
         const _redirect_uris = this.redirect_uris ? this.redirect_uris : [];
         const _context = this.context ? this.context : new Context_1.Context({});
         writer.writeSlice(_challenge_id.toBuffer());
@@ -223,8 +215,10 @@ class Challenge extends __1.VDXFObject {
                 }
                 this.attestations = [];
                 const attestationsLength = reader.readCompactSize();
-                if (attestationsLength > 0) {
-                    throw new Error("Attestations currently unsupported");
+                for (let i = 0; i < attestationsLength; i++) {
+                    const _att = new Attestation_1.Attestation();
+                    reader.offset = _att.fromBuffer(reader.buffer, reader.offset);
+                    this.attestations.push(_att);
                 }
                 this.redirect_uris = [];
                 const urisLength = reader.readCompactSize();
@@ -262,3 +256,47 @@ class Challenge extends __1.VDXFObject {
     }
 }
 exports.Challenge = Challenge;
+class RequestedPermission extends __1.VDXFObject {
+    constructor(vdxfkey, data) {
+        super(vdxfkey);
+        if (data && data.length > 0) {
+            if (data[0] instanceof Hash160_1.Hash160) {
+                this.data = data;
+            }
+            else {
+                this.data = data.map((x) => new Hash160_1.Hash160((0, address_1.fromBase58Check)(x).hash));
+            }
+        }
+        else {
+            this.data = [];
+        }
+    }
+    dataByteLength() {
+        let length = 0;
+        length += varuint_1.default.encodingLength(this.data.length);
+        for (let i = 0; i < this.data.length; i++) {
+            length += 20;
+        }
+        return length;
+    }
+    toDataBuffer() {
+        const buffer = Buffer.alloc(this.dataByteLength());
+        const writer = new bufferutils_1.default.BufferWriter(buffer);
+        writer.writeCompactSize(this.data.length);
+        for (let i = 0; i < this.data.length; i++) {
+            writer.writeSlice(this.data[i].toBuffer());
+        }
+        return writer.buffer;
+    }
+    fromDataBuffer(buffer, offset) {
+        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
+        const contextLength = reader.readCompactSize();
+        const numKeys = reader.readCompactSize();
+        this.data = [];
+        for (let i = 0; i < numKeys; i++) {
+            this.data.push(new Hash160_1.Hash160(reader.readSlice(20)));
+        }
+        return reader.offset;
+    }
+}
+exports.RequestedPermission = RequestedPermission;

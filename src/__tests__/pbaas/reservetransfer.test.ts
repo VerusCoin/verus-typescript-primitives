@@ -2,7 +2,7 @@ import { BN } from "bn.js";
 import { CurrencyValueMap } from "../../pbaas/CurrencyValueMap";
 import { ReserveTransfer } from "../../pbaas/ReserveTransfer";
 import { BigNumber } from "../../utils/types/BigNumber";
-import { DEST_ETH, DEST_ID, DEST_PKH, TransferDestination } from "../../pbaas/TransferDestination";
+import { DEST_ETH, DEST_ID, DEST_PKH, TransferDestination, DEST_INVALID } from "../../pbaas/TransferDestination";
 import { fromBase58Check } from "../../utils/address";
 
 describe('Serializes and deserializes token output properly', () => {
@@ -337,5 +337,46 @@ describe('Serializes and deserializes token output properly', () => {
     expect(transdestid.isIAddr()).toBe(true);
     expect(transdestid.isETHAccount()).toBe(false);
     expect(transdestid.isPKH()).toBe(false);
+  });
+
+  test('transferdestination isValid working as intended', async () => {
+    const destpkh = "R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx";
+    const desteth = "0x1f9090aae28b8a3dceadf281b0f12828e676c326";
+
+    const transdestpkh = new TransferDestination({
+      type: DEST_PKH,
+      destination_bytes: fromBase58Check(destpkh).hash
+    });
+    expect(transdestpkh.isValid()).toBe(true);
+
+    const transdesteth = new TransferDestination({
+      type: DEST_INVALID,
+      destination_bytes: Buffer.from(desteth.substring(2), 'hex')
+    });
+    expect(transdesteth.isValid()).toBe(false);
+  });
+
+  test('transferdestination getAuxDest working as intended', async () => {
+    const destpkh = "R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx";
+    const desteth = "0x1f9090aae28b8a3dceadf281b0f12828e676c326";
+
+    const auxDest = [new TransferDestination({
+      type: DEST_ETH,
+      destination_bytes: Buffer.from(desteth.substring(2), 'hex')
+    })]
+
+    const transdestpkh = new TransferDestination({
+      type: DEST_PKH,
+      destination_bytes: fromBase58Check(destpkh).hash,
+      aux_dests: auxDest
+    });
+
+    const extractedAuxDest = transdestpkh.getAuxDest(0);
+
+    expect(extractedAuxDest.getAddressString()).toBe(desteth);
+    expect(extractedAuxDest.isETHAccount()).toBe(true);
+    expect(extractedAuxDest.isPKH()).toBe(false);
+    expect(extractedAuxDest.isIAddr()).toBe(false);
+
   });
 });

@@ -68,9 +68,9 @@ export class IdentityScript extends SmartTransactionScript implements Serializab
     return new IdentityScript(master, params);
   }
 
-  getIdentity(multimapKeylists?: Array<Array<string> | null>): Identity {
+  getIdentity(parseVdxfObjects: boolean = false): Identity {
     const identity = new Identity();
-    identity.fromBuffer(this.params.getParamObject()!, 0, multimapKeylists);
+    identity.fromBuffer(this.params.getParamObject()!, 0, parseVdxfObjects);
 
     return identity;
   }

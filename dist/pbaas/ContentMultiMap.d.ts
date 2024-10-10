@@ -17,7 +17,7 @@ export declare class ContentMultiMap implements SerializableEntity {
     });
     getByteLength(): number;
     toBuffer(): Buffer;
-    fromBuffer(buffer: Buffer, offset?: number, keylists?: Array<Array<string> | null>): number;
+    fromBuffer(buffer: Buffer, offset?: number, parseVdxfObjects?: boolean): number;
     static fromJson(obj: {
         [key: string]: ContentMultiMapJsonValue;
     }): ContentMultiMap;

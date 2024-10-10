@@ -21,6 +21,8 @@ export { ProvisioningResponseInterface as LoginConsentProvisioningResponseInterf
 export { ProvisioningDecisionInterface as LoginConsentProvisioningDecisionInterface } from "./provisioning/ProvisioningDecision";
 export { ProvisioningResultInterface as LoginConsentProvisioningResultInterface } from "./provisioning/ProvisioningResult";
 export { Hash160 } from './Hash160';
-export { RedirectUri, Subject, ProvisioningInfo, RequestedPermission, Audience, AltAuthFactor, Attestation, } from "./Challenge";
+export { RedirectUri, Subject, ProvisioningInfo, RequestedPermission, Audience, AltAuthFactor, } from "./Challenge";
+export { Attestation } from './Attestation';
 export { ProvisioningTxid } from './provisioning/ProvisioningResult';
 export { Context } from './Context';
+export { DataCategory } from './PersonalProfile';

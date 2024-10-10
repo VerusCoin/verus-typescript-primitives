@@ -13,4 +13,8 @@ export declare class CurrencyValueMap implements SerializableEntity {
     getByteLength(): number;
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
+    isValid(): boolean;
+    toJson(): {
+        [key: string]: string;
+    };
 }

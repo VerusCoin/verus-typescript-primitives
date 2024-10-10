@@ -53,4 +53,6 @@ export declare class TransferDestination implements SerializableEntity {
     fromBuffer(buffer: Buffer, offset?: number): number;
     static fromJson(data: TransferDestinationJson): TransferDestination;
     toJson(): TransferDestinationJson;
+    isValid(): boolean;
+    getAuxDest(destNum: any): TransferDestination;
 }
