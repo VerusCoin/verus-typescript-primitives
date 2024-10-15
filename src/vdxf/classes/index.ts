@@ -32,9 +32,10 @@ export {
   RequestedPermission,
   Audience,
   AltAuthFactor,
-  Attestation,
 } from "./Challenge";
+export  {Attestation} from './Attestation'
 export {
   ProvisioningTxid
 } from './provisioning/ProvisioningResult'
 export { Context } from './Context'
+export { DataCategory } from './PersonalProfile'

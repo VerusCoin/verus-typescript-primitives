@@ -76,4 +76,27 @@ export class CurrencyValueMap implements SerializableEntity {
 
     return reader.offset;
   }
+
+  isValid():boolean
+  {
+    for (let [key, value]  of this.value_map)
+    {
+        if (!key || (typeof(key) == 'string' && key.length == 0))
+        {
+            return false;
+        }
+    }
+    return true;
+  }
+
+  toJson() {
+    const value_map: {[key: string]: string} = {};
+
+    for (let [key, value] of this.value_map) {
+      value_map[key] = value.toString()
+    }
+
+    return value_map;
+
+  }
 }

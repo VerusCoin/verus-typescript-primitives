@@ -17,7 +17,7 @@ describe('Encodes and decodes VdxfUniValue', () => {
 
     const vFromBuf = new VdxfUniValue();
 
-    vFromBuf.fromBuffer(v.toBuffer(), 0, [DATA_TYPE_STRING.vdxfid]);
+    vFromBuf.fromBuffer(v.toBuffer(), 0);
 
     expect(vFromBuf.toBuffer().toString('hex')).toBe(v.toBuffer().toString('hex'));
     expect(VdxfUniValue.fromJson(v.toJson()).toBuffer().toString('hex')).toBe(vFromBuf.toBuffer().toString('hex'));
@@ -34,6 +34,6 @@ describe('Encodes and decodes VdxfUniValue', () => {
 
     const vFromBuf = new VdxfUniValue();
 
-    expect(() => vFromBuf.fromBuffer(v.toBuffer(), 0, [VERUSPAY_INVOICE_VDXF_KEY.vdxfid])).toThrowError();
+    expect(() => vFromBuf.fromBuffer(v.toBuffer(), 0)).toThrowError();
   });
 });

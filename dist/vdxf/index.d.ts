@@ -4,6 +4,9 @@ import { VDXFKeyInterface } from './keys';
 import { BigNumber } from "../utils/types/BigNumber";
 export * from './keys';
 export * from './scopes';
+export * from './keymap';
+export * from './identitydatakeys';
+export * from './vdxfdatakeys';
 export interface VDXFObjectInterface {
     vdxfkey: string;
     toString: () => string;
@@ -47,6 +50,17 @@ export declare class BufferDataVdxfObject extends VDXFObject {
     data: string;
     encoding: BufferEncoding;
     constructor(data?: string, vdxfkey?: string, encoding?: BufferEncoding);
+    dataByteLength(): number;
+    toDataBuffer(): Buffer;
+    fromDataBuffer(buffer: Buffer, offset?: number): number;
+    toJson(): {
+        data: string;
+        vdxfkey: string;
+    };
+}
+export declare class VDXFData extends VDXFObject {
+    data: Buffer;
+    constructor(data?: Buffer, vdxfkey?: string);
     dataByteLength(): number;
     toDataBuffer(): Buffer;
     fromDataBuffer(buffer: Buffer, offset?: number): number;

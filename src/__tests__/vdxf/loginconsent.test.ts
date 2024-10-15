@@ -1,5 +1,5 @@
 import { Hash160 } from "../../vdxf/classes/Hash160";
-import { IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
+import { ATTESTATION_READ_REQUEST, IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
 import { LoginConsentRequest, LoginConsentResponse } from "../../vdxf/classes";
 import { ProvisioningInfo, RedirectUri, RequestedPermission, Subject } from "../../vdxf/classes/Challenge";
 import { Context } from "../../vdxf/classes/Context";
@@ -219,4 +219,5 @@ describe('Serializes and deserializes signature objects properly', () => {
     expect(_res.getDecisionHash(10000).toString('hex')).toBe(res.getDecisionHash(10000).toString('hex'))
     expect(_req.getChallengeHash().toString('hex')).toBe(req.getChallengeHash().toString('hex'))
   });
+
 });

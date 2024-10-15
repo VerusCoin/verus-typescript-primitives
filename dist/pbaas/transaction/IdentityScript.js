@@ -84,9 +84,9 @@ class IdentityScript extends SmartTransactionScript_1.SmartTransactionScript {
         });
         return new IdentityScript(master, params);
     }
-    getIdentity(multimapKeylists) {
+    getIdentity(parseVdxfObjects = false) {
         const identity = new Identity_1.Identity();
-        identity.fromBuffer(this.params.getParamObject(), 0, multimapKeylists);
+        identity.fromBuffer(this.params.getParamObject(), 0, parseVdxfObjects);
         return identity;
     }
 }

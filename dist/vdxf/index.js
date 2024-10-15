@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerusIDSignature = exports.Utf8OrBase58Object = exports.HexDataVdxfObject = exports.Utf8DataVdxfObject = exports.BufferDataVdxfObject = exports.VDXFObject = void 0;
+exports.VerusIDSignature = exports.Utf8OrBase58Object = exports.HexDataVdxfObject = exports.Utf8DataVdxfObject = exports.VDXFData = exports.BufferDataVdxfObject = exports.VDXFObject = void 0;
 const base64url_1 = require("base64url");
 const createHash = require("create-hash");
 const vdxf_1 = require("../constants/vdxf");
@@ -27,6 +27,9 @@ const keys_1 = require("./keys");
 const bn_js_1 = require("bn.js");
 __exportStar(require("./keys"), exports);
 __exportStar(require("./scopes"), exports);
+__exportStar(require("./keymap"), exports);
+__exportStar(require("./identitydatakeys"), exports);
+__exportStar(require("./vdxfdatakeys"), exports);
 class VDXFObject {
     constructor(key = "", serializekey = true) {
         this.serializekey = true;
@@ -86,9 +89,7 @@ class VDXFObject {
             writer.writeSlice(key.hash);
         }
         writer.writeVarInt(new bn_js_1.BN(this.version, 10));
-        if (dataLength) {
-            writer.writeVarSlice(this.toDataBuffer());
-        }
+        writer.writeVarSlice(this.toDataBuffer());
         return writer.buffer;
     }
     toSha256() {
@@ -122,6 +123,30 @@ class BufferDataVdxfObject extends VDXFObject {
     }
 }
 exports.BufferDataVdxfObject = BufferDataVdxfObject;
+class VDXFData extends VDXFObject {
+    constructor(data = Buffer.from(""), vdxfkey = "") {
+        super(vdxfkey);
+        this.data = data;
+    }
+    dataByteLength() {
+        return this.data.length;
+    }
+    toDataBuffer() {
+        return this.data;
+    }
+    fromDataBuffer(buffer, offset) {
+        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
+        this.data = reader.readVarSlice();
+        return reader.offset;
+    }
+    toJson() {
+        return {
+            data: this.data.toString("hex"),
+            vdxfkey: this.vdxfkey,
+        };
+    }
+}
+exports.VDXFData = VDXFData;
 class Utf8DataVdxfObject extends BufferDataVdxfObject {
     constructor(data = "", vdxfkey = "") {
         super(data, vdxfkey, "utf-8");

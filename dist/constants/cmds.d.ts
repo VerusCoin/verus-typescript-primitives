@@ -13,6 +13,7 @@ export declare const GET_ADDRESS_MEMPOOL = "getaddressmempool";
 export declare const SEND_RAW_TRANSACTION = "sendrawtransaction";
 export declare const GET_ADDRESS_UTXOS = "getaddressutxos";
 export declare const SIGN_MESSAGE = "signmessage";
+export declare const SIGN_DATA = "signdata";
 export declare const VERIFY_MESSAGE = "verifymessage";
 export declare const FUND_RAW_TRANSACTION = "fundrawtransaction";
 export declare const SEND_CURRENCY = "sendcurrency";
