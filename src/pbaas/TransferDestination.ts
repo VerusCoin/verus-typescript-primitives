@@ -3,7 +3,7 @@ import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
 import varuint from '../utils/varuint';
 import { fromBase58Check, toBase58Check } from '../utils/address';
-import { I_ADDR_VERSION, R_ADDR_VERSION } from '../constants/vdxf';
+import { I_ADDR_VERSION, R_ADDR_VERSION, HASH160_BYTE_LENGTH } from '../constants/vdxf';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 const { BufferReader, BufferWriter } = bufferutils
 
@@ -107,9 +107,9 @@ export class TransferDestination implements SerializableEntity {
       if (this.gateway_code) {
         length += fromBase58Check(this.gateway_code).hash.length; // gateway_code
       } else {
-        length += 20
+        length += HASH160_BYTE_LENGTH
       }
-      length += 8 // fees
+      length += 8 // fees int64
     }
 
     if (this.hasAuxDests()) {
@@ -137,7 +137,7 @@ export class TransferDestination implements SerializableEntity {
       if (this.gateway_code) {
         writer.writeSlice(fromBase58Check(this.gateway_code).hash);
       } else {
-        writer.writeSlice(Buffer.alloc(20));
+        writer.writeSlice(Buffer.alloc(HASH160_BYTE_LENGTH));
       }
       writer.writeInt64(this.fees);
     }
@@ -197,4 +197,50 @@ export class TransferDestination implements SerializableEntity {
       aux_dests: this.aux_dests.map(x => x.toJson())
     }
   }
+
+  isValid(): boolean
+  {
+      // verify aux dests
+      let valid = (((this.type.and(FLAG_DEST_AUX).gt(new BN(0))) && this.aux_dests.length > 0) || (!(this.type.and(FLAG_DEST_AUX).gt(new BN(0))) && !(this.aux_dests.length > 0)));
+      if (valid && this.aux_dests && this.aux_dests.length > 0)
+      {
+          for (let i = 0; i < this.aux_dests.length; i++)
+          {
+              if (!this.getAuxDest(i).isValid())
+              {
+                  valid = false;
+                  break;
+              }
+          }
+      }
+      return !!(valid &&
+             !this.typeNoFlags().eq(DEST_INVALID) &&
+             this.typeNoFlags().lte(LAST_VALID_TYPE_NO_FLAGS) &&
+             (((this.type.and(FLAG_DEST_GATEWAY).eq(new BN(0))) && (this.gateway_id == null)) || this.gateway_id != null));
+  }
+
+  getAuxDest(destNum)
+  {
+    const retVal = this.aux_dests[destNum];
+    if (destNum >= 0 && destNum < this.aux_dests.length)
+    {
+        if (retVal.type.and(FLAG_DEST_AUX).gt(new BN(0)) || retVal.aux_dests.length > 0)
+        {
+            retVal.type = DEST_INVALID;
+        }
+        // no gateways or flags, only simple destinations work
+        switch (retVal.type)
+        {
+            case DEST_ID:
+            case DEST_PK:
+            case DEST_PKH:
+            case DEST_ETH:
+            case DEST_SH:
+                break;
+            default:
+                retVal.type = DEST_INVALID;
+        }
+    }
+    return retVal;
+}
 }

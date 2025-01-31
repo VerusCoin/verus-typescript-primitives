@@ -47,101 +47,164 @@ class Identity extends Principal_1.Principal {
         if (data === null || data === void 0 ? void 0 : data.unlock_after)
             this.unlock_after = data.unlock_after;
     }
-    getByteLength() {
+    serializeParent() {
+        return true;
+    }
+    serializeSystemId() {
+        return true;
+    }
+    serializeName() {
+        return true;
+    }
+    serializeContentMap() {
+        return true;
+    }
+    serializeContentMultiMap() {
+        return true;
+    }
+    serializeRevocation() {
+        return true;
+    }
+    serializeRecovery() {
+        return true;
+    }
+    serializePrivateAddresses() {
+        return true;
+    }
+    serializeUnlockAfter() {
+        return true;
+    }
+    getIdentityByteLength() {
         let length = 0;
         length += super.getByteLength();
-        length += this.parent.getByteLength();
-        const nameLength = Buffer.from(this.name, "utf8").length;
-        length += varuint_1.default.encodingLength(nameLength);
-        length += nameLength;
-        if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
+        if (this.serializeParent())
+            length += this.parent.getByteLength();
+        if (this.serializeName()) {
+            const nameLength = Buffer.from(this.name, "utf8").length;
+            length += varuint_1.default.encodingLength(nameLength);
+            length += nameLength;
+        }
+        if (this.serializeContentMultiMap() && this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
             length += this.content_multimap.getByteLength();
         }
-        if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+        if (this.serializeContentMap()) {
+            if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+                length += varuint_1.default.encodingLength(this.content_map.size);
+                for (const m of this.content_map.entries()) {
+                    length += 20; //uint160 key
+                    length += 32; //uint256 hash
+                }
+            }
             length += varuint_1.default.encodingLength(this.content_map.size);
             for (const m of this.content_map.entries()) {
                 length += 20; //uint160 key
                 length += 32; //uint256 hash
             }
         }
-        length += varuint_1.default.encodingLength(this.content_map.size);
-        for (const m of this.content_map.entries()) {
-            length += 20; //uint160 key
-            length += 32; //uint256 hash
-        }
-        length += this.revocation_authority.getByteLength(); //uint160 revocation authority
-        length += this.recovery_authority.getByteLength(); //uint160 recovery authority
-        // privateaddresses
-        length += varuint_1.default.encodingLength(this.private_addresses ? this.private_addresses.length : 0);
-        if (this.private_addresses) {
-            for (const n of this.private_addresses) {
-                length += n.getByteLength();
+        if (this.serializeRevocation())
+            length += this.revocation_authority.getByteLength(); //uint160 revocation authority
+        if (this.serializeRecovery())
+            length += this.recovery_authority.getByteLength(); //uint160 recovery authority
+        if (this.serializePrivateAddresses()) {
+            length += varuint_1.default.encodingLength(this.private_addresses ? this.private_addresses.length : 0);
+            if (this.private_addresses) {
+                for (const n of this.private_addresses) {
+                    length += n.getByteLength();
+                }
             }
         }
         // post PBAAS
         if (this.version.gte(exports.IDENTITY_VERSION_VAULT)) {
-            length += this.system_id.getByteLength(); //uint160 systemid
-            length += 4; //uint32 unlockafter
+            if (this.serializeSystemId())
+                length += this.system_id.getByteLength(); //uint160 systemid
+            if (this.serializeUnlockAfter())
+                length += 4; //uint32 unlockafter
         }
         return length;
+    }
+    getByteLength() {
+        return this.getIdentityByteLength();
     }
     clearContentMultiMap() {
         this.content_multimap = new ContentMultiMap_1.ContentMultiMap({ kv_content: new Map() });
     }
     toBuffer() {
-        const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
+        const writer = new BufferWriter(Buffer.alloc(this.getIdentityByteLength()));
         writer.writeSlice(super.toBuffer());
-        writer.writeSlice(this.parent.toBuffer());
-        writer.writeVarSlice(Buffer.from(this.name, "utf8"));
+        if (this.serializeParent())
+            writer.writeSlice(this.parent.toBuffer());
+        if (this.serializeName())
+            writer.writeVarSlice(Buffer.from(this.name, "utf8"));
         //contentmultimap
-        if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
+        if (this.serializeContentMultiMap() && this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
             writer.writeSlice(this.content_multimap.toBuffer());
         }
-        //contentmap
-        if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+        if (this.serializeContentMap()) {
+            //contentmap
+            if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+                writer.writeCompactSize(this.content_map.size);
+                for (const [key, value] of this.content_map.entries()) {
+                    writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
+                    writer.writeSlice(value);
+                }
+            }
+            //contentmap2
             writer.writeCompactSize(this.content_map.size);
             for (const [key, value] of this.content_map.entries()) {
                 writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
                 writer.writeSlice(value);
             }
         }
-        //contentmap2
-        writer.writeCompactSize(this.content_map.size);
-        for (const [key, value] of this.content_map.entries()) {
-            writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
-            writer.writeSlice(value);
-        }
-        writer.writeSlice(this.revocation_authority.toBuffer());
-        writer.writeSlice(this.recovery_authority.toBuffer());
-        // privateaddresses
-        writer.writeCompactSize(this.private_addresses ? this.private_addresses.length : 0);
-        if (this.private_addresses) {
-            for (const n of this.private_addresses) {
-                writer.writeSlice(n.toBuffer());
+        if (this.serializeRevocation())
+            writer.writeSlice(this.revocation_authority.toBuffer());
+        if (this.serializeRecovery())
+            writer.writeSlice(this.recovery_authority.toBuffer());
+        if (this.serializePrivateAddresses()) {
+            // privateaddresses
+            writer.writeCompactSize(this.private_addresses ? this.private_addresses.length : 0);
+            if (this.private_addresses) {
+                for (const n of this.private_addresses) {
+                    writer.writeSlice(n.toBuffer());
+                }
             }
         }
         // post PBAAS
         if (this.version.gte(exports.IDENTITY_VERSION_VAULT)) {
-            writer.writeSlice(this.system_id.toBuffer());
-            writer.writeUInt32(this.unlock_after.toNumber());
+            if (this.serializeSystemId())
+                writer.writeSlice(this.system_id.toBuffer());
+            if (this.serializeUnlockAfter())
+                writer.writeUInt32(this.unlock_after.toNumber());
         }
         return writer.buffer;
     }
-    fromBuffer(buffer, offset = 0, multimapKeylists = []) {
+    fromBuffer(buffer, offset = 0, parseVdxfObjects = false) {
         const reader = new BufferReader(buffer, offset);
         reader.offset = super.fromBuffer(reader.buffer, reader.offset);
         const _parent = new IdentityID_1.IdentityID();
-        reader.offset = _parent.fromBuffer(reader.buffer, reader.offset);
-        this.parent = _parent;
-        this.name = Buffer.from(reader.readVarSlice()).toString('utf8');
-        //contentmultimap
-        if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
-            const multimap = new ContentMultiMap_1.ContentMultiMap();
-            reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, multimapKeylists);
-            this.content_multimap = multimap;
+        if (this.serializeParent()) {
+            reader.offset = _parent.fromBuffer(reader.buffer, reader.offset);
+            this.parent = _parent;
         }
-        // contentmap
-        if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+        if (this.serializeName())
+            this.name = Buffer.from(reader.readVarSlice()).toString('utf8');
+        if (this.serializeContentMultiMap()) {
+            //contentmultimap
+            if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
+                const multimap = new ContentMultiMap_1.ContentMultiMap();
+                reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
+                this.content_multimap = multimap;
+            }
+        }
+        if (this.serializeContentMap()) {
+            // contentmap
+            if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
+                const contentMapSize = reader.readVarInt();
+                this.content_map = new Map();
+                for (var i = 0; i < contentMapSize.toNumber(); i++) {
+                    const contentMapKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+                    this.content_map.set(contentMapKey, reader.readSlice(32));
+                }
+            }
             const contentMapSize = reader.readVarInt();
             this.content_map = new Map();
             for (var i = 0; i < contentMapSize.toNumber(); i++) {
@@ -149,31 +212,35 @@ class Identity extends Principal_1.Principal {
                 this.content_map.set(contentMapKey, reader.readSlice(32));
             }
         }
-        const contentMapSize = reader.readVarInt();
-        this.content_map = new Map();
-        for (var i = 0; i < contentMapSize.toNumber(); i++) {
-            const contentMapKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
-            this.content_map.set(contentMapKey, reader.readSlice(32));
+        if (this.serializeRevocation()) {
+            const _revocation = new IdentityID_1.IdentityID();
+            reader.offset = _revocation.fromBuffer(reader.buffer, reader.offset);
+            this.revocation_authority = _revocation;
         }
-        const _revocation = new IdentityID_1.IdentityID();
-        reader.offset = _revocation.fromBuffer(reader.buffer, reader.offset);
-        this.revocation_authority = _revocation;
-        const _recovery = new IdentityID_1.IdentityID();
-        reader.offset = _recovery.fromBuffer(reader.buffer, reader.offset);
-        this.recovery_authority = _recovery;
-        const numPrivateAddresses = reader.readVarInt();
-        if (numPrivateAddresses.gt(new bn_js_1.BN(0)))
-            this.private_addresses = [];
-        for (var i = 0; i < numPrivateAddresses.toNumber(); i++) {
-            const saplingAddr = new SaplingPaymentAddress_1.SaplingPaymentAddress();
-            reader.offset = saplingAddr.fromBuffer(reader.buffer, reader.offset);
-            this.private_addresses.push(saplingAddr);
+        if (this.serializeRecovery()) {
+            const _recovery = new IdentityID_1.IdentityID();
+            reader.offset = _recovery.fromBuffer(reader.buffer, reader.offset);
+            this.recovery_authority = _recovery;
+        }
+        if (this.serializePrivateAddresses()) {
+            const numPrivateAddresses = reader.readVarInt();
+            if (numPrivateAddresses.gt(new bn_js_1.BN(0)))
+                this.private_addresses = [];
+            for (var i = 0; i < numPrivateAddresses.toNumber(); i++) {
+                const saplingAddr = new SaplingPaymentAddress_1.SaplingPaymentAddress();
+                reader.offset = saplingAddr.fromBuffer(reader.buffer, reader.offset);
+                this.private_addresses.push(saplingAddr);
+            }
         }
         if (this.version.gte(exports.IDENTITY_VERSION_VAULT)) {
-            const _system = new IdentityID_1.IdentityID();
-            reader.offset = _system.fromBuffer(reader.buffer, reader.offset);
-            this.system_id = _system;
-            this.unlock_after = new bn_js_1.BN(reader.readUInt32(), 10);
+            if (this.serializeSystemId()) {
+                const _system = new IdentityID_1.IdentityID();
+                reader.offset = _system.fromBuffer(reader.buffer, reader.offset);
+                this.system_id = _system;
+            }
+            if (this.serializeUnlockAfter()) {
+                this.unlock_after = new bn_js_1.BN(reader.readUInt32(), 10);
+            }
         }
         else {
             this.system_id = _parent;
@@ -296,25 +363,27 @@ class Identity extends Principal_1.Principal {
     }
     static fromJson(json) {
         const contentmap = new Map();
-        for (const key in json.contentmap) {
-            const reverseKey = Buffer.from(key, 'hex').reverse();
-            const iAddrKey = (0, address_1.toBase58Check)(reverseKey, vdxf_1.I_ADDR_VERSION);
-            contentmap.set(iAddrKey, Buffer.from(json.contentmap[key], 'hex').reverse());
+        if (json.contentmap) {
+            for (const key in json.contentmap) {
+                const reverseKey = Buffer.from(key, 'hex').reverse();
+                const iAddrKey = (0, address_1.toBase58Check)(reverseKey, vdxf_1.I_ADDR_VERSION);
+                contentmap.set(iAddrKey, Buffer.from(json.contentmap[key], 'hex').reverse());
+            }
         }
         return new Identity({
-            version: new bn_js_1.BN(json.version, 10),
-            flags: new bn_js_1.BN(json.flags, 10),
-            min_sigs: new bn_js_1.BN(json.minimumsignatures, 10),
-            primary_addresses: json.primaryaddresses.map(x => KeyID_1.KeyID.fromAddress(x)),
-            parent: IdentityID_1.IdentityID.fromAddress(json.parent),
+            version: json.version ? new bn_js_1.BN(json.version, 10) : null,
+            flags: json.flags ? new bn_js_1.BN(json.flags, 10) : null,
+            min_sigs: json.minimumsignatures ? new bn_js_1.BN(json.minimumsignatures, 10) : null,
+            primary_addresses: json.primaryaddresses ? json.primaryaddresses.map(x => KeyID_1.KeyID.fromAddress(x)) : null,
+            parent: json.parent ? IdentityID_1.IdentityID.fromAddress(json.parent) : null,
             system_id: json.systemid ? IdentityID_1.IdentityID.fromAddress(json.systemid) : undefined,
             name: json.name,
             content_map: contentmap,
-            content_multimap: ContentMultiMap_1.ContentMultiMap.fromJson(json.contentmultimap),
-            revocation_authority: IdentityID_1.IdentityID.fromAddress(json.revocationauthority),
-            recovery_authority: IdentityID_1.IdentityID.fromAddress(json.recoveryauthority),
+            content_multimap: json.contentmultimap ? ContentMultiMap_1.ContentMultiMap.fromJson(json.contentmultimap) : null,
+            revocation_authority: json.revocationauthority ? IdentityID_1.IdentityID.fromAddress(json.revocationauthority) : null,
+            recovery_authority: json.recoveryauthority ? IdentityID_1.IdentityID.fromAddress(json.recoveryauthority) : null,
             private_addresses: json.privateaddress == null ? [] : [SaplingPaymentAddress_1.SaplingPaymentAddress.fromAddressString(json.privateaddress)],
-            unlock_after: new bn_js_1.BN(json.timelock, 10)
+            unlock_after: json.timelock != null ? new bn_js_1.BN(json.timelock, 10) : null
         });
     }
 }

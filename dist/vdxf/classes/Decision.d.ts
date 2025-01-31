@@ -43,7 +43,7 @@ export declare class Decision extends VDXFObject {
                 vdxfkey: string;
                 challenge_id: string;
                 requested_access: import("./Challenge").RequestedPermission[];
-                requested_access_audience: import("./Challenge").RequestedPermission[];
+                requested_access_audience: import("./Challenge").Audience[];
                 subject: import("./Challenge").Subject[];
                 provisioning_info: import("./Challenge").ProvisioningInfo[];
                 alt_auth_factors: import("./Challenge").AltAuthFactor[];

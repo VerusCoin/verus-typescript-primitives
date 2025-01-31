@@ -32,6 +32,7 @@ declare class BufferReader {
     offset: number;
     constructor(buffer: Buffer, offset?: number);
     readUInt8(): number;
+    readUInt16(): number;
     readInt32(): number;
     readUInt32(): number;
     readUInt64(): number;

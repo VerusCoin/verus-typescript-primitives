@@ -97,24 +97,23 @@ export class ContentMultiMap implements SerializableEntity {
     return writer.buffer
   }
 
-  fromBuffer(buffer: Buffer, offset: number = 0, keylists: Array<Array<string> | null> = []) {
+  fromBuffer(buffer: Buffer, offset: number = 0, parseVdxfObjects: boolean = false) {
     const reader = new BufferReader(buffer, offset);
 
-    const contentMultiMapSize = reader.readVarInt();
+    const contentMultiMapSize = reader.readCompactSize();
     this.kv_content = new Map();
 
-    for (var i = 0; i < contentMultiMapSize.toNumber(); i++) {
-      const keylist = i < keylists.length ? keylists[i] : null;
-
+    for (var i = 0; i < contentMultiMapSize; i++) {
+      
       const contentMapKey = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
 
       const vector: Array<ContentMultiMapPrimitive> = [];
       const count = reader.readCompactSize();
 
       for (let j = 0; j < count; j++) {
-        if (keylist) {
+        if (parseVdxfObjects) {
           const unival = new VdxfUniValue();
-          unival.fromBuffer(reader.readVarSlice(), 0, keylist);
+          unival.fromBuffer(reader.readVarSlice(), 0);
 
           vector.push(unival);
         } else vector.push(reader.readVarSlice());

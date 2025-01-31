@@ -38,3 +38,4 @@ export {
   ProvisioningTxid
 } from './provisioning/ProvisioningResult'
 export { Context } from './Context'
+export { DataCategory } from './PersonalProfile'

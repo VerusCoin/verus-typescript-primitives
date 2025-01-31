@@ -13,6 +13,7 @@ export * from './utils/evals';
 export * from './utils/script';
 export * from './utils/cccustom';
 export * from './pbaas/index';
+export * from './pbaas/PartialIdentity';
 export * from './identity/IdentityDefinition';
 export * from './currency/CurrencyDefinition';
 export { BN as BigNumber } from 'bn.js';

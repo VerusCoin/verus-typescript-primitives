@@ -11,7 +11,9 @@ import { BN } from "bn.js";
 import { BigNumber } from "../utils/types/BigNumber";
 export * from './keys'
 export * from './scopes'
-
+export * from './keymap'
+export * from './identitydatakeys'
+export * from './vdxfdatakeys'
 export interface VDXFObjectInterface {
   vdxfkey: string;
   toString: () => string;
@@ -65,7 +67,7 @@ export class VDXFObject implements VDXFObjectInterface {
   toDataBuffer() {
     return Buffer.alloc(0);
   }
-  
+
   fromDataBuffer(buffer: Buffer, offset: number = 0) {
     return offset;
   }
@@ -81,9 +83,9 @@ export class VDXFObject implements VDXFObjectInterface {
       const keyHash = reader.readSlice(HASH160_BYTE_LENGTH);
       this.vdxfkey = toBase58Check(keyHash, I_ADDR_VERSION)
     }
-    
+
     const version = reader.readVarInt();
-    
+
     this.version = version;
 
     if (!this.isValidVersion()) throw new Error("Unsupported version for vdxf object.")
@@ -113,12 +115,10 @@ export class VDXFObject implements VDXFObjectInterface {
     if (includeKey) {
       writer.writeSlice(key.hash);
     }
-    
+
     writer.writeVarInt(new BN(this.version, 10));
 
-    if (dataLength) {      
-      writer.writeVarSlice(this.toDataBuffer());
-    }
+    writer.writeVarSlice(this.toDataBuffer());
 
     return writer.buffer;
   }
@@ -167,6 +167,43 @@ export class BufferDataVdxfObject extends VDXFObject {
   }
 }
 
+export class VDXFData extends VDXFObject {
+  data: Buffer
+
+  constructor(
+    data: Buffer = Buffer.from(""),
+    vdxfkey: string = ""
+  ) {
+    super(vdxfkey);
+    this.data = data;
+  }
+
+  dataByteLength(): number {
+    return this.data.length;
+  }
+
+  toDataBuffer(): Buffer {
+    return this.data;
+  }
+
+  fromDataBuffer(buffer: Buffer, offset?: number): number {
+    const reader = new bufferutils.BufferReader(buffer, offset);
+
+    this.data = reader.readVarSlice();
+
+    return reader.offset;
+  }
+
+  toJson() {
+    return {
+      data: this.data.toString("hex"),
+      vdxfkey: this.vdxfkey,
+    };
+  }
+
+}
+
+
 export class Utf8DataVdxfObject extends BufferDataVdxfObject {
   constructor(data: string = "", vdxfkey: string = "") {
     super(data, vdxfkey, "utf-8");
@@ -183,7 +220,7 @@ export class Utf8OrBase58Object extends VDXFObject {
   data: string;
 
   // VDXF keys that would cause this object to be base58 instead of utf8
-  base58Keys: {[key: string]: boolean} = {};
+  base58Keys: { [key: string]: boolean } = {};
 
   constructor(data: string = "", vdxfkey: string = "", base58Keys: Array<string> = []) {
     super(vdxfkey);
@@ -226,7 +263,7 @@ export class Utf8OrBase58Object extends VDXFObject {
     } else {
       this.data = reader.readVarSlice().toString('utf-8')
     }
-    
+
     return reader.offset
   }
 

@@ -25,16 +25,34 @@ class Principal {
                 this.primary_addresses = data.primary_addresses;
         }
     }
+    serializeFlags() {
+        return true;
+    }
+    serializeVersion() {
+        return true;
+    }
+    serializePrimaryAddresses() {
+        return true;
+    }
+    serializeMinSigs() {
+        return true;
+    }
     getSelfByteLength() {
         let byteLength = 0;
-        byteLength += 4; //uint32 version size
-        byteLength += 4; //uint32 flags size
-        byteLength += varuint_1.default.encodingLength(this.primary_addresses.length);
-        for (const addr of this.primary_addresses) {
-            byteLength += varuint_1.default.encodingLength(addr.getByteLength());
-            byteLength += addr.getByteLength();
+        if (this.serializeVersion())
+            byteLength += 4; //uint32 version size
+        if (this.serializeFlags())
+            byteLength += 4; //uint32 flags size
+        if (this.serializePrimaryAddresses()) {
+            byteLength += varuint_1.default.encodingLength(this.primary_addresses.length);
+            for (const addr of this.primary_addresses) {
+                byteLength += varuint_1.default.encodingLength(addr.getByteLength());
+                byteLength += addr.getByteLength();
+            }
         }
-        byteLength += 4; //uint32 minimum signatures size
+        if (this.serializeMinSigs()) {
+            byteLength += 4; //uint32 minimum signatures size
+        }
         return byteLength;
     }
     getByteLength() {
@@ -42,29 +60,38 @@ class Principal {
     }
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getSelfByteLength()));
-        writer.writeUInt32(this.version.toNumber());
-        writer.writeUInt32(this.flags.toNumber());
-        writer.writeVector(this.primary_addresses.map(x => x.toBuffer()));
-        writer.writeUInt32(this.min_sigs.toNumber());
+        if (this.serializeVersion())
+            writer.writeUInt32(this.version.toNumber());
+        if (this.serializeFlags())
+            writer.writeUInt32(this.flags.toNumber());
+        if (this.serializePrimaryAddresses())
+            writer.writeVector(this.primary_addresses.map(x => x.toBuffer()));
+        if (this.serializeMinSigs())
+            writer.writeUInt32(this.min_sigs.toNumber());
         return writer.buffer;
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
-        this.version = new bn_js_1.BN(reader.readUInt32(), 10);
-        this.flags = new bn_js_1.BN(reader.readUInt32(), 10);
-        this.primary_addresses = reader.readVector().map(x => {
-            if (x.length === 20) {
-                return new KeyID_1.KeyID(x);
-            }
-            else if (x.length === 33) {
-                //TODO: Implement pubkey principal by adding PubKey class as possible TxDestination
-                throw new Error("Pubkey Principal not yet supported");
-            }
-            else {
-                return new NoDestination_1.NoDestination();
-            }
-        });
-        this.min_sigs = new bn_js_1.BN(reader.readUInt32(), 10);
+        if (this.serializeVersion())
+            this.version = new bn_js_1.BN(reader.readUInt32(), 10);
+        if (this.serializeFlags())
+            this.flags = new bn_js_1.BN(reader.readUInt32(), 10);
+        if (this.serializePrimaryAddresses()) {
+            this.primary_addresses = reader.readVector().map(x => {
+                if (x.length === 20) {
+                    return new KeyID_1.KeyID(x);
+                }
+                else if (x.length === 33) {
+                    //TODO: Implement pubkey principal by adding PubKey class as possible TxDestination
+                    throw new Error("Pubkey Principal not yet supported");
+                }
+                else {
+                    return new NoDestination_1.NoDestination();
+                }
+            });
+        }
+        if (this.serializeMinSigs())
+            this.min_sigs = new bn_js_1.BN(reader.readUInt32(), 10);
         return reader.offset;
     }
 }

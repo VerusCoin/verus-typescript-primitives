@@ -24,3 +24,4 @@ export { Hash160 } from './Hash160';
 export { RedirectUri, Subject, ProvisioningInfo, RequestedPermission, Audience, AltAuthFactor, Attestation, } from "./Challenge";
 export { ProvisioningTxid } from './provisioning/ProvisioningResult';
 export { Context } from './Context';
+export { DataCategory } from './PersonalProfile';

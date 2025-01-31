@@ -9,7 +9,7 @@ export declare const PRINCIPAL_VERSION_CURRENT: import("bn.js");
 export declare class Principal implements SerializableEntity {
     flags: BigNumber;
     version: BigNumber;
-    min_sigs: BigNumber;
+    min_sigs?: BigNumber;
     primary_addresses?: Array<KeyID>;
     constructor(data?: {
         version?: BigNumber;
@@ -17,6 +17,10 @@ export declare class Principal implements SerializableEntity {
         min_sigs?: BigNumber;
         primary_addresses?: Array<KeyID>;
     });
+    protected serializeFlags(): boolean;
+    protected serializeVersion(): boolean;
+    protected serializePrimaryAddresses(): boolean;
+    protected serializeMinSigs(): boolean;
     private getSelfByteLength;
     getByteLength(): number;
     toBuffer(): Buffer;

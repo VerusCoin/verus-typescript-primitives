@@ -89,9 +89,9 @@ class TransferDestination {
                 length += (0, address_1.fromBase58Check)(this.gateway_code).hash.length; // gateway_code
             }
             else {
-                length += 20;
+                length += vdxf_1.HASH160_BYTE_LENGTH;
             }
-            length += 8; // fees
+            length += 8; // fees int64
         }
         if (this.hasAuxDests()) {
             length += varuint_1.default.encodingLength(this.aux_dests.length); // aux dests compact size
@@ -113,7 +113,7 @@ class TransferDestination {
                 writer.writeSlice((0, address_1.fromBase58Check)(this.gateway_code).hash);
             }
             else {
-                writer.writeSlice(Buffer.alloc(20));
+                writer.writeSlice(Buffer.alloc(vdxf_1.HASH160_BYTE_LENGTH));
             }
             writer.writeInt64(this.fees);
         }
@@ -161,6 +161,42 @@ class TransferDestination {
             fees: this.fees.toString(),
             aux_dests: this.aux_dests.map(x => x.toJson())
         };
+    }
+    isValid() {
+        // verify aux dests
+        let valid = (((this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && this.aux_dests.length > 0) || (!(this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && !(this.aux_dests.length > 0)));
+        if (valid && this.aux_dests && this.aux_dests.length > 0) {
+            for (let i = 0; i < this.aux_dests.length; i++) {
+                if (!this.getAuxDest(i).isValid()) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        return !!(valid &&
+            !this.typeNoFlags().eq(exports.DEST_INVALID) &&
+            this.typeNoFlags().lte(exports.LAST_VALID_TYPE_NO_FLAGS) &&
+            (((this.type.and(exports.FLAG_DEST_GATEWAY).eq(new bn_js_1.BN(0))) && (this.gateway_id == null)) || this.gateway_id != null));
+    }
+    getAuxDest(destNum) {
+        const retVal = this.aux_dests[destNum];
+        if (destNum >= 0 && destNum < this.aux_dests.length) {
+            if (retVal.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0)) || retVal.aux_dests.length > 0) {
+                retVal.type = exports.DEST_INVALID;
+            }
+            // no gateways or flags, only simple destinations work
+            switch (retVal.type) {
+                case exports.DEST_ID:
+                case exports.DEST_PK:
+                case exports.DEST_PKH:
+                case exports.DEST_ETH:
+                case exports.DEST_SH:
+                    break;
+                default:
+                    retVal.type = exports.DEST_INVALID;
+            }
+        }
+        return retVal;
     }
 }
 exports.TransferDestination = TransferDestination;

@@ -13,10 +13,10 @@ export const PRINCIPAL_VERSION_CURRENT = new BN(1, 10)
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export class Principal implements SerializableEntity{
+export class Principal implements SerializableEntity {
   flags: BigNumber;
   version: BigNumber;
-  min_sigs: BigNumber;
+  min_sigs?: BigNumber;
   primary_addresses?: Array<KeyID>;
 
   constructor(data?: {
@@ -36,21 +36,41 @@ export class Principal implements SerializableEntity{
     }
   }
 
+  protected serializeFlags() {
+    return true;
+  }
+
+  protected serializeVersion() {
+    return true;
+  }
+
+  protected serializePrimaryAddresses() {
+    return true;
+  }
+
+  protected serializeMinSigs() {
+    return true;
+  }
+
   private getSelfByteLength() {
     let byteLength = 0;
 
-    byteLength += 4; //uint32 version size
-    byteLength += 4; //uint32 flags size
+    if (this.serializeVersion()) byteLength += 4; //uint32 version size
+    if (this.serializeFlags()) byteLength += 4; //uint32 flags size
 
-    byteLength += varuint.encodingLength(this.primary_addresses.length);
+    if (this.serializePrimaryAddresses()) {
+      byteLength += varuint.encodingLength(this.primary_addresses.length);
 
-    for (const addr of this.primary_addresses) {
-      byteLength += varuint.encodingLength(addr.getByteLength());
-      byteLength += addr.getByteLength();
+      for (const addr of this.primary_addresses) {
+        byteLength += varuint.encodingLength(addr.getByteLength());
+        byteLength += addr.getByteLength();
+      }
     }
 
-    byteLength += 4; //uint32 minimum signatures size
-
+    if (this.serializeMinSigs()) {
+      byteLength += 4; //uint32 minimum signatures size
+    }
+    
     return byteLength
   }
 
@@ -61,12 +81,12 @@ export class Principal implements SerializableEntity{
   toBuffer() {
     const writer = new BufferWriter(Buffer.alloc(this.getSelfByteLength()))
 
-    writer.writeUInt32(this.version.toNumber())
-    writer.writeUInt32(this.flags.toNumber())
+    if (this.serializeVersion()) writer.writeUInt32(this.version.toNumber())
+    if (this.serializeFlags()) writer.writeUInt32(this.flags.toNumber())
 
-    writer.writeVector(this.primary_addresses.map(x => x.toBuffer()))
+    if (this.serializePrimaryAddresses()) writer.writeVector(this.primary_addresses.map(x => x.toBuffer()))
 
-    writer.writeUInt32(this.min_sigs.toNumber())
+    if (this.serializeMinSigs()) writer.writeUInt32(this.min_sigs.toNumber())
 
     return writer.buffer
   }
@@ -74,21 +94,23 @@ export class Principal implements SerializableEntity{
   fromBuffer(buffer: Buffer, offset: number = 0) {
     const reader = new BufferReader(buffer, offset);
 
-    this.version = new BN(reader.readUInt32(), 10);
-    this.flags = new BN(reader.readUInt32(), 10);
+    if (this.serializeVersion()) this.version = new BN(reader.readUInt32(), 10);
+    if (this.serializeFlags()) this.flags = new BN(reader.readUInt32(), 10);
 
-    this.primary_addresses = reader.readVector().map(x => {
-      if (x.length === 20) {
-        return new KeyID(x);
-      } else if (x.length === 33) {
-        //TODO: Implement pubkey principal by adding PubKey class as possible TxDestination
-        throw new Error("Pubkey Principal not yet supported");
-      } else {
-        return new NoDestination();
-      }
-    })
+    if (this.serializePrimaryAddresses()) {
+      this.primary_addresses = reader.readVector().map(x => {
+        if (x.length === 20) {
+          return new KeyID(x);
+        } else if (x.length === 33) {
+          //TODO: Implement pubkey principal by adding PubKey class as possible TxDestination
+          throw new Error("Pubkey Principal not yet supported");
+        } else {
+          return new NoDestination();
+        }
+      })
+    }
 
-    this.min_sigs = new BN(reader.readUInt32(), 10);
+    if (this.serializeMinSigs()) this.min_sigs = new BN(reader.readUInt32(), 10);
 
     return reader.offset;
   }

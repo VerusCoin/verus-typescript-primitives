@@ -59,5 +59,27 @@ class CurrencyValueMap {
         }
         return reader.offset;
     }
+    isValid() {
+        for (let [key, value] of this.value_map) {
+            if (!key || (typeof (key) == 'string' && key.length == 0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    toJson() {
+        const value_map = {};
+        for (let [key, value] of this.value_map) {
+            value_map[key] = value.toString();
+        }
+        return value_map;
+    }
+    static fromJson(data, multivalue = false) {
+        const value_map = new Map();
+        for (let key in data) {
+            value_map.set(key, new bn_js_1.BN(data[key]));
+        }
+        return new CurrencyValueMap({ value_map, multivalue });
+    }
 }
 exports.CurrencyValueMap = CurrencyValueMap;
