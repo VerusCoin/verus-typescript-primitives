@@ -14,9 +14,11 @@ describe('Serializes and deserializes Credential', () => {
 
     expect(cFromBuf.toBuffer().toString('hex')).toBe(c.toBuffer().toString('hex'));
     expect(cFromBuf.isValid());
+    expect(!cFromBuf.hasNote());
+    expect(cFromBuf.calcFlags() !== Credential.FLAG_NOTE_PRESENT);
   });
 
-  test('(de)serialize Credential without note', () => {
+  test('(de)serialize Credential with note', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
       credentialType: Credential.CREDENTIAL_DATE_OF_BIRTH,
@@ -30,5 +32,7 @@ describe('Serializes and deserializes Credential', () => {
 
     expect(cFromBuf.toBuffer().toString('hex')).toBe(c.toBuffer().toString('hex'));
     expect(cFromBuf.isValid());
+    expect(cFromBuf.hasNote());
+    expect(cFromBuf.calcFlags() === Credential.FLAG_NOTE_PRESENT);
   });
 });
