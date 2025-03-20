@@ -6,6 +6,7 @@ import { Context } from "../../vdxf/classes/Context";
 import { ProvisioningRequest } from "../../vdxf/classes/provisioning/ProvisioningRequest";
 import { ProvisioningResponse } from "../../vdxf/classes/provisioning/ProvisioningResponse";
 import { ProvisioningResult, ProvisioningTxid } from "../../vdxf/classes/provisioning/ProvisioningResult";
+import { Credential } from "../../pbaas/Credential";
 
 describe('Serializes and deserializes signature objects properly', () => {
   test('loginconsentrequest/response', async () => {
@@ -218,5 +219,204 @@ describe('Serializes and deserializes signature objects properly', () => {
 
     expect(_res.getDecisionHash(10000).toString('hex')).toBe(res.getDecisionHash(10000).toString('hex'))
     expect(_req.getChallengeHash().toString('hex')).toBe(req.getChallengeHash().toString('hex'))
+  });
+
+  test('loginconsentresponse with a credential', async () => {
+    const req = new LoginConsentRequest({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      challenge: {
+        challenge_id: "iKNufKJdLX3Xg8qFru9AuLBvivAEJ88PW4",
+        requested_access: [new RequestedPermission(IDENTITY_VIEW.vdxfid)],
+        subject: [
+          new Subject(
+            "fully.qualified.name",
+            ID_FULLYQUALIFIEDNAME_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_ADDRESS_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_SYSTEMID_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_PARENT_VDXF_KEY.vdxfid
+          ),
+        ],
+        provisioning_info: [
+          new ProvisioningInfo(
+            "https://127.0.0.1/",
+            LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_ADDRESS_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_SYSTEMID_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_PARENT_VDXF_KEY.vdxfid
+          ),
+        ],
+        session_id: "iRQZGW36o3RcVR1xyVT1qWdAKdxp3wUyrh",
+        redirect_uris: [
+          new RedirectUri(
+            "https://www.verus.io",
+            LOGIN_CONSENT_REDIRECT_VDXF_KEY.vdxfid
+          ),
+        ],
+        created_at: 1664382484,
+        salt: "i6NawEzHMocZnU4h8pPkGpHApvsrHjxwXE",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+      },
+    });
+
+    const res = new LoginConsentResponse({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      decision: {
+        decision_id: "iBTMBHzDbsW3QG1MLBoYtmo6c1xuzn6xxb",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+        request: req,
+        created_at: 1664392484,
+        credentials: [
+          new Credential({
+            version: Credential.VERSION_CURRENT,
+            credentialType: Credential.CREDENTIAL_CARD_NUMBER,
+            credential: "1234567891011121",
+            recipient: "PizzaPlace@",
+          })
+        ]
+      }
+    })
+    const resbuf = res.toBuffer()
+    const _res = new LoginConsentResponse()
+    _res.fromBuffer(resbuf)
+
+    expect(_res.toBuffer().toString('hex')).toBe(resbuf.toString('hex'));
+
+    expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
+    expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
+  });
+
+  test('loginconsentresponse with credentials', async () => {
+    const req = new LoginConsentRequest({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      challenge: {
+        challenge_id: "iKNufKJdLX3Xg8qFru9AuLBvivAEJ88PW4",
+        requested_access: [new RequestedPermission(IDENTITY_VIEW.vdxfid)],
+        subject: [
+          new Subject(
+            "fully.qualified.name",
+            ID_FULLYQUALIFIEDNAME_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_ADDRESS_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_SYSTEMID_VDXF_KEY.vdxfid
+          ),
+          new Subject(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_PARENT_VDXF_KEY.vdxfid
+          ),
+        ],
+        provisioning_info: [
+          new ProvisioningInfo(
+            "https://127.0.0.1/",
+            LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_ADDRESS_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_SYSTEMID_VDXF_KEY.vdxfid
+          ),
+          new ProvisioningInfo(
+            "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+            ID_PARENT_VDXF_KEY.vdxfid
+          ),
+        ],
+        session_id: "iRQZGW36o3RcVR1xyVT1qWdAKdxp3wUyrh",
+        redirect_uris: [
+          new RedirectUri(
+            "https://www.verus.io",
+            LOGIN_CONSENT_REDIRECT_VDXF_KEY.vdxfid
+          ),
+        ],
+        created_at: 1664382484,
+        salt: "i6NawEzHMocZnU4h8pPkGpHApvsrHjxwXE",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+      },
+    });
+
+    const res = new LoginConsentResponse({
+      system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
+      signature: {
+        signature:
+          "AYG2IQABQSAN1fp6A9NIVbxvKuOVLLU+0I+G3oQGbRtS6u4Eampfb217Cdf5FCMScQhV9kMxtjI9GWzpchmjuiTB2tctk6qT",
+      },
+      decision: {
+        decision_id: "iBTMBHzDbsW3QG1MLBoYtmo6c1xuzn6xxb",
+        context: new Context({
+          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+        }),
+        request: req,
+        created_at: 1664392484,
+        credentials: [
+          new Credential({
+            version: Credential.VERSION_CURRENT,
+            credentialType: Credential.CREDENTIAL_PHONE_NUMBER,
+            credential: "1234567890",
+            recipient: "PizzaPlace@",
+          }),
+          new Credential({
+            version: Credential.VERSION_CURRENT,
+            credentialType: Credential.CREDENTIAL_CARD_NUMBER,
+            credential: "1234567891011121",
+            recipient: "PizzaPlace@",
+            note: "mastercard",
+          })
+        ]
+      }
+    })
+    const resbuf = res.toBuffer()
+    const _res = new LoginConsentResponse()
+    _res.fromBuffer(resbuf)
+
+    expect(_res.toBuffer().toString('hex')).toBe(resbuf.toString('hex'));
+
+    expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
+    expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
   });
 });

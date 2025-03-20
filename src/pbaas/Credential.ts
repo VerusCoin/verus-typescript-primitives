@@ -37,6 +37,7 @@ export class Credential implements SerializableEntity {
   static CREDENTIAL_AREA_CODE = new BN(8, 10);
   static CREDENTIAL_DATE_OF_BIRTH = new BN(9, 10);
   static CREDENTIAL_ID = new BN(10, 10);
+  static CREDENTIAL_PHONE_NUMBER = new BN(11, 10);
 
   version: BigNumber;
   flags: BigNumber;
