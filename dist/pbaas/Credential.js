@@ -123,3 +123,4 @@ Credential.CREDENTIAL_ADDRESS = new bn_js_1.BN(7, 10);
 Credential.CREDENTIAL_AREA_CODE = new bn_js_1.BN(8, 10);
 Credential.CREDENTIAL_DATE_OF_BIRTH = new bn_js_1.BN(9, 10);
 Credential.CREDENTIAL_ID = new bn_js_1.BN(10, 10);
+Credential.CREDENTIAL_PHONE_NUMBER = new bn_js_1.BN(11, 10);

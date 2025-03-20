@@ -27,6 +27,7 @@ export declare class Credential implements SerializableEntity {
     static CREDENTIAL_AREA_CODE: import("bn.js");
     static CREDENTIAL_DATE_OF_BIRTH: import("bn.js");
     static CREDENTIAL_ID: import("bn.js");
+    static CREDENTIAL_PHONE_NUMBER: import("bn.js");
     version: BigNumber;
     flags: BigNumber;
     credentialType: BigNumber;
