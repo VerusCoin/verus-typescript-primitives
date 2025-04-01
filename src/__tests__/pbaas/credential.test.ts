@@ -7,7 +7,7 @@ describe('Serializes and deserializes Credential', () => {
       version: Credential.VERSION_CURRENT,
       credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
       credential: "myname",
-      recipient: "CardUsingApplication@",
+      scopes: "CardUsingApplication@",
     });
 
     const cFromBuf = new Credential();
@@ -24,7 +24,7 @@ describe('Serializes and deserializes Credential', () => {
       version: Credential.VERSION_CURRENT,
       credentialKey: IDENTITY_CREDENTIAL_PASSWORD.vdxfid,
       credential: "terrible password 1",
-      recipient: "MailService@",
+      scopes: "MailService@",
       label: "hint: bad",
     });
 
