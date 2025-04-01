@@ -1,12 +1,12 @@
+import { Context } from "../../vdxf/classes/Context";
+import { Credential } from "../../pbaas/Credential";
 import { Hash160 } from "../../vdxf/classes/Hash160";
-import { IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
+import { IDENTITY_CREDENTIAL_PASSWORD, IDENTITY_CREDENTIAL_USERNAME, IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
 import { LoginConsentRequest, LoginConsentResponse } from "../../vdxf/classes";
 import { ProvisioningInfo, RedirectUri, RequestedPermission, Subject } from "../../vdxf/classes/Challenge";
-import { Context } from "../../vdxf/classes/Context";
 import { ProvisioningRequest } from "../../vdxf/classes/provisioning/ProvisioningRequest";
 import { ProvisioningResponse } from "../../vdxf/classes/provisioning/ProvisioningResponse";
 import { ProvisioningResult, ProvisioningTxid } from "../../vdxf/classes/provisioning/ProvisioningResult";
-import { Credential } from "../../pbaas/Credential";
 
 describe('Serializes and deserializes signature objects properly', () => {
   test('loginconsentrequest/response', async () => {
@@ -300,9 +300,9 @@ describe('Serializes and deserializes signature objects properly', () => {
         credentials: [
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialType: Credential.CREDENTIAL_CARD_NUMBER,
-            credential: "1234567891011121",
-            recipient: "PizzaPlace@",
+            credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
+            credential: "cookies",
+            scopes: "FileSharingSite@",
           })
         ]
       }
@@ -396,16 +396,16 @@ describe('Serializes and deserializes signature objects properly', () => {
         credentials: [
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialType: Credential.CREDENTIAL_PHONE_NUMBER,
-            credential: "1234567890",
-            recipient: "PizzaPlace@",
+            credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
+            credential: "myemail1990@uniqueemailservice.com",
+            scopes: "UniqueEmailService@",
           }),
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialType: Credential.CREDENTIAL_CARD_NUMBER,
+            credentialKey: IDENTITY_CREDENTIAL_PASSWORD.vdxfid,
             credential: "1234567891011121",
-            recipient: "PizzaPlace@",
-            note: "mastercard",
+            scopes: "UniqueEmailService@",
+            label: "hint: numbers",
           })
         ]
       }

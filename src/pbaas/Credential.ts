@@ -1,7 +1,7 @@
-import { BigNumber } from "../utils/types/BigNumber";
 import { BN } from 'bn.js';
-import bufferutils from "../utils/bufferutils";
+import { BigNumber } from "../utils/types/BigNumber";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
+import bufferutils from "../utils/bufferutils";
 import varuint from "../utils/varuint";
 
 const { BufferReader, BufferWriter } = bufferutils;
@@ -9,10 +9,10 @@ const { BufferReader, BufferWriter } = bufferutils;
 export type CredentialJSON = {
   version?: number,
   flags?: number,
-  credentialType?: number,
+  credentialKey?: string,
   credential?: string,
   recipient?: string,
-  note?: string,
+  label?: string,
 }
 
 export class Credential implements SerializableEntity {
@@ -23,51 +23,37 @@ export class Credential implements SerializableEntity {
   static VERSION_LAST = new BN(1, 10);
   static VERSION_CURRENT = new BN(1, 10);
 
-  static FLAG_NOTE_PRESENT = new BN(1, 10);
-
-  // Credential type definitions
-  static CREDENTIAL_UNKNOWN = new BN(0, 10);                // unknown credential
-  static CREDENTIAL_USERNAME = new BN(1, 10);
-  static CREDENTIAL_PASSWORD = new BN(2, 10);
-  static CREDENTIAL_CARD_NUMBER = new BN(3, 10);            // payment credentials
-  static CREDENTIAL_CARD_EXPIRATION_MONTH = new BN(4, 10);  
-  static CREDENTIAL_CARD_EXPIRATION_YEAR = new BN(5, 10);
-  static CREDENTIAL_CARD_SECURITY_CODE = new BN(6, 10);
-  static CREDENTIAL_ADDRESS = new BN(7, 10);
-  static CREDENTIAL_AREA_CODE = new BN(8, 10);
-  static CREDENTIAL_DATE_OF_BIRTH = new BN(9, 10);
-  static CREDENTIAL_ID = new BN(10, 10);
-  static CREDENTIAL_PHONE_NUMBER = new BN(11, 10);
+  static FLAG_LABEL_PRESENT = new BN(1, 10);
 
   version: BigNumber;
   flags: BigNumber;
-  credentialType: BigNumber;
+  credentialKey: string;
   credential: string;
   recipient: string;
-  note: string;
+  label: string;
 
   constructor(data?: {
     version?: BigNumber,
     flags?: BigNumber,
-    credentialType?: BigNumber,
+    credentialKey?: string,
     credential?: string,
     recipient?: string,
-    note?: string,
+    label?: string,
   }) {
     this.version = Credential.VERSION_INVALID;
     this.flags = new BN(0, 10);
-    this.credentialType = Credential.CREDENTIAL_UNKNOWN;
+    this.credentialKey = "";
     this.credential = "";
     this.recipient = "";
-    this.note = "";
+    this.label = "";
 
     if (data) {
       if (data.flags) this.flags = data.flags;
       if (data.version) this.version = data.version;
-      if (data.credentialType) this.credentialType = data.credentialType;
+      if (data.credentialKey) this.credentialKey = data.credentialKey;
       if (data.credential) this.credential = data.credential;
       if (data.recipient) this.recipient = data.recipient;
-      if (data.note) this.note = data.note;
+      if (data.label) this.label = data.label;
 
       this.setFlags();
     }
@@ -78,7 +64,10 @@ export class Credential implements SerializableEntity {
 
     length += 4; // version (UInt32)
     length += 4; // flags (UInt32)
-    length += 4; // credentialType (UInt32)
+    
+    const credentialKeyLength = this.credentialKey.length;
+    length += varuint.encodingLength(credentialKeyLength);
+    length += credentialKeyLength;
 
     const credentialLength = this.credential.length;
     length += varuint.encodingLength(credentialLength);
@@ -88,9 +77,9 @@ export class Credential implements SerializableEntity {
     length += varuint.encodingLength(recipientLength);
     length += recipientLength;
 
-    if (this.hasNote()) {
-      length += varuint.encodingLength(this.note.length);
-      length += Buffer.from(this.note).length;
+    if (this.hasLabel()) {
+      length += varuint.encodingLength(this.label.length);
+      length += Buffer.from(this.label).length;
     } 
 
     return length;
@@ -101,13 +90,14 @@ export class Credential implements SerializableEntity {
 
     writer.writeUInt32(this.version.toNumber());
     writer.writeUInt32(this.flags.toNumber());
-    writer.writeUInt32(this.credentialType.toNumber());
+    
+    writer.writeVarSlice(Buffer.from(this.credentialKey));
 
     writer.writeVarSlice(Buffer.from(this.credential));
     writer.writeVarSlice(Buffer.from(this.recipient));
 
-    if (this.hasNote()) {
-      writer.writeVarSlice(Buffer.from(this.note));
+    if (this.hasLabel()) {
+      writer.writeVarSlice(Buffer.from(this.label));
     }
 
     return writer.buffer;
@@ -118,24 +108,25 @@ export class Credential implements SerializableEntity {
 
     this.version = new BN(reader.readUInt32(), 10);
     this.flags = new BN(reader.readUInt32(), 10);
-    this.credentialType = new BN(reader.readUInt32(), 10);
+
+    this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
 
     this.credential = Buffer.from(reader.readVarSlice()).toString();
     this.recipient = Buffer.from(reader.readVarSlice()).toString();
 
-    if (this.hasNote()) {
-      this.note = Buffer.from(reader.readVarSlice()).toString();
+    if (this.hasLabel()) {
+      this.label = Buffer.from(reader.readVarSlice()).toString();
     }
 
     return reader.offset;
   }
 
-  hasNote(): boolean {
-    return this.flags.and(Credential.FLAG_NOTE_PRESENT).gt(new BN(0, 10));
+  hasLabel(): boolean {
+    return this.flags.and(Credential.FLAG_LABEL_PRESENT).gt(new BN(0, 10));
   }
 
   calcFlags(): BigNumber {
-    return this.note.length > 0 ? Credential.FLAG_NOTE_PRESENT : new BN(0, 10);
+    return this.label.length > 0 ? Credential.FLAG_LABEL_PRESENT : new BN(0, 10);
   }
 
   setFlags() {
@@ -150,10 +141,10 @@ export class Credential implements SerializableEntity {
     const ret: CredentialJSON = {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
-      credentialType: this.credentialType.toNumber(),
+      credentialKey: this.credentialKey,
       credential: this.credential,
       recipient: this.recipient,
-      note: this.hasNote() ? this.note : null
+      label: this.hasLabel() ? this.label : null
     };
 
     return ret;
@@ -163,10 +154,10 @@ export class Credential implements SerializableEntity {
     return new Credential({
       version: json.version ? new BN(json.version, 10) : undefined,
       flags: json.flags ? new BN(json.flags, 10) : undefined,
-      credentialType: json.credentialType ? new BN(json.credentialType, 10) : undefined,
+      credentialKey: json.credentialKey,
       credential: json.credential,
       recipient: json.recipient,
-      note: json.note,
+      label: json.label,
     });
   }
 }

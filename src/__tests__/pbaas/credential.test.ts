@@ -1,11 +1,12 @@
 import { Credential } from "../../pbaas/Credential";
+import {IDENTITY_CREDENTIAL_USERNAME, IDENTITY_CREDENTIAL_PASSWORD} from "../../vdxf/keys";
 
 describe('Serializes and deserializes Credential', () => {
-  test('(de)serialize Credential without note', () => {
+  test('(de)serialize Credential without label', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
-      credentialType: Credential.CREDENTIAL_CARD_SECURITY_CODE,
-      credential: "481",
+      credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
+      credential: "myname",
       recipient: "CardUsingApplication@",
     });
 
@@ -14,17 +15,17 @@ describe('Serializes and deserializes Credential', () => {
 
     expect(cFromBuf.toBuffer().toString('hex')).toBe(c.toBuffer().toString('hex'));
     expect(cFromBuf.isValid());
-    expect(!cFromBuf.hasNote());
-    expect(cFromBuf.calcFlags() !== Credential.FLAG_NOTE_PRESENT);
+    expect(!cFromBuf.hasLabel());
+    expect(cFromBuf.calcFlags() !== Credential.FLAG_LABEL_PRESENT);
   });
 
-  test('(de)serialize Credential with note', () => {
+  test('(de)serialize Credential with label', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
-      credentialType: Credential.CREDENTIAL_DATE_OF_BIRTH,
-      credential: "2025-03-14",
-      recipient: "DeliveryService@",
-      note: "YY-MM-DD",
+      credentialKey: IDENTITY_CREDENTIAL_PASSWORD.vdxfid,
+      credential: "terrible password 1",
+      recipient: "MailService@",
+      label: "hint: bad",
     });
 
     const cFromBuf = new Credential();
@@ -32,7 +33,7 @@ describe('Serializes and deserializes Credential', () => {
 
     expect(cFromBuf.toBuffer().toString('hex')).toBe(c.toBuffer().toString('hex'));
     expect(cFromBuf.isValid());
-    expect(cFromBuf.hasNote());
-    expect(cFromBuf.calcFlags() === Credential.FLAG_NOTE_PRESENT);
+    expect(cFromBuf.hasLabel());
+    expect(cFromBuf.calcFlags() === Credential.FLAG_LABEL_PRESENT);
   });
 });
