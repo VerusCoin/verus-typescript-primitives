@@ -350,6 +350,16 @@ export const DATA_TYPE_STRING: VDXFKeyInterface =
     },
 };
 
+export const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface =
+  {
+    "vdxfid": "i4GC1YGEVD21afWudGoFJVdnfjJ5XWnCQv",
+    "hash160result": "4d4f12424ded2033a526a4e2a8835fc5b2eba208",
+    "qualifiedname": {
+      "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      "name": "vrsc::data.type.object.datadescriptor"
+    }
+};
+
 export const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface = 
   {
   "vdxfid": "iN6LYCurcypx7orxkFB73mWRq6Jetf23ck",
