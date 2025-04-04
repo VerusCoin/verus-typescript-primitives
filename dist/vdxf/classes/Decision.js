@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Decision = void 0;
 const __1 = require("..");
 const bufferutils_1 = require("../../utils/bufferutils");
+const Credential_1 = require("../../pbaas/Credential");
 const varuint_1 = require("../../utils/varuint");
 const Context_1 = require("./Context");
 const Hash160_1 = require("./Hash160");
@@ -21,6 +22,7 @@ class Decision extends __1.VDXFObject {
         this.attestations = decision.attestations;
         this.salt = decision.salt;
         this.skipped = decision.skipped ? true : false;
+        this.credentials = decision.credentials ? decision.credentials : [];
     }
     dataByteLength() {
         let length = 0;
@@ -40,6 +42,13 @@ class Decision extends __1.VDXFObject {
         }
         length += _request.byteLength();
         length += _context.byteLength();
+        // The credential list has zero or more credentials.
+        length += varuint_1.default.encodingLength(this.credentials.length);
+        for (const cred of this.credentials) {
+            const credLength = cred.getByteLength();
+            length += varuint_1.default.encodingLength(credLength);
+            length += credLength;
+        }
         return length;
     }
     toDataBuffer() {
@@ -61,6 +70,10 @@ class Decision extends __1.VDXFObject {
             writer.writeArray(_attestations.map((x) => x.toBuffer()));
         }
         writer.writeSlice(_context.toBuffer());
+        // The credentials must be written before the request as the provisioning decision
+        // will read the decision and then the request separately afterwards.
+        const bufferCreds = this.credentials.map(x => x.toBuffer());
+        writer.writeVector(bufferCreds);
         writer.writeSlice(_request.toBuffer());
         return writer.buffer;
     }
@@ -89,6 +102,13 @@ class Decision extends __1.VDXFObject {
             const _context = new Context_1.Context();
             reader.offset = _context.fromBuffer(reader.buffer, reader.offset);
             this.context = _context;
+            const _credentials = reader.readVector();
+            this.credentials = [];
+            for (const _cred of _credentials) {
+                const cred = new Credential_1.Credential();
+                cred.fromBuffer(_cred, 0); // Read each credential buffer separately.
+                this.credentials.push(cred);
+            }
             if (readRequest) {
                 const _request = new Request_1.Request();
                 reader.offset = _request.fromBuffer(reader.buffer, reader.offset);

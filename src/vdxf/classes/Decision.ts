@@ -1,5 +1,6 @@
 import { LOGIN_CONSENT_DECISION_VDXF_KEY, VDXFObject } from "..";
 import bufferutils from "../../utils/bufferutils";
+import { Credential } from "../../pbaas/Credential";
 import varuint from "../../utils/varuint";
 import { Attestation } from "./Challenge";
 import { Context } from "./Context";
@@ -27,6 +28,9 @@ export interface DecisionInterface {
 
   // List of signatures, IDs and trust score objects
   attestations?: Array<Attestation>;
+
+  // Optional list of credentials
+  credentials?: Array<Credential>;
 }
 
 export class Decision extends VDXFObject {
@@ -37,6 +41,7 @@ export class Decision extends VDXFObject {
   skipped?: boolean;
   attestations: Array<any>;
   salt?: string;
+  credentials: Array<Credential>;
 
   constructor(
     decision: DecisionInterface = {
@@ -55,6 +60,7 @@ export class Decision extends VDXFObject {
     this.attestations = decision.attestations;
     this.salt = decision.salt;
     this.skipped = decision.skipped ? true : false;
+    this.credentials = decision.credentials ? decision.credentials : [];
   }
 
   dataByteLength(): number {
@@ -83,6 +89,14 @@ export class Decision extends VDXFObject {
     length += _request.byteLength();
 
     length += _context.byteLength();
+
+    // The credential list has zero or more credentials.
+    length += varuint.encodingLength(this.credentials.length);
+    for (const cred of this.credentials) {
+      const credLength = cred.getByteLength();
+      length += varuint.encodingLength(credLength);
+      length += credLength;
+    }
 
     return length;
   }
@@ -113,6 +127,11 @@ export class Decision extends VDXFObject {
     }
 
     writer.writeSlice(_context.toBuffer());
+
+    // The credentials must be written before the request as the provisioning decision
+    // will read the decision and then the request separately afterwards.
+    const bufferCreds = this.credentials.map(x => x.toBuffer());
+    writer.writeVector(bufferCreds);
 
     writer.writeSlice(_request.toBuffer());
 
@@ -158,6 +177,14 @@ export class Decision extends VDXFObject {
       const _context = new Context();
       reader.offset = _context.fromBuffer(reader.buffer, reader.offset);
       this.context = _context;
+
+      const _credentials = reader.readVector() as Array<Buffer>;
+      this.credentials = [];
+      for (const _cred of _credentials) {
+        const cred = new Credential(); 
+        cred.fromBuffer(_cred, 0);  // Read each credential buffer separately.
+        this.credentials.push(cred);
+      }
 
       if (readRequest) {
         const _request = new Request();
