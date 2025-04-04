@@ -22,7 +22,17 @@ class Decision extends __1.VDXFObject {
         this.attestations = decision.attestations;
         this.salt = decision.salt;
         this.skipped = decision.skipped ? true : false;
-        this.credentials = decision.credentials ? decision.credentials : [];
+        // Parse the credentials given.
+        this.credentials = [];
+        if (decision.credentials && Array.isArray(decision.credentials)) {
+            // Convert each credential into the Credential class if it isn't already.
+            this.credentials = decision.credentials.map(cred => {
+                if (cred instanceof Credential_1.Credential) {
+                    return cred;
+                }
+                return new Credential_1.Credential(cred);
+            });
+        }
     }
     dataByteLength() {
         let length = 0;
