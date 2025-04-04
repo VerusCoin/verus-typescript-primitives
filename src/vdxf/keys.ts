@@ -350,32 +350,38 @@ export const DATA_TYPE_STRING: VDXFKeyInterface =
     },
 };
 
-export const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface =
-  {
-    "vdxfid": "i4GC1YGEVD21afWudGoFJVdnfjJ5XWnCQv",
-    "hash160result": "4d4f12424ded2033a526a4e2a8835fc5b2eba208",
-    "qualifiedname": {
-      "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-      "name": "vrsc::data.type.object.datadescriptor"
-    }
-};
-
-export const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface = 
-  {
-  "vdxfid": "iN6LYCurcypx7orxkFB73mWRq6Jetf23ck",
-  "hash160result": "9125e70938468eea614a4f538199fa4d052538cc",
-  "qualifiedname": {
-    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-    "name": "vrsc::identity.credential.username"
+export const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface = {
+  vdxfid: "i4GC1YGEVD21afWudGoFJVdnfjJ5XWnCQv",
+  hash160result: "4d4f12424ded2033a526a4e2a8835fc5b2eba208",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::data.type.object.datadescriptor"
   }
 };
 
-export const IDENTITY_CREDENTIAL_PASSWORD: VDXFKeyInterface = 
-  {
-  "vdxfid": "iBnntHeXcHacGFSGY836MN1pL4U2KJhXWm",
-  "hash160result": "38df5e25211328042313f5970b88d0b06664355b",
-  "qualifiedname": {
-    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-    "name": "vrsc::identity.credential.password"
-  }
+export const DATA_TYPE_OBJECT_CREDENTIAL: VDXFKeyInterface = {
+  vdxfid: "iDTG49YLqmkHMYRyuQBYgEyTByQwAzqGd6",
+  hash160result: "09fbc202710c9f2dacb87e5623e97e2e4101746d",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::data.type.object.credential"
+  },
+};
+
+export const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface = {
+  vdxfid: "iN6LYCurcypx7orxkFB73mWRq6Jetf23ck",
+  hash160result: "9125e70938468eea614a4f538199fa4d052538cc",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credential.username"
+  },
+};
+
+export const IDENTITY_CREDENTIAL_PASSWORD: VDXFKeyInterface = {
+  vdxfid: "iBnntHeXcHacGFSGY836MN1pL4U2KJhXWm",
+  hash160result: "38df5e25211328042313f5970b88d0b06664355b",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credential.password"
+  },
 };
