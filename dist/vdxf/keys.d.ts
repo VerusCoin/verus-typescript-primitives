@@ -43,5 +43,6 @@ export declare const SIGNED_SESSION_OBJECT_DATA: VDXFKeyInterface;
 export declare const SIGNED_SESSION_OBJECT: VDXFKeyInterface;
 export declare const CURRENCY_ADDRESS: VDXFKeyInterface;
 export declare const DATA_TYPE_STRING: VDXFKeyInterface;
+export declare const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface;
 export declare const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface;
 export declare const IDENTITY_CREDENTIAL_PASSWORD: VDXFKeyInterface;
