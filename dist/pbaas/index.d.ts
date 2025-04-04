@@ -1,3 +1,4 @@
+export * from './Credential';
 export * from './CurrencyValueMap';
 export * from './Identity';
 export * from './ReserveTransfer';
