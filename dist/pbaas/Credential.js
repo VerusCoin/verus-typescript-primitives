@@ -15,9 +15,9 @@ class Credential {
         this.label = "";
         if (data) {
             if (data.flags)
-                this.flags = data.flags;
+                this.flags = new bn_js_1.BN(data.flags);
             if (data.version)
-                this.version = data.version;
+                this.version = new bn_js_1.BN(data.version);
             if (data.credentialKey)
                 this.credentialKey = data.credentialKey;
             if (data.credential)

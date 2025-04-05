@@ -48,8 +48,8 @@ export class Credential implements SerializableEntity {
     this.label = "";
 
     if (data) {
-      if (data.flags) this.flags = data.flags;
-      if (data.version) this.version = data.version;
+      if (data.flags) this.flags = new BN(data.flags);
+      if (data.version) this.version = new BN(data.version);
       if (data.credentialKey) this.credentialKey = data.credentialKey;
       if (data.credential) this.credential = data.credential;
       if (data.scopes) this.scopes = data.scopes;
