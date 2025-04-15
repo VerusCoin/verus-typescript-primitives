@@ -10,8 +10,8 @@ class Credential {
         this.version = Credential.VERSION_INVALID;
         this.flags = new bn_js_1.BN(0, 10);
         this.credentialKey = "";
-        this.credential = "";
-        this.scopes = "";
+        this.credential = {};
+        this.scopes = {};
         this.label = "";
         if (data) {
             if (data.flags)
@@ -36,10 +36,13 @@ class Credential {
         const credentialKeyLength = this.credentialKey.length;
         length += varuint_1.default.encodingLength(credentialKeyLength);
         length += credentialKeyLength;
-        const credentialLength = this.credential.length;
+        // Both the credential and scopes are serialized as JSON strings.
+        const credStr = JSON.stringify(this.credential);
+        const credentialLength = credStr.length;
         length += varuint_1.default.encodingLength(credentialLength);
         length += credentialLength;
-        const scopesLength = this.scopes.length;
+        const scopesStr = JSON.stringify(this.scopes);
+        const scopesLength = scopesStr.length;
         length += varuint_1.default.encodingLength(scopesLength);
         length += scopesLength;
         if (this.hasLabel()) {
@@ -53,8 +56,8 @@ class Credential {
         writer.writeUInt32(this.version.toNumber());
         writer.writeUInt32(this.flags.toNumber());
         writer.writeVarSlice(Buffer.from(this.credentialKey));
-        writer.writeVarSlice(Buffer.from(this.credential));
-        writer.writeVarSlice(Buffer.from(this.scopes));
+        writer.writeVarSlice(Buffer.from(JSON.stringify(this.credential)));
+        writer.writeVarSlice(Buffer.from(JSON.stringify(this.scopes)));
         if (this.hasLabel()) {
             writer.writeVarSlice(Buffer.from(this.label));
         }
@@ -65,8 +68,8 @@ class Credential {
         this.version = new bn_js_1.BN(reader.readUInt32(), 10);
         this.flags = new bn_js_1.BN(reader.readUInt32(), 10);
         this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
-        this.credential = Buffer.from(reader.readVarSlice()).toString();
-        this.scopes = Buffer.from(reader.readVarSlice()).toString();
+        this.credential = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
+        this.scopes = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
         if (this.hasLabel()) {
             this.label = Buffer.from(reader.readVarSlice()).toString();
         }

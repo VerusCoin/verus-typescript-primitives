@@ -10,8 +10,8 @@ export type CredentialJSON = {
   version?: number,
   flags?: number,
   credentialKey?: string,
-  credential?: string,
-  scopes?: string,
+  credential?: Object,
+  scopes?: Object,
   label?: string,
 }
 
@@ -28,23 +28,23 @@ export class Credential implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   credentialKey: string;
-  credential: string;
-  scopes: string;
+  credential: Object;
+  scopes: Object;
   label: string;
 
   constructor(data?: {
     version?: BigNumber,
     flags?: BigNumber,
     credentialKey?: string,
-    credential?: string,
-    scopes?: string,
+    credential?: Object,
+    scopes?: Object,
     label?: string,
   }) {
     this.version = Credential.VERSION_INVALID;
     this.flags = new BN(0, 10);
     this.credentialKey = "";
-    this.credential = "";
-    this.scopes = "";
+    this.credential = {};
+    this.scopes = {};
     this.label = "";
 
     if (data) {
@@ -69,11 +69,14 @@ export class Credential implements SerializableEntity {
     length += varuint.encodingLength(credentialKeyLength);
     length += credentialKeyLength;
 
-    const credentialLength = this.credential.length;
+    // Both the credential and scopes are serialized as JSON strings.
+    const credStr = JSON.stringify(this.credential);
+    const credentialLength = credStr.length;
     length += varuint.encodingLength(credentialLength);
     length += credentialLength;
 
-    const scopesLength = this.scopes.length;
+    const scopesStr = JSON.stringify(this.scopes);
+    const scopesLength = scopesStr.length;
     length += varuint.encodingLength(scopesLength);
     length += scopesLength;
 
@@ -93,8 +96,8 @@ export class Credential implements SerializableEntity {
     
     writer.writeVarSlice(Buffer.from(this.credentialKey));
 
-    writer.writeVarSlice(Buffer.from(this.credential));
-    writer.writeVarSlice(Buffer.from(this.scopes));
+    writer.writeVarSlice(Buffer.from(JSON.stringify(this.credential)));
+    writer.writeVarSlice(Buffer.from(JSON.stringify(this.scopes)));
 
     if (this.hasLabel()) {
       writer.writeVarSlice(Buffer.from(this.label));
@@ -111,8 +114,8 @@ export class Credential implements SerializableEntity {
 
     this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
 
-    this.credential = Buffer.from(reader.readVarSlice()).toString();
-    this.scopes = Buffer.from(reader.readVarSlice()).toString();
+    this.credential = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
+    this.scopes = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
 
     if (this.hasLabel()) {
       this.label = Buffer.from(reader.readVarSlice()).toString();

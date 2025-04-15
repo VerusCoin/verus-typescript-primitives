@@ -1,7 +1,7 @@
 import { Context } from "../../vdxf/classes/Context";
 import { Credential } from "../../pbaas/Credential";
 import { Hash160 } from "../../vdxf/classes/Hash160";
-import { IDENTITY_CREDENTIAL_PASSWORD, IDENTITY_CREDENTIAL_USERNAME, IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
+import { IDENTITY_CREDENTIAL_PLAINLOGIN, IDENTITY_NAME_COMMITMENT_TXID, IDENTITY_REGISTRATION_TXID, IDENTITY_VIEW, ID_ADDRESS_VDXF_KEY, ID_FULLYQUALIFIEDNAME_VDXF_KEY, ID_PARENT_VDXF_KEY, ID_SYSTEMID_VDXF_KEY, LOGIN_CONSENT_ID_PROVISIONING_WEBHOOK_VDXF_KEY, LOGIN_CONSENT_PROVISIONING_ERROR_KEY_UNKNOWN, LOGIN_CONSENT_PROVISIONING_RESULT_STATE_PENDINGAPPROVAL, LOGIN_CONSENT_REDIRECT_VDXF_KEY } from "../../vdxf";
 import { LoginConsentRequest, LoginConsentResponse } from "../../vdxf/classes";
 import { ProvisioningInfo, RedirectUri, RequestedPermission, Subject } from "../../vdxf/classes/Challenge";
 import { ProvisioningRequest } from "../../vdxf/classes/provisioning/ProvisioningRequest";
@@ -300,9 +300,9 @@ describe('Serializes and deserializes signature objects properly', () => {
         credentials: [
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
-            credential: "cookies",
-            scopes: "FileSharingSite@",
+            credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+            credential: ["shortname", "cookies"],
+            scopes: ["FileSharingSite@"],
           })
         ]
       }
@@ -315,6 +315,8 @@ describe('Serializes and deserializes signature objects properly', () => {
 
     expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
     expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
+
+    expect(_res.decision.credentials).toEqual(res.decision.credentials)
   });
 
   test('loginconsentresponse with credentials', async () => {
@@ -396,15 +398,15 @@ describe('Serializes and deserializes signature objects properly', () => {
         credentials: [
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
-            credential: "myemail1990@uniqueemailservice.com",
-            scopes: "UniqueEmailService@",
+            credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+            credential: ["myemail1990@uniqueemailservice.com", "secretpassword"],
+            scopes: ["UniqueEmailService@"],
           }),
           new Credential({
             version: Credential.VERSION_CURRENT,
-            credentialKey: IDENTITY_CREDENTIAL_PASSWORD.vdxfid,
-            credential: "1234567891011121",
-            scopes: "UniqueEmailService@",
+            credentialKey: "iHHVJux4xjahxzGTe8esqfnAmr3s9qi9pH",
+            credential: ["1234567891011121"],
+            scopes: ["UniqueEmailService@"],
             label: "hint: numbers",
           })
         ]
@@ -418,5 +420,7 @@ describe('Serializes and deserializes signature objects properly', () => {
 
     expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
     expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
+
+    expect(_res.decision.credentials).toEqual(res.decision.credentials)
   });
 });

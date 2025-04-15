@@ -1,13 +1,13 @@
 import { Credential } from "../../pbaas/Credential";
-import {IDENTITY_CREDENTIAL_USERNAME, IDENTITY_CREDENTIAL_PASSWORD} from "../../vdxf/keys";
+import {IDENTITY_CREDENTIAL_PLAINLOGIN} from "../../vdxf/keys";
 
 describe('Serializes and deserializes Credential', () => {
   test('(de)serialize Credential without label', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
-      credentialKey: IDENTITY_CREDENTIAL_USERNAME.vdxfid,
-      credential: "myname",
-      scopes: "CardUsingApplication@",
+      credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+      credential: ["myname", "mypassword"],
+      scopes: ["CardUsingApplication@"],
     });
 
     const cFromBuf = new Credential();
@@ -17,14 +17,15 @@ describe('Serializes and deserializes Credential', () => {
     expect(cFromBuf.isValid());
     expect(!cFromBuf.hasLabel());
     expect(cFromBuf.calcFlags() !== Credential.FLAG_LABEL_PRESENT);
+    expect(cFromBuf).toEqual(c);
   });
 
   test('(de)serialize Credential with label', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
-      credentialKey: IDENTITY_CREDENTIAL_PASSWORD.vdxfid,
-      credential: "terrible password 1",
-      scopes: "MailService@",
+      credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+      credential: ["terrible name", "terrible password 1"],
+      scopes: ["MailService@", "SecondaryMailService@"],
       label: "hint: bad",
     });
 
@@ -35,5 +36,6 @@ describe('Serializes and deserializes Credential', () => {
     expect(cFromBuf.isValid());
     expect(cFromBuf.hasLabel());
     expect(cFromBuf.calcFlags() === Credential.FLAG_LABEL_PRESENT);
+    expect(cFromBuf).toEqual(c);
   });
 });

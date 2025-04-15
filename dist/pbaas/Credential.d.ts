@@ -6,8 +6,8 @@ export declare type CredentialJSON = {
     version?: number;
     flags?: number;
     credentialKey?: string;
-    credential?: string;
-    scopes?: string;
+    credential?: Object;
+    scopes?: Object;
     label?: string;
 };
 export declare class Credential implements SerializableEntity {
@@ -19,15 +19,15 @@ export declare class Credential implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     credentialKey: string;
-    credential: string;
-    scopes: string;
+    credential: Object;
+    scopes: Object;
     label: string;
     constructor(data?: {
         version?: BigNumber;
         flags?: BigNumber;
         credentialKey?: string;
-        credential?: string;
-        scopes?: string;
+        credential?: Object;
+        scopes?: Object;
         label?: string;
     });
     getByteLength(): number;
