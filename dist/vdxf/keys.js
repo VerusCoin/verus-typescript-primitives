@@ -303,7 +303,7 @@ exports.DATA_TYPE_OBJECT_DATADESCRIPTOR = {
     qualifiedname: {
         namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
         name: "vrsc::data.type.object.datadescriptor"
-    }
+    },
 };
 exports.DATA_TYPE_OBJECT_CREDENTIAL = {
     vdxfid: "iDTG49YLqmkHMYRyuQBYgEyTByQwAzqGd6",
@@ -319,7 +319,7 @@ exports.IDENTITY_CREDENTIAL_PLAINLOGIN = {
     qualifiedname: {
         namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
         name: "vrsc::identity.credential.plainlogin"
-    }
+    },
 };
 exports.IDENTITY_CREDENTIAL_USERNAME = {
     vdxfid: "iN6LYCurcypx7orxkFB73mWRq6Jetf23ck",

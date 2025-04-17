@@ -356,7 +356,7 @@ export const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface = {
   qualifiedname: {
     namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
     name: "vrsc::data.type.object.datadescriptor"
-  }
+  },
 };
 
 export const DATA_TYPE_OBJECT_CREDENTIAL: VDXFKeyInterface = {
@@ -374,7 +374,7 @@ export const IDENTITY_CREDENTIAL_PLAINLOGIN: VDXFKeyInterface = {
   qualifiedname: {
     namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
     name: "vrsc::identity.credential.plainlogin"
-  }
+  },
 };
 
 export const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface = {
