@@ -3,6 +3,7 @@ import { BigNumber } from "../utils/types/BigNumber";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
 import bufferutils from "../utils/bufferutils";
 import varuint from "../utils/varuint";
+import { NULL_ADDRESS } from '../constants/vdxf';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
@@ -136,8 +137,10 @@ export class Credential implements SerializableEntity {
     this.flags = this.calcFlags();
   }
 
+  // The credentials is invalid if the version is not within the valid range or the key is null.
   isValid(): boolean {
-    return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST);
+    return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST)
+      && this.credentialKey !== NULL_ADDRESS;
   }
 
   toJSON(): CredentialJSON {

@@ -4,6 +4,7 @@ exports.Credential = void 0;
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
 const varuint_1 = require("../utils/varuint");
+const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class Credential {
     constructor(data) {
@@ -84,8 +85,10 @@ class Credential {
     setFlags() {
         this.flags = this.calcFlags();
     }
+    // The credentials is invalid if the version is not within the valid range or the key is null.
     isValid() {
-        return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST);
+        return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST)
+            && this.credentialKey !== vdxf_1.NULL_ADDRESS;
     }
     toJSON() {
         const ret = {
