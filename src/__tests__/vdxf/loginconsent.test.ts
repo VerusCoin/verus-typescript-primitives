@@ -283,6 +283,13 @@ describe('Serializes and deserializes signature objects properly', () => {
       },
     });
 
+    const cred = new Credential({
+      version: Credential.VERSION_CURRENT,
+      credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+      credential: ["shortname", "cookies"],
+      scopes: ["FileSharingSite@"],
+    });
+
     const res = new LoginConsentResponse({
       system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
       signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
@@ -293,18 +300,10 @@ describe('Serializes and deserializes signature objects properly', () => {
       decision: {
         decision_id: "iBTMBHzDbsW3QG1MLBoYtmo6c1xuzn6xxb",
         context: new Context({
-          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
+          [IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid]: cred.toBuffer().toString('hex'),
         }),
         request: req,
         created_at: 1664392484,
-        credentials: [
-          new Credential({
-            version: Credential.VERSION_CURRENT,
-            credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
-            credential: ["shortname", "cookies"],
-            scopes: ["FileSharingSite@"],
-          })
-        ]
       }
     })
     const resbuf = res.toBuffer()
@@ -316,7 +315,10 @@ describe('Serializes and deserializes signature objects properly', () => {
     expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
     expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
 
-    expect(_res.decision.credentials).toEqual(res.decision.credentials)
+    const _cred = new Credential();
+    const _credHex = _res.decision.context?.kv[IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid] || '';
+    _cred.fromBuffer(Buffer.from(_credHex, 'hex'))
+    expect(_cred).toEqual(cred)
   });
 
   test('loginconsentresponse with credentials', async () => {
@@ -381,6 +383,27 @@ describe('Serializes and deserializes signature objects properly', () => {
       },
     });
 
+    const credentials = [
+      new Credential({
+        version: Credential.VERSION_CURRENT,
+        credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+        credential: ["myemail1990@uniqueemailservice.com", "secretpassword"],
+        scopes: ["UniqueEmailService@"],
+      }),
+      new Credential({
+        version: Credential.VERSION_CURRENT,
+        credentialKey: "iHHVJux4xjahxzGTe8esqfnAmr3s9qi9pH",
+        credential: ["1234567891011121"],
+        scopes: ["UniqueEmailService@"],
+        label: "hint: numbers",
+      })
+    ];
+
+    const context = new Context();
+    for (const cred of credentials) {
+      context.kv[cred.credentialKey] = cred.toBuffer().toString('hex');
+    }
+
     const res = new LoginConsentResponse({
       system_id: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
       signing_id: "iB5PRXMHLYcNtM8dfLB6KwfJrHU2mKDYuU",
@@ -390,26 +413,9 @@ describe('Serializes and deserializes signature objects properly', () => {
       },
       decision: {
         decision_id: "iBTMBHzDbsW3QG1MLBoYtmo6c1xuzn6xxb",
-        context: new Context({
-          ["i4KyLCxWZXeSkw15dF95CUKytEK3HU7em9"]: "test",
-        }),
+        context: context,
         request: req,
         created_at: 1664392484,
-        credentials: [
-          new Credential({
-            version: Credential.VERSION_CURRENT,
-            credentialKey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
-            credential: ["myemail1990@uniqueemailservice.com", "secretpassword"],
-            scopes: ["UniqueEmailService@"],
-          }),
-          new Credential({
-            version: Credential.VERSION_CURRENT,
-            credentialKey: "iHHVJux4xjahxzGTe8esqfnAmr3s9qi9pH",
-            credential: ["1234567891011121"],
-            scopes: ["UniqueEmailService@"],
-            label: "hint: numbers",
-          })
-        ]
       }
     })
     const resbuf = res.toBuffer()
@@ -421,6 +427,11 @@ describe('Serializes and deserializes signature objects properly', () => {
     expect(_res.getDecisionHash(10000, 1).toString('hex')).toBe(res.getDecisionHash(10000, 1).toString('hex'))
     expect(_res.getDecisionHash(10000, 2).toString('hex')).toBe(res.getDecisionHash(10000, 2).toString('hex'))
 
-    expect(_res.decision.credentials).toEqual(res.decision.credentials)
+    for (const cred of credentials) {
+      const _cred = new Credential();
+      const _credHex = _res.decision.context?.kv[cred.credentialKey] || '';
+      _cred.fromBuffer(Buffer.from(_credHex, 'hex'))
+      expect(_cred).toEqual(cred)
+    }
   });
 });
