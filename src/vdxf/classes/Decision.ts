@@ -52,7 +52,7 @@ export class Decision extends VDXFObject {
 
     this.decision_id = decision.decision_id;
     this.request = new Request(decision.request);
-    this.context = decision.context;
+    this.context = decision.context ? new Context(decision.context.kv) : new Context();
     this.created_at = decision.created_at;
     this.attestations = decision.attestations;
     this.salt = decision.salt;
