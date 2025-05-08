@@ -12,7 +12,6 @@ export interface DecisionInterface {
     skipped?: boolean;
     context?: Context;
     attestations?: Array<Attestation>;
-    credentials?: Array<Credential>;
 }
 export declare class Decision extends VDXFObject {
     decision_id: string;
