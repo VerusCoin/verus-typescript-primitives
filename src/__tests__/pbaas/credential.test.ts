@@ -75,7 +75,7 @@ describe('Serializes and deserializes Credential', () => {
     verifyCredentialSerialization(c);
   });
 
-  test('create Credential from JSON using fromJSON', () => {
+  test('create Credential from and to JSON using fromJSON and toJson', () => {
     const credential = ["testuser", "testpass"];
     const scopes = ["TestService@"];
     const label = "test credential";
@@ -85,7 +85,8 @@ describe('Serializes and deserializes Credential', () => {
       credentialkey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
       credential: credential,
       scopes: scopes,
-      label: label
+      label: label,
+      flags: Credential.FLAG_LABEL_PRESENT.toNumber()
     };
 
     const c = Credential.fromJSON(credentialJSON);
@@ -97,5 +98,8 @@ describe('Serializes and deserializes Credential', () => {
     expect(c.scopes).toEqual(scopes);
     expect(c.label).toBe(label);
     expect(c.hasLabel()).toBe(true);
+
+    // Test toJson instead of toJSON as the other tests check it.
+    expect(credentialJSON).toStrictEqual(c.toJson());
   });
 });

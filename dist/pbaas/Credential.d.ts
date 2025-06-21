@@ -38,5 +38,6 @@ export declare class Credential implements SerializableEntity {
     setFlags(): void;
     isValid(): boolean;
     toJSON(): CredentialJSON;
+    toJson(): CredentialJSON;
     static fromJSON(json: CredentialJSON): Credential;
 }

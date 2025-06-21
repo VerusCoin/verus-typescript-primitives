@@ -156,6 +156,11 @@ export class Credential implements SerializableEntity {
     return ret;
   }
 
+  // Certain functions expect toJson instead of toJSON.
+  toJson(): CredentialJSON {
+    return this.toJSON();
+  }
+
   static fromJSON(json: CredentialJSON): Credential {
     return new Credential({
       version: json.version ? new BN(json.version, 10) : undefined,

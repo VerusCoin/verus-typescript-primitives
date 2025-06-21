@@ -101,6 +101,10 @@ class Credential {
         };
         return ret;
     }
+    // Certain functions expect toJson instead of toJSON.
+    toJson() {
+        return this.toJSON();
+    }
     static fromJSON(json) {
         return new Credential({
             version: json.version ? new bn_js_1.BN(json.version, 10) : undefined,
