@@ -10,7 +10,7 @@ const { BufferReader, BufferWriter } = bufferutils;
 export type CredentialJSON = {
   version?: number,
   flags?: number,
-  credentialKey?: string,
+  credentialkey?: string,
   credential?: Object,
   scopes?: Object,
   label?: string,
@@ -147,7 +147,7 @@ export class Credential implements SerializableEntity {
     const ret: CredentialJSON = {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
-      credentialKey: this.credentialKey,
+      credentialkey: this.credentialKey,
       credential: this.credential,
       scopes: this.scopes,
       label: this.hasLabel() ? this.label : null
@@ -160,7 +160,7 @@ export class Credential implements SerializableEntity {
     return new Credential({
       version: json.version ? new BN(json.version, 10) : undefined,
       flags: json.flags ? new BN(json.flags, 10) : undefined,
-      credentialKey: json.credentialKey,
+      credentialKey: json.credentialkey,
       credential: json.credential,
       scopes: json.scopes,
       label: json.label,

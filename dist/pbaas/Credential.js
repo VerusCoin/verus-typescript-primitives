@@ -94,7 +94,7 @@ class Credential {
         const ret = {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
-            credentialKey: this.credentialKey,
+            credentialkey: this.credentialKey,
             credential: this.credential,
             scopes: this.scopes,
             label: this.hasLabel() ? this.label : null
@@ -105,7 +105,7 @@ class Credential {
         return new Credential({
             version: json.version ? new bn_js_1.BN(json.version, 10) : undefined,
             flags: json.flags ? new bn_js_1.BN(json.flags, 10) : undefined,
-            credentialKey: json.credentialKey,
+            credentialKey: json.credentialkey,
             credential: json.credential,
             scopes: json.scopes,
             label: json.label,

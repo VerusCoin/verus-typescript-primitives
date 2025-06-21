@@ -3,13 +3,17 @@ import {IDENTITY_CREDENTIAL_PLAINLOGIN} from "../../vdxf/keys";
 
 const verifyCredentialSerialization = (c: Credential) => {
   const cFromBuf = new Credential();
-    cFromBuf.fromBuffer(c.toBuffer());
+  cFromBuf.fromBuffer(c.toBuffer());
 
-    expect(cFromBuf.toBuffer().toString('hex')).toBe(c.toBuffer().toString('hex'));
-    expect(cFromBuf.isValid());
-    expect(!cFromBuf.hasLabel());
-    expect(cFromBuf.calcFlags() !== Credential.FLAG_LABEL_PRESENT);
-    expect(cFromBuf).toEqual(c);
+  expect(cFromBuf.isValid()).toBe(true);
+  expect(cFromBuf).toEqual(c);
+
+  // Test JSON serialization and deserialization.
+  const cJson = c.toJSON();
+  const cFromJson = Credential.fromJSON(cJson);
+
+  expect(cFromJson.isValid()).toBe(true);
+  expect(cFromJson).toEqual(c);
 };
 
 describe('Serializes and deserializes Credential', () => {
@@ -69,5 +73,29 @@ describe('Serializes and deserializes Credential', () => {
     });
 
     verifyCredentialSerialization(c);
+  });
+
+  test('create Credential from JSON using fromJSON', () => {
+    const credential = ["testuser", "testpass"];
+    const scopes = ["TestService@"];
+    const label = "test credential";
+
+    const credentialJSON = {
+      version: Credential.VERSION_CURRENT.toNumber(),
+      credentialkey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
+      credential: credential,
+      scopes: scopes,
+      label: label
+    };
+
+    const c = Credential.fromJSON(credentialJSON);
+    
+    expect(c.isValid()).toBe(true);
+    expect(c.version).toStrictEqual(Credential.VERSION_CURRENT);
+    expect(c.credentialKey).toBe(IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid);
+    expect(c.credential).toEqual(credential);
+    expect(c.scopes).toEqual(scopes);
+    expect(c.label).toBe(label);
+    expect(c.hasLabel()).toBe(true);
   });
 });
