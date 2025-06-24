@@ -9,8 +9,8 @@ const verifyCredentialSerialization = (c: Credential) => {
   expect(cFromBuf).toEqual(c);
 
   // Test JSON serialization and deserialization.
-  const cJson = c.toJSON();
-  const cFromJson = Credential.fromJSON(cJson);
+  const cJson = c.toJson();
+  const cFromJson = Credential.fromJson(cJson);
 
   expect(cFromJson.isValid()).toBe(true);
   expect(cFromJson).toEqual(c);
@@ -75,12 +75,12 @@ describe('Serializes and deserializes Credential', () => {
     verifyCredentialSerialization(c);
   });
 
-  test('create Credential from and to JSON using fromJSON and toJson', () => {
+  test('create Credential from and to JSON using fromJson and toJson', () => {
     const credential = ["testuser", "testpass"];
     const scopes = ["TestService@"];
     const label = "test credential";
 
-    const credentialJSON = {
+    const credentialJson = {
       version: Credential.VERSION_CURRENT.toNumber(),
       credentialkey: IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid,
       credential: credential,
@@ -89,7 +89,7 @@ describe('Serializes and deserializes Credential', () => {
       flags: Credential.FLAG_LABEL_PRESENT.toNumber()
     };
 
-    const c = Credential.fromJSON(credentialJSON);
+    const c = Credential.fromJson(credentialJson);
     
     expect(c.isValid()).toBe(true);
     expect(c.version).toStrictEqual(Credential.VERSION_CURRENT);
@@ -98,8 +98,6 @@ describe('Serializes and deserializes Credential', () => {
     expect(c.scopes).toEqual(scopes);
     expect(c.label).toBe(label);
     expect(c.hasLabel()).toBe(true);
-
-    // Test toJson instead of toJSON as the other tests check it.
-    expect(credentialJSON).toStrictEqual(c.toJson());
+    expect(credentialJson).toStrictEqual(c.toJson());
   });
 });

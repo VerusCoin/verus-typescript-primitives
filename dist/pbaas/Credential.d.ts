@@ -2,7 +2,7 @@
 /// <reference types="node" />
 import { BigNumber } from "../utils/types/BigNumber";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
-export declare type CredentialJSON = {
+export declare type CredentialJson = {
     version?: number;
     flags?: number;
     credentialkey?: string;
@@ -37,7 +37,6 @@ export declare class Credential implements SerializableEntity {
     calcFlags(): BigNumber;
     setFlags(): void;
     isValid(): boolean;
-    toJSON(): CredentialJSON;
-    toJson(): CredentialJSON;
-    static fromJSON(json: CredentialJSON): Credential;
+    toJson(): CredentialJson;
+    static fromJson(json: CredentialJson): Credential;
 }

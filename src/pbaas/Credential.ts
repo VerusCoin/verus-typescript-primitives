@@ -7,7 +7,7 @@ import { NULL_ADDRESS } from '../constants/vdxf';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
-export type CredentialJSON = {
+export type CredentialJson = {
   version?: number,
   flags?: number,
   credentialkey?: string,
@@ -143,8 +143,8 @@ export class Credential implements SerializableEntity {
       && this.credentialKey !== NULL_ADDRESS;
   }
 
-  toJSON(): CredentialJSON {
-    const ret: CredentialJSON = {
+  toJson(): CredentialJson {
+    const ret: CredentialJson = {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
       credentialkey: this.credentialKey,
@@ -156,12 +156,7 @@ export class Credential implements SerializableEntity {
     return ret;
   }
 
-  // Certain functions expect toJson instead of toJSON.
-  toJson(): CredentialJSON {
-    return this.toJSON();
-  }
-
-  static fromJSON(json: CredentialJSON): Credential {
+  static fromJson(json: CredentialJson): Credential {
     return new Credential({
       version: json.version ? new BN(json.version, 10) : undefined,
       flags: json.flags ? new BN(json.flags, 10) : undefined,

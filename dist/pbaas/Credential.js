@@ -90,7 +90,7 @@ class Credential {
         return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST)
             && this.credentialKey !== vdxf_1.NULL_ADDRESS;
     }
-    toJSON() {
+    toJson() {
         const ret = {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
@@ -101,11 +101,7 @@ class Credential {
         };
         return ret;
     }
-    // Certain functions expect toJson instead of toJSON.
-    toJson() {
-        return this.toJSON();
-    }
-    static fromJSON(json) {
+    static fromJson(json) {
         return new Credential({
             version: json.version ? new bn_js_1.BN(json.version, 10) : undefined,
             flags: json.flags ? new bn_js_1.BN(json.flags, 10) : undefined,
