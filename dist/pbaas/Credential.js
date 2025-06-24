@@ -5,6 +5,7 @@ const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
 const varuint_1 = require("../utils/varuint");
 const vdxf_1 = require("../constants/vdxf");
+const varint_1 = require("../utils/varint");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class Credential {
     constructor(data) {
@@ -32,8 +33,8 @@ class Credential {
     }
     getByteLength() {
         let length = 0;
-        length += 4; // version (UInt32)
-        length += 4; // flags (UInt32)
+        length += varint_1.default.encodingLength(this.version);
+        length += varint_1.default.encodingLength(this.flags);
         const credentialKeyLength = this.credentialKey.length;
         length += varuint_1.default.encodingLength(credentialKeyLength);
         length += credentialKeyLength;
@@ -54,8 +55,8 @@ class Credential {
     }
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
-        writer.writeUInt32(this.version.toNumber());
-        writer.writeUInt32(this.flags.toNumber());
+        writer.writeVarInt(this.version);
+        writer.writeVarInt(this.flags);
         writer.writeVarSlice(Buffer.from(this.credentialKey));
         writer.writeVarSlice(Buffer.from(JSON.stringify(this.credential)));
         writer.writeVarSlice(Buffer.from(JSON.stringify(this.scopes)));
@@ -66,8 +67,8 @@ class Credential {
     }
     fromBuffer(buffer, offset) {
         const reader = new BufferReader(buffer, offset);
-        this.version = new bn_js_1.BN(reader.readUInt32(), 10);
-        this.flags = new bn_js_1.BN(reader.readUInt32(), 10);
+        this.version = new bn_js_1.BN(reader.readVarInt(), 10);
+        this.flags = new bn_js_1.BN(reader.readVarInt(), 10);
         this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
         this.credential = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
         this.scopes = JSON.parse(Buffer.from(reader.readVarSlice()).toString());

@@ -4,6 +4,7 @@ import { SerializableEntity } from "../utils/types/SerializableEntity";
 import bufferutils from "../utils/bufferutils";
 import varuint from "../utils/varuint";
 import { NULL_ADDRESS } from '../constants/vdxf';
+import varint from '../utils/varint';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
@@ -63,8 +64,8 @@ export class Credential implements SerializableEntity {
   getByteLength(): number {
     let length = 0;
 
-    length += 4; // version (UInt32)
-    length += 4; // flags (UInt32)
+    length += varint.encodingLength(this.version);
+    length += varint.encodingLength(this.flags);
     
     const credentialKeyLength = this.credentialKey.length;
     length += varuint.encodingLength(credentialKeyLength);
@@ -92,8 +93,8 @@ export class Credential implements SerializableEntity {
   toBuffer(): Buffer {
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
 
-    writer.writeUInt32(this.version.toNumber());
-    writer.writeUInt32(this.flags.toNumber());
+    writer.writeVarInt(this.version);
+    writer.writeVarInt(this.flags);
     
     writer.writeVarSlice(Buffer.from(this.credentialKey));
 
@@ -110,8 +111,8 @@ export class Credential implements SerializableEntity {
   fromBuffer(buffer: Buffer, offset?: number): number {
     const reader = new BufferReader(buffer, offset);
 
-    this.version = new BN(reader.readUInt32(), 10);
-    this.flags = new BN(reader.readUInt32(), 10);
+    this.version = new BN(reader.readVarInt(), 10);
+    this.flags = new BN(reader.readVarInt(), 10);
 
     this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
 
