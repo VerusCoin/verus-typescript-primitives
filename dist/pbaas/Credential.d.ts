@@ -16,6 +16,7 @@ export declare class Credential implements SerializableEntity {
     static VERSION_LAST: import("bn.js");
     static VERSION_CURRENT: import("bn.js");
     static FLAG_LABEL_PRESENT: import("bn.js");
+    static MAX_JSON_STRING_LENGTH: number;
     version: BigNumber;
     flags: BigNumber;
     credentialKey: string;

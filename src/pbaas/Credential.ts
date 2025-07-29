@@ -5,6 +5,7 @@ import bufferutils from "../utils/bufferutils";
 import varuint from "../utils/varuint";
 import { NULL_ADDRESS } from '../constants/vdxf';
 import varint from '../utils/varint';
+import { readLimitedString } from '../utils/string';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
@@ -26,6 +27,8 @@ export class Credential implements SerializableEntity {
   static VERSION_CURRENT = new BN(1, 10);
 
   static FLAG_LABEL_PRESENT = new BN(1, 10);
+
+  static MAX_JSON_STRING_LENGTH = 512;
 
   version: BigNumber;
   flags: BigNumber;
@@ -56,6 +59,12 @@ export class Credential implements SerializableEntity {
       if (data.credential) this.credential = data.credential;
       if (data.scopes) this.scopes = data.scopes;
       if (data.label) this.label = data.label;
+
+      if (JSON.stringify(this.credential).length > Credential.MAX_JSON_STRING_LENGTH || 
+        JSON.stringify(this.scopes).length > Credential.MAX_JSON_STRING_LENGTH
+      ) {
+        this.version = Credential.VERSION_INVALID;
+      }
 
       this.setFlags();
     }
@@ -115,9 +124,14 @@ export class Credential implements SerializableEntity {
     this.flags = new BN(reader.readVarInt(), 10);
 
     this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
+    
+    this.credential = JSON.parse(
+      Buffer.from(readLimitedString(reader, Credential.MAX_JSON_STRING_LENGTH)
+    ).toString());
 
-    this.credential = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
-    this.scopes = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
+    this.scopes = JSON.parse(
+      Buffer.from(readLimitedString(reader, Credential.MAX_JSON_STRING_LENGTH)
+    ).toString());
 
     if (this.hasLabel()) {
       this.label = Buffer.from(reader.readVarSlice()).toString();

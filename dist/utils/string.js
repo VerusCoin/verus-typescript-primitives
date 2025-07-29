@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isHexString = void 0;
+exports.readLimitedString = exports.isHexString = void 0;
 const isHexString = (s) => {
     try {
         const striBuf = Buffer.from(s, 'hex');
@@ -12,3 +12,11 @@ const isHexString = (s) => {
     }
 };
 exports.isHexString = isHexString;
+const readLimitedString = (reader, limit) => {
+    const size = reader.readCompactSize();
+    if (size > limit) {
+        throw new Error("String length limit exceeded");
+    }
+    return reader.readSlice(size);
+};
+exports.readLimitedString = readLimitedString;

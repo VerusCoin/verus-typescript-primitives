@@ -40,14 +40,6 @@ describe('Serializes and deserializes Credential', () => {
     verifyCredentialSerialization(c);
   });
 
-  test('Credential with invalid version', () => {
-    const c = new Credential({
-      version: Credential.VERSION_INVALID,
-    });
-
-    expect(c.isValid()).toBe(false);
-  });
-
   test('(de)serialize Credential with JSON object credential and scopes', () => {
     const c = new Credential({
       version: Credential.VERSION_CURRENT,
@@ -91,6 +83,7 @@ describe('Serializes and deserializes Credential', () => {
 
     const c = Credential.fromJson(credentialJson);
     
+    // Check that the class representation matches the initial Json.
     expect(c.isValid()).toBe(true);
     expect(c.version).toStrictEqual(Credential.VERSION_CURRENT);
     expect(c.credentialKey).toBe(IDENTITY_CREDENTIAL_PLAINLOGIN.vdxfid);
@@ -98,6 +91,68 @@ describe('Serializes and deserializes Credential', () => {
     expect(c.scopes).toEqual(scopes);
     expect(c.label).toBe(label);
     expect(c.hasLabel()).toBe(true);
+
     expect(credentialJson).toStrictEqual(c.toJson());
+  });
+
+  describe('(de)serialize Credential with invalid length credential and scopes', () => {
+    test('invalid length credential', () => {
+      const c = new Credential({
+        version: Credential.VERSION_CURRENT,
+        credentialKey: "iHdfNK2nkKsxWAdRYToBpDRHFU9anJGSG4",
+        credential: "a".repeat(Credential.MAX_JSON_STRING_LENGTH + 1),
+        scopes: "scope@"
+      });
+      expect(() => {
+        verifyCredentialSerialization(c);
+      }).toThrow();
+    });
+
+    test('invalid length scopes', () => {
+      const c = new Credential({
+        version: Credential.VERSION_CURRENT,
+        credentialKey: "iHdfNK2nkKsxWAdRYToBpDRHFU9anJGSG4",
+        credential: "cred",
+        scopes: "s".repeat(Credential.MAX_JSON_STRING_LENGTH + 1)
+      });
+      expect(() => {
+        verifyCredentialSerialization(c);
+      }).toThrow();
+    });
+  });
+});
+
+describe('constructing invalid Credentials', () => {
+  test('Credential with invalid version', () => {
+    const c = new Credential({
+      version: Credential.VERSION_INVALID,
+    });
+
+    expect(c.isValid()).toBe(false);
+  });
+
+  test('Credential with invalid length credential', () => {
+    const c = new Credential({
+      credential: "a".repeat(Credential.MAX_JSON_STRING_LENGTH + 1),
+    });
+
+    expect(c.isValid()).toBe(false);
+  });
+
+  test('Credential with invalid length scopes', () => {
+    const c = new Credential({
+      scopes: "d".repeat(Credential.MAX_JSON_STRING_LENGTH + 1),
+    });
+
+    expect(c.isValid()).toBe(false);
+  });
+
+  test('Credential with both invalid length credential and scopes', () => {
+    const c = new Credential({
+      credential: "a".repeat(Credential.MAX_JSON_STRING_LENGTH + 1),
+      scopes: "d".repeat(Credential.MAX_JSON_STRING_LENGTH + 1),
+    });
+
+    expect(c.isValid()).toBe(false);
   });
 });

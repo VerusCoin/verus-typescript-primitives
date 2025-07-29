@@ -6,6 +6,7 @@ const bufferutils_1 = require("../utils/bufferutils");
 const varuint_1 = require("../utils/varuint");
 const vdxf_1 = require("../constants/vdxf");
 const varint_1 = require("../utils/varint");
+const string_1 = require("../utils/string");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class Credential {
     constructor(data) {
@@ -28,6 +29,10 @@ class Credential {
                 this.scopes = data.scopes;
             if (data.label)
                 this.label = data.label;
+            if (JSON.stringify(this.credential).length > Credential.MAX_JSON_STRING_LENGTH ||
+                JSON.stringify(this.scopes).length > Credential.MAX_JSON_STRING_LENGTH) {
+                this.version = Credential.VERSION_INVALID;
+            }
             this.setFlags();
         }
     }
@@ -70,8 +75,8 @@ class Credential {
         this.version = new bn_js_1.BN(reader.readVarInt(), 10);
         this.flags = new bn_js_1.BN(reader.readVarInt(), 10);
         this.credentialKey = Buffer.from(reader.readVarSlice()).toString();
-        this.credential = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
-        this.scopes = JSON.parse(Buffer.from(reader.readVarSlice()).toString());
+        this.credential = JSON.parse(Buffer.from((0, string_1.readLimitedString)(reader, Credential.MAX_JSON_STRING_LENGTH)).toString());
+        this.scopes = JSON.parse(Buffer.from((0, string_1.readLimitedString)(reader, Credential.MAX_JSON_STRING_LENGTH)).toString());
         if (this.hasLabel()) {
             this.label = Buffer.from(reader.readVarSlice()).toString();
         }
@@ -120,3 +125,4 @@ Credential.VERSION_FIRST = new bn_js_1.BN(1, 10);
 Credential.VERSION_LAST = new bn_js_1.BN(1, 10);
 Credential.VERSION_CURRENT = new bn_js_1.BN(1, 10);
 Credential.FLAG_LABEL_PRESENT = new bn_js_1.BN(1, 10);
+Credential.MAX_JSON_STRING_LENGTH = 512;
