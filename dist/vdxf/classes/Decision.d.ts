@@ -1,6 +1,5 @@
 /// <reference types="node" />
 import { VDXFObject } from "..";
-import { Credential } from "../../pbaas/Credential";
 import { Attestation } from "./Challenge";
 import { Context } from "./Context";
 import { Request, RequestInterface } from "./Request";
@@ -21,7 +20,6 @@ export declare class Decision extends VDXFObject {
     skipped?: boolean;
     attestations: Array<any>;
     salt?: string;
-    credentials: Array<Credential>;
     constructor(decision?: DecisionInterface, vdxfkey?: string);
     dataByteLength(): number;
     toDataBuffer(): Buffer;

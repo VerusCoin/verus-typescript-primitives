@@ -1,6 +1,5 @@
 import { LOGIN_CONSENT_DECISION_VDXF_KEY, VDXFObject } from "..";
 import bufferutils from "../../utils/bufferutils";
-import { Credential } from "../../pbaas/Credential";
 import varuint from "../../utils/varuint";
 import { Attestation } from "./Challenge";
 import { Context } from "./Context";
@@ -38,7 +37,6 @@ export class Decision extends VDXFObject {
   skipped?: boolean;
   attestations: Array<any>;
   salt?: string;
-  credentials: Array<Credential>;
 
   constructor(
     decision: DecisionInterface = {
