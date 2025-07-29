@@ -368,6 +368,15 @@ export const DATA_TYPE_OBJECT_CREDENTIAL: VDXFKeyInterface = {
   },
 };
 
+export const IDENTITY_CREDENTIALS: VDXFKeyInterface = {
+  vdxfid: "iM8ULboymw7rqdjX5YihsmxFG59dbyT2Cj",
+  hash160result: "089fcd4c0bb1edb78789a223cf76a3399e5ca7c1",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credentials"
+  },
+};
+
 export const IDENTITY_CREDENTIAL_PLAINLOGIN: VDXFKeyInterface = {
   vdxfid: "iHh1FFVvcNb2mcBudD11umfKJXHbBbH6Sj",
   hash160result: "21edefb10b2ea96ffb0fbad986e268164df8ed9b",
