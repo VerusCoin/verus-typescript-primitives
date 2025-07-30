@@ -134,7 +134,7 @@ export class Credential implements SerializableEntity {
     ).toString());
 
     if (this.hasLabel()) {
-      this.label = Buffer.from(reader.readVarSlice()).toString();
+      this.label = Buffer.from(readLimitedString(reader, Credential.MAX_JSON_STRING_LENGTH)).toString();
     }
 
     return reader.offset;

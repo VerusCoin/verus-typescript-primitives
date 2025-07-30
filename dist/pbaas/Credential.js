@@ -78,7 +78,7 @@ class Credential {
         this.credential = JSON.parse(Buffer.from((0, string_1.readLimitedString)(reader, Credential.MAX_JSON_STRING_LENGTH)).toString());
         this.scopes = JSON.parse(Buffer.from((0, string_1.readLimitedString)(reader, Credential.MAX_JSON_STRING_LENGTH)).toString());
         if (this.hasLabel()) {
-            this.label = Buffer.from(reader.readVarSlice()).toString();
+            this.label = Buffer.from((0, string_1.readLimitedString)(reader, Credential.MAX_JSON_STRING_LENGTH)).toString();
         }
         return reader.offset;
     }

@@ -95,7 +95,7 @@ describe('Serializes and deserializes Credential', () => {
     expect(credentialJson).toStrictEqual(c.toJson());
   });
 
-  describe('(de)serialize Credential with invalid length credential and scopes', () => {
+  describe('(de)serialize Credential with invalid length credential, scopes or label', () => {
     test('invalid length credential', () => {
       const c = new Credential({
         version: Credential.VERSION_CURRENT,
@@ -114,6 +114,19 @@ describe('Serializes and deserializes Credential', () => {
         credentialKey: "iHdfNK2nkKsxWAdRYToBpDRHFU9anJGSG4",
         credential: "cred",
         scopes: "s".repeat(Credential.MAX_JSON_STRING_LENGTH + 1)
+      });
+      expect(() => {
+        verifyCredentialSerialization(c);
+      }).toThrow();
+    });
+
+    test('invalid label scopes', () => {
+      const c = new Credential({
+        version: Credential.VERSION_CURRENT,
+        credentialKey: "iHdfNK2nkKsxWAdRYToBpDRHFU9anJGSG4",
+        credential: "cred",
+        scopes: "scope@",
+        label: "l".repeat(Credential.MAX_JSON_STRING_LENGTH + 1)
       });
       expect(() => {
         verifyCredentialSerialization(c);
