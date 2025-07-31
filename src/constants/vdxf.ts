@@ -5,6 +5,7 @@ export const VDXF_OBJECT_DEFAULT_VERSION = new BN(1, 10)
 export const HASH160_BYTE_LENGTH = 20
 export const I_ADDR_VERSION = 102
 export const R_ADDR_VERSION = 60
+export const NULL_ADDRESS = "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk"
 
 const VERUS_DATA_SIGNATURE_PREFIX_STRING = "Verus signed data:\n"
 

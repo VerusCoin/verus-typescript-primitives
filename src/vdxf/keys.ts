@@ -349,3 +349,48 @@ export const DATA_TYPE_STRING: VDXFKeyInterface =
       "name": "vrsc::data.type.string"
     },
 };
+
+export const DATA_TYPE_OBJECT_DATADESCRIPTOR: VDXFKeyInterface = {
+  vdxfid: "i4GC1YGEVD21afWudGoFJVdnfjJ5XWnCQv",
+  hash160result: "4d4f12424ded2033a526a4e2a8835fc5b2eba208",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::data.type.object.datadescriptor"
+  },
+};
+
+export const DATA_TYPE_OBJECT_CREDENTIAL: VDXFKeyInterface = {
+  vdxfid: "iDTG49YLqmkHMYRyuQBYgEyTByQwAzqGd6",
+  hash160result: "09fbc202710c9f2dacb87e5623e97e2e4101746d",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::data.type.object.credential"
+  },
+};
+
+export const IDENTITY_CREDENTIALS: VDXFKeyInterface = {
+  vdxfid: "iM8ULboymw7rqdjX5YihsmxFG59dbyT2Cj",
+  hash160result: "089fcd4c0bb1edb78789a223cf76a3399e5ca7c1",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credentials"
+  },
+};
+
+export const IDENTITY_CREDENTIAL_PLAINLOGIN: VDXFKeyInterface = {
+  vdxfid: "iHh1FFVvcNb2mcBudD11umfKJXHbBbH6Sj",
+  hash160result: "21edefb10b2ea96ffb0fbad986e268164df8ed9b",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credential.plainlogin"
+  },
+};
+
+export const IDENTITY_CREDENTIAL_USERNAME: VDXFKeyInterface = {
+  vdxfid: "iN6LYCurcypx7orxkFB73mWRq6Jetf23ck",
+  hash160result: "9125e70938468eea614a4f538199fa4d052538cc",
+  qualifiedname: {
+    namespace: "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    name: "vrsc::identity.credential.username"
+  },
+};

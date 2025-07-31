@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VERUS_DATA_SIGNATURE_PREFIX = exports.R_ADDR_VERSION = exports.I_ADDR_VERSION = exports.HASH160_BYTE_LENGTH = exports.VDXF_OBJECT_DEFAULT_VERSION = void 0;
+exports.VERUS_DATA_SIGNATURE_PREFIX = exports.NULL_ADDRESS = exports.R_ADDR_VERSION = exports.I_ADDR_VERSION = exports.HASH160_BYTE_LENGTH = exports.VDXF_OBJECT_DEFAULT_VERSION = void 0;
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
 exports.VDXF_OBJECT_DEFAULT_VERSION = new bn_js_1.BN(1, 10);
 exports.HASH160_BYTE_LENGTH = 20;
 exports.I_ADDR_VERSION = 102;
 exports.R_ADDR_VERSION = 60;
+exports.NULL_ADDRESS = "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk";
 const VERUS_DATA_SIGNATURE_PREFIX_STRING = "Verus signed data:\n";
 var bufferWriter = new bufferutils_1.default.BufferWriter(Buffer.alloc(VERUS_DATA_SIGNATURE_PREFIX_STRING.length + 1));
 bufferWriter.writeVarSlice(Buffer.from(VERUS_DATA_SIGNATURE_PREFIX_STRING, "utf-8"));

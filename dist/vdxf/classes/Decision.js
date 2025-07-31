@@ -16,7 +16,7 @@ class Decision extends __1.VDXFObject {
         super(vdxfkey);
         this.decision_id = decision.decision_id;
         this.request = new Request_1.Request(decision.request);
-        this.context = decision.context;
+        this.context = decision.context ? new Context_1.Context(decision.context.kv) : new Context_1.Context();
         this.created_at = decision.created_at;
         this.attestations = decision.attestations;
         this.salt = decision.salt;
