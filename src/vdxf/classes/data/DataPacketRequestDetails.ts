@@ -35,6 +35,7 @@ export interface DataPacketRequestDetailsInterface {
   statements?: Array<string>;
   signature?: VerifiableSignatureData;
   requestID?: CompactIAddressObject;
+  salt?: Buffer;
 }
 
 export interface DataPacketRequestDetailsJson {
@@ -44,6 +45,7 @@ export interface DataPacketRequestDetailsJson {
   statements?: Array<string>;
   signature?: VerifiableSignatureDataJson;
   requestid?: CompactAddressObjectJson;
+  salt?: string;
 }
 
 export class DataPacketRequestDetails implements SerializableEntity {
@@ -59,6 +61,8 @@ export class DataPacketRequestDetails implements SerializableEntity {
   static FLAG_FOR_USERS_SIGNATURE = new BN(8);
   static FLAG_FOR_TRANSMITTAL_TO_USER = new BN(16);
   static FLAG_HAS_URL_FOR_DOWNLOAD = new BN(32);
+  static FLAG_HAS_SALT = new BN(64);
+  static FLAG_STATEMENTS_ARE_DATA_DESCRIPTORS = new BN(128);
 
   version: BigNumber;
   flags: BigNumber;
@@ -66,6 +70,7 @@ export class DataPacketRequestDetails implements SerializableEntity {
   statements?: Array<string>;
   signature?: VerifiableSignatureData;
   requestID?: CompactIAddressObject;
+  salt?: Buffer;
 
   constructor(data?: DataPacketRequestDetailsInterface) {
     this.version = data?.version || DataPacketRequestDetails.DEFAULT_VERSION;
@@ -74,7 +79,7 @@ export class DataPacketRequestDetails implements SerializableEntity {
     this.statements = data?.statements || [];
     this.signature = data?.signature || undefined;
     this.requestID = data?.requestID;
-
+    this.salt = data?.salt;
     this.setFlags();
   }
 
@@ -96,6 +101,9 @@ export class DataPacketRequestDetails implements SerializableEntity {
     if (this.requestID) {
       flags = flags.or(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID);
     }
+    if (this.salt) {
+      flags = flags.or(DataPacketRequestDetails.FLAG_HAS_SALT);
+    }
 
     return flags;
   }
@@ -112,6 +120,10 @@ export class DataPacketRequestDetails implements SerializableEntity {
     return this.flags.and(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID).eq(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID);
   }
 
+  hasSalt(): boolean {
+    return this.flags.and(DataPacketRequestDetails.FLAG_HAS_SALT).eq(DataPacketRequestDetails.FLAG_HAS_SALT);
+  }
+
   isValid(): boolean {
     let valid = this.version.gte(DataPacketRequestDetails.FIRST_VERSION) &&
       this.version.lte(DataPacketRequestDetails.LAST_VERSION);
@@ -124,6 +136,9 @@ export class DataPacketRequestDetails implements SerializableEntity {
 
     if (this.hasSignature()) {
       valid &&= this.signature !== undefined; // TODO: && this.signature.isValid();
+    }
+    if (this.hasSalt()) {
+      valid &&= this.salt !== undefined && Buffer.isBuffer(this.salt) && this.salt.length > 0;
     }
 
     return valid;
@@ -158,6 +173,11 @@ export class DataPacketRequestDetails implements SerializableEntity {
       length += this.requestID.getByteLength();
     }
 
+    if (this.hasSalt() && this.salt) {
+      length += varuint.encodingLength(this.salt.length);
+      length += this.salt.length;
+    }
+
     return length;
   }
 
@@ -187,6 +207,10 @@ export class DataPacketRequestDetails implements SerializableEntity {
 
     if (this.hasRequestID()) {
       writer.writeSlice(this.requestID.toBuffer());
+    }
+
+    if (this.hasSalt()) {
+      writer.writeVarSlice(this.salt);
     }
 
     return writer.buffer;
@@ -229,6 +253,10 @@ export class DataPacketRequestDetails implements SerializableEntity {
       reader.offset = this.requestID.fromBuffer(reader.buffer, reader.offset);
     }
 
+    if (this.hasSalt()) {
+      this.salt = reader.readVarSlice();
+    }
+
     return reader.offset;
   }
 
@@ -242,6 +270,7 @@ export class DataPacketRequestDetails implements SerializableEntity {
       statements: this.statements,
       signature: this.signature ? this.signature.toJson() : undefined,
       requestid: this.requestID ? this.requestID.toJson() : undefined,
+      salt: this.salt ? this.salt.toString('hex') : undefined
     };
   }
 
@@ -261,6 +290,7 @@ export class DataPacketRequestDetails implements SerializableEntity {
     instance.statements = json.statements || [];
     instance.signature = json.signature ? VerifiableSignatureData.fromJson(json.signature) : undefined;
     instance.requestID = json.requestid ? CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;
+    instance.salt = json.salt ? Buffer.from(json.salt, 'hex') : undefined;
     return instance;
   }
 }
