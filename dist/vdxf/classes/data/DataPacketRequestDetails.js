@@ -35,6 +35,7 @@ class DataPacketRequestDetails {
         this.statements = (data === null || data === void 0 ? void 0 : data.statements) || [];
         this.signature = (data === null || data === void 0 ? void 0 : data.signature) || undefined;
         this.requestID = data === null || data === void 0 ? void 0 : data.requestID;
+        this.salt = data === null || data === void 0 ? void 0 : data.salt;
         this.setFlags();
     }
     setFlags() {
@@ -51,6 +52,9 @@ class DataPacketRequestDetails {
         if (this.requestID) {
             flags = flags.or(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID);
         }
+        if (this.salt) {
+            flags = flags.or(DataPacketRequestDetails.FLAG_HAS_SALT);
+        }
         return flags;
     }
     hasStatements() {
@@ -62,6 +66,9 @@ class DataPacketRequestDetails {
     hasRequestID() {
         return this.flags.and(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID).eq(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID);
     }
+    hasSalt() {
+        return this.flags.and(DataPacketRequestDetails.FLAG_HAS_SALT).eq(DataPacketRequestDetails.FLAG_HAS_SALT);
+    }
     isValid() {
         let valid = this.version.gte(DataPacketRequestDetails.FIRST_VERSION) &&
             this.version.lte(DataPacketRequestDetails.LAST_VERSION);
@@ -72,6 +79,9 @@ class DataPacketRequestDetails {
         }
         if (this.hasSignature()) {
             valid && (valid = this.signature !== undefined); // TODO: && this.signature.isValid();
+        }
+        if (this.hasSalt()) {
+            valid && (valid = this.salt !== undefined && Buffer.isBuffer(this.salt) && this.salt.length > 0);
         }
         return valid;
     }
@@ -97,6 +107,10 @@ class DataPacketRequestDetails {
         if (this.hasRequestID()) {
             length += this.requestID.getByteLength();
         }
+        if (this.hasSalt() && this.salt) {
+            length += varuint_1.default.encodingLength(this.salt.length);
+            length += this.salt.length;
+        }
         return length;
     }
     toBuffer() {
@@ -119,6 +133,9 @@ class DataPacketRequestDetails {
         }
         if (this.hasRequestID()) {
             writer.writeSlice(this.requestID.toBuffer());
+        }
+        if (this.hasSalt()) {
+            writer.writeVarSlice(this.salt);
         }
         return writer.buffer;
     }
@@ -151,6 +168,9 @@ class DataPacketRequestDetails {
             this.requestID = new CompactAddressObject_1.CompactIAddressObject();
             reader.offset = this.requestID.fromBuffer(reader.buffer, reader.offset);
         }
+        if (this.hasSalt()) {
+            this.salt = reader.readVarSlice();
+        }
         return reader.offset;
     }
     toJson() {
@@ -162,6 +182,7 @@ class DataPacketRequestDetails {
             statements: this.statements,
             signature: this.signature ? this.signature.toJson() : undefined,
             requestid: this.requestID ? this.requestID.toJson() : undefined,
+            salt: this.salt ? this.salt.toString('hex') : undefined
         };
     }
     static fromJson(json) {
@@ -177,6 +198,7 @@ class DataPacketRequestDetails {
         instance.statements = json.statements || [];
         instance.signature = json.signature ? VerifiableSignatureData_1.VerifiableSignatureData.fromJson(json.signature) : undefined;
         instance.requestID = json.requestid ? CompactAddressObject_1.CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;
+        instance.salt = json.salt ? Buffer.from(json.salt, 'hex') : undefined;
         return instance;
     }
 }
@@ -192,3 +214,5 @@ DataPacketRequestDetails.FLAG_HAS_SIGNATURE = new bn_js_1.BN(4);
 DataPacketRequestDetails.FLAG_FOR_USERS_SIGNATURE = new bn_js_1.BN(8);
 DataPacketRequestDetails.FLAG_FOR_TRANSMITTAL_TO_USER = new bn_js_1.BN(16);
 DataPacketRequestDetails.FLAG_HAS_URL_FOR_DOWNLOAD = new bn_js_1.BN(32);
+DataPacketRequestDetails.FLAG_HAS_SALT = new bn_js_1.BN(64);
+DataPacketRequestDetails.FLAG_STATEMENTS_ARE_DATA_DESCRIPTORS = new bn_js_1.BN(128);

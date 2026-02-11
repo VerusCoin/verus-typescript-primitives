@@ -29,6 +29,7 @@ export interface DataPacketRequestDetailsInterface {
     statements?: Array<string>;
     signature?: VerifiableSignatureData;
     requestID?: CompactIAddressObject;
+    salt?: Buffer;
 }
 export interface DataPacketRequestDetailsJson {
     version: number;
@@ -37,6 +38,7 @@ export interface DataPacketRequestDetailsJson {
     statements?: Array<string>;
     signature?: VerifiableSignatureDataJson;
     requestid?: CompactAddressObjectJson;
+    salt?: string;
 }
 export declare class DataPacketRequestDetails implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
@@ -49,18 +51,22 @@ export declare class DataPacketRequestDetails implements SerializableEntity {
     static FLAG_FOR_USERS_SIGNATURE: import("bn.js");
     static FLAG_FOR_TRANSMITTAL_TO_USER: import("bn.js");
     static FLAG_HAS_URL_FOR_DOWNLOAD: import("bn.js");
+    static FLAG_HAS_SALT: import("bn.js");
+    static FLAG_STATEMENTS_ARE_DATA_DESCRIPTORS: import("bn.js");
     version: BigNumber;
     flags: BigNumber;
     signableObjects: Array<DataDescriptor>;
     statements?: Array<string>;
     signature?: VerifiableSignatureData;
     requestID?: CompactIAddressObject;
+    salt?: Buffer;
     constructor(data?: DataPacketRequestDetailsInterface);
     setFlags(): void;
     calcFlags(): BigNumber;
     hasStatements(): boolean;
     hasSignature(): boolean;
     hasRequestID(): boolean;
+    hasSalt(): boolean;
     isValid(): boolean;
     getByteLength(): number;
     toBuffer(): Buffer;
