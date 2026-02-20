@@ -164,7 +164,7 @@ export class AuthenticationRequestDetails implements SerializableEntity {
   toJson(): AuthenticationRequestDetailsJson {
     const retval = {
       flags: this.flags.toNumber(),
-      requestid: this.requestID.toJson(),
+      requestid: this.hasRequestID() ? this.requestID.toJson() : undefined,
       recipientConstraints: this.recipientConstraints ? this.recipientConstraints.map(p => p.toJson()) : undefined,
       expirytime: this.expiryTime ? this.expiryTime.toNumber() : undefined
     };
