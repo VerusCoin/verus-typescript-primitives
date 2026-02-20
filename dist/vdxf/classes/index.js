@@ -48,6 +48,7 @@ __exportStar(require("./RequestURI"), exports);
 __exportStar(require("./request/GenericRequest"), exports);
 __exportStar(require("./response/GenericResponse"), exports);
 __exportStar(require("./appencryption/AppEncryptionResponseDetails"), exports);
+__exportStar(require("./data/DataResponseDetails"), exports);
 __exportStar(require("./ordinals"), exports);
 var Hash160_1 = require("./Hash160");
 Object.defineProperty(exports, "Hash160", { enumerable: true, get: function () { return Hash160_1.Hash160; } });

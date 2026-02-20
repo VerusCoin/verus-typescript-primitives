@@ -27,6 +27,7 @@ export * from './RequestURI';
 export * from './request/GenericRequest';
 export * from './response/GenericResponse';
 export * from './appencryption/AppEncryptionResponseDetails';
+export * from './data/DataResponseDetails';
 export * from './ordinals';
 export { Hash160 } from './Hash160';
 export { RedirectUri, Subject, ProvisioningInfo, RequestedPermission, Audience, AltAuthFactor, Attestation, } from "./Challenge";

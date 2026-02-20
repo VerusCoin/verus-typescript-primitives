@@ -30,7 +30,8 @@ export * from './ResponseURI';
 export * from './RequestURI';
 export * from './request/GenericRequest';
 export * from './response/GenericResponse';
-export * from './appencryption/AppEncryptionResponseDetails'
+export * from './appencryption/AppEncryptionResponseDetails';
+export * from './data/DataResponseDetails';
 
 export * from './ordinals';
 
