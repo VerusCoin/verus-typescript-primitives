@@ -19,13 +19,13 @@ class DefinedKey {
                 this.version = data.version;
             if (data.vdxfuri)
                 this.vdxfuri = data.vdxfuri;
-            if (data.combinedvdxfkey || data.combinedhash || data.indexnum) {
+            if (data.combinedVDXFKey || data.combinedHash || data.indexNum) {
                 throw new Error("Combining keys not supported yet.");
             }
         }
         if (this.containsSchema())
             throw new Error("Schema not supported yet.");
-        if (this.combinesKey() || this.combinesHash() || this.combinesIndexNum()) {
+        if (this.combinesKey() || this.combinesHash() || this.combinesindexNum()) {
             throw new Error("Combining keys not supported yet.");
         }
     }
@@ -38,14 +38,14 @@ class DefinedKey {
     combinesHash() {
         return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_HASH).toNumber());
     }
-    combinesIndexNum() {
-        return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_INDEXNUM).toNumber());
+    combinesindexNum() {
+        return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_indexNum).toNumber());
     }
     getFqnBuffer() {
         return Buffer.from(this.vdxfuri, 'utf8');
     }
     getDataKey(testnet = false) {
-        if (this.combinedvdxfkey || this.combinedhash || this.indexnum) {
+        if (this.combinedVDXFKey || this.combinedHash || this.indexNum) {
             throw new Error("Combining keys not supported yet.");
         }
         if (this.vdxfuri == null)
@@ -93,7 +93,7 @@ exports.DefinedKey = DefinedKey;
 DefinedKey.DEFINEDKEY_DEFAULT_FLAGS = new bn_js_1.BN(0, 10);
 DefinedKey.DEFINEDKEY_COMBINES_KEY = new bn_js_1.BN(1, 10);
 DefinedKey.DEFINEDKEY_COMBINES_HASH = new bn_js_1.BN(2, 10);
-DefinedKey.DEFINEDKEY_COMBINES_INDEXNUM = new bn_js_1.BN(4, 10);
+DefinedKey.DEFINEDKEY_COMBINES_indexNum = new bn_js_1.BN(4, 10);
 DefinedKey.DEFINEDKEY_CONTAINS_SCHEMA = new bn_js_1.BN(8, 10);
 DefinedKey.DEFINEDKEY_VERSION_INVALID = new bn_js_1.BN(0, 10);
 DefinedKey.DEFINEDKEY_VERSION_CURRENT = new bn_js_1.BN(1, 10);

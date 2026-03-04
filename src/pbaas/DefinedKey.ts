@@ -15,14 +15,14 @@ export class DefinedKey implements SerializableEntity {
   flags: BigNumber;
   vdxfuri?: string;
 
-  combinedvdxfkey?: IdentityID;
-  combinedhash?: Buffer;
-  indexnum?: BigNumber;
+  combinedVDXFKey?: IdentityID;
+  combinedHash?: Buffer;
+  indexNum?: BigNumber;
 
   static DEFINEDKEY_DEFAULT_FLAGS = new BN(0, 10);
   static DEFINEDKEY_COMBINES_KEY = new BN(1, 10);
   static DEFINEDKEY_COMBINES_HASH = new BN(2, 10);
-  static DEFINEDKEY_COMBINES_INDEXNUM = new BN(4, 10);
+  static DEFINEDKEY_COMBINES_indexNum = new BN(4, 10);
   static DEFINEDKEY_CONTAINS_SCHEMA = new BN(8, 10);
 
   static DEFINEDKEY_VERSION_INVALID = new BN(0, 10);
@@ -33,9 +33,9 @@ export class DefinedKey implements SerializableEntity {
     flags?: BigNumber,
     vdxfuri?: string,
 
-    combinedvdxfkey?: IdentityID,
-    combinedhash?: Buffer,
-    indexnum?: BigNumber
+    combinedVDXFKey?: IdentityID,
+    combinedHash?: Buffer,
+    indexNum?: BigNumber
   }) {
     this.flags = DefinedKey.DEFINEDKEY_DEFAULT_FLAGS;
     this.version = DefinedKey.DEFINEDKEY_VERSION_INVALID;
@@ -45,13 +45,13 @@ export class DefinedKey implements SerializableEntity {
       if (data.version != null) this.version = data.version
       if (data.vdxfuri) this.vdxfuri = data.vdxfuri;
 
-      if (data.combinedvdxfkey || data.combinedhash || data.indexnum) {
+      if (data.combinedVDXFKey || data.combinedHash || data.indexNum) {
         throw new Error("Combining keys not supported yet.")
       }
     }
 
     if (this.containsSchema()) throw new Error("Schema not supported yet.")
-    if (this.combinesKey() || this.combinesHash() || this.combinesIndexNum()) {
+    if (this.combinesKey() || this.combinesHash() || this.combinesindexNum()) {
       throw new Error("Combining keys not supported yet.")
     }
   }
@@ -68,8 +68,8 @@ export class DefinedKey implements SerializableEntity {
     return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_HASH).toNumber());
   }
 
-  combinesIndexNum() {
-    return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_INDEXNUM).toNumber());
+  combinesindexNum() {
+    return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_indexNum).toNumber());
   }
 
   getFqnBuffer() {
@@ -77,7 +77,7 @@ export class DefinedKey implements SerializableEntity {
   }
 
   private getDataKey(testnet: boolean = false) {
-    if (this.combinedvdxfkey || this.combinedhash || this.indexnum) {
+    if (this.combinedVDXFKey || this.combinedHash || this.indexNum) {
       throw new Error("Combining keys not supported yet.")
     }
     

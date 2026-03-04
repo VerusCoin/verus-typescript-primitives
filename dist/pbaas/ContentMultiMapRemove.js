@@ -11,8 +11,8 @@ class ContentMultiMapRemove {
     constructor(data) {
         this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(1, 10);
         this.action = (data === null || data === void 0 ? void 0 : data.action) || new bn_js_1.BN(0, 10);
-        this.entry_key = (data === null || data === void 0 ? void 0 : data.entry_key) || "";
-        this.value_hash = (data === null || data === void 0 ? void 0 : data.value_hash) || Buffer.alloc(0);
+        this.entryKey = (data === null || data === void 0 ? void 0 : data.entryKey) || undefined;
+        this.valueHash = (data === null || data === void 0 ? void 0 : data.valueHash) || undefined;
     }
     getByteLength() {
         let byteLength = 0;
@@ -30,10 +30,10 @@ class ContentMultiMapRemove {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()));
         bufferWriter.writeVarInt(this.version);
         bufferWriter.writeVarInt(this.action);
-        if (this.action != ContentMultiMapRemove.ACTION_CLEAR_MAP) {
-            bufferWriter.writeSlice((0, address_1.fromBase58Check)(this.entry_key).hash);
-            if (this.action != ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY) {
-                bufferWriter.writeSlice(this.value_hash);
+        if (!this.action.eq(ContentMultiMapRemove.ACTION_CLEAR_MAP)) {
+            bufferWriter.writeSlice((0, address_1.fromBase58Check)(this.entryKey).hash);
+            if (!this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY)) {
+                bufferWriter.writeSlice(this.valueHash);
             }
         }
         return bufferWriter.buffer;
@@ -43,9 +43,9 @@ class ContentMultiMapRemove {
         this.version = new bn_js_1.BN(reader.readVarInt());
         this.action = new bn_js_1.BN(reader.readVarInt());
         if (!this.action.eq(ContentMultiMapRemove.ACTION_CLEAR_MAP)) {
-            this.entry_key = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+            this.entryKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
             if (!this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY)) {
-                this.value_hash = reader.readSlice(32);
+                this.valueHash = reader.readSlice(32);
             }
         }
         return reader.offset;
@@ -54,24 +54,28 @@ class ContentMultiMapRemove {
         return new ContentMultiMapRemove({
             version: new bn_js_1.BN(data.version),
             action: new bn_js_1.BN(data.action),
-            entry_key: data.entrykey,
-            value_hash: Buffer.from(data.valuehash, 'hex').reverse() // Unit256 Reverse to match the original hash order
+            entryKey: data.entrykey,
+            valueHash: data.action === ContentMultiMapRemove.ACTION_REMOVE_ONE_KEYVALUE.toNumber() ||
+                data.action === ContentMultiMapRemove.ACTION_REMOVE_ALL_KEYVALUE.toNumber() ?
+                Buffer.from(data.valuehash, 'hex').reverse() : undefined // Unit256 Reverse to match the original hash order
         });
     }
     toJson() {
         return {
             version: this.version.toNumber(),
             action: this.action.toNumber(),
-            entrykey: this.entry_key,
-            valuehash: Buffer.from(this.value_hash).reverse().toString('hex')
+            entrykey: this.entryKey,
+            valuehash: this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEYVALUE) ||
+                this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ONE_KEYVALUE) ?
+                Buffer.from(this.valueHash).reverse().toString('hex') : undefined
         };
     }
     isValid() {
         if (this.version.gte(ContentMultiMapRemove.VERSION_FIRST) &&
             this.version.lte(ContentMultiMapRemove.VERSION_LAST)) {
             return (this.action.eq(ContentMultiMapRemove.ACTION_CLEAR_MAP) ||
-                (this.entry_key && (this.entry_key.length > 0) &&
-                    (this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY) || this.value_hash.length > 0)));
+                (this.entryKey && (this.entryKey.length > 0) &&
+                    (this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY) || this.valueHash.length > 0)));
         }
         return false;
     }

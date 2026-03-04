@@ -3,14 +3,14 @@ import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface ContentMultiMapRemoveJson {
     version: number;
     action: number;
-    entrykey: string;
-    valuehash: string;
+    entrykey?: string;
+    valuehash?: string;
 }
 export declare class ContentMultiMapRemove implements SerializableEntity {
     version: BigNumber;
     action: BigNumber;
-    entry_key: string;
-    value_hash: Buffer;
+    entryKey?: string;
+    valueHash?: Buffer;
     static VERSION_INVALID: import("bn.js");
     static VERSION_FIRST: import("bn.js");
     static VERSION_LAST: import("bn.js");
@@ -24,8 +24,8 @@ export declare class ContentMultiMapRemove implements SerializableEntity {
     constructor(data?: {
         version?: BigNumber;
         action?: BigNumber;
-        entry_key?: string;
-        value_hash?: Buffer;
+        entryKey?: string;
+        valueHash?: Buffer;
     });
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

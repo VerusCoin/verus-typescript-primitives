@@ -56,6 +56,27 @@ export const manyContentMultimapData = {
         "valuehash": "6121b03740b55731afc11d6df70fb2358ab2200a4ba0e75ad1d79fd037314311"
       }
     },
+    {
+      "i5Zkx5Z7tEfh42xtKfwbJ5LgEWE9rEgpFY": {
+        "version": 1,
+        "action": 2,
+        "entrykey": "iFawzbS99RqGs7J2TNxME1TmmayBGuRkA2",
+        "valuehash": "6121b03740b55731afc11d6df70fb2358ab2200a4ba0e75ad1d79fd037314311"
+      }
+    },
+    {
+      "i5Zkx5Z7tEfh42xtKfwbJ5LgEWE9rEgpFY": {
+        "version": 1,
+        "action": 3,
+        "entrykey": "iFawzbS99RqGs7J2TNxME1TmmayBGuRkA2"
+      }
+    },
+    {
+      "i5Zkx5Z7tEfh42xtKfwbJ5LgEWE9rEgpFY": {
+        "version": 1,
+        "action": 4
+      }
+    },
     // Cross Chain Data Reference (type Identity Multimap Reference)
     {
       "iP3euVSzNcXUrLNHnQnR9G6q8jeYuGSxgw": {

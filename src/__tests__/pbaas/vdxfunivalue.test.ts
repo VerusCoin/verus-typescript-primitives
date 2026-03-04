@@ -274,7 +274,7 @@ describe('Encodes and decodes VdxfUniValue', () => {
     crossChainDataRefObject.fromBuffer(Buffer.from(crossChainDataRefData, 'hex'));
     expect(crossChainDataRefObject.toJson()).toStrictEqual(jsonData.find(item => item[VDXF_Data.CrossChainDataRefKey.vdxfid] != undefined));
     expect(crossChainDataRefObject.toBuffer().toString('hex')).toBe(crossChainDataRefData);
-    expect(crossChainDataRefData).toBe(VdxfUniValue.fromJson(jsonData[6]).toBuffer().toString('hex'));
+    expect(crossChainDataRefData).toBe(VdxfUniValue.fromJson(jsonData[9]).toBuffer().toString('hex'));
 
     // Encrypted data in data desc
     const encryptedDataDescriptorData = '08a2ebb2c55f83a8e2a426a53320ed4d42124f4d01ad010d68645f601c64bb1df7dc62732869e0e74590a33d3132035d0a1475425ee8d674c67c3649de6e0882296bd238ea6d7f6b730eac708424a1b9bff64e4610c5483a178f5bbc17ca65eea19e36246d8564523bd43b37c5fa168cc216a83332bb1d784d4620e73c54585c81207654be28752898669fb4aa5b0a8cfed358ebb0c7755879afa1daf5474335f58c20cfe44d214ba3ecc2942dd3df2d0486c788c3ec0bb7415811ba8a0074088d1406'
@@ -282,7 +282,7 @@ describe('Encodes and decodes VdxfUniValue', () => {
     encryptedDataDescriptorObject.fromBuffer(Buffer.from(encryptedDataDescriptorData, 'hex'));
     expect(encryptedDataDescriptorObject.toJson()).toStrictEqual(jsonData.find(item => item[VDXF_Data.DataDescriptorKey.vdxfid] != undefined));
     expect(encryptedDataDescriptorObject.toBuffer().toString('hex')).toBe(encryptedDataDescriptorData);
-    expect(encryptedDataDescriptorData).toBe(VdxfUniValue.fromJson(jsonData[7]).toBuffer().toString('hex'));
+    expect(encryptedDataDescriptorData).toBe(VdxfUniValue.fromJson(jsonData[10]).toBuffer().toString('hex'));
 
     // MMR Desc
     const mmrData = '4382a62b73169697c3698d2f00bed6024c3a279701fdb0010105050100683e9ebbf6c7cc1cffde3d8fe5c62d2919e1bf6eb99ed9d5dfb305bba71b6c9f1373b50267b0bb2c08d99ea76b09430018125a9748486650995dc1831701b90e82a394ea99fa2770c68bcecd484732a07dab3aac72751593b321c3e6c9273adb0309b9fc5917e74399010068ba128a8ec42f1541895d1cefcae1b452543dce5653ae71d9c6e56c316833ba15f8d7d977878aadef2e42894e68c25ddd4d96bed0d257ba8e000b009946702ffa9e64e6cdb3fa8d81522ba39da177b050fef0ba89884c4f0e084de007df3d5ef7f410e5d9f388a71602010068544338da640c2a9ed9d646be434a044c6a03c29c875f0ae93fbd3a59433f260027d97b5d8e569b37a906db1789e9c2280744b4ae7d90959c12f3b617a07024ab96b08db8e9606c6cd8b5929518c3057bdecae9859d41c953a7def5af72f297efc9e0b181719fed3401006807809896a9c50e7396f01a12b3bf7ed4006962840e95c646290d9e1731b9705b2fd867fd781aecaa0e34b13beeefdea3f924b67d87c189f9c1dc662ef58ac59dc93d360e97f86d65a03304141f68a66a84af74884c35df54a856db003e8afd10d3db89f722d48689'
@@ -290,7 +290,7 @@ describe('Encodes and decodes VdxfUniValue', () => {
     mmrObject.fromBuffer(Buffer.from(mmrData, 'hex'));
     expect(mmrObject.toJson()).toStrictEqual(jsonData.find(item => item[VDXF_Data.MMRDescriptorKey.vdxfid] != undefined));
     expect(mmrObject.toBuffer().toString('hex')).toBe(mmrData);
-    expect(mmrData).toBe(VdxfUniValue.fromJson(jsonData[8]).toBuffer().toString('hex'));
+    expect(mmrData).toBe(VdxfUniValue.fromJson(jsonData[11]).toBuffer().toString('hex'));
 
     // Signature Data
     const signatureData = '2af2a488d317c76af6f764ec2c04009a9e358bb401ef01a6ef9ea235635e328124ff3429db9f9e91b64e2d0520ad35af52bb6931b5c87a56007ccef84c524cecd55a1abdcf6657742c317de3e2904cc869a56610c8174ead6c547fbae1954852af01018abf682d52180134b2f1094355fc199742a88d7d012269473839796a676e5145715356763364536850487054556b43744a743936677a565501e2e37d312c745766cfbd1a5ad5ec4c524cf8ce7c00567ac8b53169bb52af35ad48012f5b0800014120c89dfcbd5dda8abc52c37198b019fe194f35196c6fc01e217cb1ee4e7eb0532c54f6d3618eafb050ec3dd4d399b2464bcae0fea563f506e393971d5604850a81'
@@ -298,33 +298,33 @@ describe('Encodes and decodes VdxfUniValue', () => {
     signatureObject.fromBuffer(Buffer.from(signatureData, 'hex'));
     expect(signatureObject.toJson()).toStrictEqual(jsonData.find(item => item[VDXF_Data.SignatureDataKey.vdxfid] != undefined));
     expect(signatureObject.toBuffer().toString('hex')).toBe(signatureData);
-    expect(signatureData).toBe(VdxfUniValue.fromJson(jsonData[9]).toBuffer().toString('hex'));
+    expect(signatureData).toBe(VdxfUniValue.fromJson(jsonData[12]).toBuffer().toString('hex'));
     
     // Cross Chain Data Ref pbaasevidence
     const pbaasEvidenceRefdata = 'd6ae5ac0571b22d161261b87c748f6e0aee0334d013d0001030016a39b1f74372fe316624e2e11c1bd1b48ee111411b5dccb8d47a6341623e4010000000101a6ef9ea235635e328124ff3429db9f9e91b64e2d'
     const pbaasEvidenceRefObject = new VdxfUniValue();
     pbaasEvidenceRefObject.fromBuffer(Buffer.from(pbaasEvidenceRefdata, 'hex'));
-    expect(pbaasEvidenceRefObject.toJson()).toStrictEqual(jsonData[10]);
+    expect(pbaasEvidenceRefObject.toJson()).toStrictEqual(jsonData[13]);
     expect(pbaasEvidenceRefObject.toBuffer().toString('hex')).toBe(pbaasEvidenceRefdata);
-    expect(pbaasEvidenceRefdata).toBe(VdxfUniValue.fromJson(jsonData[10]).toBuffer().toString('hex'));
+    expect(pbaasEvidenceRefdata).toBe(VdxfUniValue.fromJson(jsonData[13]).toBuffer().toString('hex'));
     
 
     //Cross Chain Data Reference (type URLRef)
     const urldata = 'd6ae5ac0571b22d161261b87c748f6e0aee0334d01140202001068747470733a2f2f76657275732e696f'
     const urlObject = new VdxfUniValue();
     urlObject.fromBuffer(Buffer.from(urldata, 'hex'));
-    expect(urlObject.toJson()).toStrictEqual(jsonData[11]);
+    expect(urlObject.toJson()).toStrictEqual(jsonData[14]);
     expect(urlObject.toBuffer().toString('hex')).toBe(urldata);
-    expect(urldata).toBe(VdxfUniValue.fromJson(jsonData[11]).toBuffer().toString('hex'));
+    expect(urldata).toBe(VdxfUniValue.fromJson(jsonData[14]).toBuffer().toString('hex'));
 
     //Credential
     const credentialdata = '6d7401412e7ee923567eb8ac2d9f0c7102c2fb090151010101f503c4f232c4599167a02357c25b75d5ad3ff0177b226e616d65223a2254657374204163636f756e74227d1a7b2261646472657373223a22546573742041646472657373227d074c6162656c2031'
     const credentialObject = new VdxfUniValue();
     credentialObject.fromBuffer(Buffer.from(credentialdata, 'hex'));
 
-    expect(credentialObject.toJson()).toStrictEqual(jsonData[12]);
+    expect(credentialObject.toJson()).toStrictEqual(jsonData[15]);
     expect(credentialObject.toBuffer().toString('hex')).toBe(credentialdata);
-    expect(credentialdata).toBe(VdxfUniValue.fromJson(jsonData[12]).toBuffer().toString('hex'));
+    expect(credentialdata).toBe(VdxfUniValue.fromJson(jsonData[15]).toBuffer().toString('hex'));
 
   });
 

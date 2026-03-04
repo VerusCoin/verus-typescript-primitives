@@ -9,8 +9,8 @@ describe('Serializes and deserializes ContentMultiMapRemove', () => {
         const c = new ContentMultiMapRemove({
         version: new BN(1),
         action: ContentMultiMapRemove.ACTION_REMOVE_ONE_KEYVALUE,
-        entry_key: "iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j",
-        value_hash: Buffer.alloc(32).fill("h")
+        entryKey: "iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j",
+        valueHash: Buffer.alloc(32).fill("h")
         });
     
         const cFromBuf = new ContentMultiMapRemove();
