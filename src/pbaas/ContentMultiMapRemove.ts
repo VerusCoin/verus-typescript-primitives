@@ -44,12 +44,14 @@ export class ContentMultiMapRemove implements SerializableEntity {
 
     byteLength += varint.encodingLength(this.version);
     byteLength += varint.encodingLength(this.action);
-    if (this.action != ContentMultiMapRemove.ACTION_CLEAR_MAP) {
+
+    if (!this.action.eq(ContentMultiMapRemove.ACTION_CLEAR_MAP)) {
       byteLength += HASH160_BYTE_LENGTH
-      if (this.action != ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY) {
+      if (!this.action.eq(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEY)) {
         byteLength += HASH256_BYTE_LENGTH;
       }
     }
+    
     return byteLength
   }
 
