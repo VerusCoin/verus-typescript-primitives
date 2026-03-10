@@ -22,13 +22,13 @@
   "dependencies": {
     "base64url": "3.0.1",
     "blake2b": "https://github.com/VerusCoin/blake2b",
-    "bn.js": "5.2.1",
+    "bn.js": "5.2.3",
     "bs58check": "2.0.0",
     "create-hash": "1.2.0",
     "bech32": "2.0.0"
   },
   "devDependencies": {
-    "@types/bn.js": "5.1.1",
+    "@types/bn.js": "5.2.0",
     "@types/bs58check": "2.1.0",
     "@types/create-hash": "1.2.2",
     "@types/jest": "30.0",
@@ -49,6 +49,12 @@
     "semver": "7.5.2",
     "micromatch": "4.0.8",
     "braces": "3.0.3",
-    "base-x": "3.0.11"
+    "base-x": "3.0.11",
+    "sha.js": "2.4.12",
+    "minimatch": "3.1.4",
+    "glob": "10.5.0",
+    "cipher-base": "1.0.5",
+    "js-yaml": "4.1.1",
+    "ajv": "6.14.0"
   }
 }
