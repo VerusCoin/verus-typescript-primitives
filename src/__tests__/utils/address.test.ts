@@ -1,5 +1,5 @@
 import { I_ADDR_VERSION, X_ADDR_VERSION } from "../../constants/vdxf";
-import { fqnToParent, getDataKey, nameAndParentAddrToIAddr, toIAddress } from "../../utils/address";
+import { fqnToParentAddress, getDataKey, nameAndParentAddrToIAddr, toIAddress } from "../../utils/address";
 import { DATA_TYPE_DEFINEDKEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_VDXF_KEY, WALLET_VDXF_KEY } from "../../vdxf";
 
 describe('Address tests', () => {
@@ -26,44 +26,44 @@ describe('Address tests', () => {
     expect(nameAndParentAddrToIAddr("The Verus Coin Foundation", "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")).toBe("iDV1KZA6vBXi9k6K3imiSLe5CsYG6MdH4V");
   });
 
-  test('fqnToParent tests', () => {
+  test('fqnToParentAddress tests', () => {
     // Core invariant: parent of child.parent.root@ === toIAddress("parent.root@")
-    expect(fqnToParent("michael.valuid.vrsc@")).toBe(toIAddress("valuid.vrsc@"));
-    expect(fqnToParent("michael.valuid@", "vrsc")).toBe(toIAddress("valuid.vrsc@"));
-    expect(fqnToParent("michael.valuid.vrsc@", "vrsc")).toBe(toIAddress("valuid.vrsc@"));
+    expect(fqnToParentAddress("michael.valuid.vrsc@")).toBe(toIAddress("valuid.vrsc@"));
+    expect(fqnToParentAddress("michael.valuid@", "vrsc")).toBe(toIAddress("valuid.vrsc@"));
+    expect(fqnToParentAddress("michael.valuid.vrsc@", "vrsc")).toBe(toIAddress("valuid.vrsc@"));
 
     // Three levels deep
-    expect(fqnToParent("a.b.c.vrsc@")).toBe(toIAddress("b.c.vrsc@"));
-    expect(fqnToParent("a.b.c@", "vrsc")).toBe(toIAddress("b.c.vrsc@"));
+    expect(fqnToParentAddress("a.b.c.vrsc@")).toBe(toIAddress("b.c.vrsc@"));
+    expect(fqnToParentAddress("a.b.c@", "vrsc")).toBe(toIAddress("b.c.vrsc@"));
 
     // Single level under root — parent is the root identity
-    expect(fqnToParent("michael.vrsc@")).toBe(toIAddress("vrsc@"));
-    expect(fqnToParent("michael@", "vrsc")).toBe(toIAddress("vrsc@"));
-    expect(fqnToParent("michael.vrsc@", "vrsc")).toBe(toIAddress("vrsc@"));
+    expect(fqnToParentAddress("michael.vrsc@")).toBe(toIAddress("vrsc@"));
+    expect(fqnToParentAddress("michael@", "vrsc")).toBe(toIAddress("vrsc@"));
+    expect(fqnToParentAddress("michael.vrsc@", "vrsc")).toBe(toIAddress("vrsc@"));
 
     // Known values cross-check with nameAndParentAddrToIAddr
-    expect(fqnToParent("Andromeda.VRSCTEST@")).toBe(toIAddress("VRSCTEST@"));
-    expect(fqnToParent("Andromeda.VRSCTEST@")).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq");
+    expect(fqnToParentAddress("Andromeda.VRSCTEST@")).toBe(toIAddress("VRSCTEST@"));
+    expect(fqnToParentAddress("Andromeda.VRSCTEST@")).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq");
 
     // Root identity — no parent, returns null
-    expect(fqnToParent("vrsc@")).toBeNull();           // empty chain → no parent
-    expect(fqnToParent("vrsc", "vrsc")).toBeNull();    // rootSystemName matches → no parent
-    expect(fqnToParent("vrsc@", "vrsc")).toBeNull();
-    expect(fqnToParent("VRSCTEST@")).toBeNull();       // empty chain → root identity, no parent
-    expect(fqnToParent("VRSCTEST@", "VRSCTEST")).toBeNull();
+    expect(fqnToParentAddress("vrsc@")).toBeNull();           // empty chain → no parent
+    expect(fqnToParentAddress("vrsc", "vrsc")).toBeNull();    // rootSystemName matches → no parent
+    expect(fqnToParentAddress("vrsc@", "vrsc")).toBeNull();
+    expect(fqnToParentAddress("VRSCTEST@")).toBeNull();       // empty chain → root identity, no parent
+    expect(fqnToParentAddress("VRSCTEST@", "VRSCTEST")).toBeNull();
 
     // Case insensitivity — result must match regardless of case
-    expect(fqnToParent("Michael.VALUID.VRSC@")).toBe(fqnToParent("michael.valuid.vrsc@"));
-    expect(fqnToParent("MICHAEL.VALUID.VRSC@")).toBe(toIAddress("valuid.vrsc@"));
+    expect(fqnToParentAddress("Michael.VALUID.VRSC@")).toBe(fqnToParentAddress("michael.valuid.vrsc@"));
+    expect(fqnToParentAddress("MICHAEL.VALUID.VRSC@")).toBe(toIAddress("valuid.vrsc@"));
 
     // Trailing @ (explicit empty chain) behaves like no @ when chain is empty
-    expect(fqnToParent("michael.vrsc@")).toBe(fqnToParent("michael.vrsc"));
+    expect(fqnToParentAddress("michael.vrsc@")).toBe(fqnToParentAddress("michael.vrsc"));
 
     // rootSystemName already present in FQN — should not be duplicated
-    expect(fqnToParent("michael.valuid.vrsc@", "vrsc")).toBe(fqnToParent("michael.valuid.vrsc@"));
+    expect(fqnToParentAddress("michael.valuid.vrsc@", "vrsc")).toBe(fqnToParentAddress("michael.valuid.vrsc@"));
 
     // Invalid FQN — multiple @ separators
-    expect(() => fqnToParent("michael@valuid@vrsc")).toThrow();
+    expect(() => fqnToParentAddress("michael@valuid@vrsc")).toThrow();
   });
 
   test('getDataKey tests', () => {
