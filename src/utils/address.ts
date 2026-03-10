@@ -108,6 +108,28 @@ export const fqnToAddress = (fullyqualifiedname: string, rootSystemName: string 
   return toBase58Check(hash160(idHash), version);
 }
 
+export const fqnToParent = (fullyqualifiedname: string, rootSystemName: string = ""): string | null => {
+  const splitFqnAt = fullyqualifiedname.split("@").filter(x => x.length > 0);
+  if (splitFqnAt.length !== 1) throw new Error("Invalid name");
+
+  const splitFqnDot = splitFqnAt[0].split('.');
+
+  if (
+    toLowerCaseCLocale(splitFqnDot[splitFqnDot.length - 1]) !== toLowerCaseCLocale(rootSystemName) &&
+    splitFqnDot[splitFqnDot.length - 1] !== ""
+  ) {
+    splitFqnDot.push(rootSystemName);
+  }
+
+  splitFqnDot.shift();
+
+  const parentSegments = splitFqnDot.filter(s => s.length > 0);
+  if (parentSegments.length === 0) return null;
+
+  // Trailing dot prevents fqnToAddress from re-appending rootSystemName
+  return fqnToAddress(parentSegments.join(".") + ".", "");
+};
+
 export const toIAddress = (fullyqualifiedname: string, rootSystemName: string = ""): string => {
   return fqnToAddress(fullyqualifiedname, rootSystemName, I_ADDR_VERSION)
 }
