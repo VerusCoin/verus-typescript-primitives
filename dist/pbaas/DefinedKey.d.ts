@@ -11,7 +11,7 @@ export declare class DefinedKey implements SerializableEntity {
     static DEFINEDKEY_DEFAULT_FLAGS: import("bn.js");
     static DEFINEDKEY_COMBINES_KEY: import("bn.js");
     static DEFINEDKEY_COMBINES_HASH: import("bn.js");
-    static DEFINEDKEY_COMBINES_indexNum: import("bn.js");
+    static DEFINEDKEY_COMBINES_INDEX_NUM: import("bn.js");
     static DEFINEDKEY_CONTAINS_SCHEMA: import("bn.js");
     static DEFINEDKEY_VERSION_INVALID: import("bn.js");
     static DEFINEDKEY_VERSION_CURRENT: import("bn.js");

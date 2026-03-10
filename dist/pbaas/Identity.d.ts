@@ -78,6 +78,7 @@ export declare class Identity extends Principal implements SerializableEntity {
     protected containsUnlockAfter(): boolean;
     private getIdentityByteLength;
     getByteLength(): number;
+    protected createContentMultiMap(): ContentMultiMap;
     clearContentMultiMap(): void;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number, parseVdxfObjects?: boolean): number;

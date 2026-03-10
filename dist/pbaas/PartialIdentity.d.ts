@@ -1,6 +1,7 @@
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { Identity, VerusCLIVerusIDJson, VerusIDInitData } from './Identity';
+import { ContentMultiMap } from './ContentMultiMap';
 export declare class PartialIdentity extends Identity implements SerializableEntity {
     contains: BigNumber;
     static PARTIAL_ID_CONTAINS_PARENT: import("bn.js");
@@ -28,6 +29,8 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     protected containsRecovery(): boolean;
     protected containsPrivateAddresses(): boolean;
     protected containsUnlockAfter(): boolean;
+    protected createContentMultiMap(): ContentMultiMap;
+    clearContentMultiMap(): void;
     private toggleContainsParent;
     private toggleContainsSystemId;
     private toggleContainsContentMap;

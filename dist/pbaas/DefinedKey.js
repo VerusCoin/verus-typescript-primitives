@@ -39,7 +39,7 @@ class DefinedKey {
         return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_HASH).toNumber());
     }
     combinesindexNum() {
-        return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_indexNum).toNumber());
+        return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_INDEX_NUM).toNumber());
     }
     getFqnBuffer() {
         return Buffer.from(this.vdxfuri, 'utf8');
@@ -93,7 +93,7 @@ exports.DefinedKey = DefinedKey;
 DefinedKey.DEFINEDKEY_DEFAULT_FLAGS = new bn_js_1.BN(0, 10);
 DefinedKey.DEFINEDKEY_COMBINES_KEY = new bn_js_1.BN(1, 10);
 DefinedKey.DEFINEDKEY_COMBINES_HASH = new bn_js_1.BN(2, 10);
-DefinedKey.DEFINEDKEY_COMBINES_indexNum = new bn_js_1.BN(4, 10);
+DefinedKey.DEFINEDKEY_COMBINES_INDEX_NUM = new bn_js_1.BN(4, 10);
 DefinedKey.DEFINEDKEY_CONTAINS_SCHEMA = new bn_js_1.BN(8, 10);
 DefinedKey.DEFINEDKEY_VERSION_INVALID = new bn_js_1.BN(0, 10);
 DefinedKey.DEFINEDKEY_VERSION_CURRENT = new bn_js_1.BN(1, 10);

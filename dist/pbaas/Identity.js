@@ -41,7 +41,7 @@ class Identity extends Principal_1.Principal {
         if (data === null || data === void 0 ? void 0 : data.content_multimap)
             this.content_multimap = data.content_multimap;
         else
-            this.content_multimap = new ContentMultiMap_1.ContentMultiMap({ kv_content: new Map() });
+            this.content_multimap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
         if (data === null || data === void 0 ? void 0 : data.revocation_authority)
             this.revocation_authority = data.revocation_authority;
         if (data === null || data === void 0 ? void 0 : data.recovery_authority)
@@ -129,8 +129,11 @@ class Identity extends Principal_1.Principal {
     getByteLength() {
         return this.getIdentityByteLength();
     }
+    createContentMultiMap() {
+        return new ContentMultiMap_1.ContentMultiMap();
+    }
     clearContentMultiMap() {
-        this.content_multimap = new ContentMultiMap_1.ContentMultiMap({ kv_content: new Map() });
+        this.content_multimap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
     }
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getIdentityByteLength()));
@@ -194,7 +197,7 @@ class Identity extends Principal_1.Principal {
         if (this.containsContentMultiMap()) {
             //contentmultimap
             if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
-                const multimap = new ContentMultiMap_1.ContentMultiMap();
+                const multimap = this.createContentMultiMap();
                 reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
                 this.content_multimap = multimap;
             }

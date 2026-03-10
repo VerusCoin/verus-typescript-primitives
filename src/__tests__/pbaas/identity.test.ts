@@ -6,6 +6,7 @@ import { IdentityID } from "../../pbaas/IdentityID";
 import { DATA_TYPE_STRING } from "../../vdxf";
 import { ContentMultiMapPrimitive } from "../../pbaas/ContentMultiMap";
 import { VdxfUniValue } from "../../pbaas/VdxfUniValue";
+import { CompactIAddressObject } from "../../vdxf/classes/CompactAddressObject";
 
 describe('Serializes and deserializes identity properly', () => {
   test('deserialize/serialize VerusID without zaddr, post pbaas, with multimap and contentmap', () => {
@@ -191,7 +192,7 @@ describe('Serializes and deserializes identity properly', () => {
            }   
     });
 
-    const valuMap = identity_frombuf.content_multimap.kv_content.get("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V")
+    const valuMap = identity_frombuf.content_multimap.kvContent.get(CompactIAddressObject.fromAddress("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V"))
 
     let valuMapJson;
     if (valuMap !== undefined) {
@@ -439,6 +440,6 @@ describe('Serializes and deserializes identity properly', () => {
     const identity_to_json = new Identity();
     identity_to_json.fromBuffer(identity_buf);
 
-    expect(identity_frombuf.content_multimap.kv_content.size).toBe(0);
+    expect(identity_frombuf.content_multimap.kvContent.size).toBe(0);
   });
 });

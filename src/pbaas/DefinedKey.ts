@@ -22,7 +22,7 @@ export class DefinedKey implements SerializableEntity {
   static DEFINEDKEY_DEFAULT_FLAGS = new BN(0, 10);
   static DEFINEDKEY_COMBINES_KEY = new BN(1, 10);
   static DEFINEDKEY_COMBINES_HASH = new BN(2, 10);
-  static DEFINEDKEY_COMBINES_indexNum = new BN(4, 10);
+  static DEFINEDKEY_COMBINES_INDEX_NUM = new BN(4, 10);
   static DEFINEDKEY_CONTAINS_SCHEMA = new BN(8, 10);
 
   static DEFINEDKEY_VERSION_INVALID = new BN(0, 10);
@@ -69,7 +69,7 @@ export class DefinedKey implements SerializableEntity {
   }
 
   combinesindexNum() {
-    return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_indexNum).toNumber());
+    return !!(this.flags.and(DefinedKey.DEFINEDKEY_COMBINES_INDEX_NUM).toNumber());
   }
 
   getFqnBuffer() {

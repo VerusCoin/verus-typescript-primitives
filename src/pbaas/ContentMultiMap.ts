@@ -2,11 +2,10 @@ import varuint from '../utils/varuint';
 import bufferutils from '../utils/bufferutils';
 import { fromBase58Check, toBase58Check } from '../utils/address';
 import {  I_ADDR_VERSION } from '../constants/vdxf';
-import { BN } from 'bn.js';
-import { DATA_TYPE_STRING } from '../vdxf';
-import { VdxfUniType, VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
+import { VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
 import { isHexString } from '../utils/string';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
+import { CompactIAddressObject } from '../vdxf/classes/CompactAddressObject';
 
 const { BufferReader, BufferWriter } = bufferutils
 
@@ -29,23 +28,88 @@ export function isKvValueArrayItemVdxfUniValueJson(x: ContentMultiMapJsonValue):
   })
 }
 
-export type KvContent =  Map<string, Array<ContentMultiMapPrimitive>>;
+/**
+ * KvContent wraps a Map whose internal keys are hex strings of CompactIAddressObject.toBuffer().
+ * External callers always use CompactIAddressObject for keys.
+ *
+ * Keys whose toIAddress() resolves to the same iaddress are not allowed, because an FQN and a
+ * TYPE_I_ADDRESS key can evaluate to the same underlying iaddress and would collide on-chain.
+ */
+export class KvContent {
+  private _map: Map<string, Array<ContentMultiMapPrimitive>> = new Map();
+
+  private static toInternalKey(key: CompactIAddressObject): string {
+    return key.toBuffer().toString('hex');
+  }
+
+  private static keyFromInternalKey(hexKey: string): CompactIAddressObject {
+    const key = new CompactIAddressObject();
+    key.fromBuffer(Buffer.from(hexKey, 'hex'));
+    return key;
+  }
+
+  get size(): number {
+    return this._map.size;
+  }
+
+  set(key: CompactIAddressObject, value: Array<ContentMultiMapPrimitive>): this {
+    const internalKey = KvContent.toInternalKey(key);
+
+    if (!this._map.has(internalKey)) {
+      const newIAddr = key.toIAddress();
+
+      for (const hexKey of this._map.keys()) {
+        const existing = KvContent.keyFromInternalKey(hexKey);
+        if (existing.toIAddress() === newIAddr) {
+          throw new Error(`KvContent key collision: a different key already resolves to iaddress ${newIAddr}`);
+        }
+      }
+    }
+
+    this._map.set(internalKey, value);
+    return this;
+  }
+
+  get(key: CompactIAddressObject): Array<ContentMultiMapPrimitive> | undefined {
+    return this._map.get(KvContent.toInternalKey(key));
+  }
+
+  has(key: CompactIAddressObject): boolean {
+    return this._map.has(KvContent.toInternalKey(key));
+  }
+
+  delete(key: CompactIAddressObject): boolean {
+    return this._map.delete(KvContent.toInternalKey(key));
+  }
+
+  entries(): IterableIterator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]> {
+    const map = this._map;
+
+    function* gen(): Generator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]> {
+      for (const [hexKey, value] of map.entries()) {
+        yield [KvContent.keyFromInternalKey(hexKey), value];
+      }
+    }
+
+    return gen() as IterableIterator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]>;
+  }
+}
 
 export class ContentMultiMap implements SerializableEntity {
-  kv_content: KvContent;
+  kvContent: KvContent;
 
-  constructor(data?: { kv_content: KvContent }) {
-    if (data?.kv_content) this.kv_content = data.kv_content;
+  constructor(data?: { kvContent: KvContent }) {
+    if (data?.kvContent) this.kvContent = data.kvContent;
   }
 
   getByteLength() {
     let length = 0;
 
-    length += varuint.encodingLength(this.kv_content.size);
+    length += varuint.encodingLength(this.kvContent.size);
 
-    for (const [key, value] of this.kv_content.entries()) {
-      length += fromBase58Check(key).hash.length;
-      
+    for (const [key, value] of this.kvContent.entries()) {
+      length += fromBase58Check(key.toIAddress()).hash.length;
+
       if (Array.isArray(value)) {
         const valueArr = value as Array<ContentMultiMapPrimitive>;
         length += varuint.encodingLength(valueArr.length);
@@ -53,12 +117,12 @@ export class ContentMultiMap implements SerializableEntity {
         for (const n of value) {
           if (n instanceof VdxfUniValue) {
             const nCMMNOLength = n.getByteLength();
-  
+
             length += varuint.encodingLength(nCMMNOLength);
             length += nCMMNOLength;
           } else if (Buffer.isBuffer(n)) {
             const nBuf = n as Buffer;
-  
+
             length += varuint.encodingLength(nBuf.length);
             length += nBuf.length;
           } else throw new Error("Unknown ContentMultiMap data, can't calculate ByteLength")
@@ -72,22 +136,22 @@ export class ContentMultiMap implements SerializableEntity {
   toBuffer() {
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
 
-    writer.writeCompactSize(this.kv_content.size);
+    writer.writeCompactSize(this.kvContent.size);
 
-    for (const [key, value] of this.kv_content.entries()) {
-      writer.writeSlice(fromBase58Check(key).hash);
+    for (const [key, value] of this.kvContent.entries()) {
+      writer.writeSlice(fromBase58Check(key.toIAddress()).hash);
 
-      if (Array.isArray(value)) { 
+      if (Array.isArray(value)) {
         writer.writeCompactSize(value.length);
 
         for (const n of value) {
           if (n instanceof VdxfUniValue) {
             const nCMMNOBuf = n.toBuffer();
-  
+
             writer.writeVarSlice(nCMMNOBuf);
           } else if (Buffer.isBuffer(n)) {
             const nBuf = n as Buffer;
-  
+
             writer.writeVarSlice(nBuf);
           } else throw new Error("Unknown ContentMultiMap data, can't toBuffer");
         }
@@ -101,11 +165,11 @@ export class ContentMultiMap implements SerializableEntity {
     const reader = new BufferReader(buffer, offset);
 
     const contentMultiMapSize = reader.readCompactSize();
-    this.kv_content = new Map();
+    this.kvContent = new KvContent();
 
     for (var i = 0; i < contentMultiMapSize; i++) {
-      
-      const contentMapKey = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+      const iaddr = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+      const contentMapKey = CompactIAddressObject.fromAddress(iaddr);
 
       const vector: Array<ContentMultiMapPrimitive> = [];
       const count = reader.readCompactSize();
@@ -116,23 +180,29 @@ export class ContentMultiMap implements SerializableEntity {
           unival.fromBuffer(reader.readVarSlice(), 0);
 
           vector.push(unival);
-        } else { 
+        } else {
           vector.push(reader.readVarSlice());
         }
       }
 
-      this.kv_content.set(contentMapKey, vector);
+      this.kvContent.set(contentMapKey, vector);
     }
 
     return reader.offset;
   }
 
   static fromJson(obj: { [key: string]: ContentMultiMapJsonValue }): ContentMultiMap {
-    const content: KvContent = new Map();
+    const content = new KvContent();
 
-    for (const key in obj) {
-      const keybytes = fromBase58Check(key).hash;
-      const value = obj[key];
+    for (const keyStr in obj) {
+      const compactKey = keyStr.includes('::')
+        ? CompactIAddressObject.fromFQN(keyStr)
+        : CompactIAddressObject.fromAddress(keyStr);
+
+      // Validate that the key resolves to a real iaddress
+      const resolvedIAddr = compactKey.toIAddress();
+      const keybytes = fromBase58Check(resolvedIAddr).hash;
+      const value = obj[keyStr];
 
       if (keybytes && value != null) {
         if (Array.isArray(value)) {
@@ -150,25 +220,25 @@ export class ContentMultiMap implements SerializableEntity {
             }
           }
 
-          content.set(key, items);
+          content.set(compactKey, items);
         } else if (typeof value === 'string' && isHexString(value)) {
-          content.set(key, [Buffer.from(value, 'hex')]);
+          content.set(compactKey, [Buffer.from(value, 'hex')]);
         } else if (isKvValueArrayItemVdxfUniValueJson(value)) {
-          content.set(key, [VdxfUniValue.fromJson(value as VdxfUniValueJson)]);
+          content.set(compactKey, [VdxfUniValue.fromJson(value as VdxfUniValueJson)]);
         } else {
           throw new Error("Invalid data in multimap")
         }
       }
     }
 
-    return new ContentMultiMap({ kv_content: content })
+    return new ContentMultiMap({ kvContent: content })
   }
 
   toJson(): ContentMultiMapJson {
     const ret: ContentMultiMapJson = {};
-    
-    for (const [key, value] of this.kv_content.entries()) {
-      if (Array.isArray(value)) { 
+
+    for (const [key, value] of this.kvContent.entries()) {
+      if (Array.isArray(value)) {
         const items = [];
 
         for (const n of value) {
@@ -179,10 +249,114 @@ export class ContentMultiMap implements SerializableEntity {
           } else throw new Error("Unknown ContentMultiMap data, can't toBuffer");
         }
 
-        ret[key] = items;
+        ret[key.toString()] = items;
       } else throw new Error("Unknown ContentMultiMap data, can't toBuffer")
     }
 
     return ret;
+  }
+}
+
+/**
+ * FqnContentMultiMap is a ContentMultiMap variant used exclusively in PartialIdentity.
+ * It serializes keys as full CompactIAddressObjects (preserving TYPE_FQN through binary
+ * round-trips) rather than the daemon-compatible 20-byte iaddress hash format used by
+ * ContentMultiMap. These two formats are not interchangeable.
+ */
+export class FqnContentMultiMap extends ContentMultiMap {
+  getByteLength() {
+    let length = 0;
+
+    length += varuint.encodingLength(this.kvContent.size);
+
+    for (const [key, value] of this.kvContent.entries()) {
+      length += key.getByteLength();
+
+      if (Array.isArray(value)) {
+        const valueArr = value as Array<ContentMultiMapPrimitive>;
+        length += varuint.encodingLength(valueArr.length);
+
+        for (const n of value) {
+          if (n instanceof VdxfUniValue) {
+            const nCMMNOLength = n.getByteLength();
+
+            length += varuint.encodingLength(nCMMNOLength);
+            length += nCMMNOLength;
+          } else if (Buffer.isBuffer(n)) {
+            const nBuf = n as Buffer;
+
+            length += varuint.encodingLength(nBuf.length);
+            length += nBuf.length;
+          } else throw new Error("Unknown FqnContentMultiMap data, can't calculate ByteLength")
+        }
+      } else throw new Error("Unknown FqnContentMultiMap data, can't calculate ByteLength")
+    }
+
+    return length;
+  }
+
+  toBuffer() {
+    const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
+
+    writer.writeCompactSize(this.kvContent.size);
+
+    for (const [key, value] of this.kvContent.entries()) {
+      writer.writeSlice(key.toBuffer());
+
+      if (Array.isArray(value)) {
+        writer.writeCompactSize(value.length);
+
+        for (const n of value) {
+          if (n instanceof VdxfUniValue) {
+            const nCMMNOBuf = n.toBuffer();
+
+            writer.writeVarSlice(nCMMNOBuf);
+          } else if (Buffer.isBuffer(n)) {
+            const nBuf = n as Buffer;
+
+            writer.writeVarSlice(nBuf);
+          } else throw new Error("Unknown FqnContentMultiMap data, can't toBuffer");
+        }
+      } else throw new Error("Unknown FqnContentMultiMap data, can't toBuffer")
+    }
+
+    return writer.buffer;
+  }
+
+  fromBuffer(buffer: Buffer, offset: number = 0, parseVdxfObjects: boolean = false) {
+    const reader = new BufferReader(buffer, offset);
+
+    const contentMultiMapSize = reader.readCompactSize();
+    this.kvContent = new KvContent();
+
+    for (let i = 0; i < contentMultiMapSize; i++) {
+      const contentMapKey = new CompactIAddressObject();
+      reader.offset = contentMapKey.fromBuffer(reader.buffer, reader.offset);
+
+      const vector: Array<ContentMultiMapPrimitive> = [];
+      const count = reader.readCompactSize();
+
+      for (let j = 0; j < count; j++) {
+        if (parseVdxfObjects) {
+          const unival = new VdxfUniValue();
+          unival.fromBuffer(reader.readVarSlice(), 0);
+
+          vector.push(unival);
+        } else {
+          vector.push(reader.readVarSlice());
+        }
+      }
+
+      this.kvContent.set(contentMapKey, vector);
+    }
+
+    return reader.offset;
+  }
+
+  static fromJson(obj: { [key: string]: ContentMultiMapJsonValue }): FqnContentMultiMap {
+    const base = ContentMultiMap.fromJson(obj);
+    const inst = new FqnContentMultiMap();
+    inst.kvContent = base.kvContent;
+    return inst;
   }
 }

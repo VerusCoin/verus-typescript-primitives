@@ -7,7 +7,7 @@ import { I_ADDR_VERSION, R_ADDR_VERSION, HASH160_BYTE_LENGTH, HASH256_BYTE_LENGT
 import { BN } from 'bn.js';
 import { IdentityID } from './IdentityID';
 import { SaplingPaymentAddress } from './SaplingPaymentAddress';
-import { ContentMultiMap, ContentMultiMapJson } from './ContentMultiMap';
+import { ContentMultiMap, ContentMultiMapJson, KvContent, FqnContentMultiMap } from './ContentMultiMap';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { KeyID } from './KeyID';
 
@@ -92,7 +92,7 @@ export class Identity extends Principal implements SerializableEntity {
     if (data?.content_map) this.content_map = data.content_map;
     else this.content_map = new Map();
     if (data?.content_multimap) this.content_multimap = data.content_multimap;
-    else this.content_multimap = new ContentMultiMap({ kv_content: new Map() });
+    else this.content_multimap = new ContentMultiMap({ kvContent: new KvContent() });
     if (data?.revocation_authority) this.revocation_authority = data.revocation_authority;
     if (data?.recovery_authority) this.recovery_authority = data.recovery_authority;
     if (data?.private_addresses) this.private_addresses = data.private_addresses;
@@ -196,8 +196,12 @@ export class Identity extends Principal implements SerializableEntity {
     return this.getIdentityByteLength();
   }
 
+  protected createContentMultiMap(): ContentMultiMap {
+    return new ContentMultiMap();
+  }
+
   clearContentMultiMap() {
-    this.content_multimap = new ContentMultiMap({ kv_content: new Map() });
+    this.content_multimap = new ContentMultiMap({ kvContent: new KvContent() });
   }
 
   toBuffer() {
@@ -275,9 +279,9 @@ export class Identity extends Principal implements SerializableEntity {
     if (this.containsContentMultiMap()) {
       //contentmultimap
       if (this.version.gte(IDENTITY_VERSION_PBAAS)) {
-        const multimap = new ContentMultiMap();
+        const multimap = this.createContentMultiMap();
 
-      reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
+        reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
 
         this.content_multimap = multimap;
       }

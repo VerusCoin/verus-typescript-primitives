@@ -2,13 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartialIdentity = void 0;
 const Identity_1 = require("./Identity");
+const ContentMultiMap_1 = require("./ContentMultiMap");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class PartialIdentity extends Identity_1.Identity {
     constructor(data) {
+        var _a, _b;
         super(data);
+        // Always use FqnContentMultiMap so FQN keys survive binary round-trips
+        if (!(this.content_multimap instanceof ContentMultiMap_1.FqnContentMultiMap)) {
+            this.content_multimap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: (_b = (_a = this.content_multimap) === null || _a === void 0 ? void 0 : _a.kvContent) !== null && _b !== void 0 ? _b : new ContentMultiMap_1.KvContent() });
+        }
         this.contains = new bn_js_1.BN("0");
         if (data === null || data === void 0 ? void 0 : data.parent)
             this.toggleContainsParent();
@@ -70,6 +76,12 @@ class PartialIdentity extends Identity_1.Identity {
     }
     containsUnlockAfter() {
         return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_UNLOCK_AFTER).toNumber());
+    }
+    createContentMultiMap() {
+        return new ContentMultiMap_1.FqnContentMultiMap();
+    }
+    clearContentMultiMap() {
+        this.content_multimap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
     }
     toggleContainsParent() {
         this.contains = this.contains.xor(PartialIdentity.PARTIAL_ID_CONTAINS_PARENT);
