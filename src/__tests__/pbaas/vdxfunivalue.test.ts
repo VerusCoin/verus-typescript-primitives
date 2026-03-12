@@ -2,7 +2,9 @@ import { BN } from "bn.js";
 import { PRINCIPAL_DEFAULT_FLAGS, PRINCIPAL_VERSION_CURRENT, Principal } from "../../pbaas/Principal";
 import { KeyID } from "../../pbaas/KeyID";
 import { fromBase58Check } from "../../utils/address";
-import { VDXF_UNI_VALUE_VERSION_CURRENT, VdxfUniValue } from "../../pbaas/VdxfUniValue";
+import { FqnVdxfUniValue, VDXF_UNI_VALUE_VERSION_CURRENT, VdxfUniValue } from "../../pbaas/VdxfUniValue";
+import { ContentMultiMapRemove } from "../../pbaas/ContentMultiMapRemove";
+import { ContentMultiMap, FqnContentMultiMap } from "../../pbaas/ContentMultiMap";
 import { DATA_TYPE_STRING, VERUSPAY_INVOICE_VDXF_KEY } from "../../vdxf";
 import { Rating } from "../../pbaas/Rating";
 import { CurrencyValueMap } from "../../pbaas";
@@ -328,4 +330,237 @@ describe('Encodes and decodes VdxfUniValue', () => {
 
   });
 
+});
+
+describe('VdxfUniValue FQN key support', () => {
+  // "vrsc::identity.multimapremove" resolves to this vdxfid
+  const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
+  const CMM_REMOVE_FQN = VDXF_Data.ContentMultiMapRemoveKeyName;
+
+  const cmmRemovePayload = { version: 1, action: 3, entrykey: "iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH" };
+
+  test('VdxfUniValue.fromJson accepts FQN key and produces same buffer as iaddress key', () => {
+    const fromFqn = VdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+    const fromIaddr = VdxfUniValue.fromJson({ [CMM_REMOVE_VDXFID]: cmmRemovePayload });
+
+    expect(fromFqn.toBuffer().toString('hex')).toBe(fromIaddr.toBuffer().toString('hex'));
+  });
+
+  test('VdxfUniValue.fromJson with FQN key stores value as ContentMultiMapRemove', () => {
+    const uni = VdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+
+    expect(uni.values).toHaveLength(1);
+    const value = uni.values[0][CMM_REMOVE_VDXFID];
+    expect(value).toBeInstanceOf(ContentMultiMapRemove);
+
+    const cmm = value as ContentMultiMapRemove;
+    expect(cmm.version.toNumber()).toBe(1);
+    expect(cmm.action.toNumber()).toBe(3);
+  });
+
+  test('VdxfUniValue with FQN key survives buffer round-trip', () => {
+    const uni = VdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+    const buf = uni.toBuffer();
+
+    const roundTripped = new VdxfUniValue();
+    roundTripped.fromBuffer(buf);
+
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+    expect(roundTripped.values[0][CMM_REMOVE_VDXFID]).toBeInstanceOf(ContentMultiMapRemove);
+  });
+
+  test('FqnContentMultiMap with FQN outer and FQN inner VdxfUniValue key (the user example)', () => {
+    const json = {
+      [CMM_REMOVE_FQN]: [{
+        [CMM_REMOVE_FQN]: cmmRemovePayload
+      }]
+    };
+
+    // Should not throw
+    const map = FqnContentMultiMap.fromJson(json);
+    const buf = map.toBuffer();
+
+    // Round-trip
+    const roundTripped = new FqnContentMultiMap();
+    roundTripped.fromBuffer(buf, 0, true);
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+
+    // The inner value should be a FqnVdxfUniValue with the FQN key preserved
+    const entries = [...roundTripped.kvContent.entries()];
+    expect(entries).toHaveLength(1);
+    const [, values] = entries[0];
+    expect(values).toHaveLength(1);
+    const uni = values[0] as FqnVdxfUniValue;
+    expect(uni).toBeInstanceOf(FqnVdxfUniValue);
+    // FQN key is preserved in toJson() output
+    expect((uni.toJson() as any)[CMM_REMOVE_FQN]).toBeInstanceOf(Object);
+    // The actual value type is accessible via the first entry of values
+    expect(Object.values(uni.values[0])[0]).toBeInstanceOf(ContentMultiMapRemove);
+  });
+
+  test('FQN keys across multiple supported VdxfUniValue types resolve correctly', () => {
+    // String type
+    const strFqn = VdxfUniValue.fromJson({ [VDXF_Data.DataStringKeyName]: "hello" });
+    const strIaddr = VdxfUniValue.fromJson({ [VDXF_Data.DataStringKey.vdxfid]: "hello" });
+    expect(strFqn.toBuffer().toString('hex')).toBe(strIaddr.toBuffer().toString('hex'));
+
+    // ByteVector type
+    const bvFqn = VdxfUniValue.fromJson({ [VDXF_Data.DataByteVectorKeyName]: "deadbeef" });
+    const bvIaddr = VdxfUniValue.fromJson({ [VDXF_Data.DataByteVectorKey.vdxfid]: "deadbeef" });
+    expect(bvFqn.toBuffer().toString('hex')).toBe(bvIaddr.toBuffer().toString('hex'));
+
+    // ContentMultiMapRemove type
+    const cmmFqn = VdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+    const cmmIaddr = VdxfUniValue.fromJson({ [CMM_REMOVE_VDXFID]: cmmRemovePayload });
+    expect(cmmFqn.toBuffer().toString('hex')).toBe(cmmIaddr.toBuffer().toString('hex'));
+  });
+});
+
+describe('FqnVdxfUniValue', () => {
+  const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
+  const CMM_REMOVE_FQN = VDXF_Data.ContentMultiMapRemoveKeyName;
+  const cmmRemovePayload = { version: 1, action: 3, entrykey: "iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH" };
+
+  test('FqnVdxfUniValue.fromJson preserves FQN key', () => {
+    const uni = FqnVdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+
+    expect(uni).toBeInstanceOf(FqnVdxfUniValue);
+    expect(uni.values).toHaveLength(1);
+    // Keys are stored as hex of CompactIAddressObject internally
+    expect(Object.values(uni.values[0])[0]).toBeInstanceOf(ContentMultiMapRemove);
+    // toJson() restores the original FQN key
+    expect((uni.toJson() as any)[CMM_REMOVE_FQN]).toBeDefined();
+    expect((uni.toJson() as any)[CMM_REMOVE_VDXFID]).toBeUndefined();
+  });
+
+  test('FqnVdxfUniValue with FQN key survives buffer round-trip preserving FQN', () => {
+    const uni = FqnVdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+    const buf = uni.toBuffer();
+
+    const roundTripped = new FqnVdxfUniValue();
+    roundTripped.fromBuffer(buf);
+
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+    // FQN key preserved in toJson() after round-trip
+    expect((roundTripped.toJson() as any)[CMM_REMOVE_FQN]).toBeDefined();
+    expect((roundTripped.toJson() as any)[CMM_REMOVE_VDXFID]).toBeUndefined();
+
+    const cmm = Object.values(roundTripped.values[0])[0] as ContentMultiMapRemove;
+    expect(cmm).toBeInstanceOf(ContentMultiMapRemove);
+    expect(cmm.version.toNumber()).toBe(1);
+    expect(cmm.action.toNumber()).toBe(3);
+  });
+
+  test('FqnVdxfUniValue with iaddress key survives buffer round-trip', () => {
+    const uni = FqnVdxfUniValue.fromJson({ [CMM_REMOVE_VDXFID]: cmmRemovePayload });
+    const buf = uni.toBuffer();
+
+    const roundTripped = new FqnVdxfUniValue();
+    roundTripped.fromBuffer(buf);
+
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+    expect(Object.values(roundTripped.values[0])[0]).toBeInstanceOf(ContentMultiMapRemove);
+    // iaddress key preserved in toJson()
+    expect((roundTripped.toJson() as any)[CMM_REMOVE_VDXFID]).toBeDefined();
+  });
+
+  test('FqnVdxfUniValue FQN and iaddress keys produce different buffers', () => {
+    // FQN key encodes CompactIAddressObject TYPE_FQN; iaddress encodes TYPE_I_ADDRESS
+    const fromFqn = FqnVdxfUniValue.fromJson({ [CMM_REMOVE_FQN]: cmmRemovePayload });
+    const fromIaddr = FqnVdxfUniValue.fromJson({ [CMM_REMOVE_VDXFID]: cmmRemovePayload });
+
+    expect(fromFqn.toBuffer().toString('hex')).not.toBe(fromIaddr.toBuffer().toString('hex'));
+  });
+
+  test('FqnVdxfUniValue string key survives round-trip with FQN preserved', () => {
+    const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataStringKeyName]: "hello fqn" });
+    const buf = uni.toBuffer();
+
+    const roundTripped = new FqnVdxfUniValue();
+    roundTripped.fromBuffer(buf);
+
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+    // FQN key preserved in toJson()
+    expect((roundTripped.toJson() as any)[VDXF_Data.DataStringKeyName]).toBe("hello fqn");
+  });
+
+  test('FqnContentMultiMap with iaddress outer key and FQN inner key round-trips correctly', () => {
+    const json = {
+      [CMM_REMOVE_VDXFID]: [{
+        [CMM_REMOVE_FQN]: cmmRemovePayload
+      }]
+    };
+
+    const map = FqnContentMultiMap.fromJson(json);
+    const buf = map.toBuffer();
+
+    const roundTripped = new FqnContentMultiMap();
+    roundTripped.fromBuffer(buf, 0, true);
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+
+    const entries = [...roundTripped.kvContent.entries()];
+    const [, values] = entries[0];
+    const uni = values[0] as FqnVdxfUniValue;
+    expect(uni).toBeInstanceOf(FqnVdxfUniValue);
+    // FQN inner key preserved in toJson()
+    expect((uni.toJson() as any)[CMM_REMOVE_FQN]).toBeDefined();
+    expect(Object.values(uni.values[0])[0]).toBeInstanceOf(ContentMultiMapRemove);
+  });
+
+  test('ContentMultiMap with object and no array in inner area passes', () => {
+    const json = {
+      [CMM_REMOVE_VDXFID]: {
+        [CMM_REMOVE_VDXFID]: cmmRemovePayload
+      }
+    };
+
+    const map = ContentMultiMap.fromJson(json);
+    const buf = map.toBuffer();
+
+    const roundTripped = new ContentMultiMap();
+    roundTripped.fromBuffer(buf, 0, true);
+    expect(roundTripped.toBuffer().toString('hex')).toBe(buf.toString('hex'));
+  });
+
+  test('ContentMultiMap non-array style produces identical buffer to single-item array style', () => {
+    const arrayStyle = {
+      [CMM_REMOVE_VDXFID]: [{ [CMM_REMOVE_VDXFID]: cmmRemovePayload }]
+    };
+    const objectStyle = {
+      [CMM_REMOVE_VDXFID]: { [CMM_REMOVE_VDXFID]: cmmRemovePayload }
+    };
+
+    const arrayMap = ContentMultiMap.fromJson(arrayStyle);
+    const objectMap = ContentMultiMap.fromJson(objectStyle);
+
+    expect(objectMap.toBuffer().toString('hex')).toBe(arrayMap.toBuffer().toString('hex'));
+  });
+
+  test('FqnContentMultiMap non-array style produces identical buffer to single-item array style', () => {
+    const arrayStyle = {
+      [CMM_REMOVE_VDXFID]: [{ [CMM_REMOVE_FQN]: cmmRemovePayload }]
+    };
+    const objectStyle = {
+      [CMM_REMOVE_VDXFID]: { [CMM_REMOVE_FQN]: cmmRemovePayload }
+    };
+
+    const arrayMap = FqnContentMultiMap.fromJson(arrayStyle);
+    const objectMap = FqnContentMultiMap.fromJson(objectStyle);
+
+    expect(objectMap.toBuffer().toString('hex')).toBe(arrayMap.toBuffer().toString('hex'));
+  });
+
+  test('FqnContentMultiMap non-array with FQN outer key produces identical buffer to array style', () => {
+    const arrayStyle = {
+      [CMM_REMOVE_FQN]: [{ [CMM_REMOVE_FQN]: cmmRemovePayload }]
+    };
+    const objectStyle = {
+      [CMM_REMOVE_FQN]: { [CMM_REMOVE_FQN]: cmmRemovePayload }
+    };
+
+    const arrayMap = FqnContentMultiMap.fromJson(arrayStyle);
+    const objectMap = FqnContentMultiMap.fromJson(objectStyle);
+
+    expect(objectMap.toBuffer().toString('hex')).toBe(arrayMap.toBuffer().toString('hex'));
+  });
 });

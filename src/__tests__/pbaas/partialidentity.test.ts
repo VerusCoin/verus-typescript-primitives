@@ -4,6 +4,9 @@ import { Identity, IDENTITY_VERSION_PBAAS } from "../../pbaas/Identity";
 import { KeyID } from "../../pbaas/KeyID";
 import { IdentityID } from "../../pbaas/IdentityID";
 import { PartialIdentity, SaplingPaymentAddress } from "../../index";
+import { FqnVdxfUniValue, VdxfUniValue } from "../../pbaas/VdxfUniValue";
+import { ContentMultiMapRemove } from "../../pbaas/ContentMultiMapRemove";
+import * as VDXF_Data from "../../vdxf/vdxfdatakeys";
 
 import { ID_PARENT_VDXF_KEY } from "../../vdxf/keys";
 
@@ -192,5 +195,235 @@ describe('PartialIdentity FQN key handling', () => {
     const [key] = entries[0];
     expect(key.isIaddress()).toBe(true);
     expect(key.toIAddress()).toBe(IADDR_A);
+  });
+});
+
+describe('PartialIdentity.toContentMultiMap()', () => {
+  const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
+  const CMM_REMOVE_FQN    = VDXF_Data.ContentMultiMapRemoveKeyName;
+  const cmmPayload = { version: 1, action: 3, entrykey: "iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH" };
+
+  const baseParams = {
+    version: IDENTITY_VERSION_PBAAS,
+    min_sigs: new BN(1),
+    primary_addresses: [KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH")],
+    parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    name: "TestID",
+    recovery_authority: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    revocation_authority: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+  };
+
+  test('returns ContentMultiMap, not FqnContentMultiMap', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const result = identity.toContentMultiMap();
+
+    expect(result).toBeInstanceOf(ContentMultiMap);
+    expect(result).not.toBeInstanceOf(FqnContentMultiMap);
+  });
+
+  test('FQN outer key is resolved to iaddress in result', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const result = identity.toContentMultiMap();
+    const entries = [...result.kvContent.entries()];
+
+    expect(entries).toHaveLength(1);
+    const [key] = entries[0];
+    expect(key.isIaddress()).toBe(true);
+    expect(key.toIAddress()).toBe(FQN_DATA_KEY_IADDR);
+  });
+
+  test('iaddress outer key remains as iaddress in result', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const result = identity.toContentMultiMap();
+    const entries = [...result.kvContent.entries()];
+
+    expect(entries).toHaveLength(1);
+    const [key] = entries[0];
+    expect(key.isIaddress()).toBe(true);
+    expect(key.toIAddress()).toBe(IADDR_A);
+  });
+
+  test('inner FqnVdxfUniValue with FQN key is converted to VdxfUniValue with iaddress key', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+
+    const result = identity.toContentMultiMap();
+    const [, values] = [...result.kvContent.entries()][0];
+
+    expect(values).toHaveLength(1);
+    const uni = values[0];
+    expect(uni).toBeInstanceOf(VdxfUniValue);
+    expect(uni).not.toBeInstanceOf(FqnVdxfUniValue);
+    expect((uni as VdxfUniValue).values[0][CMM_REMOVE_VDXFID]).toBeInstanceOf(ContentMultiMapRemove);
+    expect((uni as VdxfUniValue).values[0][CMM_REMOVE_FQN]).toBeUndefined();
+  });
+
+  test('inner FqnVdxfUniValue with iaddress key is converted to VdxfUniValue with same iaddress key', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
+      }),
+    });
+
+    const result = identity.toContentMultiMap();
+    const [, values] = [...result.kvContent.entries()][0];
+
+    expect(values).toHaveLength(1);
+    const uni = values[0];
+    expect(uni).toBeInstanceOf(VdxfUniValue);
+    expect(uni).not.toBeInstanceOf(FqnVdxfUniValue);
+    expect((uni as VdxfUniValue).values[0][CMM_REMOVE_VDXFID]).toBeInstanceOf(ContentMultiMapRemove);
+  });
+
+  test('raw Buffer values pass through unchanged', () => {
+    const rawHex = FQN_DATA_KEY_VALUE;
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [rawHex] }),
+    });
+
+    const result = identity.toContentMultiMap();
+    const [, values] = [...result.kvContent.entries()][0];
+
+    expect(values).toHaveLength(1);
+    expect(Buffer.isBuffer(values[0])).toBe(true);
+    expect((values[0] as Buffer).toString('hex')).toBe(rawHex);
+  });
+
+  test('result buffer matches a ContentMultiMap built directly with iaddress keys', () => {
+    // Build via PartialIdentity with FQN outer key and FQN inner key
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+    const converted = identity.toContentMultiMap();
+
+    // Build the equivalent directly with iaddress keys
+    const direct = ContentMultiMap.fromJson({
+      [FQN_DATA_KEY_IADDR]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
+    });
+
+    expect(converted.toBuffer().toString('hex')).toBe(direct.toBuffer().toString('hex'));
+  });
+
+  test('multiple outer keys and multiple inner values all convert correctly', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [FQN_DATA_KEY]: [
+          { [CMM_REMOVE_FQN]: cmmPayload },
+          { [CMM_REMOVE_VDXFID]: cmmPayload },
+        ],
+        [IADDR_A]: [FQN_DATA_KEY_VALUE],
+      }),
+    });
+
+    const result = identity.toContentMultiMap();
+    expect(result).not.toBeInstanceOf(FqnContentMultiMap);
+
+    const entries = [...result.kvContent.entries()];
+    expect(entries).toHaveLength(2);
+
+    // All outer keys must be TYPE_I_ADDRESS
+    for (const [key] of entries) {
+      expect(key.isIaddress()).toBe(true);
+    }
+
+    // Find the entry that was originally FQN_DATA_KEY
+    const fqnEntry = entries.find(([k]) => k.toIAddress() === FQN_DATA_KEY_IADDR);
+    expect(fqnEntry).toBeDefined();
+    const [, fqnValues] = fqnEntry!;
+    expect(fqnValues).toHaveLength(2);
+
+    for (const v of fqnValues) {
+      expect(v).toBeInstanceOf(VdxfUniValue);
+      expect(v).not.toBeInstanceOf(FqnVdxfUniValue);
+      expect((v as VdxfUniValue).values[0][CMM_REMOVE_VDXFID]).toBeInstanceOf(ContentMultiMapRemove);
+      expect((v as VdxfUniValue).values[0][CMM_REMOVE_FQN]).toBeUndefined();
+    }
+  });
+});
+
+describe('PartialIdentity.withResolvedContentMultiMap()', () => {
+  const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
+  const CMM_REMOVE_FQN    = VDXF_Data.ContentMultiMapRemoveKeyName;
+  const cmmPayload = { version: 1, action: 3, entrykey: "iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH" };
+
+  const baseJson = {
+    version: 3,
+    minimumsignatures: 1,
+    primaryaddresses: ["RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"],
+    parent: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    systemid: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    name: "TestID",
+    revocationauthority: "i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7",
+    recoveryauthority: "i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz",
+  };
+
+  const jsonWithIaddr = {
+    ...baseJson,
+    contentmultimap: {
+      [CMM_REMOVE_VDXFID]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
+    },
+  };
+
+  const jsonWithFqn = {
+    ...baseJson,
+    contentmultimap: {
+      [CMM_REMOVE_FQN]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+    },
+  };
+
+  test('iaddress and FQN JSON produce different buffers before resolution', () => {
+    const idIaddr = PartialIdentity.fromJson(jsonWithIaddr);
+    const idFqn   = PartialIdentity.fromJson(jsonWithFqn);
+
+    expect(idIaddr.toBuffer().toString('hex')).not.toBe(idFqn.toBuffer().toString('hex'));
+  });
+
+  test('withResolvedContentMultiMap produces identical buffers regardless of original key format', () => {
+    const idIaddr = PartialIdentity.fromJson(jsonWithIaddr);
+    const idFqn   = PartialIdentity.fromJson(jsonWithFqn);
+
+    const resolvedIaddr = idIaddr.withResolvedContentMultiMap();
+    const resolvedFqn   = idFqn.withResolvedContentMultiMap();
+
+    expect(resolvedIaddr.toBuffer().toString('hex')).toBe(resolvedFqn.toBuffer().toString('hex'));
+  });
+
+  test('withResolvedContentMultiMap result is still a PartialIdentity', () => {
+    const id = PartialIdentity.fromJson(jsonWithFqn);
+    const resolved = id.withResolvedContentMultiMap();
+
+    expect(resolved).toBeInstanceOf(PartialIdentity);
+  });
+
+  test('withResolvedContentMultiMap result has a plain ContentMultiMap, not FqnContentMultiMap', () => {
+    const id = PartialIdentity.fromJson(jsonWithFqn);
+    const resolved = id.withResolvedContentMultiMap();
+
+    const { FqnContentMultiMap } = require('../../pbaas/ContentMultiMap');
+    expect(resolved.content_multimap).not.toBeInstanceOf(FqnContentMultiMap);
+    expect(resolved.content_multimap).toBeInstanceOf(ContentMultiMap);
   });
 });

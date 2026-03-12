@@ -40,3 +40,24 @@ export declare class VdxfUniValue implements SerializableEntity {
     static fromJson(obj: any): VdxfUniValue;
     toJson(): VdxfUniValueJsonArray | VdxfUniValueJson;
 }
+/**
+ * FqnVdxfUniValue is a VdxfUniValue variant used exclusively within FqnContentMultiMap.
+ * It serializes all complex-type keys as CompactIAddressObjects so that FQN keys survive
+ * toBuffer/fromBuffer round-trips. Keys are stored internally as hex-encoded
+ * CompactIAddressObject.toBuffer() strings, so no '::' detection is needed after parsing.
+ *
+ * Wire format for complex-type entries:
+ *   [CompactIAddressObject (variable)][varint version][compact size][data bytes]
+ *
+ * fromBuffer always expects CompactIAddressObject format — no legacy 20-byte hash support.
+ */
+export declare class FqnVdxfUniValue extends VdxfUniValue {
+    private static parseHexKey;
+    private static hexKeyFor;
+    static fromVdxfUniValue(v: VdxfUniValue): FqnVdxfUniValue;
+    getByteLength(): number;
+    toBuffer(): Buffer;
+    fromBuffer(buffer: Buffer, offset?: number): number;
+    static fromJson(obj: VdxfUniValueJson | VdxfUniValueJson[]): FqnVdxfUniValue;
+    toJson(): VdxfUniValueJsonArray | VdxfUniValueJson;
+}

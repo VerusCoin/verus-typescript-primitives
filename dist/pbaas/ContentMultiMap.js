@@ -170,9 +170,13 @@ class ContentMultiMap {
             const keybytes = (0, address_1.fromBase58Check)(resolvedIAddr).hash;
             const value = obj[keyStr];
             if (keybytes && value != null) {
-                if (Array.isArray(value)) {
+                const valueArray = Array.isArray(value) ? value : [value];
+                if (typeof value === 'string' && (0, string_1.isHexString)(value)) {
+                    content.set(compactKey, [Buffer.from(value, 'hex')]);
+                }
+                else if (Array.isArray(value) || typeof value === 'object') {
                     const items = [];
-                    for (const x of value) {
+                    for (const x of valueArray) {
                         if (typeof x === 'string') {
                             items.push(Buffer.from(x, 'hex'));
                         }
@@ -184,12 +188,6 @@ class ContentMultiMap {
                         }
                     }
                     content.set(compactKey, items);
-                }
-                else if (typeof value === 'string' && (0, string_1.isHexString)(value)) {
-                    content.set(compactKey, [Buffer.from(value, 'hex')]);
-                }
-                else if (isKvValueArrayItemVdxfUniValueJson(value)) {
-                    content.set(compactKey, [VdxfUniValue_1.VdxfUniValue.fromJson(value)]);
                 }
                 else {
                     throw new Error("Invalid data in multimap");
@@ -293,7 +291,7 @@ class FqnContentMultiMap extends ContentMultiMap {
             const count = reader.readCompactSize();
             for (let j = 0; j < count; j++) {
                 if (parseVdxfObjects) {
-                    const unival = new VdxfUniValue_1.VdxfUniValue();
+                    const unival = new VdxfUniValue_1.FqnVdxfUniValue();
                     unival.fromBuffer(reader.readVarSlice(), 0);
                     vector.push(unival);
                 }
@@ -306,9 +304,41 @@ class FqnContentMultiMap extends ContentMultiMap {
         return reader.offset;
     }
     static fromJson(obj) {
-        const base = ContentMultiMap.fromJson(obj);
+        const content = new KvContent();
+        for (const keyStr in obj) {
+            const compactKey = keyStr.includes('::')
+                ? CompactAddressObject_1.CompactIAddressObject.fromFQN(keyStr)
+                : CompactAddressObject_1.CompactIAddressObject.fromAddress(keyStr);
+            const resolvedIAddr = compactKey.toIAddress();
+            const keybytes = (0, address_1.fromBase58Check)(resolvedIAddr).hash;
+            const value = obj[keyStr];
+            if (keybytes && value != null) {
+                const valueArray = Array.isArray(value) ? value : [value];
+                if (typeof value === 'string' && (0, string_1.isHexString)(value)) {
+                    content.set(compactKey, [Buffer.from(value, 'hex')]);
+                }
+                else if (Array.isArray(value) || typeof value === 'object') {
+                    const items = [];
+                    for (const x of valueArray) {
+                        if (typeof x === 'string') {
+                            items.push(Buffer.from(x, 'hex'));
+                        }
+                        else if (typeof x === 'object' && x != null) {
+                            const uniVal = VdxfUniValue_1.FqnVdxfUniValue.fromJson(x);
+                            if (uniVal.toBuffer().length > 0) {
+                                items.push(uniVal);
+                            }
+                        }
+                    }
+                    content.set(compactKey, items);
+                }
+                else {
+                    throw new Error("Invalid data in multimap");
+                }
+            }
+        }
         const inst = new FqnContentMultiMap();
-        inst.kvContent = base.kvContent;
+        inst.kvContent = content;
         return inst;
     }
 }

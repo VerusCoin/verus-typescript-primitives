@@ -2,7 +2,7 @@ import varuint from '../utils/varuint';
 import bufferutils from '../utils/bufferutils';
 import { fromBase58Check, toBase58Check } from '../utils/address';
 import {  I_ADDR_VERSION } from '../constants/vdxf';
-import { VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
+import { FqnVdxfUniValue, VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
 import { isHexString } from '../utils/string';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { CompactIAddressObject } from '../vdxf/classes/CompactAddressObject';
@@ -205,10 +205,14 @@ export class ContentMultiMap implements SerializableEntity {
       const value = obj[keyStr];
 
       if (keybytes && value != null) {
-        if (Array.isArray(value)) {
+        const valueArray = Array.isArray(value) ? value : [value];
+
+        if (typeof value === 'string' && isHexString(value)) {
+          content.set(compactKey, [Buffer.from(value, 'hex')]);
+        } else if (Array.isArray(value) || typeof value === 'object') {
           const items = [];
 
-          for (const x of value) {
+          for (const x of valueArray) {
             if (typeof x === 'string') {
               items.push(Buffer.from(x, 'hex'));
             } else if (typeof x === 'object' && x != null) {
@@ -221,10 +225,6 @@ export class ContentMultiMap implements SerializableEntity {
           }
 
           content.set(compactKey, items);
-        } else if (typeof value === 'string' && isHexString(value)) {
-          content.set(compactKey, [Buffer.from(value, 'hex')]);
-        } else if (isKvValueArrayItemVdxfUniValueJson(value)) {
-          content.set(compactKey, [VdxfUniValue.fromJson(value as VdxfUniValueJson)]);
         } else {
           throw new Error("Invalid data in multimap")
         }
@@ -338,7 +338,7 @@ export class FqnContentMultiMap extends ContentMultiMap {
 
       for (let j = 0; j < count; j++) {
         if (parseVdxfObjects) {
-          const unival = new VdxfUniValue();
+          const unival = new FqnVdxfUniValue();
           unival.fromBuffer(reader.readVarSlice(), 0);
 
           vector.push(unival);
@@ -354,9 +354,46 @@ export class FqnContentMultiMap extends ContentMultiMap {
   }
 
   static fromJson(obj: { [key: string]: ContentMultiMapJsonValue }): FqnContentMultiMap {
-    const base = ContentMultiMap.fromJson(obj);
+    const content = new KvContent();
+
+    for (const keyStr in obj) {
+      const compactKey = keyStr.includes('::')
+        ? CompactIAddressObject.fromFQN(keyStr)
+        : CompactIAddressObject.fromAddress(keyStr);
+
+      const resolvedIAddr = compactKey.toIAddress();
+      const keybytes = fromBase58Check(resolvedIAddr).hash;
+      const value = obj[keyStr];
+
+      if (keybytes && value != null) {
+        const valueArray = Array.isArray(value) ? value : [value];
+
+        if (typeof value === 'string' && isHexString(value)) {
+          content.set(compactKey, [Buffer.from(value, 'hex')]);
+        } else if (Array.isArray(value) || typeof value === 'object') {
+          const items = [];
+
+          for (const x of valueArray) {
+            if (typeof x === 'string') {
+              items.push(Buffer.from(x, 'hex'));
+            } else if (typeof x === 'object' && x != null) {
+              const uniVal = FqnVdxfUniValue.fromJson(x as VdxfUniValueJson);
+
+              if (uniVal.toBuffer().length > 0) {
+                items.push(uniVal);
+              }
+            }
+          }
+
+          content.set(compactKey, items);
+        } else {
+          throw new Error("Invalid data in multimap")
+        }
+      }
+    }
+
     const inst = new FqnContentMultiMap();
-    inst.kvContent = base.kvContent;
+    inst.kvContent = content;
     return inst;
   }
 }

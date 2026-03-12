@@ -54,4 +54,16 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     unlock(height?: BigNumber, txExpiryHeight?: BigNumber): void;
     revoke(): void;
     unrevoke(): void;
+    /**
+     * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
+     * content_multimap. All outer keys are resolved to CompactIAddress objects as
+     * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),
+     * and all inner FqnVdxfUniValue objects are converted to plain VdxfUniValue with any FQN
+     * keys resolved to their iaddress equivalents.
+     *
+     * Use this when the resulting ContentMultiMap must be daemon-compatible (e.g. for
+     * comparing daemon output to identities made here).
+     */
+    withResolvedContentMultiMap(): PartialIdentity;
+    toContentMultiMap(): ContentMultiMap;
 }

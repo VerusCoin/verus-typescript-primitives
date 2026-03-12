@@ -1,7 +1,9 @@
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { Identity, VerusCLIVerusIDJson, VerusIDInitData } from './Identity';
-import { ContentMultiMap, FqnContentMultiMap, KvContent } from './ContentMultiMap';
+import { ContentMultiMap, ContentMultiMapJson, FqnContentMultiMap, KvContent } from './ContentMultiMap';
+import { FqnVdxfUniValue, VdxfUniValue } from './VdxfUniValue';
+import { CompactIAddressObject } from '../vdxf/classes/CompactAddressObject';
 import { BN } from 'bn.js';
 import varint from '../utils/varint';
 import bufferutils from '../utils/bufferutils';
@@ -27,9 +29,24 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   constructor(data?: VerusIDInitData) {
     super(data);
 
-    // Always use FqnContentMultiMap so FQN keys survive binary round-trips
+    // Always use FqnContentMultiMap so FQN keys survive binary round-trips.
+    // Also convert any plain VdxfUniValue inner values to FqnVdxfUniValue so
+    // that the serialization format is consistent regardless of how the
+    // PartialIdentity was constructed (fromJson vs direct constructor).
     if (!(this.content_multimap instanceof FqnContentMultiMap)) {
-      this.content_multimap = new FqnContentMultiMap({ kvContent: this.content_multimap?.kvContent ?? new KvContent() });
+      const srcKvContent = this.content_multimap?.kvContent ?? new KvContent();
+      const newKvContent = new KvContent();
+
+      for (const [key, values] of srcKvContent.entries()) {
+        newKvContent.set(key, values.map(v => {
+          if (v instanceof VdxfUniValue && !(v instanceof FqnVdxfUniValue)) {
+            return FqnVdxfUniValue.fromVdxfUniValue(v);
+          }
+          return v;
+        }));
+      }
+
+      this.content_multimap = new FqnContentMultiMap({ kvContent: newKvContent });
     }
 
     this.contains = new BN("0");
@@ -194,7 +211,13 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   }
 
   static fromJson(json: VerusCLIVerusIDJson): PartialIdentity {
-    return Identity.internalFromJson<PartialIdentity>(json, PartialIdentity);
+    const instance = Identity.internalFromJson<PartialIdentity>(json, PartialIdentity);
+    // Replace content_multimap with FqnContentMultiMap so inner values are
+    // FqnVdxfUniValue instances that preserve FQN keys through binary round-trips.
+    if (json.contentmultimap) {
+      instance.content_multimap = FqnContentMultiMap.fromJson(json.contentmultimap as ContentMultiMapJson);
+    }
+    return instance;
   }
 
   lock(unlockTime: BigNumber) {
@@ -218,5 +241,48 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   unrevoke() {
     this.enableContainsFlags();
     return super.unrevoke();
+  }
+
+  /**
+   * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's 
+   * content_multimap. All outer keys are resolved to CompactIAddress objects as 
+   * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),
+   * and all inner FqnVdxfUniValue objects are converted to plain VdxfUniValue with any FQN
+   * keys resolved to their iaddress equivalents.
+   *
+   * Use this when the resulting ContentMultiMap must be daemon-compatible (e.g. for 
+   * comparing daemon output to identities made here).
+   */
+  withResolvedContentMultiMap(): PartialIdentity {
+    const clone = new PartialIdentity();
+    clone.fromBuffer(this.toBuffer());
+    clone.content_multimap = this.toContentMultiMap();
+    return clone;
+  }
+
+  toContentMultiMap(): ContentMultiMap {
+    const newKvContent = new KvContent();
+
+    for (const [key, values] of this.content_multimap.kvContent.entries()) {
+      const iAddrKey = CompactIAddressObject.fromAddress(key.toIAddress());
+
+      const newValues = values.map(v => {
+        if (v instanceof FqnVdxfUniValue) {
+          const resolvedValues = v.values.map(inner => {
+            const innerKey = Object.keys(inner)[0];
+            if (innerKey === '') return inner;
+            const compactAddr = new CompactIAddressObject();
+            compactAddr.fromBuffer(Buffer.from(innerKey, 'hex'), 0);
+            return { [compactAddr.toIAddress()]: inner[innerKey] };
+          });
+          return new VdxfUniValue({ values: resolvedValues, version: v.version });
+        }
+        return v;
+      });
+
+      newKvContent.set(iAddrKey, newValues);
+    }
+
+    return new ContentMultiMap({ kvContent: newKvContent });
   }
 }
