@@ -4,7 +4,8 @@ import { BigNumber } from '../../../utils/types/BigNumber';
 import { ContentMultiMapJsonValue, IdentityID, VerusCLIVerusIDJson, VerusCLIVerusIDJsonBase } from '../../../pbaas';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
-export type SignDataMap = Map<string, PartialSignData>;
+import { KvMap } from '../../../utils/KvMap';
+export type SignDataMap = KvMap<PartialSignData>;
 export type VerusCLIVerusIDJsonWithData = VerusCLIVerusIDJsonBase<{
     [key: string]: ContentMultiMapJsonValue | {
         data: PartialSignDataCLIJson;
@@ -55,6 +56,7 @@ export declare class IdentityUpdateRequestDetails implements SerializableEntity 
     toggleContainsRequestID(): void;
     toggleContainsTxid(): void;
     toSha256(): Buffer<ArrayBufferLike>;
+    getContentMultiMapKeys(): string[];
     getIdentityAddress(isTestnet?: boolean): string;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

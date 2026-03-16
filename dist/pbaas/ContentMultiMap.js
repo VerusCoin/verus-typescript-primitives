@@ -9,6 +9,7 @@ const vdxf_1 = require("../constants/vdxf");
 const VdxfUniValue_1 = require("./VdxfUniValue");
 const string_1 = require("../utils/string");
 const CompactAddressObject_1 = require("../vdxf/classes/CompactAddressObject");
+const KvMap_1 = require("../utils/KvMap");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 function isKvValueArrayItemVdxfUniValueJson(x) {
     return x != null && typeof x === 'object' && !Array.isArray(x) && Object.keys(x).every((key) => {
@@ -23,59 +24,10 @@ function isKvValueArrayItemVdxfUniValueJson(x) {
     });
 }
 /**
- * KvContent wraps a Map whose internal keys are hex strings of CompactIAddressObject.toBuffer().
- * External callers always use CompactIAddressObject for keys.
- *
- * Keys whose toIAddress() resolves to the same iaddress are not allowed, because an FQN and a
- * TYPE_I_ADDRESS key can evaluate to the same underlying iaddress and would collide on-chain.
+ * KvContent is KvMap specialized for ContentMultiMap values.
+ * Keys are CompactIAddressObject; values are arrays of ContentMultiMapPrimitive.
  */
-class KvContent {
-    constructor() {
-        this._map = new Map();
-    }
-    static toInternalKey(key) {
-        return key.toBuffer().toString('hex');
-    }
-    static keyFromInternalKey(hexKey) {
-        const key = new CompactAddressObject_1.CompactIAddressObject();
-        key.fromBuffer(Buffer.from(hexKey, 'hex'));
-        return key;
-    }
-    get size() {
-        return this._map.size;
-    }
-    set(key, value) {
-        const internalKey = KvContent.toInternalKey(key);
-        if (!this._map.has(internalKey)) {
-            const newIAddr = key.toIAddress();
-            for (const hexKey of this._map.keys()) {
-                const existing = KvContent.keyFromInternalKey(hexKey);
-                if (existing.toIAddress() === newIAddr) {
-                    throw new Error(`KvContent key collision: a different key already resolves to iaddress ${newIAddr}`);
-                }
-            }
-        }
-        this._map.set(internalKey, value);
-        return this;
-    }
-    get(key) {
-        return this._map.get(KvContent.toInternalKey(key));
-    }
-    has(key) {
-        return this._map.has(KvContent.toInternalKey(key));
-    }
-    delete(key) {
-        return this._map.delete(KvContent.toInternalKey(key));
-    }
-    entries() {
-        const map = this._map;
-        function* gen() {
-            for (const [hexKey, value] of map.entries()) {
-                yield [KvContent.keyFromInternalKey(hexKey), value];
-            }
-        }
-        return gen();
-    }
+class KvContent extends KvMap_1.KvMap {
 }
 exports.KvContent = KvContent;
 class ContentMultiMap {

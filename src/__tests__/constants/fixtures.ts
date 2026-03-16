@@ -5,6 +5,7 @@ import { PartialMMRData } from "../../pbaas/PartialMMRData"
 import { PartialSignData, PartialSignDataInitData } from "../../pbaas/PartialSignData"
 import { DATA_TYPE_MMRDATA } from "../../constants/pbaas"
 import { CompactIAddressObject } from "../../vdxf/classes"
+import { KvMap } from "../../utils/KvMap"
 
 export const manyContentMultimapData = {
   "iGdWifeNFcN69JiFwmcZTYT1zPYpFumGhq": [
@@ -467,8 +468,8 @@ export const TEST_BASE_SIGN_DATA_WITH_MMR_DATA: PartialSignDataInitData = {
   data: TEST_MMR_DATA, // This is the PartialMMRData object
 }
 
-export const TEST_SIGNDATA_MAP = new Map();
-TEST_SIGNDATA_MAP.set("iBvyi1nuCrTA4g44xN9N7EU1t6a7gwb4h8", new PartialSignData(TEST_BASE_SIGN_DATA_WITH_MMR_DATA))
+export const TEST_SIGNDATA_MAP = new KvMap<PartialSignData>();
+TEST_SIGNDATA_MAP.set(CompactIAddressObject.fromAddress("iBvyi1nuCrTA4g44xN9N7EU1t6a7gwb4h8"), new PartialSignData(TEST_BASE_SIGN_DATA_WITH_MMR_DATA))
 
 // Test constants with valid addresses from the codebase
 export const TEST_CHALLENGE_ID = "iMdf3BJ1mEtKMAJqNg8hj5fMnCUCc3bpFN";

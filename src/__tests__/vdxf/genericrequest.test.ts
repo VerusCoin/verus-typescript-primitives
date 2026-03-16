@@ -4,6 +4,7 @@ import { DATA_TYPE_MMRDATA, DEFAULT_VERUS_CHAINID, HASH_TYPE_SHA256, NULL_I_ADDR
 import { ContentMultiMap, DEST_PKH, fromBase58Check, GenericRequest, IDENTITY_VERSION_PBAAS, IdentityID, IdentityUpdateRequestDetails, KeyID, PartialIdentity, PartialMMRData, PartialSignData, PartialSignDataInitData, ResponseURI, SaplingPaymentAddress, TransferDestination, VerusPayInvoiceDetails } from '../../';
 import { VerifiableSignatureData, VerifiableSignatureDataInterface } from '../../vdxf/classes/VerifiableSignatureData';
 import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject';
+import { KvMap } from '../../utils/KvMap';
 import { GeneralTypeOrdinalVDXFObject, IdentityUpdateRequestOrdinalVDXFObject, VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
 import { DEEPLINK_PROTOCOL_URL_CURRENT_VERSION, DEEPLINK_PROTOCOL_URL_STRING } from '../../constants/deeplink';
 
@@ -276,8 +277,8 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
       data: mmrData, // This is the PartialMMRData object
     }
 
-    const signdatamap = new Map();
-    signdatamap.set("iBvyi1nuCrTA4g44xN9N7EU1t6a7gwb4h8", new PartialSignData(baseSignDataWithMMR))
+    const signdatamap = new KvMap<PartialSignData>();
+    signdatamap.set(CompactIAddressObject.fromAddress("iBvyi1nuCrTA4g44xN9N7EU1t6a7gwb4h8"), new PartialSignData(baseSignDataWithMMR))
 
     const requestDetails = new IdentityUpdateRequestDetails({ 
       requestID: requestID,

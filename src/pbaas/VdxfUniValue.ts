@@ -20,6 +20,7 @@ import { URLRef } from './URLRef';
 import { IdentityMultimapRef } from './IdentityMultimapRef';
 import { CompactIAddressObject } from '../vdxf/classes/CompactAddressObject';
 import * as VDXF_Data from '../vdxf/vdxfdatakeys';
+import { KvMap } from '../utils/KvMap';
 
 export const VDXF_UNI_VALUE_VERSION_INVALID = new BN(0, 10);
 export const VDXF_UNI_VALUE_VERSION_CURRENT = new BN(1, 10);
@@ -49,8 +50,11 @@ export type JsonSerializableObject = CurrencyValueMap | Rating |
 // This UniValue class was adapted from C++ code for encoding JSON objects into bytes. It is not serialization and
 // therefore doesn't have a fromBuffer function, as you can't reliably decode it, only encode.
 export class VdxfUniValue implements SerializableEntity {
-  values: Array<{ [key: string]: VdxfUniType }>;
+  private _values: Array<{ [key: string]: VdxfUniType }>;
   version: BigNumber;
+
+  get values(): Array<{ [key: string]: VdxfUniType }> { return this._values; }
+  set values(arr: Array<{ [key: string]: VdxfUniType }>) { this._values = arr; }
 
   constructor(data?: { values: Array<{ [key: string]: VdxfUniType }>, version?: BigNumber }) {
     if (data?.values) this.values = data.values;
@@ -607,8 +611,8 @@ export class VdxfUniValue implements SerializableEntity {
 /**
  * FqnVdxfUniValue is a VdxfUniValue variant used exclusively within FqnContentMultiMap.
  * It serializes all complex-type keys as CompactIAddressObjects so that FQN keys survive
- * toBuffer/fromBuffer round-trips. Keys are stored internally as hex-encoded
- * CompactIAddressObject.toBuffer() strings, so no '::' detection is needed after parsing.
+ * toBuffer/fromBuffer round-trips. Named entries are stored in a KvMap<VdxfUniType> keyed
+ * by CompactIAddressObject; raw/unparsed bytes are stored separately in _rawBytes.
  *
  * Wire format for complex-type entries:
  *   [CompactIAddressObject (variable)][varint version][compact size][data bytes]
@@ -616,26 +620,65 @@ export class VdxfUniValue implements SerializableEntity {
  * fromBuffer always expects CompactIAddressObject format — no legacy 20-byte hash support.
  */
 export class FqnVdxfUniValue extends VdxfUniValue {
-  private static parseHexKey(hexKey: string): CompactIAddressObject {
-    const addr = new CompactIAddressObject();
-    addr.fromBuffer(Buffer.from(hexKey, 'hex'), 0);
-    return addr;
+  private _kvValues: KvMap<VdxfUniType>;
+  private _rawBytes: Buffer | undefined;
+
+  constructor(data?: { values?: Array<{ [key: string]: VdxfUniType }>, version?: BigNumber }) {
+    super();
+    this._kvValues = new KvMap<VdxfUniType>();
+    if (data?.values) this.values = data.values;
+    this.version = data?.version ?? VDXF_UNI_VALUE_VERSION_CURRENT;
   }
 
-  private static hexKeyFor(rawKey: string): string {
+  // Backwards-compatible array view over the internal KvMap + _rawBytes
+  get values(): Array<{ [key: string]: VdxfUniType }> {
+    const result: Array<{ [key: string]: VdxfUniType }> = [];
+    for (const [key, value] of this._kvValues.entries()) {
+      result.push({ [key.toBuffer().toString('hex')]: value });
+    }
+    if (this._rawBytes !== undefined) {
+      result.push({ [""]: this._rawBytes });
+    }
+    return result;
+  }
+
+  entries(): IterableIterator<[CompactIAddressObject, VdxfUniType]> {
+    return this._kvValues.entries();
+  }
+
+  set values(arr: Array<{ [key: string]: VdxfUniType }>) {
+    this._kvValues = new KvMap<VdxfUniType>();
+    this._rawBytes = undefined;
+    if (!arr) return;
+    for (const inner of arr) {
+      const key = Object.keys(inner)[0];
+      if (key === '') {
+        this._rawBytes = inner[key] as Buffer;
+      } else {
+        const compact = new CompactIAddressObject();
+        compact.fromBuffer(Buffer.from(key, 'hex'), 0);
+        this._kvValues.set(compact, inner[key]);
+      }
+    }
+  }
+
+  private static compactFor(rawKey: string): CompactIAddressObject {
     return rawKey.includes('::')
-      ? CompactIAddressObject.fromFQN(rawKey).toBuffer().toString('hex')
-      : CompactIAddressObject.fromAddress(rawKey).toBuffer().toString('hex');
+      ? CompactIAddressObject.fromFQN(rawKey)
+      : CompactIAddressObject.fromAddress(rawKey);
   }
 
   static fromVdxfUniValue(v: VdxfUniValue): FqnVdxfUniValue {
-    const convertedValues = v.values.map(inner => {
+    const inst = new FqnVdxfUniValue({ version: v.version });
+    for (const inner of v.values) {
       const key = Object.keys(inner)[0];
-      if (key === '') return inner;
-      const hexKey = CompactIAddressObject.fromAddress(key).toBuffer().toString('hex');
-      return { [hexKey]: inner[key] };
-    });
-    return new FqnVdxfUniValue({ values: convertedValues, version: v.version });
+      if (key === '') {
+        inst._rawBytes = inner[key] as Buffer;
+      } else {
+        inst._kvValues.set(CompactIAddressObject.fromAddress(key), inner[key]);
+      }
+    }
+    return inst;
   }
 
   getByteLength(): number {
@@ -646,16 +689,8 @@ export class FqnVdxfUniValue extends VdxfUniValue {
       return bufLen + encodeStreamLen;
     };
 
-    for (const inner of this.values) {
-      const key = Object.keys(inner)[0];
-      const value = inner[key];
-      if (key === "") {
-        length += Buffer.from(value as string, "hex").length;
-        continue;
-      }
-
-      const compactAddr = FqnVdxfUniValue.parseHexKey(key);
-      const switchKey = compactAddr.toIAddress();
+    for (const [compact, value] of this._kvValues.entries()) {
+      const switchKey = compact.toIAddress();
 
       // Fixed-size primitive types: no key prefix
       switch (switchKey) {
@@ -670,7 +705,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
       }
 
       // Complex types: key is a CompactIAddressObject
-      length += compactAddr.getByteLength();
+      length += compact.getByteLength();
 
       switch (switchKey) {
         case VDXF_Data.DataStringKey.vdxfid: {
@@ -681,7 +716,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
           break;
         }
         case VDXF_Data.DataByteVectorKey.vdxfid: {
-          const valBuf = Buffer.from(value as string, "hex");
+          const valBuf = value as Buffer;
           length += varint.encodingLength(new BN(1));
           length += varuint.encodingLength(valBuf.length);
           length += totalStreamLength(valBuf.length);
@@ -742,31 +777,27 @@ export class FqnVdxfUniValue extends VdxfUniValue {
           break;
         }
         default:
-          throw new Error("contentmap invalid or unrecognized vdxfkey for object type: " + key);
+          throw new Error("contentmap invalid or unrecognized vdxfkey for object type: " + switchKey);
       }
     }
+
+    if (this._rawBytes !== undefined) {
+      length += this._rawBytes.length;
+    }
+
     return length;
   }
 
   toBuffer(): Buffer {
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
 
-    for (const inner of this.values) {
-      const key = Object.keys(inner)[0];
-      const value = inner[key];
-
-      if (key === "") {
-        writer.writeSlice(value as Buffer);
-        continue;
-      }
-
-      const compactAddr = FqnVdxfUniValue.parseHexKey(key);
-      const switchKey = compactAddr.toIAddress();
+    for (const [compact, value] of this._kvValues.entries()) {
+      const switchKey = compact.toIAddress();
 
       // Fixed-size primitive types: no key prefix
       switch (switchKey) {
         case VDXF_Data.DataByteKey.vdxfid: {
-          const oneByte = Buffer.from(value as string, "hex");
+          const oneByte = value as Buffer;
           if (oneByte.length != 1) throw new Error("contentmap: byte data must be exactly one byte");
           writer.writeSlice(oneByte);
           continue;
@@ -805,15 +836,15 @@ export class FqnVdxfUniValue extends VdxfUniValue {
           writer.writeSlice(fromBase58Check(value as string).hash);
           continue;
         case VDXF_Data.DataUint256Key.vdxfid: {
-          const oneHash = Buffer.from(value as string, "hex");
+          const oneHash = value as Buffer;
           if (oneHash.length != HASH256_BYTE_LENGTH) throw new Error("contentmap: hash data must be exactly 32 bytes");
-          writer.writeVarSlice(oneHash.reverse());
+          writer.writeSlice(Buffer.from(oneHash).reverse());
           continue;
         }
       }
 
       // Complex types: write CompactIAddressObject key prefix
-      writer.writeSlice(compactAddr.toBuffer());
+      writer.writeSlice(compact.toBuffer());
 
       switch (switchKey) {
         case VDXF_Data.DataStringKey.vdxfid: {
@@ -824,7 +855,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
           break;
         }
         case VDXF_Data.DataByteVectorKey.vdxfid: {
-          const valBuf = Buffer.from(value as string, "hex");
+          const valBuf = value as Buffer;
           writer.writeVarInt(new BN(1));
           writer.writeCompactSize(varuint.encodingLength(valBuf.length) + valBuf.length);
           writer.writeVarSlice(valBuf);
@@ -894,8 +925,12 @@ export class FqnVdxfUniValue extends VdxfUniValue {
           break;
         }
         default:
-          throw new Error("contentmap invalid or unrecognized vdxfkey for object type: " + key);
+          throw new Error("contentmap invalid or unrecognized vdxfkey for object type: " + switchKey);
       }
+    }
+
+    if (this._rawBytes !== undefined) {
+      writer.writeSlice(this._rawBytes);
     }
 
     return writer.buffer;
@@ -904,22 +939,20 @@ export class FqnVdxfUniValue extends VdxfUniValue {
   fromBuffer(buffer: Buffer, offset: number = 0): number {
     const reader = new BufferReader(buffer, offset);
 
-    this.values = [];
+    this._kvValues = new KvMap<VdxfUniType>();
+    this._rawBytes = undefined;
 
     let bytesLeft = reader.buffer.length - reader.offset;
 
     while (bytesLeft > 0) {
-      let objectUni: { key: string, value: VdxfUniType } | undefined;
+      let parsedKey: CompactIAddressObject | undefined;
+      let parsedValue: VdxfUniType | undefined;
       const initialOffset = reader.offset;
 
       try {
-        let storedKey: string;
-        let switchKey: string;
-
         const compactAddr = new CompactIAddressObject();
         reader.offset = compactAddr.fromBuffer(reader.buffer, reader.offset);
-        storedKey = compactAddr.toBuffer().toString('hex');
-        switchKey = compactAddr.toIAddress();
+        const switchKey = compactAddr.toIAddress();
 
         switch (switchKey) {
           case VDXF_Data.DataCurrencyMapKey.vdxfid: {
@@ -927,7 +960,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.DataRatingsKey.vdxfid: {
@@ -935,7 +968,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.CredentialKey.vdxfid: {
@@ -943,7 +976,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.DataTransferDestinationKey.vdxfid: {
@@ -951,7 +984,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.ContentMultiMapRemoveKey.vdxfid: {
@@ -959,25 +992,27 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.DataStringKey.vdxfid:
             reader.readVarInt();
             reader.readCompactSize();
-            objectUni = { key: storedKey, value: reader.readVarSlice().toString('utf8') };
+            parsedKey = compactAddr;
+            parsedValue = reader.readVarSlice().toString('utf8');
             break;
           case VDXF_Data.DataByteVectorKey.vdxfid:
             reader.readVarInt();
             reader.readCompactSize();
-            objectUni = { key: storedKey, value: reader.readVarSlice().toString('hex') };
+            parsedKey = compactAddr;
+            parsedValue = reader.readVarSlice();
             break;
           case VDXF_Data.CrossChainDataRefKey.vdxfid: {
             const obj = new CrossChainDataRef();
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.DataDescriptorKey.vdxfid: {
@@ -985,7 +1020,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.MMRDescriptorKey.vdxfid: {
@@ -993,7 +1028,7 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
           case VDXF_Data.SignatureDataKey.vdxfid: {
@@ -1001,21 +1036,22 @@ export class FqnVdxfUniValue extends VdxfUniValue {
             reader.readVarInt();
             reader.readCompactSize();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            if (obj.isValid()) objectUni = { key: storedKey, value: obj };
+            if (obj.isValid()) { parsedKey = compactAddr; parsedValue = obj; }
             break;
           }
         }
       } catch (e) {
-        objectUni = undefined;
+        parsedKey = undefined;
+        parsedValue = undefined;
       }
 
       bytesLeft = reader.buffer.length - reader.offset;
 
-      if (objectUni?.key && objectUni?.value) {
-        this.values.push({ [objectUni.key]: objectUni.value });
+      if (parsedKey && parsedValue !== undefined) {
+        this._kvValues.set(parsedKey, parsedValue);
       } else {
         reader.offset = initialOffset;
-        this.values.push({ [""]: reader.readSlice(reader.buffer.length - reader.offset) });
+        this._rawBytes = reader.readSlice(reader.buffer.length - reader.offset);
         bytesLeft = 0;
         break;
       }
@@ -1025,131 +1061,137 @@ export class FqnVdxfUniValue extends VdxfUniValue {
   }
 
   static fromJson(obj: VdxfUniValueJson | VdxfUniValueJson[]): FqnVdxfUniValue {
-    const arrayItem: Array<{ [key: string]: VdxfUniType }> = [];
-
     if (!Array.isArray(obj)) {
       if (typeof obj != 'object') {
         if (typeof obj != 'string') throw new Error('Not JSON string as expected');
-        return new FqnVdxfUniValue({ values: [{ [""]: isHexString(obj)
-          ? Buffer.from(obj, "hex")
-          : Buffer.from(obj, "utf-8") }] });
+        const inst = new FqnVdxfUniValue();
+        inst._rawBytes = isHexString(obj) ? Buffer.from(obj, "hex") : Buffer.from(obj, "utf-8");
+        return inst;
       }
 
       if (obj.serializedhex) {
         if (!isHexString(obj.serializedhex)) {
           throw new Error("contentmap: If the \"serializedhex\" key is present, it's data must be only valid hex and complete");
         }
-        return new FqnVdxfUniValue({ values: [{ [""]: Buffer.from(obj.serializedhex, "hex") }] });
+        const inst = new FqnVdxfUniValue();
+        inst._rawBytes = Buffer.from(obj.serializedhex, "hex");
+        return inst;
       }
 
       if (obj.serializedbase64) {
         try {
-          return new FqnVdxfUniValue({ values: [{ [""]: Buffer.from(obj.serializedbase64, "base64") }] });
+          const inst = new FqnVdxfUniValue();
+          inst._rawBytes = Buffer.from(obj.serializedbase64, "base64");
+          return inst;
         } catch (e) {
           throw new Error("contentmap: If the \"serializedbase64\" key is present, it's data must be only valid base64 and complete");
         }
       }
 
       if (obj.message) {
-        return new FqnVdxfUniValue({ values: [{ [""]: Buffer.from(obj.message, "utf-8") }] });
+        const inst = new FqnVdxfUniValue();
+        inst._rawBytes = Buffer.from(obj.message, "utf-8");
+        return inst;
       }
 
       obj = [obj];
     }
 
+    const inst = new FqnVdxfUniValue();
+
     for (const item of obj) {
       if (typeof item != 'object') {
         if (typeof item != 'string') throw new Error('Not JSON string as expected');
-        arrayItem.push({ [""]: isHexString(item as string)
+        inst._rawBytes = isHexString(item as string)
           ? Buffer.from(item as string, "hex")
-          : Buffer.from(item as string, "utf-8") });
+          : Buffer.from(item as string, "utf-8");
         continue;
       }
 
       for (const [rawKey, val] of Object.entries(item)) {
-        const hexKey = FqnVdxfUniValue.hexKeyFor(rawKey);
-        const switchKey = FqnVdxfUniValue.parseHexKey(hexKey).toIAddress();
+        const compact = FqnVdxfUniValue.compactFor(rawKey);
+        const switchKey = compact.toIAddress();
 
         switch (switchKey) {
           case VDXF_Data.DataByteKey.vdxfid: {
             const oneByte = Buffer.from(val as string, "hex");
             if (oneByte.length != 1) throw new Error("contentmap: byte data must be exactly one byte");
-            arrayItem.push({ [hexKey]: oneByte });
+            inst._kvValues.set(compact, oneByte);
             break;
           }
           case VDXF_Data.DataInt16Key.vdxfid: {
             const buf = Buffer.alloc(2);
             buf.writeInt16LE(val as number);
-            arrayItem.push({ [hexKey]: buf });
+            inst._kvValues.set(compact, buf);
             break;
           }
           case VDXF_Data.DataUint16Key.vdxfid: {
             const buf = Buffer.alloc(2);
             buf.writeUInt16LE(val as number);
-            arrayItem.push({ [hexKey]: buf });
+            inst._kvValues.set(compact, buf);
             break;
           }
           case VDXF_Data.DataInt32Key.vdxfid: {
             const buf = Buffer.alloc(4);
             buf.writeInt32LE(val as number);
-            arrayItem.push({ [hexKey]: buf });
+            inst._kvValues.set(compact, buf);
             break;
           }
           case VDXF_Data.DataUint32Key.vdxfid: {
             const buf = Buffer.alloc(4);
             buf.writeUInt32LE(val as number);
-            arrayItem.push({ [hexKey]: buf });
+            inst._kvValues.set(compact, buf);
             break;
           }
           case VDXF_Data.DataInt64Key.vdxfid: {
             const buf = Buffer.alloc(8);
             buf.writeIntLE(val as number, 0, 8);
-            arrayItem.push({ [hexKey]: buf });
+            inst._kvValues.set(compact, buf);
             break;
           }
           case VDXF_Data.DataUint160Key.vdxfid:
             fromBase58Check(val as string).hash;
-            arrayItem.push({ [hexKey]: val as string });
+            inst._kvValues.set(compact, val as string);
             break;
           case VDXF_Data.DataUint256Key.vdxfid: {
             const oneHash = Buffer.from(val as string, "hex");
             if (oneHash.length != HASH256_BYTE_LENGTH) throw new Error("contentmap: hash data must be exactly 32 bytes");
-            arrayItem.push({ [hexKey]: oneHash });
+            inst._kvValues.set(compact, oneHash);
             break;
           }
           case VDXF_Data.DataStringKey.vdxfid:
-            arrayItem.push({ [hexKey]: val as string });
+            inst._kvValues.set(compact, val as string);
             break;
           case VDXF_Data.DataByteVectorKey.vdxfid:
             if (!isHexString(val as string)) throw new Error("contentmap: bytevector data must be valid hex");
-            arrayItem.push({ [hexKey]: Buffer.from(val as string, "hex") });
+            inst._kvValues.set(compact, Buffer.from(val as string, "hex"));
             break;
           case VDXF_Data.DataCurrencyMapKey.vdxfid:
-            arrayItem.push({ [hexKey]: CurrencyValueMap.fromJson(val as { [key: string]: string }, true) });
+            inst._kvValues.set(compact, CurrencyValueMap.fromJson(val as { [key: string]: string }, true));
             break;
           case VDXF_Data.DataRatingsKey.vdxfid:
-            arrayItem.push({ [hexKey]: Rating.fromJson(val as RatingJson) });
+            inst._kvValues.set(compact, Rating.fromJson(val as RatingJson));
             break;
           case VDXF_Data.DataTransferDestinationKey.vdxfid:
-            arrayItem.push({ [hexKey]: TransferDestination.fromJson(val as TransferDestinationJson) });
+            inst._kvValues.set(compact, TransferDestination.fromJson(val as TransferDestinationJson));
             break;
           case VDXF_Data.ContentMultiMapRemoveKey.vdxfid:
-            arrayItem.push({ [hexKey]: ContentMultiMapRemove.fromJson(val as ContentMultiMapRemoveJson) });
+            inst._kvValues.set(compact, ContentMultiMapRemove.fromJson(val as ContentMultiMapRemoveJson));
             break;
           case VDXF_Data.CrossChainDataRefKey.vdxfid:
-            arrayItem.push({ [hexKey]: CrossChainDataRef.fromJson(val as CrossChainDataRefJson) });
+            inst._kvValues.set(compact, CrossChainDataRef.fromJson(val as CrossChainDataRefJson));
             break;
           case VDXF_Data.DataDescriptorKey.vdxfid:
-            arrayItem.push({ [hexKey]: DataDescriptor.fromJson(val) });
+            inst._kvValues.set(compact, DataDescriptor.fromJson(val));
             break;
           case VDXF_Data.MMRDescriptorKey.vdxfid:
-            arrayItem.push({ [hexKey]: MMRDescriptor.fromJson(val as MMRDescriptorJson) });
+            inst._kvValues.set(compact, MMRDescriptor.fromJson(val as MMRDescriptorJson));
             break;
           case VDXF_Data.SignatureDataKey.vdxfid:
-            arrayItem.push({ [hexKey]: SignatureData.fromJson(val) });
+            inst._kvValues.set(compact, SignatureData.fromJson(val));
             break;
           case VDXF_Data.CredentialKey.vdxfid:
-            arrayItem.push({ [hexKey]: Credential.fromJson(val as CredentialJson) });
+            inst._kvValues.set(compact, Credential.fromJson(val as CredentialJson));
             break;
           default:
             throw new Error("Unknown vdxfkey: " + rawKey);
@@ -1157,22 +1199,14 @@ export class FqnVdxfUniValue extends VdxfUniValue {
       }
     }
 
-    return new FqnVdxfUniValue({ values: arrayItem });
+    return inst;
   }
 
   toJson(): VdxfUniValueJsonArray | VdxfUniValueJson {
     const ret = [];
 
-    for (const inner of this.values) {
-      const key = Object.keys(inner)[0];
-      const value = inner[key];
-
-      if (key === '' && Buffer.isBuffer(value)) {
-        ret.push((value as Buffer).toString('hex'));
-        continue;
-      }
-
-      const jsonKey = key === '' ? '' : FqnVdxfUniValue.parseHexKey(key).address;
+    for (const [compact, value] of this._kvValues.entries()) {
+      const jsonKey = compact.address;
 
       if (Buffer.isBuffer(value)) {
         ret.push({ [jsonKey]: (value as Buffer).toString('hex') });
@@ -1183,6 +1217,10 @@ export class FqnVdxfUniValue extends VdxfUniValue {
       } else {
         ret.push({ [jsonKey]: (value as any).toJson() });
       }
+    }
+
+    if (this._rawBytes !== undefined) {
+      ret.push(this._rawBytes.toString('hex'));
     }
 
     return ret.length === 1 ? ret[0] : ret;

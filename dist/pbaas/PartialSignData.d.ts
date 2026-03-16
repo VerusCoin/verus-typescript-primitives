@@ -5,7 +5,7 @@ import { KeyID } from './KeyID';
 import { SaplingPaymentAddress } from './SaplingPaymentAddress';
 import { PartialMMRData, PartialMMRDataJson, SingleKeyMMRData } from './PartialMMRData';
 import { AllowedHashes } from '../constants/pbaas';
-import { VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
+import { FqnVdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
 export type PartialSignDataInitData = {
     flags?: BigNumber;
     address?: IdentityID | KeyID;
@@ -18,7 +18,7 @@ export type PartialSignDataInitData = {
     createMMR?: boolean;
     signature?: Buffer;
     dataType?: BigNumber;
-    data?: Buffer | PartialMMRData | VdxfUniValue;
+    data?: Buffer | PartialMMRData | FqnVdxfUniValue;
 };
 export type PartialSignDataJson = {
     flags?: string;
@@ -80,7 +80,7 @@ export declare class PartialSignData implements SerializableEntity {
     createMMR?: boolean;
     signature?: Buffer;
     dataType?: BigNumber;
-    data?: Buffer | PartialMMRData | VdxfUniValue;
+    data?: Buffer | PartialMMRData | FqnVdxfUniValue;
     static CONTAINS_DATA: import("bn.js");
     static CONTAINS_ADDRESS: import("bn.js");
     static CONTAINS_ENCRYPTTOADDRESS: import("bn.js");

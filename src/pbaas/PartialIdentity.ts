@@ -65,55 +65,55 @@ export class PartialIdentity extends Identity implements SerializableEntity {
     if (data?.primary_addresses && data.primary_addresses.length > 0) this.toggleContainsPrimaryAddresses();
   }
 
-  protected containsFlags() {
+  containsFlags() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_FLAGS).toNumber());
   }
 
-  protected containsVersion() {
+  containsVersion() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_VERSION).toNumber());
   }
 
-  protected containsPrimaryAddresses() {
+  containsPrimaryAddresses() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_PRIMARY_ADDRS).toNumber());
   }
 
-  protected containsMinSigs() {
+  containsMinSigs() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_MINSIGS).toNumber());
   }
 
-  protected containsParent() {
+  containsParent() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_PARENT).toNumber());
   }
 
-  protected containsSystemId() {
+  containsSystemId() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_SYSTEM_ID).toNumber());
   }
 
-  protected containsContentMap() {
+  containsContentMap() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_CONTENT_MAP).toNumber());
   }
 
-  protected containsContentMultiMap() {
+  containsContentMultiMap() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_CONTENT_MULTIMAP).toNumber());
   }
 
-  protected containsRevocation() {
+  containsRevocation() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_REVOCATION).toNumber());
   }
 
-  protected containsRecovery() {
+  containsRecovery() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_RECOVERY).toNumber());
   }
 
-  protected containsPrivateAddresses() {
+  containsPrivateAddresses() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_PRIV_ADDRS).toNumber());
   }
 
-  protected containsUnlockAfter() {
+  containsUnlockAfter() {
     return !!(this.contains.and(PartialIdentity.PARTIAL_ID_CONTAINS_UNLOCK_AFTER).toNumber());
   }
 
-  protected createContentMultiMap(): ContentMultiMap {
+  createContentMultiMap(): ContentMultiMap {
     return new FqnContentMultiMap();
   }
 
@@ -241,6 +241,29 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   unrevoke() {
     this.enableContainsFlags();
     return super.unrevoke();
+  }
+
+  /**
+   * Returns an array of every key used in the content_multimap, both top-level and nested,
+   * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
+   * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
+   */
+  getContentMultiMapKeys(): string[] {
+    const keys: string[] = [];
+
+    for (const [key, values] of this.content_multimap.kvContent.entries()) {
+      keys.push(key.toString());
+
+      for (const univalue of values) {
+        if (univalue instanceof FqnVdxfUniValue) {
+          for (const [key, value] of univalue.entries()) {
+            keys.push(key.toString());
+          }
+        }
+      }
+    }
+
+    return keys;
   }
 
   /**

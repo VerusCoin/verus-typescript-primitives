@@ -12,7 +12,7 @@ import { HASH160_BYTE_LENGTH, I_ADDR_VERSION, R_ADDR_VERSION } from '../constant
 import { PartialMMRData, PartialMMRDataJson, SingleKeyMMRData } from './PartialMMRData';
 import { AllowedHashes, DATA_TYPE_BASE64, DATA_TYPE_DATAHASH, DATA_TYPE_FILENAME, DATA_TYPE_HEX, DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA, DATA_TYPE_RAWSTRINGDATA, DATA_TYPE_VDXFDATA, DEFAULT_HASH_TYPE, HASH_TYPE_BLAKE2B, HASH_TYPE_BLAKE2B_NAME, HASH_TYPE_KECCAK256, HASH_TYPE_KECCAK256_NAME, HASH_TYPE_SHA256, HASH_TYPE_SHA256_NAME, HASH_TYPE_SHA256D, HASH_TYPE_SHA256D_NAME } from '../constants/pbaas';
 import { fromBase58Check } from '../utils/address';
-import { VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
+import { FqnVdxfUniValue, VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
@@ -28,7 +28,7 @@ export type PartialSignDataInitData = {
   createMMR?: boolean;
   signature?: Buffer;
   dataType?: BigNumber;
-  data?: Buffer | PartialMMRData | VdxfUniValue;
+  data?: Buffer | PartialMMRData | FqnVdxfUniValue;
 }
 
 export type PartialSignDataJson = {
@@ -112,7 +112,7 @@ export class PartialSignData implements SerializableEntity {
   signature?: Buffer;
 
   dataType?: BigNumber;
-  data?: Buffer | PartialMMRData | VdxfUniValue;
+  data?: Buffer | PartialMMRData | FqnVdxfUniValue;
 
   static CONTAINS_DATA = new BN("1", 10);
   static CONTAINS_ADDRESS = new BN("2", 10);
@@ -383,7 +383,7 @@ export class PartialSignData implements SerializableEntity {
 
         this.data = partialMMRData;
       } else if (this.isVdxfData()) {
-        const vdxfData = new VdxfUniValue();
+        const vdxfData = new FqnVdxfUniValue();
 
         const vdxfDataBuf = reader.readVarSlice();
         vdxfData.fromBuffer(vdxfDataBuf);
@@ -537,7 +537,7 @@ export class PartialSignData implements SerializableEntity {
           dataType && dataType.eq(DATA_TYPE_MMRDATA) ? 
             PartialMMRData.fromJson(json.data as PartialMMRDataJson) 
             : 
-            VdxfUniValue.fromJson(json.data as VdxfUniValueJson) 
+            FqnVdxfUniValue.fromJson(json.data as VdxfUniValueJson)
               : 
               undefined
     })
@@ -644,7 +644,7 @@ export class PartialSignData implements SerializableEntity {
       config.data = Buffer.from(json.message, 'utf-8');
       config.dataType = DATA_TYPE_MESSAGE;
     } else if (json.vdxfdata) {
-      config.data = VdxfUniValue.fromJson(json.vdxfdata);
+      config.data = FqnVdxfUniValue.fromJson(json.vdxfdata);
       config.dataType = DATA_TYPE_VDXFDATA;
     } else if (json.messagehex) {
       config.data = Buffer.from(json.messagehex, 'hex');

@@ -11,10 +11,12 @@ import { ContentMultiMapJsonValue, IdentityID, VerusCLIVerusIDJson, VerusCLIVeru
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { UINT_256_LENGTH } from '../../../constants/pbaas';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
+import { KvMap } from '../../../utils/KvMap';
+import { FqnVdxfUniValue } from '../../../pbaas/VdxfUniValue';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
-export type SignDataMap = Map<string, PartialSignData>;
+export type SignDataMap = KvMap<PartialSignData>;
 
 export type VerusCLIVerusIDJsonWithData = VerusCLIVerusIDJsonBase<{ [key: string]: ContentMultiMapJsonValue | { data: PartialSignDataCLIJson } }>
 
@@ -130,6 +132,28 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     return createHash("sha256").update(this.toBuffer()).digest();
   }
 
+  getContentMultiMapKeys(): string[] {
+    const keys: string[] = [];
+
+    if (this.identity?.containsContentMultiMap()) {
+      keys.push(...this.identity.getContentMultiMapKeys());
+    }
+
+    if (this.containsSignData()) {
+      for (const [key, psd] of this.signDataMap.entries()) {
+        keys.push(key.toString());
+
+        if (psd.data instanceof FqnVdxfUniValue) {
+          for (const [key, value] of psd.data.entries()) {
+            keys.push(key.toString());
+          }
+        }
+      }
+    }
+
+    return keys;
+  }
+
   getIdentityAddress(isTestnet: boolean = false) {
     if (this.identity.name === "VRSC" || this.identity.name === "VRSCTEST") {
       return nameAndParentAddrToIAddr(this.identity.name);
@@ -164,7 +188,7 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     if (this.containsSignData()) {
       length += varuint.encodingLength(this.signDataMap.size);
       for (const [key, value] of this.signDataMap.entries()) {
-        length += fromBase58Check(key).hash.length;
+        length += key.getByteLength();
         length += value.getByteLength();
       }
     }
@@ -196,7 +220,7 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     if (this.containsSignData()) {
       writer.writeCompactSize(this.signDataMap.size);
       for (const [key, value] of this.signDataMap.entries()) {
-        writer.writeSlice(fromBase58Check(key).hash);
+        writer.writeSlice(key.toBuffer());
         writer.writeSlice(value.toBuffer());
       }
     }
@@ -232,16 +256,17 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     }
 
     if (this.containsSignData()) {
-      this.signDataMap = new Map();
+      this.signDataMap = new KvMap<PartialSignData>();
 
       const size = reader.readCompactSize();
 
       for (let i = 0; i < size; i++) {
-        const key = toBase58Check(reader.readSlice(HASH160_BYTE_LENGTH), I_ADDR_VERSION);
+        const key = new CompactIAddressObject();
         const value = new PartialSignData();
 
+        reader.offset = key.fromBuffer(reader.buffer, reader.offset);
         reader.offset = value.fromBuffer(reader.buffer, reader.offset);
-        
+
         this.signDataMap.set(key, value);
       }
     }
@@ -265,7 +290,7 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
       signDataJson = {};
       
       for (const [key, psd] of this.signDataMap.entries()) {
-        signDataJson[key] = psd.toJson();
+        signDataJson[key.toIAddress()] = psd.toJson();
       }
     }
 
@@ -284,10 +309,10 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     let signDataMap: SignDataMap;
 
     if (json.signdatamap) {
-      signDataMap = new Map();
+      signDataMap = new KvMap<PartialSignData>();
 
       for (const key in json.signdatamap) {
-        signDataMap.set(key, PartialSignData.fromJson(json.signdatamap[key]))
+        signDataMap.set(CompactIAddressObject.fromAddress(key), PartialSignData.fromJson(json.signdatamap[key]));
       }
     }
 
@@ -308,8 +333,9 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     const idJson = (this.identity.toJson() as VerusCLIVerusIDJsonWithData);
 
     if (this.containsSignData()) {
+      if (!idJson.contentmultimap) idJson.contentmultimap = {};
       for (const [key, psd] of this.signDataMap.entries()) {
-        idJson.contentmultimap[key] = {
+        idJson.contentmultimap[key.toIAddress()] = {
           "data": psd.toCLIJson()
         }
       }
@@ -330,10 +356,16 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
 
       for (const key in cmm) {
         if (cmm[key]['data']) {
-          if (!signDataMap) signDataMap = new Map();
+          if (!signDataMap) signDataMap = new KvMap<PartialSignData>();
 
           const psd = PartialSignData.fromCLIJson(cmm[key]['data']);
-          signDataMap.set(key, psd);
+
+          if (key.includes("::")) {
+            signDataMap.set(CompactIAddressObject.fromFQN(key), psd);
+          } else {
+            signDataMap.set(CompactIAddressObject.fromAddress(key), psd);
+          }
+          
 
           delete cmm[key];
         }

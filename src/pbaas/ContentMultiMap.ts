@@ -6,6 +6,7 @@ import { FqnVdxfUniValue, VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue'
 import { isHexString } from '../utils/string';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { CompactIAddressObject } from '../vdxf/classes/CompactAddressObject';
+import { KvMap } from '../utils/KvMap';
 
 const { BufferReader, BufferWriter } = bufferutils
 
@@ -29,71 +30,10 @@ export function isKvValueArrayItemVdxfUniValueJson(x: ContentMultiMapJsonValue):
 }
 
 /**
- * KvContent wraps a Map whose internal keys are hex strings of CompactIAddressObject.toBuffer().
- * External callers always use CompactIAddressObject for keys.
- *
- * Keys whose toIAddress() resolves to the same iaddress are not allowed, because an FQN and a
- * TYPE_I_ADDRESS key can evaluate to the same underlying iaddress and would collide on-chain.
+ * KvContent is KvMap specialized for ContentMultiMap values.
+ * Keys are CompactIAddressObject; values are arrays of ContentMultiMapPrimitive.
  */
-export class KvContent {
-  private _map: Map<string, Array<ContentMultiMapPrimitive>> = new Map();
-
-  private static toInternalKey(key: CompactIAddressObject): string {
-    return key.toBuffer().toString('hex');
-  }
-
-  private static keyFromInternalKey(hexKey: string): CompactIAddressObject {
-    const key = new CompactIAddressObject();
-    key.fromBuffer(Buffer.from(hexKey, 'hex'));
-    return key;
-  }
-
-  get size(): number {
-    return this._map.size;
-  }
-
-  set(key: CompactIAddressObject, value: Array<ContentMultiMapPrimitive>): this {
-    const internalKey = KvContent.toInternalKey(key);
-
-    if (!this._map.has(internalKey)) {
-      const newIAddr = key.toIAddress();
-
-      for (const hexKey of this._map.keys()) {
-        const existing = KvContent.keyFromInternalKey(hexKey);
-        if (existing.toIAddress() === newIAddr) {
-          throw new Error(`KvContent key collision: a different key already resolves to iaddress ${newIAddr}`);
-        }
-      }
-    }
-
-    this._map.set(internalKey, value);
-    return this;
-  }
-
-  get(key: CompactIAddressObject): Array<ContentMultiMapPrimitive> | undefined {
-    return this._map.get(KvContent.toInternalKey(key));
-  }
-
-  has(key: CompactIAddressObject): boolean {
-    return this._map.has(KvContent.toInternalKey(key));
-  }
-
-  delete(key: CompactIAddressObject): boolean {
-    return this._map.delete(KvContent.toInternalKey(key));
-  }
-
-  entries(): IterableIterator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]> {
-    const map = this._map;
-
-    function* gen(): Generator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]> {
-      for (const [hexKey, value] of map.entries()) {
-        yield [KvContent.keyFromInternalKey(hexKey), value];
-      }
-    }
-
-    return gen() as IterableIterator<[CompactIAddressObject, Array<ContentMultiMapPrimitive>]>;
-  }
-}
+export class KvContent extends KvMap<Array<ContentMultiMapPrimitive>> {}
 
 export class ContentMultiMap implements SerializableEntity {
   kvContent: KvContent;

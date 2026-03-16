@@ -190,6 +190,25 @@ class PartialIdentity extends Identity_1.Identity {
         return super.unrevoke();
     }
     /**
+     * Returns an array of every key used in the content_multimap, both top-level and nested,
+     * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
+     * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
+     */
+    getContentMultiMapKeys() {
+        const keys = [];
+        for (const [key, values] of this.content_multimap.kvContent.entries()) {
+            keys.push(key.toString());
+            for (const univalue of values) {
+                if (univalue instanceof VdxfUniValue_1.FqnVdxfUniValue) {
+                    for (const [key, value] of univalue.entries()) {
+                        keys.push(key.toString());
+                    }
+                }
+            }
+        }
+        return keys;
+    }
+    /**
      * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
      * content_multimap. All outer keys are resolved to CompactIAddress objects as
      * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),

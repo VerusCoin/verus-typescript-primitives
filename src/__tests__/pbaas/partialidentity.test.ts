@@ -364,6 +364,159 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   });
 });
 
+describe('PartialIdentity.getContentMultiMapKeys()', () => {
+  const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
+  const CMM_REMOVE_FQN    = VDXF_Data.ContentMultiMapRemoveKeyName;
+  const cmmPayload = { version: 1, action: 3, entrykey: "iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH" };
+
+  const baseParams = {
+    version: IDENTITY_VERSION_PBAAS,
+    min_sigs: new BN(1),
+    primary_addresses: [KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH")],
+    parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    name: "TestID",
+    recovery_authority: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+    revocation_authority: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+  };
+
+  test('returns empty array when content_multimap is empty', () => {
+    const identity = new PartialIdentity(baseParams);
+    expect(identity.getContentMultiMapKeys()).toEqual([]);
+  });
+
+  test('returns top-level iaddress key as iaddress string', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toEqual([IADDR_A]);
+  });
+
+  test('returns top-level FQN key as its FQN string', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toEqual([FQN_DATA_KEY]);
+  });
+
+  test('returns inner iaddress key from FqnVdxfUniValue', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
+      }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toEqual([IADDR_A, CMM_REMOVE_VDXFID]);
+  });
+
+  test('returns inner FQN key from FqnVdxfUniValue as FQN string', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toEqual([IADDR_A, CMM_REMOVE_FQN]);
+  });
+
+  test('skips empty-string inner keys (keyless Buffer values)', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    // Only the top-level key; the raw hex buffer has no inner key
+    expect(keys).toEqual([IADDR_A]);
+  });
+
+  test('Buffer values at top level do not contribute inner keys', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [FQN_DATA_KEY_VALUE, { [CMM_REMOVE_VDXFID]: cmmPayload }],
+      }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    // IADDR_A (outer) + CMM_REMOVE_VDXFID (inner from FqnVdxfUniValue only)
+    expect(keys).toEqual([IADDR_A, CMM_REMOVE_VDXFID]);
+  });
+
+  test('multiple inner keys from multiple FqnVdxfUniValue entries are all returned', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [
+          { [CMM_REMOVE_VDXFID]: cmmPayload },
+          { [CMM_REMOVE_FQN]: cmmPayload },
+        ],
+      }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toEqual([IADDR_A, CMM_REMOVE_VDXFID, CMM_REMOVE_FQN]);
+  });
+
+  test('multiple top-level keys produce one entry per key plus their nested keys', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
+        [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+
+    const keys = identity.getContentMultiMapKeys();
+    expect(keys).toContain(IADDR_A);
+    expect(keys).toContain(FQN_DATA_KEY);
+    expect(keys).toContain(CMM_REMOVE_VDXFID);
+    expect(keys).toContain(CMM_REMOVE_FQN);
+    expect(keys).toHaveLength(4);
+  });
+
+  test('top-level keys survive a binary round-trip (without parseVdxfObjects)', () => {
+    // Without parseVdxfObjects, inner values are raw Buffers — only outer keys are available.
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+
+    const restored = new PartialIdentity();
+    restored.fromBuffer(identity.toBuffer());
+
+    const keys = restored.getContentMultiMapKeys();
+    expect(keys).toEqual([FQN_DATA_KEY]);
+  });
+
+  test('all keys survive a binary round-trip when parseVdxfObjects is true', () => {
+    const identity = new PartialIdentity({
+      ...baseParams,
+      content_multimap: FqnContentMultiMap.fromJson({
+        [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
+      }),
+    });
+
+    const restored = new PartialIdentity();
+    restored.fromBuffer(identity.toBuffer(), 0, true);
+
+    const keys = restored.getContentMultiMapKeys();
+    expect(keys).toEqual([FQN_DATA_KEY, CMM_REMOVE_FQN]);
+  });
+});
+
 describe('PartialIdentity.withResolvedContentMultiMap()', () => {
   const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
   const CMM_REMOVE_FQN    = VDXF_Data.ContentMultiMapRemoveKeyName;

@@ -3,7 +3,10 @@ import { PartialSignData, PartialSignDataInitData } from '../../pbaas/PartialSig
 import { IdentityID } from '../../pbaas/IdentityID'
 import { SaplingPaymentAddress } from '../../pbaas/SaplingPaymentAddress'
 import { PartialMMRData } from '../../pbaas/PartialMMRData'
-import { DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA } from '../../constants/pbaas'
+import { DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA, DATA_TYPE_VDXFDATA } from '../../constants/pbaas'
+import { FqnVdxfUniValue } from '../../pbaas/VdxfUniValue'
+import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject'
+import * as VDXF_Data from '../../vdxf/vdxfdatakeys'
 
 describe('PartialSignData serialization/deserialization', () => {
   function testCLIJsonSerialization(instance) {
@@ -111,6 +114,109 @@ describe('PartialSignData serialization/deserialization', () => {
       }
     });
   })
+
+  test('can (de)serialize signdata from CLI with vdxfdata and FQN inner key', () => {
+    const cliJson = {
+      address: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq',
+      vdxfdata: {
+        [VDXF_Data.ContentMultiMapRemoveKeyName]: {
+          version: 1,
+          action: 3,
+          entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+        },
+      },
+    };
+
+    const psd = PartialSignData.fromCLIJson(cliJson);
+
+    expect(psd.data).toBeInstanceOf(FqnVdxfUniValue);
+    testCLIJsonSerialization(psd);
+    testBufferSerialization(psd);
+  });
+
+  test('FQN inner key in vdxfdata is preserved as FQN type after binary round-trip', () => {
+    const psd = PartialSignData.fromCLIJson({
+      address: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq',
+      vdxfdata: {
+        [VDXF_Data.ContentMultiMapRemoveKeyName]: {
+          version: 1,
+          action: 3,
+          entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+        },
+      },
+    });
+
+    const restored = new PartialSignData();
+    restored.fromBuffer(psd.toBuffer());
+
+    expect(restored.data).toBeInstanceOf(FqnVdxfUniValue);
+    const uni = restored.data as FqnVdxfUniValue;
+    expect(uni.values).toHaveLength(1);
+
+    const innerKey = Object.keys(uni.values[0])[0];
+    const compactAddr = new CompactIAddressObject();
+    compactAddr.fromBuffer(Buffer.from(innerKey, 'hex'), 0);
+
+    expect(compactAddr.isFQN()).toBe(true);
+    expect(compactAddr.address).toBe(VDXF_Data.ContentMultiMapRemoveKeyName);
+  });
+
+  test('FQN inner key toJson returns FQN string, not iaddress', () => {
+    const psd = PartialSignData.fromCLIJson({
+      address: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq',
+      vdxfdata: {
+        [VDXF_Data.ContentMultiMapRemoveKeyName]: {
+          version: 1,
+          action: 3,
+          entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+        },
+      },
+    });
+
+    const uni = psd.data as FqnVdxfUniValue;
+    const json = uni.toJson() as Record<string, unknown>;
+
+    expect(json[VDXF_Data.ContentMultiMapRemoveKeyName]).toBeDefined();
+    expect(json[VDXF_Data.ContentMultiMapRemoveKey.vdxfid]).toBeUndefined();
+  });
+
+  test('PartialSignData constructed directly with FqnVdxfUniValue and FQN key round-trips correctly', () => {
+    const uni = FqnVdxfUniValue.fromJson({
+      [VDXF_Data.ContentMultiMapRemoveKeyName]: {
+        version: 1,
+        action: 3,
+        entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+      },
+    });
+
+    const psd = new PartialSignData({
+      address: IdentityID.fromAddress('iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq'),
+      dataType: DATA_TYPE_VDXFDATA,
+      data: uni,
+    });
+
+    testBufferSerialization(psd);
+  });
+
+  test('iaddress inner key and FQN inner key produce different buffers', () => {
+    const psdFqn = PartialSignData.fromCLIJson({
+      vdxfdata: {
+        [VDXF_Data.ContentMultiMapRemoveKeyName]: {
+          version: 1, action: 3, entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+        },
+      },
+    });
+
+    const psdIaddr = PartialSignData.fromCLIJson({
+      vdxfdata: {
+        [VDXF_Data.ContentMultiMapRemoveKey.vdxfid]: {
+          version: 1, action: 3, entrykey: 'iD3yzD6KnrSG75d8RzirMD6SyvrAS2HxjH',
+        },
+      },
+    });
+
+    expect(psdFqn.toBuffer().toString('hex')).not.toBe(psdIaddr.toBuffer().toString('hex'));
+  });
 
   test('can (de)serialize signdata from CLI with vdxfdata', () => {
     const params = { 

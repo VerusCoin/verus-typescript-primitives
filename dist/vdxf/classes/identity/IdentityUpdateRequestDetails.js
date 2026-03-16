@@ -4,7 +4,6 @@ exports.IdentityUpdateRequestDetails = void 0;
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const address_1 = require("../../../utils/address");
-const vdxf_1 = require("../../../constants/vdxf");
 const createHash = require("create-hash");
 const PartialIdentity_1 = require("../../../pbaas/PartialIdentity");
 const PartialSignData_1 = require("../../../pbaas/PartialSignData");
@@ -12,6 +11,8 @@ const bn_js_1 = require("bn.js");
 const pbaas_1 = require("../../../pbaas");
 const pbaas_2 = require("../../../constants/pbaas");
 const CompactAddressObject_1 = require("../CompactAddressObject");
+const KvMap_1 = require("../../../utils/KvMap");
+const VdxfUniValue_1 = require("../../../pbaas/VdxfUniValue");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class IdentityUpdateRequestDetails {
     constructor(data) {
@@ -78,6 +79,24 @@ class IdentityUpdateRequestDetails {
     toSha256() {
         return createHash("sha256").update(this.toBuffer()).digest();
     }
+    getContentMultiMapKeys() {
+        var _a;
+        const keys = [];
+        if ((_a = this.identity) === null || _a === void 0 ? void 0 : _a.containsContentMultiMap()) {
+            keys.push(...this.identity.getContentMultiMapKeys());
+        }
+        if (this.containsSignData()) {
+            for (const [key, psd] of this.signDataMap.entries()) {
+                keys.push(key.toString());
+                if (psd.data instanceof VdxfUniValue_1.FqnVdxfUniValue) {
+                    for (const [key, value] of psd.data.entries()) {
+                        keys.push(key.toString());
+                    }
+                }
+            }
+        }
+        return keys;
+    }
     getIdentityAddress(isTestnet = false) {
         if (this.identity.name === "VRSC" || this.identity.name === "VRSCTEST") {
             return (0, address_1.nameAndParentAddrToIAddr)(this.identity.name);
@@ -109,7 +128,7 @@ class IdentityUpdateRequestDetails {
         if (this.containsSignData()) {
             length += varuint_1.default.encodingLength(this.signDataMap.size);
             for (const [key, value] of this.signDataMap.entries()) {
-                length += (0, address_1.fromBase58Check)(key).hash.length;
+                length += key.getByteLength();
                 length += value.getByteLength();
             }
         }
@@ -134,7 +153,7 @@ class IdentityUpdateRequestDetails {
         if (this.containsSignData()) {
             writer.writeCompactSize(this.signDataMap.size);
             for (const [key, value] of this.signDataMap.entries()) {
-                writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
+                writer.writeSlice(key.toBuffer());
                 writer.writeSlice(value.toBuffer());
             }
         }
@@ -160,11 +179,12 @@ class IdentityUpdateRequestDetails {
             this.txid = reader.readSlice(pbaas_2.UINT_256_LENGTH);
         }
         if (this.containsSignData()) {
-            this.signDataMap = new Map();
+            this.signDataMap = new KvMap_1.KvMap();
             const size = reader.readCompactSize();
             for (let i = 0; i < size; i++) {
-                const key = (0, address_1.toBase58Check)(reader.readSlice(vdxf_1.HASH160_BYTE_LENGTH), vdxf_1.I_ADDR_VERSION);
+                const key = new CompactAddressObject_1.CompactIAddressObject();
                 const value = new PartialSignData_1.PartialSignData();
+                reader.offset = key.fromBuffer(reader.buffer, reader.offset);
                 reader.offset = value.fromBuffer(reader.buffer, reader.offset);
                 this.signDataMap.set(key, value);
             }
@@ -184,7 +204,7 @@ class IdentityUpdateRequestDetails {
         if (this.signDataMap) {
             signDataJson = {};
             for (const [key, psd] of this.signDataMap.entries()) {
-                signDataJson[key] = psd.toJson();
+                signDataJson[key.toIAddress()] = psd.toJson();
             }
         }
         return {
@@ -200,9 +220,9 @@ class IdentityUpdateRequestDetails {
     static fromJson(json) {
         let signDataMap;
         if (json.signdatamap) {
-            signDataMap = new Map();
+            signDataMap = new KvMap_1.KvMap();
             for (const key in json.signdatamap) {
-                signDataMap.set(key, PartialSignData_1.PartialSignData.fromJson(json.signdatamap[key]));
+                signDataMap.set(CompactAddressObject_1.CompactIAddressObject.fromAddress(key), PartialSignData_1.PartialSignData.fromJson(json.signdatamap[key]));
             }
         }
         return new IdentityUpdateRequestDetails({
@@ -220,8 +240,10 @@ class IdentityUpdateRequestDetails {
             throw new Error("No identity details to update");
         const idJson = this.identity.toJson();
         if (this.containsSignData()) {
+            if (!idJson.contentmultimap)
+                idJson.contentmultimap = {};
             for (const [key, psd] of this.signDataMap.entries()) {
-                idJson.contentmultimap[key] = {
+                idJson.contentmultimap[key.toIAddress()] = {
                     "data": psd.toCLIJson()
                 };
             }
@@ -236,9 +258,14 @@ class IdentityUpdateRequestDetails {
             for (const key in cmm) {
                 if (cmm[key]['data']) {
                     if (!signDataMap)
-                        signDataMap = new Map();
+                        signDataMap = new KvMap_1.KvMap();
                     const psd = PartialSignData_1.PartialSignData.fromCLIJson(cmm[key]['data']);
-                    signDataMap.set(key, psd);
+                    if (key.includes("::")) {
+                        signDataMap.set(CompactAddressObject_1.CompactIAddressObject.fromFQN(key), psd);
+                    }
+                    else {
+                        signDataMap.set(CompactAddressObject_1.CompactIAddressObject.fromAddress(key), psd);
+                    }
                     delete cmm[key];
                 }
             }

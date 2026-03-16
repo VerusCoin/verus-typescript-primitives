@@ -17,19 +17,19 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     static PARTIAL_ID_CONTAINS_FLAGS: import("bn.js");
     static PARTIAL_ID_CONTAINS_VERSION: import("bn.js");
     constructor(data?: VerusIDInitData);
-    protected containsFlags(): boolean;
-    protected containsVersion(): boolean;
-    protected containsPrimaryAddresses(): boolean;
-    protected containsMinSigs(): boolean;
-    protected containsParent(): boolean;
-    protected containsSystemId(): boolean;
-    protected containsContentMap(): boolean;
-    protected containsContentMultiMap(): boolean;
-    protected containsRevocation(): boolean;
-    protected containsRecovery(): boolean;
-    protected containsPrivateAddresses(): boolean;
-    protected containsUnlockAfter(): boolean;
-    protected createContentMultiMap(): ContentMultiMap;
+    containsFlags(): boolean;
+    containsVersion(): boolean;
+    containsPrimaryAddresses(): boolean;
+    containsMinSigs(): boolean;
+    containsParent(): boolean;
+    containsSystemId(): boolean;
+    containsContentMap(): boolean;
+    containsContentMultiMap(): boolean;
+    containsRevocation(): boolean;
+    containsRecovery(): boolean;
+    containsPrivateAddresses(): boolean;
+    containsUnlockAfter(): boolean;
+    createContentMultiMap(): ContentMultiMap;
     clearContentMultiMap(): void;
     private toggleContainsParent;
     private toggleContainsSystemId;
@@ -54,6 +54,12 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     unlock(height?: BigNumber, txExpiryHeight?: BigNumber): void;
     revoke(): void;
     unrevoke(): void;
+    /**
+     * Returns an array of every key used in the content_multimap, both top-level and nested,
+     * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
+     * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
+     */
+    getContentMultiMapKeys(): string[];
     /**
      * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
      * content_multimap. All outer keys are resolved to CompactIAddress objects as

@@ -224,7 +224,7 @@ class PartialSignData {
                 this.data = partialMMRData;
             }
             else if (this.isVdxfData()) {
-                const vdxfData = new VdxfUniValue_1.VdxfUniValue();
+                const vdxfData = new VdxfUniValue_1.FqnVdxfUniValue();
                 const vdxfDataBuf = reader.readVarSlice();
                 vdxfData.fromBuffer(vdxfDataBuf);
                 this.data = vdxfData;
@@ -358,7 +358,7 @@ class PartialSignData {
                         dataType && dataType.eq(pbaas_1.DATA_TYPE_MMRDATA) ?
                             PartialMMRData_1.PartialMMRData.fromJson(json.data)
                             :
-                                VdxfUniValue_1.VdxfUniValue.fromJson(json.data)
+                                VdxfUniValue_1.FqnVdxfUniValue.fromJson(json.data)
                 :
                     undefined
         });
@@ -471,7 +471,7 @@ class PartialSignData {
             config.dataType = pbaas_1.DATA_TYPE_MESSAGE;
         }
         else if (json.vdxfdata) {
-            config.data = VdxfUniValue_1.VdxfUniValue.fromJson(json.vdxfdata);
+            config.data = VdxfUniValue_1.FqnVdxfUniValue.fromJson(json.vdxfdata);
             config.dataType = pbaas_1.DATA_TYPE_VDXFDATA;
         }
         else if (json.messagehex) {
