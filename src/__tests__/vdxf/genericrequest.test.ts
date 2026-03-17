@@ -216,16 +216,16 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
     const partialIdentity = new PartialIdentity({
       flags: new BN("0"),
       version: IDENTITY_VERSION_PBAAS,
-      min_sigs: new BN(1),
-      primary_addresses: [
+      minSigs: new BN(1),
+      primaryAddresses: [
         KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"),
         KeyID.fromAddress("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
       ],
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
-      content_map: contentmap,
-      content_multimap: ContentMultiMap.fromJson({
+      contentMap: contentmap,
+      contentMultimap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -240,10 +240,10 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
         ],
         i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz: { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' }
       }),
-      recovery_authority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
-      revocation_authority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
-      unlock_after: new BN("123456", 10),
-      private_addresses: [SaplingPaymentAddress.fromAddressString("zs1wczplx4kegw32h8g0f7xwl57p5tvnprwdmnzmdnsw50chcl26f7tws92wk2ap03ykaq6jyyztfa")]
+      recoveryAuthority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
+      revocationAuthority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
+      unlockAfter: new BN("123456", 10),
+      privateAddresses: [SaplingPaymentAddress.fromAddressString("zs1wczplx4kegw32h8g0f7xwl57p5tvnprwdmnzmdnsw50chcl26f7tws92wk2ap03ykaq6jyyztfa")]
     });
 
     const mmrData = new PartialMMRData({

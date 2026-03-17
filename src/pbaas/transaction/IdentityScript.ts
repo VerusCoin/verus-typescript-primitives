@@ -23,15 +23,15 @@ export class IdentityScript extends SmartTransactionScript implements Serializab
 
     const destinationsMaster = identity.isRevoked() ? [
       new TxDestination(IdentityID.fromAddress(identityAddress)),
-      new TxDestination(identity.recovery_authority)
+      new TxDestination(identity.recoveryAuthority)
     ] : [
       new TxDestination(IdentityID.fromAddress(identityAddress)),
-      new TxDestination(identity.revocation_authority),
-      new TxDestination(identity.recovery_authority)
+      new TxDestination(identity.revocationAuthority),
+      new TxDestination(identity.recoveryAuthority)
     ];
 
     const destinationsRecovery = [
-      new TxDestination(identity.recovery_authority)
+      new TxDestination(identity.recoveryAuthority)
     ]
 
     if (identity.hasTokenizedIdControl()) {
@@ -74,7 +74,7 @@ export class IdentityScript extends SmartTransactionScript implements Serializab
           m: new BN(1),
           n: new BN(1),
           destinations: [
-            new TxDestination(identity.revocation_authority)
+            new TxDestination(identity.revocationAuthority)
           ],
           vdata: []
         }).toChunk(),

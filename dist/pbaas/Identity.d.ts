@@ -37,28 +37,28 @@ export type VerusCLIVerusIDJson = VerusCLIVerusIDJsonBase<ContentMultiMapJson>;
 export type VerusIDInitData = {
     version?: BigNumber;
     flags?: BigNumber;
-    min_sigs?: BigNumber;
-    primary_addresses?: Array<KeyID>;
+    minSigs?: BigNumber;
+    primaryAddresses?: Array<KeyID>;
     parent?: IdentityID;
-    system_id?: IdentityID;
+    systemId?: IdentityID;
     name?: string;
-    content_map?: Hashes;
-    content_multimap?: ContentMultiMap;
-    revocation_authority?: IdentityID;
-    recovery_authority?: IdentityID;
-    private_addresses?: Array<SaplingPaymentAddress>;
-    unlock_after?: BigNumber;
+    contentMap?: Hashes;
+    contentMultimap?: ContentMultiMap;
+    revocationAuthority?: IdentityID;
+    recoveryAuthority?: IdentityID;
+    privateAddresses?: Array<SaplingPaymentAddress>;
+    unlockAfter?: BigNumber;
 };
 export declare class Identity extends Principal implements SerializableEntity {
     parent: IdentityID;
-    system_id: IdentityID;
+    systemId: IdentityID;
     name: string;
-    content_map: Hashes;
-    content_multimap: ContentMultiMap;
-    revocation_authority: IdentityID;
-    recovery_authority: IdentityID;
-    private_addresses: Array<SaplingPaymentAddress>;
-    unlock_after: BigNumber;
+    contentMap: Hashes;
+    contentMultimap: ContentMultiMap;
+    revocationAuthority: IdentityID;
+    recoveryAuthority: IdentityID;
+    privateAddresses: Array<SaplingPaymentAddress>;
+    unlockAfter: BigNumber;
     static VERSION_INVALID: import("bn.js");
     static VERSION_VERUSID: import("bn.js");
     static VERSION_VAULT: import("bn.js");
@@ -67,6 +67,20 @@ export declare class Identity extends Principal implements SerializableEntity {
     static VERSION_FIRSTVALID: import("bn.js");
     static VERSION_LASTVALID: import("bn.js");
     constructor(data?: VerusIDInitData);
+    /** @deprecated Use systemId instead */
+    get system_id(): IdentityID;
+    /** @deprecated Use contentMap instead */
+    get content_map(): Hashes;
+    /** @deprecated Use contentMultimap instead */
+    get content_multimap(): ContentMultiMap;
+    /** @deprecated Use revocationAuthority instead */
+    get revocation_authority(): IdentityID;
+    /** @deprecated Use recoveryAuthority instead */
+    get recovery_authority(): IdentityID;
+    /** @deprecated Use privateAddresses instead */
+    get private_addresses(): Array<SaplingPaymentAddress>;
+    /** @deprecated Use unlockAfter instead */
+    get unlock_after(): BigNumber;
     protected containsParent(): boolean;
     protected containsSystemId(): boolean;
     protected containsName(): boolean;

@@ -21,14 +21,14 @@ class IdentityScript extends SmartTransactionScript_1.SmartTransactionScript {
         const identityAddress = identity.getIdentityAddress();
         const destinationsMaster = identity.isRevoked() ? [
             new TxDestination_1.TxDestination(IdentityID_1.IdentityID.fromAddress(identityAddress)),
-            new TxDestination_1.TxDestination(identity.recovery_authority)
+            new TxDestination_1.TxDestination(identity.recoveryAuthority)
         ] : [
             new TxDestination_1.TxDestination(IdentityID_1.IdentityID.fromAddress(identityAddress)),
-            new TxDestination_1.TxDestination(identity.revocation_authority),
-            new TxDestination_1.TxDestination(identity.recovery_authority)
+            new TxDestination_1.TxDestination(identity.revocationAuthority),
+            new TxDestination_1.TxDestination(identity.recoveryAuthority)
         ];
         const destinationsRecovery = [
-            new TxDestination_1.TxDestination(identity.recovery_authority)
+            new TxDestination_1.TxDestination(identity.recoveryAuthority)
         ];
         if (identity.hasTokenizedIdControl()) {
             const addrDestination = new TxDestination_1.TxDestination(KeyID_1.KeyID.fromAddress(cccustom_1.IDENTITY_RECOVER_ADDR));
@@ -68,7 +68,7 @@ class IdentityScript extends SmartTransactionScript_1.SmartTransactionScript {
                     m: new bn_js_1.BN(1),
                     n: new bn_js_1.BN(1),
                     destinations: [
-                        new TxDestination_1.TxDestination(identity.revocation_authority)
+                        new TxDestination_1.TxDestination(identity.revocationAuthority)
                     ],
                     vdata: []
                 }).toChunk(),

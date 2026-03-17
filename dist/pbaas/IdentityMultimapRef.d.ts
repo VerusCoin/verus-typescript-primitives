@@ -13,12 +13,12 @@ export interface IdentityMultimapRefJson {
 export declare class IdentityMultimapRef implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
-    id_ID: string;
+    idID: string;
     key: string;
-    height_start: BigNumber;
-    height_end: BigNumber;
-    data_hash: Buffer;
-    system_id: string;
+    heightStart: BigNumber;
+    heightEnd: BigNumber;
+    dataHash: Buffer;
+    systemId: string;
     static FLAG_NO_DELETION: import("bn.js");
     static FLAG_HAS_DATAHASH: import("bn.js");
     static FLAG_HAS_SYSTEM: import("bn.js");
@@ -26,6 +26,16 @@ export declare class IdentityMultimapRef implements SerializableEntity {
     static LAST_VERSION: import("bn.js");
     static CURRENT_VERSION: import("bn.js");
     constructor(data?: any);
+    /** @deprecated Use idID instead */
+    get id_ID(): string;
+    /** @deprecated Use heightStart instead */
+    get height_start(): BigNumber;
+    /** @deprecated Use heightEnd instead */
+    get height_end(): BigNumber;
+    /** @deprecated Use dataHash instead */
+    get data_hash(): Buffer;
+    /** @deprecated Use systemId instead */
+    get system_id(): string;
     setFlags(): void;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

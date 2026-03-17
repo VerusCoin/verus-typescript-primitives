@@ -13,9 +13,9 @@ export declare class PBaaSEvidenceRef implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     output: UTXORef;
-    object_num: BigNumber;
-    sub_object: BigNumber;
-    system_id: string;
+    objectNum: BigNumber;
+    subObject: BigNumber;
+    systemId: string;
     static FLAG_ISEVIDENCE: import("bn.js");
     static FLAG_HAS_SYSTEM: import("bn.js");
     static FIRST_VERSION: import("bn.js");
@@ -24,10 +24,16 @@ export declare class PBaaSEvidenceRef implements SerializableEntity {
         version?: BigNumber;
         flags?: BigNumber;
         output?: UTXORef;
-        object_num?: BigNumber;
-        sub_object?: BigNumber;
-        system_id?: string;
+        objectNum?: BigNumber;
+        subObject?: BigNumber;
+        systemId?: string;
     });
+    /** @deprecated Use objectNum instead */
+    get object_num(): BigNumber;
+    /** @deprecated Use subObject instead */
+    get sub_object(): BigNumber;
+    /** @deprecated Use systemId instead */
+    get system_id(): string;
     setFlags(): void;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

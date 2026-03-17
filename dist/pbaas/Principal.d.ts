@@ -7,14 +7,18 @@ export declare const PRINCIPAL_VERSION_CURRENT: import("bn.js");
 export declare class Principal implements SerializableEntity {
     flags: BigNumber;
     version: BigNumber;
-    min_sigs?: BigNumber;
-    primary_addresses?: Array<KeyID>;
+    minSigs?: BigNumber;
+    primaryAddresses?: Array<KeyID>;
     constructor(data?: {
         version?: BigNumber;
         flags?: BigNumber;
-        min_sigs?: BigNumber;
-        primary_addresses?: Array<KeyID>;
+        minSigs?: BigNumber;
+        primaryAddresses?: Array<KeyID>;
     });
+    /** @deprecated Use minSigs instead */
+    get min_sigs(): BigNumber | undefined;
+    /** @deprecated Use primaryAddresses instead */
+    get primary_addresses(): Array<KeyID> | undefined;
     protected containsFlags(): boolean;
     protected containsVersion(): boolean;
     protected containsPrimaryAddresses(): boolean;

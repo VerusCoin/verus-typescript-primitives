@@ -105,8 +105,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
     const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
 
-    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocation_authority.toAddress());
-    expect(outParams3.destinations[0].toAddress()).toBe(identity.recovery_authority.toAddress());
+    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
+    expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
 
     const contentmap = new Map();
     contentmap.set("iNMaSiS33Mu7SKDkcVY9UrYHu2DcSWxfhz", Buffer.from("906898c60c12cb3821d8cb316658891b1204efad89fde8ff605823da45655ff1", 'hex'));
@@ -135,16 +135,16 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new Identity({
           version: new BN(2),
           flags: new BN(0),
-          content_map: contentmap,
-          primary_addresses: [KeyID.fromAddress("RGWym55BkmCXAUnM6eJkG7geWfzo62xFrP")],
-          min_sigs: new BN(1),
+          contentMap: contentmap,
+          primaryAddresses: [KeyID.fromAddress("RGWym55BkmCXAUnM6eJkG7geWfzo62xFrP")],
+          minSigs: new BN(1),
           parent: IdentityID.fromAddress(toIAddress("VRSC")),
-          system_id: IdentityID.fromAddress(toIAddress("VRSC")),
+          systemId: IdentityID.fromAddress(toIAddress("VRSC")),
           name: 'mike',
-          revocation_authority: IdentityID.fromAddress(iaddr),
-          recovery_authority: IdentityID.fromAddress(iaddr),
-          private_addresses: identity.private_addresses,
-          unlock_after: new BN(0)
+          revocationAuthority: IdentityID.fromAddress(iaddr),
+          recoveryAuthority: IdentityID.fromAddress(iaddr),
+          privateAddresses: identity.privateAddresses,
+          unlockAfter: new BN(0)
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),
@@ -194,8 +194,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
     const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
 
-    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocation_authority.toAddress());
-    expect(outParams3.destinations[0].toAddress()).toBe(identity.recovery_authority.toAddress());
+    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
+    expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
 
     const contentmap = new Map();
 
@@ -223,16 +223,16 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new Identity({
           version: new BN(1),
           flags: new BN(0),
-          content_map: contentmap,
-          primary_addresses: [KeyID.fromAddress("REpxm9bCLMiHRNVPA9unPBWixie7uHFA5C")],
-          min_sigs: new BN(1),
+          contentMap: contentmap,
+          primaryAddresses: [KeyID.fromAddress("REpxm9bCLMiHRNVPA9unPBWixie7uHFA5C")],
+          minSigs: new BN(1),
           parent: IdentityID.fromAddress(toIAddress("VRSC")),
-          system_id: IdentityID.fromAddress(toIAddress("VRSC")),
+          systemId: IdentityID.fromAddress(toIAddress("VRSC")),
           name: 'a',
-          revocation_authority: IdentityID.fromAddress(iaddr),
-          recovery_authority: IdentityID.fromAddress(iaddr),
-          private_addresses: identity.private_addresses,
-          unlock_after: new BN(0)
+          revocationAuthority: IdentityID.fromAddress(iaddr),
+          recoveryAuthority: IdentityID.fromAddress(iaddr),
+          privateAddresses: identity.privateAddresses,
+          unlockAfter: new BN(0)
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),
@@ -282,8 +282,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
     const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
 
-    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocation_authority.toAddress());
-    expect(outParams3.destinations[0].toAddress()).toBe(identity.recovery_authority.toAddress());
+    expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
+    expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
 
     const contentmap = new Map();
 
@@ -311,16 +311,16 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new Identity({
           version: new BN(3),
           flags: new BN(0),
-          content_map: contentmap,
-          primary_addresses: [KeyID.fromAddress("RUm77XHPni9KxsppF6B5geJ83cM4ZR1TPT")],
-          min_sigs: new BN(1),
+          contentMap: contentmap,
+          primaryAddresses: [KeyID.fromAddress("RUm77XHPni9KxsppF6B5geJ83cM4ZR1TPT")],
+          minSigs: new BN(1),
           parent: IdentityID.fromAddress("iLjRC7LcFiwgPxvNP421TY1CPAX4XAMnhX"),
-          system_id: IdentityID.fromAddress(toIAddress("VRSC")),
+          systemId: IdentityID.fromAddress(toIAddress("VRSC")),
           name: 'a',
-          revocation_authority: IdentityID.fromAddress(iaddr),
-          recovery_authority: IdentityID.fromAddress(iaddr),
-          private_addresses: identity.private_addresses,
-          unlock_after: new BN(0)
+          revocationAuthority: IdentityID.fromAddress(iaddr),
+          recoveryAuthority: IdentityID.fromAddress(iaddr),
+          privateAddresses: identity.privateAddresses,
+          unlockAfter: new BN(0)
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),

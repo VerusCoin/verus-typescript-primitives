@@ -48,9 +48,9 @@ describe('Serializes and deserializes dataDescriptors', () => {
     evid.version = new BN(1);
     evid.flags = new BN(1); //type IS_EVIDENCE = 1
     evid.output = new UTXORef({ hash: Buffer.from('30395e0868b1953477e14bb5c16349622239a94115a4d1f02b72b6ecf8b1c79c', 'hex'), n: new BN(0) });
-    evid.object_num = new BN(0);
-    evid.sub_object = new BN(0);
-    evid.system_id = "i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7";
+    evid.objectNum = new BN(0);
+    evid.subObject = new BN(0);
+    evid.systemId = "i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7";
 
     const crossChainRef = new CrossChainDataRef(evid);
     const dataKeyMap = new Array<{[key: string]: VdxfUniType}>;
@@ -179,12 +179,12 @@ describe('Serializes and deserializes dataDescriptors', () => {
       const idMultimap = new IdentityMultimapRef({
         version: new BN(1),
         flags: new BN(0),
-        id_ID: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        idID: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
         key: "i4GC1YGEVD21afWudGoFJVdnfjJ5XWnCQv",
-        height_start: new BN(0),
-        height_end: new BN(0),
-        data_hash: Buffer.alloc(0),
-        system_id: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        heightStart: new BN(0),
+        heightEnd: new BN(0),
+        dataHash: Buffer.alloc(0),
+        systemId: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
       });
   
       const idMultimapMap = new Array<{[key: string]: VdxfUniType}>;

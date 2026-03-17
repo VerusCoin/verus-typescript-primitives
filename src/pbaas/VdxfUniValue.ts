@@ -47,8 +47,6 @@ export type JsonSerializableObject = CurrencyValueMap | Rating |
   TransferDestination | ContentMultiMapRemove | CrossChainDataRef | SignatureData |
   DataDescriptor | MMRDescriptor | Credential;
 
-// This UniValue class was adapted from C++ code for encoding JSON objects into bytes. It is not serialization and
-// therefore doesn't have a fromBuffer function, as you can't reliably decode it, only encode.
 export class VdxfUniValue implements SerializableEntity {
   private _values: Array<{ [key: string]: VdxfUniType }>;
   version: BigNumber;

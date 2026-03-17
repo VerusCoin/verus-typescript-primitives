@@ -9,11 +9,11 @@ import { SerializableEntity } from '../utils/types/SerializableEntity';
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export interface IdentityMultimapRefJson { 
+export interface IdentityMultimapRefJson {
   version: number;
   flags: number;
   vdxfkey: string;
-  identityid?: string; 
+  identityid?: string;
   startheight: number;
   endheight: number;
   datahash?: string;
@@ -22,12 +22,12 @@ export interface IdentityMultimapRefJson {
 export class IdentityMultimapRef implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
-  id_ID: string;
+  idID: string;
   key: string;
-  height_start: BigNumber;
-  height_end: BigNumber;
-  data_hash: Buffer;
-  system_id: string;
+  heightStart: BigNumber;
+  heightEnd: BigNumber;
+  dataHash: Buffer;
+  systemId: string;
 
   static FLAG_NO_DELETION = new BN(1)
   static FLAG_HAS_DATAHASH = new BN(2)
@@ -39,23 +39,43 @@ export class IdentityMultimapRef implements SerializableEntity {
   constructor(data?) {
 
     if (data) {
+      const deprecated = ['id_ID', 'height_start', 'height_end', 'data_hash', 'system_id'].filter(k => k in data);
+      if (deprecated.length > 0) {
+        const map: Record<string, string> = { id_ID: 'idID', height_start: 'heightStart', height_end: 'heightEnd', data_hash: 'dataHash', system_id: 'systemId' };
+        throw new Error(`IdentityMultimapRef: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+      }
       this.version = data.version || IdentityMultimapRef.CURRENT_VERSION;
       this.flags = data.flags || new BN(0);
-      this.id_ID = data.id_ID || "";
+      this.idID = data.idID || "";
       this.key = data.key || "";
-      this.height_start = data.height_start || new BN(0);
-      this.height_end = data.height_end || new BN(0);
-      this.data_hash = data.data_hash || Buffer.alloc(0);
-      this.system_id = data.system_id || "";
+      this.heightStart = data.heightStart || new BN(0);
+      this.heightEnd = data.heightEnd || new BN(0);
+      this.dataHash = data.dataHash || Buffer.alloc(0);
+      this.systemId = data.systemId || "";
     }
   }
 
+  /** @deprecated Use idID instead */
+  get id_ID(): string { return this.idID; }
+
+  /** @deprecated Use heightStart instead */
+  get height_start(): BigNumber { return this.heightStart; }
+
+  /** @deprecated Use heightEnd instead */
+  get height_end(): BigNumber { return this.heightEnd; }
+
+  /** @deprecated Use dataHash instead */
+  get data_hash(): Buffer { return this.dataHash; }
+
+  /** @deprecated Use systemId instead */
+  get system_id(): string { return this.systemId; }
+
   setFlags() {
     this.flags = this.flags.and(IdentityMultimapRef.FLAG_NO_DELETION);
-    if (this.data_hash && this.data_hash.length > 0) {
+    if (this.dataHash && this.dataHash.length > 0) {
       this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_DATAHASH);
     }
-    if (this.system_id && this.system_id.length > 0) {
+    if (this.systemId && this.systemId.length > 0) {
       this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_SYSTEM);
     }
   }
@@ -66,10 +86,10 @@ export class IdentityMultimapRef implements SerializableEntity {
 
     byteLength += varint.encodingLength(this.version);
     byteLength += varint.encodingLength(this.flags);
-    byteLength += HASH160_BYTE_LENGTH; // id_ID
-    byteLength += HASH160_BYTE_LENGTH; // vdxfkey 
-    byteLength += varint.encodingLength(this.height_start); // height_start uint32
-    byteLength += varint.encodingLength(this.height_end); // height_end uint32
+    byteLength += HASH160_BYTE_LENGTH; // idID
+    byteLength += HASH160_BYTE_LENGTH; // vdxfkey
+    byteLength += varint.encodingLength(this.heightStart); // heightStart uint32
+    byteLength += varint.encodingLength(this.heightEnd); // heightEnd uint32
 
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0))) {
@@ -87,16 +107,16 @@ export class IdentityMultimapRef implements SerializableEntity {
 
     bufferWriter.writeVarInt(this.version);
     bufferWriter.writeVarInt(this.flags);
-    bufferWriter.writeSlice(fromBase58Check(this.id_ID).hash);
+    bufferWriter.writeSlice(fromBase58Check(this.idID).hash);
     bufferWriter.writeSlice(fromBase58Check(this.key).hash);
-    bufferWriter.writeVarInt(this.height_start);
-    bufferWriter.writeVarInt(this.height_end);
+    bufferWriter.writeVarInt(this.heightStart);
+    bufferWriter.writeVarInt(this.heightEnd);
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0))) {
-      bufferWriter.writeSlice(this.data_hash);
+      bufferWriter.writeSlice(this.dataHash);
     }
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
-      bufferWriter.writeSlice(fromBase58Check(this.system_id).hash);
+      bufferWriter.writeSlice(fromBase58Check(this.systemId).hash);
     }
 
     return bufferWriter.buffer
@@ -107,17 +127,17 @@ export class IdentityMultimapRef implements SerializableEntity {
 
     this.version = reader.readVarInt();
     this.flags = reader.readVarInt();
-    this.id_ID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+    this.idID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
     this.key = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
-    this.height_start = reader.readVarInt();
-    this.height_end = reader.readVarInt();
+    this.heightStart = reader.readVarInt();
+    this.heightEnd = reader.readVarInt();
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0))) {
-      this.data_hash = reader.readSlice(32);
+      this.dataHash = reader.readSlice(32);
     }
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
-      this.system_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+      this.systemId = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
     }
     return reader.offset;
   }
@@ -126,7 +146,7 @@ export class IdentityMultimapRef implements SerializableEntity {
     return this.version.gte(IdentityMultimapRef.FIRST_VERSION) &&
       this.version.lte(IdentityMultimapRef.LAST_VERSION) &&
       this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)).eq(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)) &&
-      !(!this.id_ID || this.id_ID.length === 0) && !(!this.key || this.key.length === 0);
+      !(!this.idID || this.idID.length === 0) && !(!this.key || this.key.length === 0);
   }
 
   hasDataHash() {
@@ -144,17 +164,17 @@ export class IdentityMultimapRef implements SerializableEntity {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
       vdxfkey: this.key,
-      startheight: this.height_start.toNumber(),
-      endheight: this.height_end.toNumber(),
-      identityid: this.id_ID
+      startheight: this.heightStart.toNumber(),
+      endheight: this.heightEnd.toNumber(),
+      identityid: this.idID
     };
 
     if (this.hasDataHash()) {
-      retval.datahash = Buffer.from(this.data_hash).reverse().toString('hex');
+      retval.datahash = Buffer.from(this.dataHash).reverse().toString('hex');
     }
 
     if (this.hasSystemID()) {
-      retval.systemid = this.system_id;
+      retval.systemid = this.systemId;
     }
     return retval;
   }
@@ -164,11 +184,11 @@ export class IdentityMultimapRef implements SerializableEntity {
       version: new BN(data.version),
       flags: new BN(data.flags),
       key: data.vdxfkey,
-      id_ID: data.identityid,
-      height_start: new BN(data.startheight),
-      height_end: new BN(data.endheight),
-      data_hash: Buffer.from(data.datahash, 'hex').reverse(),
-      system_id: data.systemid
+      idID: data.identityid,
+      heightStart: new BN(data.startheight),
+      heightEnd: new BN(data.endheight),
+      dataHash: Buffer.from(data.datahash, 'hex').reverse(),
+      systemId: data.systemid
     })
   }
 }

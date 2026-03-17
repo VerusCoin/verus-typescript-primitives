@@ -24,30 +24,45 @@ export class PBaaSEvidenceRef implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   output: UTXORef;
-  object_num: BigNumber;
-  sub_object: BigNumber;
-  system_id: string;
+  objectNum: BigNumber;
+  subObject: BigNumber;
+  systemId: string;
 
   static FLAG_ISEVIDENCE = new BN(1)
   static FLAG_HAS_SYSTEM = new BN(2)
   static FIRST_VERSION = new BN(1)
   static LAST_VERSION = new BN(1)
 
-  constructor(data?: { version?: BigNumber, flags?: BigNumber, output?: UTXORef, object_num?: BigNumber, sub_object?: BigNumber, system_id?: string }) {
+  constructor(data?: { version?: BigNumber, flags?: BigNumber, output?: UTXORef, objectNum?: BigNumber, subObject?: BigNumber, systemId?: string }) {
 
     if (data) {
+      const d = data as any;
+      const deprecated = ['object_num', 'sub_object', 'system_id'].filter(k => k in d);
+      if (deprecated.length > 0) {
+        const map: Record<string, string> = { object_num: 'objectNum', sub_object: 'subObject', system_id: 'systemId' };
+        throw new Error(`PBaaSEvidenceRef: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+      }
       this.version = data.version || new BN(1, 10);
       this.flags = data.flags || new BN(0);
       this.output = data.output || new UTXORef();
-      this.object_num = data.object_num || new BN(0);
-      this.sub_object = data.sub_object || new BN(0);
-      this.system_id = data.system_id || "";
+      this.objectNum = data.objectNum || new BN(0);
+      this.subObject = data.subObject || new BN(0);
+      this.systemId = data.systemId || "";
     }
   }
 
+  /** @deprecated Use objectNum instead */
+  get object_num(): BigNumber { return this.objectNum; }
+
+  /** @deprecated Use subObject instead */
+  get sub_object(): BigNumber { return this.subObject; }
+
+  /** @deprecated Use systemId instead */
+  get system_id(): string { return this.systemId; }
+
   setFlags() {
     this.flags = this.flags.and(PBaaSEvidenceRef.FLAG_ISEVIDENCE);
-    if (this.system_id && this.system_id.length > 0) {
+    if (this.systemId && this.systemId.length > 0) {
       this.flags = this.flags.or(PBaaSEvidenceRef.FLAG_HAS_SYSTEM);
     }
 
@@ -60,8 +75,8 @@ export class PBaaSEvidenceRef implements SerializableEntity {
     byteLength += varint.encodingLength(this.version);
     byteLength += varint.encodingLength(this.flags);
     byteLength += this.output.getByteLength();
-    byteLength += varint.encodingLength(this.object_num);
-    byteLength += varint.encodingLength(this.sub_object);
+    byteLength += varint.encodingLength(this.objectNum);
+    byteLength += varint.encodingLength(this.subObject);
 
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
       byteLength += HASH160_BYTE_LENGTH;
@@ -76,11 +91,11 @@ export class PBaaSEvidenceRef implements SerializableEntity {
     bufferWriter.writeVarInt(this.version);
     bufferWriter.writeVarInt(this.flags);
     bufferWriter.writeSlice(this.output.toBuffer());
-    bufferWriter.writeVarInt(this.object_num);
-    bufferWriter.writeVarInt(this.sub_object);
+    bufferWriter.writeVarInt(this.objectNum);
+    bufferWriter.writeVarInt(this.subObject);
 
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
-      bufferWriter.writeSlice(fromBase58Check(this.system_id).hash);
+      bufferWriter.writeSlice(fromBase58Check(this.systemId).hash);
     }
 
     return bufferWriter.buffer
@@ -93,11 +108,11 @@ export class PBaaSEvidenceRef implements SerializableEntity {
     this.flags = reader.readVarInt();
     this.output = new UTXORef();
     reader.offset = this.output.fromBuffer(reader.buffer, reader.offset);
-    this.object_num = reader.readVarInt();
-    this.sub_object = reader.readVarInt();
+    this.objectNum = reader.readVarInt();
+    this.subObject = reader.readVarInt();
 
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
-      this.system_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+      this.systemId = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
     }
 
     return reader.offset;
@@ -115,9 +130,9 @@ export class PBaaSEvidenceRef implements SerializableEntity {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
       output: this.output.toJson(),
-      objectnum: this.object_num.toNumber(),
-      subobject: this.sub_object.toNumber(),
-      systemid: this.system_id || ""
+      objectnum: this.objectNum.toNumber(),
+      subobject: this.subObject.toNumber(),
+      systemid: this.systemId || ""
     }
 
     return retval;
@@ -128,9 +143,9 @@ export class PBaaSEvidenceRef implements SerializableEntity {
       version: new BN(json.version),
       flags: new BN(json.flags),
       output: UTXORef.fromJson(json.output),
-      object_num: new BN(json.objectnum),
-      sub_object: new BN(json.subobject),
-      system_id: json.systemid
+      objectNum: new BN(json.objectnum),
+      subObject: new BN(json.subobject),
+      systemId: json.systemid
     });
   }
 }

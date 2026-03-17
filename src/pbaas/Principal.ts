@@ -16,25 +16,35 @@ const { BufferReader, BufferWriter } = bufferutils
 export class Principal implements SerializableEntity {
   flags: BigNumber;
   version: BigNumber;
-  min_sigs?: BigNumber;
-  primary_addresses?: Array<KeyID>;
+  minSigs?: BigNumber;
+  primaryAddresses?: Array<KeyID>;
 
   constructor(data?: {
     version?: BigNumber,
     flags?: BigNumber,
-    min_sigs?: BigNumber,
-    primary_addresses?: Array<KeyID>;
+    minSigs?: BigNumber,
+    primaryAddresses?: Array<KeyID>;
   }) {
     this.flags = PRINCIPAL_DEFAULT_FLAGS;
     this.version = PRINCIPAL_VERSION_INVALID;
 
     if (data != null) {
+      const d = data as any;
+      if ('min_sigs' in d || 'primary_addresses' in d) {
+        throw new Error("Principal: snake_case property names are no longer supported. Use 'minSigs' instead of 'min_sigs', 'primaryAddresses' instead of 'primary_addresses'.");
+      }
       if (data.flags != null) this.flags = data.flags
       if (data.version != null) this.version = data.version
-      if (data.min_sigs != null) this.min_sigs = data.min_sigs
-      if (data.primary_addresses) this.primary_addresses = data.primary_addresses;
+      if (data.minSigs != null) this.minSigs = data.minSigs
+      if (data.primaryAddresses) this.primaryAddresses = data.primaryAddresses;
     }
   }
+
+  /** @deprecated Use minSigs instead */
+  get min_sigs(): BigNumber | undefined { return this.minSigs; }
+
+  /** @deprecated Use primaryAddresses instead */
+  get primary_addresses(): Array<KeyID> | undefined { return this.primaryAddresses; }
 
   protected containsFlags() {
     return true;
@@ -59,9 +69,9 @@ export class Principal implements SerializableEntity {
     if (this.containsFlags()) byteLength += 4; //uint32 flags size
 
     if (this.containsPrimaryAddresses()) {
-      byteLength += varuint.encodingLength(this.primary_addresses.length);
+      byteLength += varuint.encodingLength(this.primaryAddresses.length);
 
-      for (const addr of this.primary_addresses) {
+      for (const addr of this.primaryAddresses) {
         byteLength += varuint.encodingLength(addr.getByteLength());
         byteLength += addr.getByteLength();
       }
@@ -84,9 +94,9 @@ export class Principal implements SerializableEntity {
     if (this.containsVersion()) writer.writeUInt32(this.version.toNumber())
     if (this.containsFlags()) writer.writeUInt32(this.flags.toNumber())
 
-    if (this.containsPrimaryAddresses()) writer.writeVector(this.primary_addresses.map(x => x.toBuffer()))
+    if (this.containsPrimaryAddresses()) writer.writeVector(this.primaryAddresses.map(x => x.toBuffer()))
 
-    if (this.containsMinSigs()) writer.writeUInt32(this.min_sigs.toNumber())
+    if (this.containsMinSigs()) writer.writeUInt32(this.minSigs.toNumber())
 
     return writer.buffer
   }
@@ -98,7 +108,7 @@ export class Principal implements SerializableEntity {
     if (this.containsFlags()) this.flags = new BN(reader.readUInt32(), 10);
 
     if (this.containsPrimaryAddresses()) {
-      this.primary_addresses = reader.readVector().map(x => {
+      this.primaryAddresses = reader.readVector().map(x => {
         if (x.length === 20) {
           return new KeyID(x);
         } else if (x.length === 33) {
@@ -110,7 +120,7 @@ export class Principal implements SerializableEntity {
       })
     }
 
-    if (this.containsMinSigs()) this.min_sigs = new BN(reader.readUInt32(), 10);
+    if (this.containsMinSigs()) this.minSigs = new BN(reader.readUInt32(), 10);
 
     return reader.offset;
   }

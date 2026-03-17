@@ -16,16 +16,16 @@ describe('Serializes and deserializes identity properly', () => {
 
     const identity = new Identity({
       version: IDENTITY_VERSION_PBAAS,
-      min_sigs: new BN(1),
-      primary_addresses: [
+      minSigs: new BN(1),
+      primaryAddresses: [
         KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"),
         KeyID.fromAddress("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
       ],
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
-      content_map: contentmap,
-      content_multimap: ContentMultiMap.fromJson({
+      contentMap: contentmap,
+      contentMultimap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -40,9 +40,9 @@ describe('Serializes and deserializes identity properly', () => {
         ],
         i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz: { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' }
       }),
-      recovery_authority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
-      revocation_authority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
-      unlock_after: new BN("123456", 10)
+      recoveryAuthority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
+      revocationAuthority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
+      unlockAfter: new BN("123456", 10)
     })
 
     const identityFromBuf = new Identity();
@@ -59,16 +59,16 @@ describe('Serializes and deserializes identity properly', () => {
 
     const identity = new Identity({
       version: IDENTITY_VERSION_PBAAS,
-      min_sigs: new BN(1),
-      primary_addresses: [
+      minSigs: new BN(1),
+      primaryAddresses: [
         KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"),
         KeyID.fromAddress("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
       ],
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
-      content_map: contentmap,
-      content_multimap: ContentMultiMap.fromJson({
+      contentMap: contentmap,
+      contentMultimap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -83,9 +83,9 @@ describe('Serializes and deserializes identity properly', () => {
         ],
         i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz: { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' }
       }),
-      recovery_authority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
-      revocation_authority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
-      unlock_after: new BN("123456", 10)
+      recoveryAuthority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
+      revocationAuthority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
+      unlockAfter: new BN("123456", 10)
     })
 
     identity.setPrimaryAddresses(["RKjVHqM4VF2pCfVcwGzKH7CxvfMUE4H6o8", "RP1j8ziHUzgs6THJiAQa2BiqjRLLCWQxAk"])
@@ -113,18 +113,18 @@ describe('Serializes and deserializes identity properly', () => {
 
     const identity = new Identity({
       version: IDENTITY_VERSION_PBAAS,
-      min_sigs: new BN(1),
-      primary_addresses: [
+      minSigs: new BN(1),
+      primaryAddresses: [
         KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"),
         KeyID.fromAddress("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
       ],
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
-      content_map: contentmap,
-      recovery_authority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
-      revocation_authority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
-      unlock_after: new BN("123456", 10)
+      contentMap: contentmap,
+      recoveryAuthority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
+      revocationAuthority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
+      unlockAfter: new BN("123456", 10)
     })
 
     const identityFromBuf = new Identity();
@@ -143,22 +143,22 @@ describe('Serializes and deserializes identity properly', () => {
 
     const identity_tobuf = new Identity({
       version: IDENTITY_VERSION_PBAAS,
-      primary_addresses: [
+      primaryAddresses: [
         KeyID.fromAddress("RH7h8p9LN2Yb48SkxzNQ29c1Ltfju8Cd5i"),
         KeyID.fromAddress("RExFyRVftxbW8w9e5Xkcixu3YtYjE2kCKX")
       ],
-      min_sigs: new BN(1),
+      minSigs: new BN(1),
       name: "monkins",
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      system_id: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      content_multimap: ContentMultiMap.fromJson({
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      contentMultimap: ContentMultiMap.fromJson({
         "iEYsp2njSt1M4EVYi9uuAPBU2wpKmThkkr": [
           "040d"
         ]
       }),
-      revocation_authority: IdentityID.fromAddress("iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"),
-      recovery_authority: IdentityID.fromAddress("iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"),
-      unlock_after: new BN(0)
+      revocationAuthority: IdentityID.fromAddress("iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"),
+      recoveryAuthority: IdentityID.fromAddress("iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"),
+      unlockAfter: new BN(0)
     })
 
     expect(identity_tobuf.toBuffer().toString('hex')).toBe(serializedIdentity)
@@ -192,7 +192,7 @@ describe('Serializes and deserializes identity properly', () => {
            }   
     });
 
-    const valuMap = identity_frombuf.content_multimap.kvContent.get(CompactIAddressObject.fromAddress("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V"))
+    const valuMap = identity_frombuf.contentMultimap.kvContent.get(CompactIAddressObject.fromAddress("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V"))
 
     let valuMapJson;
     if (valuMap !== undefined) {
@@ -270,14 +270,14 @@ describe('Serializes and deserializes identity properly', () => {
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(true);
 
     expect(identity_frombuf.isLocked()).toBe(true);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(10000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(10000);
 
     identity_frombuf.unlock();
 
     expect(identity_frombuf.hasActiveCurrency()).toBe(true);
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(true);
     expect(identity_frombuf.isLocked()).toBe(false);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(10000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(10000);
     expect(identity_frombuf.isRevoked()).toBe(false);
 
     identity_frombuf.revoke();
@@ -299,7 +299,7 @@ describe('Serializes and deserializes identity properly', () => {
     expect(identity_frombuf.hasActiveCurrency()).toBe(true);
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(true);
     expect(identity_frombuf.isLocked()).toBe(true);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(15000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(15000);
 
     identity_frombuf.revoke();
 
@@ -347,14 +347,14 @@ describe('Serializes and deserializes identity properly', () => {
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(false);
 
     expect(identity_frombuf.isLocked()).toBe(true);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(10000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(10000);
 
     identity_frombuf.unlock();
 
     expect(identity_frombuf.hasActiveCurrency()).toBe(false);
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(false);
     expect(identity_frombuf.isLocked()).toBe(false);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(10000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(10000);
     expect(identity_frombuf.isRevoked()).toBe(false);
 
     identity_frombuf.revoke();
@@ -376,7 +376,7 @@ describe('Serializes and deserializes identity properly', () => {
     expect(identity_frombuf.hasActiveCurrency()).toBe(false);
     expect(identity_frombuf.hasTokenizedIdControl()).toBe(false);
     expect(identity_frombuf.isLocked()).toBe(true);
-    expect(identity_frombuf.unlock_after.toNumber()).toEqual(15000);
+    expect(identity_frombuf.unlockAfter.toNumber()).toEqual(15000);
 
     identity_frombuf.revoke();
 
@@ -406,11 +406,11 @@ describe('Serializes and deserializes identity properly', () => {
     const identity_frombuf = Identity.fromJson(identityJson);
 
     expect(identity_frombuf.version.toNumber()).toEqual(Identity.VERSION_VERUSID.toNumber());
-    expect(identity_frombuf.system_id).toBe(undefined);
+    expect(identity_frombuf.systemId).toBe(undefined);
 
     identity_frombuf.upgradeVersion(Identity.VERSION_PBAAS);
 
-    expect(identity_frombuf.system_id.toAddress()).toBe(identity_frombuf.parent.toAddress());
+    expect(identity_frombuf.systemId.toAddress()).toBe(identity_frombuf.parent.toAddress());
     expect(() => identity_frombuf.upgradeVersion(Identity.VERSION_VERUSID)).toThrow();
     expect(() => identity_frombuf.upgradeVersion(new BN(10))).toThrow();
   });
@@ -440,6 +440,6 @@ describe('Serializes and deserializes identity properly', () => {
     const identity_to_json = new Identity();
     identity_to_json.fromBuffer(identity_buf);
 
-    expect(identity_frombuf.content_multimap.kvContent.size).toBe(0);
+    expect(identity_frombuf.contentMultimap.kvContent.size).toBe(0);
   });
 });

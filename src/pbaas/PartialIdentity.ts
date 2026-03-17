@@ -33,8 +33,8 @@ export class PartialIdentity extends Identity implements SerializableEntity {
     // Also convert any plain VdxfUniValue inner values to FqnVdxfUniValue so
     // that the serialization format is consistent regardless of how the
     // PartialIdentity was constructed (fromJson vs direct constructor).
-    if (!(this.content_multimap instanceof FqnContentMultiMap)) {
-      const srcKvContent = this.content_multimap?.kvContent ?? new KvContent();
+    if (!(this.contentMultimap instanceof FqnContentMultiMap)) {
+      const srcKvContent = this.contentMultimap?.kvContent ?? new KvContent();
       const newKvContent = new KvContent();
 
       for (const [key, values] of srcKvContent.entries()) {
@@ -46,23 +46,23 @@ export class PartialIdentity extends Identity implements SerializableEntity {
         }));
       }
 
-      this.content_multimap = new FqnContentMultiMap({ kvContent: newKvContent });
+      this.contentMultimap = new FqnContentMultiMap({ kvContent: newKvContent });
     }
 
     this.contains = new BN("0");
-    
+
     if (data?.parent) this.toggleContainsParent();
-    if (data?.system_id) this.toggleContainsSystemId();
-    if (data?.content_map) this.toggleContainsContentMap();
-    if (data?.content_multimap) this.toggleContainsContentMultiMap();
-    if (data?.revocation_authority) this.toggleContainsRevocation();
-    if (data?.recovery_authority) this.toggleContainsRecovery();
-    if (data?.private_addresses && data.private_addresses.length > 0) this.toggleContainsPrivateAddresses();
-    if (data?.unlock_after) this.toggleContainsUnlockAfter();
+    if (data?.systemId) this.toggleContainsSystemId();
+    if (data?.contentMap) this.toggleContainsContentMap();
+    if (data?.contentMultimap) this.toggleContainsContentMultiMap();
+    if (data?.revocationAuthority) this.toggleContainsRevocation();
+    if (data?.recoveryAuthority) this.toggleContainsRecovery();
+    if (data?.privateAddresses && data.privateAddresses.length > 0) this.toggleContainsPrivateAddresses();
+    if (data?.unlockAfter) this.toggleContainsUnlockAfter();
     if (data?.flags) this.toggleContainsFlags();
-    if (data?.min_sigs) this.toggleContainsMinSigs();
+    if (data?.minSigs) this.toggleContainsMinSigs();
     if (data?.version) this.toggleContainsVersion();
-    if (data?.primary_addresses && data.primary_addresses.length > 0) this.toggleContainsPrimaryAddresses();
+    if (data?.primaryAddresses && data.primaryAddresses.length > 0) this.toggleContainsPrimaryAddresses();
   }
 
   containsFlags() {
@@ -118,7 +118,7 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   }
 
   clearContentMultiMap() {
-    this.content_multimap = new FqnContentMultiMap({ kvContent: new KvContent() });
+    this.contentMultimap = new FqnContentMultiMap({ kvContent: new KvContent() });
   }
 
   private toggleContainsParent() {
@@ -212,10 +212,10 @@ export class PartialIdentity extends Identity implements SerializableEntity {
 
   static fromJson(json: VerusCLIVerusIDJson): PartialIdentity {
     const instance = Identity.internalFromJson<PartialIdentity>(json, PartialIdentity);
-    // Replace content_multimap with FqnContentMultiMap so inner values are
+    // Replace contentMultimap with FqnContentMultiMap so inner values are
     // FqnVdxfUniValue instances that preserve FQN keys through binary round-trips.
     if (json.contentmultimap) {
-      instance.content_multimap = FqnContentMultiMap.fromJson(json.contentmultimap as ContentMultiMapJson);
+      instance.contentMultimap = FqnContentMultiMap.fromJson(json.contentmultimap as ContentMultiMapJson);
     }
     return instance;
   }
@@ -244,14 +244,14 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   }
 
   /**
-   * Returns an array of every key used in the content_multimap, both top-level and nested,
+   * Returns an array of every key used in the contentMultimap, both top-level and nested,
    * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
    * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
    */
   getContentMultiMapKeys(): string[] {
     const keys: string[] = [];
 
-    for (const [key, values] of this.content_multimap.kvContent.entries()) {
+    for (const [key, values] of this.contentMultimap.kvContent.entries()) {
       keys.push(key.toString());
 
       for (const univalue of values) {
@@ -267,26 +267,26 @@ export class PartialIdentity extends Identity implements SerializableEntity {
   }
 
   /**
-   * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's 
-   * content_multimap. All outer keys are resolved to CompactIAddress objects as 
+   * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
+   * contentMultimap. All outer keys are resolved to CompactIAddress objects as
    * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),
    * and all inner FqnVdxfUniValue objects are converted to plain VdxfUniValue with any FQN
    * keys resolved to their iaddress equivalents.
    *
-   * Use this when the resulting ContentMultiMap must be daemon-compatible (e.g. for 
+   * Use this when the resulting ContentMultiMap must be daemon-compatible (e.g. for
    * comparing daemon output to identities made here).
    */
   withResolvedContentMultiMap(): PartialIdentity {
     const clone = new PartialIdentity();
     clone.fromBuffer(this.toBuffer());
-    clone.content_multimap = this.toContentMultiMap();
+    clone.contentMultimap = this.toContentMultiMap();
     return clone;
   }
 
   toContentMultiMap(): ContentMultiMap {
     const newKvContent = new KvContent();
 
-    for (const [key, values] of this.content_multimap.kvContent.entries()) {
+    for (const [key, values] of this.contentMultimap.kvContent.entries()) {
       const iAddrKey = CompactIAddressObject.fromAddress(key.toIAddress());
 
       const newValues = values.map(v => {

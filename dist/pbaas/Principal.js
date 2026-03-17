@@ -15,16 +15,24 @@ class Principal {
         this.flags = exports.PRINCIPAL_DEFAULT_FLAGS;
         this.version = exports.PRINCIPAL_VERSION_INVALID;
         if (data != null) {
+            const d = data;
+            if ('min_sigs' in d || 'primary_addresses' in d) {
+                throw new Error("Principal: snake_case property names are no longer supported. Use 'minSigs' instead of 'min_sigs', 'primaryAddresses' instead of 'primary_addresses'.");
+            }
             if (data.flags != null)
                 this.flags = data.flags;
             if (data.version != null)
                 this.version = data.version;
-            if (data.min_sigs != null)
-                this.min_sigs = data.min_sigs;
-            if (data.primary_addresses)
-                this.primary_addresses = data.primary_addresses;
+            if (data.minSigs != null)
+                this.minSigs = data.minSigs;
+            if (data.primaryAddresses)
+                this.primaryAddresses = data.primaryAddresses;
         }
     }
+    /** @deprecated Use minSigs instead */
+    get min_sigs() { return this.minSigs; }
+    /** @deprecated Use primaryAddresses instead */
+    get primary_addresses() { return this.primaryAddresses; }
     containsFlags() {
         return true;
     }
@@ -44,8 +52,8 @@ class Principal {
         if (this.containsFlags())
             byteLength += 4; //uint32 flags size
         if (this.containsPrimaryAddresses()) {
-            byteLength += varuint_1.default.encodingLength(this.primary_addresses.length);
-            for (const addr of this.primary_addresses) {
+            byteLength += varuint_1.default.encodingLength(this.primaryAddresses.length);
+            for (const addr of this.primaryAddresses) {
                 byteLength += varuint_1.default.encodingLength(addr.getByteLength());
                 byteLength += addr.getByteLength();
             }
@@ -65,9 +73,9 @@ class Principal {
         if (this.containsFlags())
             writer.writeUInt32(this.flags.toNumber());
         if (this.containsPrimaryAddresses())
-            writer.writeVector(this.primary_addresses.map(x => x.toBuffer()));
+            writer.writeVector(this.primaryAddresses.map(x => x.toBuffer()));
         if (this.containsMinSigs())
-            writer.writeUInt32(this.min_sigs.toNumber());
+            writer.writeUInt32(this.minSigs.toNumber());
         return writer.buffer;
     }
     fromBuffer(buffer, offset = 0) {
@@ -77,7 +85,7 @@ class Principal {
         if (this.containsFlags())
             this.flags = new bn_js_1.BN(reader.readUInt32(), 10);
         if (this.containsPrimaryAddresses()) {
-            this.primary_addresses = reader.readVector().map(x => {
+            this.primaryAddresses = reader.readVector().map(x => {
                 if (x.length === 20) {
                     return new KeyID_1.KeyID(x);
                 }
@@ -91,7 +99,7 @@ class Principal {
             });
         }
         if (this.containsMinSigs())
-            this.min_sigs = new bn_js_1.BN(reader.readUInt32(), 10);
+            this.minSigs = new bn_js_1.BN(reader.readUInt32(), 10);
         return reader.offset;
     }
 }

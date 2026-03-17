@@ -8,8 +8,8 @@ describe('Serializes and deserializes Principal', () => {
     const p = new Principal({
       version: PRINCIPAL_VERSION_CURRENT,
       flags: PRINCIPAL_DEFAULT_FLAGS,
-      min_sigs: new BN(1),
-      primary_addresses: [
+      minSigs: new BN(1),
+      primaryAddresses: [
         KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH"),
         KeyID.fromAddress("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
       ]

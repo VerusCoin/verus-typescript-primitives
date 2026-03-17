@@ -6,23 +6,29 @@ const { BufferReader, BufferWriter } = bufferutils
 
 export class SaplingPaymentAddress implements SerializableEntity {
   d: Buffer;
-  pk_d: Buffer
+  pkD: Buffer
 
   constructor(data?: {
     d: Buffer,
-    pk_d: Buffer
+    pkD: Buffer
   }) {
     if (data != null) {
+      if ('pk_d' in (data as any)) {
+        throw new Error("SaplingPaymentAddress: snake_case property names are no longer supported. Use 'pkD' instead of 'pk_d'.");
+      }
       if (data.d != null) this.d = data.d;
-      if (data.pk_d != null) this.pk_d = data.pk_d;
+      if (data.pkD != null) this.pkD = data.pkD;
     }
   }
+
+  /** @deprecated Use pkD instead */
+  get pk_d(): Buffer { return this.pkD; }
 
   getByteLength() {
     let length = 0;
 
     length += this.d.length;
-    length += this.pk_d.length;
+    length += this.pkD.length;
 
     return length
   }
@@ -31,7 +37,7 @@ export class SaplingPaymentAddress implements SerializableEntity {
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
 
     writer.writeSlice(this.d);
-    writer.writeSlice(this.pk_d);
+    writer.writeSlice(this.pkD);
 
     return writer.buffer;
   }
@@ -40,7 +46,7 @@ export class SaplingPaymentAddress implements SerializableEntity {
     const reader = new BufferReader(buffer, offset);
 
     this.d = reader.readSlice(11);
-    this.pk_d = reader.readSlice(32);
+    this.pkD = reader.readSlice(32);
 
     return reader.offset;
   }
@@ -48,10 +54,10 @@ export class SaplingPaymentAddress implements SerializableEntity {
   static fromAddressString(address: string) {
     const { d, pk_d } = decodeSaplingAddress(address);
 
-    return new SaplingPaymentAddress({ d, pk_d });
+    return new SaplingPaymentAddress({ d, pkD: pk_d });
   }
 
   toAddressString(): string {
-    return encodeSaplingAddress({ d: this.d, pk_d: this.pk_d });
+    return encodeSaplingAddress({ d: this.d, pk_d: this.pkD });
   }
 }

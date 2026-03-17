@@ -48,13 +48,13 @@ function makePsdWithFqnVdxf(): PartialSignData {
 function baseIdentity(): PartialIdentity {
   return new PartialIdentity({
     version: IDENTITY_VERSION_PBAAS,
-    min_sigs: new BN(1),
-    primary_addresses: [KeyID.fromAddress('RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH')],
+    minSigs: new BN(1),
+    primaryAddresses: [KeyID.fromAddress('RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH')],
     parent: IdentityID.fromAddress(IADDR_B),
-    system_id: IdentityID.fromAddress(IADDR_B),
+    systemId: IdentityID.fromAddress(IADDR_B),
     name: 'TestID',
-    recovery_authority: IdentityID.fromAddress(IADDR_B),
-    revocation_authority: IdentityID.fromAddress(IADDR_B),
+    recoveryAuthority: IdentityID.fromAddress(IADDR_B),
+    revocationAuthority: IdentityID.fromAddress(IADDR_B),
   });
 }
 
@@ -373,7 +373,7 @@ describe('IdentityUpdateRequestDetails CLI JSON round-trips', () => {
     // Only IADDR_A has .data → only one signDataMap entry
     expect(d.signDataMap?.size).toBe(1);
     // IADDR_B stays in the identity's content_multimap
-    expect(d.identity.content_multimap.kvContent.size).toBeGreaterThan(0);
+    expect(d.identity.contentMultimap.kvContent.size).toBeGreaterThan(0);
   });
 
   test('details param populates requestID, expiryHeight, systemID, txid', () => {
@@ -459,14 +459,14 @@ describe('IdentityUpdateRequestDetails.getContentMultiMapKeys()', () => {
   function identityWithFqnCmm(cmmJson: Record<string, any>): PartialIdentity {
     return new PartialIdentity({
       version: IDENTITY_VERSION_PBAAS,
-      min_sigs: new BN(1),
-      primary_addresses: [KeyID.fromAddress('RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH')],
+      minSigs: new BN(1),
+      primaryAddresses: [KeyID.fromAddress('RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH')],
       parent: IdentityID.fromAddress(IADDR_B),
-      system_id: IdentityID.fromAddress(IADDR_B),
+      systemId: IdentityID.fromAddress(IADDR_B),
       name: 'TestID',
-      recovery_authority: IdentityID.fromAddress(IADDR_B),
-      revocation_authority: IdentityID.fromAddress(IADDR_B),
-      content_multimap: FqnContentMultiMap.fromJson(cmmJson),
+      recoveryAuthority: IdentityID.fromAddress(IADDR_B),
+      revocationAuthority: IdentityID.fromAddress(IADDR_B),
+      contentMultimap: FqnContentMultiMap.fromJson(cmmJson),
     });
   }
 
