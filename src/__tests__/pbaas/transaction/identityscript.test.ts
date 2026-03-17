@@ -165,7 +165,7 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
     const jsonId = Identity.fromJson(idjson);
     expect(scriptId.toJson()).toStrictEqual(idjson);
 
-    expect(jsonId.contentMultimap.toBuffer().toString("hex")).toBe(scriptId.contentMultimap.toBuffer().toString('hex'));
+    expect(jsonId.contentMultiMap.toBuffer().toString("hex")).toBe(scriptId.contentMultiMap.toBuffer().toString('hex'));
     expect(Identity.fromJson(idjson).toBuffer().toString('hex')).toBe(scriptId.toBuffer().toString('hex'));
 
     const ownScript = IdentityScript.fromIdentity(script.getIdentity());

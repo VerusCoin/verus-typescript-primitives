@@ -55,14 +55,14 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     revoke(): void;
     unrevoke(): void;
     /**
-     * Returns an array of every key used in the contentMultimap, both top-level and nested,
+     * Returns an array of every key used in the contentMultiMap, both top-level and nested,
      * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
      * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
      */
     getContentMultiMapKeys(): string[];
     /**
      * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
-     * contentMultimap. All outer keys are resolved to CompactIAddress objects as
+     * contentMultiMap. All outer keys are resolved to CompactIAddress objects as
      * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),
      * and all inner FqnVdxfUniValue objects are converted to plain VdxfUniValue with any FQN
      * keys resolved to their iaddress equivalents.

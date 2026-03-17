@@ -28,7 +28,7 @@ class Identity extends Principal_1.Principal {
             const d = data;
             const deprecated = ['system_id', 'content_map', 'content_multimap', 'revocation_authority', 'recovery_authority', 'private_addresses', 'unlock_after'].filter(k => k in d);
             if (deprecated.length > 0) {
-                const map = { system_id: 'systemId', content_map: 'contentMap', content_multimap: 'contentMultimap', revocation_authority: 'revocationAuthority', recovery_authority: 'recoveryAuthority', private_addresses: 'privateAddresses', unlock_after: 'unlockAfter' };
+                const map = { system_id: 'systemId', content_map: 'contentMap', content_multimap: 'contentMultiMap', revocation_authority: 'revocationAuthority', recovery_authority: 'recoveryAuthority', private_addresses: 'privateAddresses', unlock_after: 'unlockAfter' };
                 throw new Error(`Identity: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
             }
         }
@@ -46,10 +46,10 @@ class Identity extends Principal_1.Principal {
             this.contentMap = data.contentMap;
         else
             this.contentMap = new Map();
-        if (data === null || data === void 0 ? void 0 : data.contentMultimap)
-            this.contentMultimap = data.contentMultimap;
+        if (data === null || data === void 0 ? void 0 : data.contentMultiMap)
+            this.contentMultiMap = data.contentMultiMap;
         else
-            this.contentMultimap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
+            this.contentMultiMap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
         if (data === null || data === void 0 ? void 0 : data.revocationAuthority)
             this.revocationAuthority = data.revocationAuthority;
         if (data === null || data === void 0 ? void 0 : data.recoveryAuthority)
@@ -63,8 +63,8 @@ class Identity extends Principal_1.Principal {
     get system_id() { return this.systemId; }
     /** @deprecated Use contentMap instead */
     get content_map() { return this.contentMap; }
-    /** @deprecated Use contentMultimap instead */
-    get content_multimap() { return this.contentMultimap; }
+    /** @deprecated Use contentMultiMap instead */
+    get content_multimap() { return this.contentMultiMap; }
     /** @deprecated Use revocationAuthority instead */
     get revocation_authority() { return this.revocationAuthority; }
     /** @deprecated Use recoveryAuthority instead */
@@ -111,7 +111,7 @@ class Identity extends Principal_1.Principal {
             length += nameLength;
         }
         if (this.containsContentMultiMap() && this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
-            length += this.contentMultimap.getByteLength();
+            length += this.contentMultiMap.getByteLength();
         }
         if (this.containsContentMap()) {
             if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
@@ -155,7 +155,7 @@ class Identity extends Principal_1.Principal {
         return new ContentMultiMap_1.ContentMultiMap();
     }
     clearContentMultiMap() {
-        this.contentMultimap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
+        this.contentMultiMap = new ContentMultiMap_1.ContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
     }
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getIdentityByteLength()));
@@ -166,7 +166,7 @@ class Identity extends Principal_1.Principal {
             writer.writeVarSlice(Buffer.from(this.name, "utf8"));
         //contentmultimap
         if (this.containsContentMultiMap() && this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
-            writer.writeSlice(this.contentMultimap.toBuffer());
+            writer.writeSlice(this.contentMultiMap.toBuffer());
         }
         if (this.containsContentMap()) {
             //contentmap
@@ -221,7 +221,7 @@ class Identity extends Principal_1.Principal {
             if (this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
                 const multimap = this.createContentMultiMap();
                 reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
-                this.contentMultimap = multimap;
+                this.contentMultiMap = multimap;
             }
         }
         if (this.containsContentMap()) {
@@ -287,7 +287,7 @@ class Identity extends Principal_1.Principal {
         }
         const ret = {
             contentmap: this.containsContentMap() ? contentmap : undefined,
-            contentmultimap: this.containsContentMultiMap() ? this.contentMultimap.toJson() : undefined,
+            contentmultimap: this.containsContentMultiMap() ? this.contentMultiMap.toJson() : undefined,
             flags: this.containsFlags() ? this.flags.toNumber() : undefined,
             minimumsignatures: this.containsMinSigs() ? this.minSigs.toNumber() : undefined,
             name: this.name,
@@ -414,7 +414,7 @@ class Identity extends Principal_1.Principal {
             systemId: json.systemid ? IdentityID_1.IdentityID.fromAddress(json.systemid) : undefined,
             name: json.name,
             contentMap: json.contentmap ? contentmap : undefined,
-            contentMultimap: json.contentmultimap ? ContentMultiMap_1.ContentMultiMap.fromJson(json.contentmultimap) : undefined,
+            contentMultiMap: json.contentmultimap ? ContentMultiMap_1.ContentMultiMap.fromJson(json.contentmultimap) : undefined,
             revocationAuthority: json.revocationauthority ? IdentityID_1.IdentityID.fromAddress(json.revocationauthority) : undefined,
             recoveryAuthority: json.recoveryauthority ? IdentityID_1.IdentityID.fromAddress(json.recoveryauthority) : undefined,
             privateAddresses: json.privateaddress == null ? [] : [SaplingPaymentAddress_1.SaplingPaymentAddress.fromAddressString(json.privateaddress)],

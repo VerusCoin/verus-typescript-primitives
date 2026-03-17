@@ -373,7 +373,7 @@ describe('IdentityUpdateRequestDetails CLI JSON round-trips', () => {
     // Only IADDR_A has .data → only one signDataMap entry
     expect(d.signDataMap?.size).toBe(1);
     // IADDR_B stays in the identity's content_multimap
-    expect(d.identity.contentMultimap.kvContent.size).toBeGreaterThan(0);
+    expect(d.identity.contentMultiMap.kvContent.size).toBeGreaterThan(0);
   });
 
   test('details param populates requestID, expiryHeight, systemID, txid', () => {
@@ -466,7 +466,7 @@ describe('IdentityUpdateRequestDetails.getContentMultiMapKeys()', () => {
       name: 'TestID',
       recoveryAuthority: IdentityID.fromAddress(IADDR_B),
       revocationAuthority: IdentityID.fromAddress(IADDR_B),
-      contentMultimap: FqnContentMultiMap.fromJson(cmmJson),
+      contentMultiMap: FqnContentMultiMap.fromJson(cmmJson),
     });
   }
 

@@ -33,7 +33,7 @@ describe('Serializes and deserializes identity properly', () => {
       systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
       contentMap: contentmap,
-      contentMultimap: ContentMultiMap.fromJson({
+      contentMultiMap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -62,7 +62,7 @@ describe('Serializes and deserializes identity properly', () => {
       'unlockAfter',
       'revocationAuthority',
       'recoveryAuthority',
-      'contentMultimap',
+      'contentMultiMap',
       'systemId',
       'parent',
       'primaryAddresses'
@@ -103,33 +103,33 @@ describe('PartialIdentity FQN key handling', () => {
 
   test('PartialIdentity constructor auto-converts ContentMultiMap to FqnContentMultiMap', () => {
     const plainCmm = ContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] });
-    const identity = new PartialIdentity({ ...baseParams, contentMultimap: plainCmm });
+    const identity = new PartialIdentity({ ...baseParams, contentMultiMap: plainCmm });
 
-    expect(identity.contentMultimap).toBeInstanceOf(FqnContentMultiMap);
+    expect(identity.contentMultiMap).toBeInstanceOf(FqnContentMultiMap);
   });
 
   test('PartialIdentity constructor preserves FqnContentMultiMap as-is', () => {
     const fqnCmm = FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
-    const identity = new PartialIdentity({ ...baseParams, contentMultimap: fqnCmm });
+    const identity = new PartialIdentity({ ...baseParams, contentMultiMap: fqnCmm });
 
-    expect(identity.contentMultimap).toBeInstanceOf(FqnContentMultiMap);
+    expect(identity.contentMultiMap).toBeInstanceOf(FqnContentMultiMap);
   });
 
   test('PartialIdentity clearContentMultiMap uses FqnContentMultiMap', () => {
     const identity = new PartialIdentity(baseParams);
     identity.clearContentMultiMap();
 
-    expect(identity.contentMultimap).toBeInstanceOf(FqnContentMultiMap);
+    expect(identity.contentMultiMap).toBeInstanceOf(FqnContentMultiMap);
   });
 
   test('FQN key in PartialIdentity content_multimap survives binary round-trip', () => {
     const fqnCmm = FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
-    const identity = new PartialIdentity({ ...baseParams, contentMultimap: fqnCmm });
+    const identity = new PartialIdentity({ ...baseParams, contentMultiMap: fqnCmm });
 
     const restored = new PartialIdentity();
     restored.fromBuffer(identity.toBuffer());
 
-    const entries = [...restored.contentMultimap.kvContent.entries()];
+    const entries = [...restored.contentMultiMap.kvContent.entries()];
     expect(entries).toHaveLength(1);
 
     const [key] = entries[0];
@@ -140,12 +140,12 @@ describe('PartialIdentity FQN key handling', () => {
 
   test('FQN key in PartialIdentity content_multimap survives JSON round-trip', () => {
     const fqnCmm = FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
-    const identity = new PartialIdentity({ ...baseParams, contentMultimap: fqnCmm });
+    const identity = new PartialIdentity({ ...baseParams, contentMultiMap: fqnCmm });
 
     const json = identity.toJson();
     const restored = PartialIdentity.fromJson(json);
 
-    const entries = [...restored.contentMultimap.kvContent.entries()];
+    const entries = [...restored.contentMultiMap.kvContent.entries()];
     expect(entries).toHaveLength(1);
 
     const [key] = entries[0];
@@ -157,12 +157,12 @@ describe('PartialIdentity FQN key handling', () => {
     // Plain Identity uses ContentMultiMap (20-byte daemon format), so FQN is
     // resolved to its iaddress on serialization and cannot be recovered.
     const plainCmm = ContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
-    const identity = new Identity({ ...baseParams, contentMultimap: plainCmm });
+    const identity = new Identity({ ...baseParams, contentMultiMap: plainCmm });
 
     const restored = new Identity();
     restored.fromBuffer(identity.toBuffer());
 
-    const entries = [...restored.contentMultimap.kvContent.entries()];
+    const entries = [...restored.contentMultiMap.kvContent.entries()];
     expect(entries).toHaveLength(1);
 
     const [key] = entries[0];
@@ -174,8 +174,8 @@ describe('PartialIdentity FQN key handling', () => {
     const fqnCmm = FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
     const plainCmm = ContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] });
 
-    const partial = new PartialIdentity({ ...baseParams, contentMultimap: fqnCmm });
-    const full = new Identity({ ...baseParams, contentMultimap: plainCmm });
+    const partial = new PartialIdentity({ ...baseParams, contentMultiMap: fqnCmm });
+    const full = new Identity({ ...baseParams, contentMultiMap: plainCmm });
 
     // The buffers differ because PartialIdentity has a contains bitmask prefix
     // AND uses FqnContentMultiMap which serializes the full CompactIAddressObject.
@@ -184,12 +184,12 @@ describe('PartialIdentity FQN key handling', () => {
 
   test('TYPE_I_ADDRESS keys in PartialIdentity also survive binary round-trip', () => {
     const cmm = ContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] });
-    const identity = new PartialIdentity({ ...baseParams, contentMultimap: cmm });
+    const identity = new PartialIdentity({ ...baseParams, contentMultiMap: cmm });
 
     const restored = new PartialIdentity();
     restored.fromBuffer(identity.toBuffer());
 
-    const entries = [...restored.contentMultimap.kvContent.entries()];
+    const entries = [...restored.contentMultiMap.kvContent.entries()];
     expect(entries).toHaveLength(1);
 
     const [key] = entries[0];
@@ -217,7 +217,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('returns ContentMultiMap, not FqnContentMultiMap', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const result = identity.toContentMultiMap();
@@ -229,7 +229,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('FQN outer key is resolved to iaddress in result', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const result = identity.toContentMultiMap();
@@ -244,7 +244,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('iaddress outer key remains as iaddress in result', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const result = identity.toContentMultiMap();
@@ -259,7 +259,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('inner FqnVdxfUniValue with FQN key is converted to VdxfUniValue with iaddress key', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
     });
@@ -278,7 +278,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('inner FqnVdxfUniValue with iaddress key is converted to VdxfUniValue with same iaddress key', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
       }),
     });
@@ -297,7 +297,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
     const rawHex = FQN_DATA_KEY_VALUE;
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [rawHex] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [IADDR_A]: [rawHex] }),
     });
 
     const result = identity.toContentMultiMap();
@@ -312,7 +312,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
     // Build via PartialIdentity with FQN outer key and FQN inner key
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
     });
@@ -329,7 +329,7 @@ describe('PartialIdentity.toContentMultiMap()', () => {
   test('multiple outer keys and multiple inner values all convert correctly', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [FQN_DATA_KEY]: [
           { [CMM_REMOVE_FQN]: cmmPayload },
           { [CMM_REMOVE_VDXFID]: cmmPayload },
@@ -388,7 +388,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('returns top-level iaddress key as iaddress string', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const keys = identity.getContentMultiMapKeys();
@@ -398,7 +398,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('returns top-level FQN key as its FQN string', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [FQN_DATA_KEY]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const keys = identity.getContentMultiMapKeys();
@@ -408,7 +408,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('returns inner iaddress key from FqnVdxfUniValue', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
       }),
     });
@@ -420,7 +420,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('returns inner FQN key from FqnVdxfUniValue as FQN string', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
     });
@@ -432,7 +432,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('skips empty-string inner keys (keyless Buffer values)', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
+      contentMultiMap: FqnContentMultiMap.fromJson({ [IADDR_A]: [FQN_DATA_KEY_VALUE] }),
     });
 
     const keys = identity.getContentMultiMapKeys();
@@ -443,7 +443,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('Buffer values at top level do not contribute inner keys', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [FQN_DATA_KEY_VALUE, { [CMM_REMOVE_VDXFID]: cmmPayload }],
       }),
     });
@@ -456,7 +456,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('multiple inner keys from multiple FqnVdxfUniValue entries are all returned', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [
           { [CMM_REMOVE_VDXFID]: cmmPayload },
           { [CMM_REMOVE_FQN]: cmmPayload },
@@ -471,7 +471,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('multiple top-level keys produce one entry per key plus their nested keys', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [IADDR_A]: [{ [CMM_REMOVE_VDXFID]: cmmPayload }],
         [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
@@ -489,7 +489,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
     // Without parseVdxfObjects, inner values are raw Buffers — only outer keys are available.
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
     });
@@ -504,7 +504,7 @@ describe('PartialIdentity.getContentMultiMapKeys()', () => {
   test('all keys survive a binary round-trip when parseVdxfObjects is true', () => {
     const identity = new PartialIdentity({
       ...baseParams,
-      contentMultimap: FqnContentMultiMap.fromJson({
+      contentMultiMap: FqnContentMultiMap.fromJson({
         [FQN_DATA_KEY]: [{ [CMM_REMOVE_FQN]: cmmPayload }],
       }),
     });
@@ -576,7 +576,7 @@ describe('PartialIdentity.withResolvedContentMultiMap()', () => {
     const resolved = id.withResolvedContentMultiMap();
 
     const { FqnContentMultiMap } = require('../../pbaas/ContentMultiMap');
-    expect(resolved.contentMultimap).not.toBeInstanceOf(FqnContentMultiMap);
-    expect(resolved.contentMultimap).toBeInstanceOf(ContentMultiMap);
+    expect(resolved.contentMultiMap).not.toBeInstanceOf(FqnContentMultiMap);
+    expect(resolved.contentMultiMap).toBeInstanceOf(ContentMultiMap);
   });
 });

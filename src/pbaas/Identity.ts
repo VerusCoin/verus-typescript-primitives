@@ -54,7 +54,7 @@ export type VerusIDInitData = {
   systemId?: IdentityID;
   name?: string;
   contentMap?: Hashes;
-  contentMultimap?: ContentMultiMap;
+  contentMultiMap?: ContentMultiMap;
   revocationAuthority?: IdentityID;
   recoveryAuthority?: IdentityID;
   privateAddresses?: Array<SaplingPaymentAddress>;
@@ -66,7 +66,7 @@ export class Identity extends Principal implements SerializableEntity {
   systemId: IdentityID;
   name: string;
   contentMap: Hashes;
-  contentMultimap: ContentMultiMap;
+  contentMultiMap: ContentMultiMap;
   revocationAuthority: IdentityID;
   recoveryAuthority: IdentityID;
   privateAddresses: Array<SaplingPaymentAddress>;
@@ -87,7 +87,7 @@ export class Identity extends Principal implements SerializableEntity {
       const d = data as any;
       const deprecated = ['system_id', 'content_map', 'content_multimap', 'revocation_authority', 'recovery_authority', 'private_addresses', 'unlock_after'].filter(k => k in d);
       if (deprecated.length > 0) {
-        const map: Record<string, string> = { system_id: 'systemId', content_map: 'contentMap', content_multimap: 'contentMultimap', revocation_authority: 'revocationAuthority', recovery_authority: 'recoveryAuthority', private_addresses: 'privateAddresses', unlock_after: 'unlockAfter' };
+        const map: Record<string, string> = { system_id: 'systemId', content_map: 'contentMap', content_multimap: 'contentMultiMap', revocation_authority: 'revocationAuthority', recovery_authority: 'recoveryAuthority', private_addresses: 'privateAddresses', unlock_after: 'unlockAfter' };
         throw new Error(`Identity: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
       }
     }
@@ -100,8 +100,8 @@ export class Identity extends Principal implements SerializableEntity {
     if (data?.name) this.name = data.name;
     if (data?.contentMap) this.contentMap = data.contentMap;
     else this.contentMap = new Map();
-    if (data?.contentMultimap) this.contentMultimap = data.contentMultimap;
-    else this.contentMultimap = new ContentMultiMap({ kvContent: new KvContent() });
+    if (data?.contentMultiMap) this.contentMultiMap = data.contentMultiMap;
+    else this.contentMultiMap = new ContentMultiMap({ kvContent: new KvContent() });
     if (data?.revocationAuthority) this.revocationAuthority = data.revocationAuthority;
     if (data?.recoveryAuthority) this.recoveryAuthority = data.recoveryAuthority;
     if (data?.privateAddresses) this.privateAddresses = data.privateAddresses;
@@ -114,8 +114,8 @@ export class Identity extends Principal implements SerializableEntity {
   /** @deprecated Use contentMap instead */
   get content_map(): Hashes { return this.contentMap; }
 
-  /** @deprecated Use contentMultimap instead */
-  get content_multimap(): ContentMultiMap { return this.contentMultimap; }
+  /** @deprecated Use contentMultiMap instead */
+  get content_multimap(): ContentMultiMap { return this.contentMultiMap; }
 
   /** @deprecated Use revocationAuthority instead */
   get revocation_authority(): IdentityID { return this.revocationAuthority; }
@@ -179,7 +179,7 @@ export class Identity extends Principal implements SerializableEntity {
     }
 
     if (this.containsContentMultiMap() && this.version.gte(IDENTITY_VERSION_PBAAS)) {
-      length += this.contentMultimap.getByteLength();
+      length += this.contentMultiMap.getByteLength();
     }
 
     if (this.containsContentMap()) {
@@ -231,7 +231,7 @@ export class Identity extends Principal implements SerializableEntity {
   }
 
   clearContentMultiMap() {
-    this.contentMultimap = new ContentMultiMap({ kvContent: new KvContent() });
+    this.contentMultiMap = new ContentMultiMap({ kvContent: new KvContent() });
   }
 
   toBuffer() {
@@ -244,7 +244,7 @@ export class Identity extends Principal implements SerializableEntity {
 
     //contentmultimap
     if (this.containsContentMultiMap() && this.version.gte(IDENTITY_VERSION_PBAAS)) {
-      writer.writeSlice(this.contentMultimap.toBuffer());
+      writer.writeSlice(this.contentMultiMap.toBuffer());
     }
 
     if (this.containsContentMap()) {
@@ -313,7 +313,7 @@ export class Identity extends Principal implements SerializableEntity {
 
         reader.offset = multimap.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
 
-        this.contentMultimap = multimap;
+        this.contentMultiMap = multimap;
       }
     }
 
@@ -404,7 +404,7 @@ export class Identity extends Principal implements SerializableEntity {
 
     const ret: VerusCLIVerusIDJson = {
       contentmap: this.containsContentMap() ? contentmap : undefined,
-      contentmultimap: this.containsContentMultiMap() ? this.contentMultimap.toJson() : undefined,
+      contentmultimap: this.containsContentMultiMap() ? this.contentMultiMap.toJson() : undefined,
       flags: this.containsFlags() ? this.flags.toNumber() : undefined,
       minimumsignatures: this.containsMinSigs() ? this.minSigs.toNumber() : undefined,
       name: this.name,
@@ -554,7 +554,7 @@ export class Identity extends Principal implements SerializableEntity {
       systemId: json.systemid ? IdentityID.fromAddress(json.systemid) : undefined,
       name: json.name,
       contentMap: json.contentmap ? contentmap : undefined,
-      contentMultimap: json.contentmultimap ? ContentMultiMap.fromJson(json.contentmultimap as  ContentMultiMapJson) : undefined,
+      contentMultiMap: json.contentmultimap ? ContentMultiMap.fromJson(json.contentmultimap as  ContentMultiMapJson) : undefined,
       revocationAuthority: json.revocationauthority ? IdentityID.fromAddress(json.revocationauthority) : undefined,
       recoveryAuthority: json.recoveryauthority ? IdentityID.fromAddress(json.recoveryauthority) : undefined,
       privateAddresses: json.privateaddress == null ? [] : [SaplingPaymentAddress.fromAddressString(json.privateaddress)],

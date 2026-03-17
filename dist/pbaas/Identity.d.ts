@@ -43,7 +43,7 @@ export type VerusIDInitData = {
     systemId?: IdentityID;
     name?: string;
     contentMap?: Hashes;
-    contentMultimap?: ContentMultiMap;
+    contentMultiMap?: ContentMultiMap;
     revocationAuthority?: IdentityID;
     recoveryAuthority?: IdentityID;
     privateAddresses?: Array<SaplingPaymentAddress>;
@@ -54,7 +54,7 @@ export declare class Identity extends Principal implements SerializableEntity {
     systemId: IdentityID;
     name: string;
     contentMap: Hashes;
-    contentMultimap: ContentMultiMap;
+    contentMultiMap: ContentMultiMap;
     revocationAuthority: IdentityID;
     recoveryAuthority: IdentityID;
     privateAddresses: Array<SaplingPaymentAddress>;
@@ -71,7 +71,7 @@ export declare class Identity extends Principal implements SerializableEntity {
     get system_id(): IdentityID;
     /** @deprecated Use contentMap instead */
     get content_map(): Hashes;
-    /** @deprecated Use contentMultimap instead */
+    /** @deprecated Use contentMultiMap instead */
     get content_multimap(): ContentMultiMap;
     /** @deprecated Use revocationAuthority instead */
     get revocation_authority(): IdentityID;

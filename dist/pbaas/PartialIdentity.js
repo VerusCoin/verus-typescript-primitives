@@ -17,8 +17,8 @@ class PartialIdentity extends Identity_1.Identity {
         // Also convert any plain VdxfUniValue inner values to FqnVdxfUniValue so
         // that the serialization format is consistent regardless of how the
         // PartialIdentity was constructed (fromJson vs direct constructor).
-        if (!(this.contentMultimap instanceof ContentMultiMap_1.FqnContentMultiMap)) {
-            const srcKvContent = (_b = (_a = this.contentMultimap) === null || _a === void 0 ? void 0 : _a.kvContent) !== null && _b !== void 0 ? _b : new ContentMultiMap_1.KvContent();
+        if (!(this.contentMultiMap instanceof ContentMultiMap_1.FqnContentMultiMap)) {
+            const srcKvContent = (_b = (_a = this.contentMultiMap) === null || _a === void 0 ? void 0 : _a.kvContent) !== null && _b !== void 0 ? _b : new ContentMultiMap_1.KvContent();
             const newKvContent = new ContentMultiMap_1.KvContent();
             for (const [key, values] of srcKvContent.entries()) {
                 newKvContent.set(key, values.map(v => {
@@ -28,7 +28,7 @@ class PartialIdentity extends Identity_1.Identity {
                     return v;
                 }));
             }
-            this.contentMultimap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: newKvContent });
+            this.contentMultiMap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: newKvContent });
         }
         this.contains = new bn_js_1.BN("0");
         if (data === null || data === void 0 ? void 0 : data.parent)
@@ -37,7 +37,7 @@ class PartialIdentity extends Identity_1.Identity {
             this.toggleContainsSystemId();
         if (data === null || data === void 0 ? void 0 : data.contentMap)
             this.toggleContainsContentMap();
-        if (data === null || data === void 0 ? void 0 : data.contentMultimap)
+        if (data === null || data === void 0 ? void 0 : data.contentMultiMap)
             this.toggleContainsContentMultiMap();
         if (data === null || data === void 0 ? void 0 : data.revocationAuthority)
             this.toggleContainsRevocation();
@@ -96,7 +96,7 @@ class PartialIdentity extends Identity_1.Identity {
         return new ContentMultiMap_1.FqnContentMultiMap();
     }
     clearContentMultiMap() {
-        this.contentMultimap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
+        this.contentMultiMap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
     }
     toggleContainsParent() {
         this.contains = this.contains.xor(PartialIdentity.PARTIAL_ID_CONTAINS_PARENT);
@@ -163,10 +163,10 @@ class PartialIdentity extends Identity_1.Identity {
     }
     static fromJson(json) {
         const instance = Identity_1.Identity.internalFromJson(json, PartialIdentity);
-        // Replace contentMultimap with FqnContentMultiMap so inner values are
+        // Replace contentMultiMap with FqnContentMultiMap so inner values are
         // FqnVdxfUniValue instances that preserve FQN keys through binary round-trips.
         if (json.contentmultimap) {
-            instance.contentMultimap = ContentMultiMap_1.FqnContentMultiMap.fromJson(json.contentmultimap);
+            instance.contentMultiMap = ContentMultiMap_1.FqnContentMultiMap.fromJson(json.contentmultimap);
         }
         return instance;
     }
@@ -190,13 +190,13 @@ class PartialIdentity extends Identity_1.Identity {
         return super.unrevoke();
     }
     /**
-     * Returns an array of every key used in the contentMultimap, both top-level and nested,
+     * Returns an array of every key used in the contentMultiMap, both top-level and nested,
      * as strings. Keys that are hex-encoded CompactIAddressObject buffers are resolved via
      * toString() (which returns the iaddress or FQN string). Empty inner keys are skipped.
      */
     getContentMultiMapKeys() {
         const keys = [];
-        for (const [key, values] of this.contentMultimap.kvContent.entries()) {
+        for (const [key, values] of this.contentMultiMap.kvContent.entries()) {
             keys.push(key.toString());
             for (const univalue of values) {
                 if (univalue instanceof VdxfUniValue_1.FqnVdxfUniValue) {
@@ -210,7 +210,7 @@ class PartialIdentity extends Identity_1.Identity {
     }
     /**
      * Returns a partial identity with a plain ContentMultiMap equivalent of this PartialIdentity's
-     * contentMultimap. All outer keys are resolved to CompactIAddress objects as
+     * contentMultiMap. All outer keys are resolved to CompactIAddress objects as
      * i addresses (TYPE_I_ADDRESS, 20-byte hash on-wire format),
      * and all inner FqnVdxfUniValue objects are converted to plain VdxfUniValue with any FQN
      * keys resolved to their iaddress equivalents.
@@ -221,12 +221,12 @@ class PartialIdentity extends Identity_1.Identity {
     withResolvedContentMultiMap() {
         const clone = new PartialIdentity();
         clone.fromBuffer(this.toBuffer());
-        clone.contentMultimap = this.toContentMultiMap();
+        clone.contentMultiMap = this.toContentMultiMap();
         return clone;
     }
     toContentMultiMap() {
         const newKvContent = new ContentMultiMap_1.KvContent();
-        for (const [key, values] of this.contentMultimap.kvContent.entries()) {
+        for (const [key, values] of this.contentMultiMap.kvContent.entries()) {
             const iAddrKey = CompactAddressObject_1.CompactIAddressObject.fromAddress(key.toIAddress());
             const newValues = values.map(v => {
                 if (v instanceof VdxfUniValue_1.FqnVdxfUniValue) {

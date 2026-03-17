@@ -25,7 +25,7 @@ describe('Serializes and deserializes identity properly', () => {
       systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
       contentMap: contentmap,
-      contentMultimap: ContentMultiMap.fromJson({
+      contentMultiMap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -68,7 +68,7 @@ describe('Serializes and deserializes identity properly', () => {
       systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       name: "TestID",
       contentMap: contentmap,
-      contentMultimap: ContentMultiMap.fromJson({
+      contentMultiMap: ContentMultiMap.fromJson({
         iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
           { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
@@ -151,7 +151,7 @@ describe('Serializes and deserializes identity properly', () => {
       name: "monkins",
       parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
       systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
-      contentMultimap: ContentMultiMap.fromJson({
+      contentMultiMap: ContentMultiMap.fromJson({
         "iEYsp2njSt1M4EVYi9uuAPBU2wpKmThkkr": [
           "040d"
         ]
@@ -192,7 +192,7 @@ describe('Serializes and deserializes identity properly', () => {
            }   
     });
 
-    const valuMap = identity_frombuf.contentMultimap.kvContent.get(CompactIAddressObject.fromAddress("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V"))
+    const valuMap = identity_frombuf.contentMultiMap.kvContent.get(CompactIAddressObject.fromAddress("i4d7U1aZhmoxZbWx8AVezh6z1YewAnuw3V"))
 
     let valuMapJson;
     if (valuMap !== undefined) {
@@ -440,6 +440,6 @@ describe('Serializes and deserializes identity properly', () => {
     const identity_to_json = new Identity();
     identity_to_json.fromBuffer(identity_buf);
 
-    expect(identity_frombuf.contentMultimap.kvContent.size).toBe(0);
+    expect(identity_frombuf.contentMultiMap.kvContent.size).toBe(0);
   });
 });

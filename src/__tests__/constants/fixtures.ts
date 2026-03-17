@@ -416,7 +416,7 @@ export const TEST_PARTIAL_IDENTITY = new PartialIdentity({
   systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
   name: "TestID",
   contentMap: TEST_CONTENTMAP,
-  contentMultimap: ContentMultiMap.fromJson({
+  contentMultiMap: ContentMultiMap.fromJson({
     iPsFBfFoCcxtuZNzE8yxPQhXVn4dmytf8j: [
       { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
       { iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c: 'Test String 123454321' },
