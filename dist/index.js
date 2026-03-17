@@ -30,6 +30,7 @@ __exportStar(require("./utils/evals"), exports);
 __exportStar(require("./utils/script"), exports);
 __exportStar(require("./utils/cccustom"), exports);
 __exportStar(require("./utils/tolower"), exports);
+__exportStar(require("./utils/KvMap"), exports);
 __exportStar(require("./pbaas/index"), exports);
 __exportStar(require("./pbaas/PartialIdentity"), exports);
 __exportStar(require("./pbaas/PartialMMRData"), exports);

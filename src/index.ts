@@ -15,6 +15,7 @@ export * from './utils/evals'
 export * from './utils/script'
 export * from './utils/cccustom'
 export * from './utils/tolower'
+export * from './utils/KvMap'
 
 export * from './pbaas/index'
 export * from './pbaas/PartialIdentity'
