@@ -15,7 +15,7 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const params = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(1),
       n: new BN(1),
       destinations: [new TxDestination(IdentityID.fromAddress(prevOutDest))]
@@ -31,7 +31,7 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const params = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(1),
       n: new BN(1),
       destinations: []
@@ -50,10 +50,10 @@ describe('Serializes and deserializes TxDestination variants', () => {
     expect(params.destinations.length).toBe(1);
     expect(params.destinations[0].toAddress()).toBe("iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF");
 
-    expect(params.vdata.length).toBe(0);
+    expect(params.vData.length).toBe(0);
 
     expect(params.version.toNumber()).toBe(3);
-    expect(params.eval_code.toNumber()).toBe(0);
+    expect(params.evalCode.toNumber()).toBe(0);
     expect(params.m.toNumber()).toBe(1);
     expect(params.n.toNumber()).toBe(1);
 
@@ -65,13 +65,13 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const prevOutMaster = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(0),
       n: new BN(0)
     })
     const prevOutParams = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(1),
       n: new BN(1),
       destinations: [new TxDestination(IdentityID.fromAddress(prevOutDest))]
@@ -102,8 +102,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const identity = new Identity();
     identity.fromBuffer(outParams.getParamObject()!)
 
-    const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
-    const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
+    const outParams2 = OptCCParams.fromChunk(outParams.vData[1]);
+    const outParams3 = OptCCParams.fromChunk(outParams.vData[2]);
 
     expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
     expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
@@ -113,7 +113,7 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const masterToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_NONE),
+      evalCode: new BN(EVALS.EVAL_NONE),
       m: new BN(1),
       n: new BN(3),
       destinations: [
@@ -121,17 +121,17 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new TxDestination(IdentityID.fromAddress(iaddr)),
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: []
+      vData: []
     })
     const paramsToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
+      evalCode: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
       m: new BN(1),
       n: new BN(1),
       destinations: [
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: [
+      vData: [
         new Identity({
           version: new BN(2),
           flags: new BN(0),
@@ -148,23 +148,23 @@ describe('Serializes and deserializes TxDestination variants', () => {
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_REVOKE),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_REVOKE),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_RECOVER),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_RECOVER),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk()
       ]
     });
@@ -191,8 +191,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const identity = new Identity();
     identity.fromBuffer(outParams.getParamObject()!);
 
-    const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
-    const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
+    const outParams2 = OptCCParams.fromChunk(outParams.vData[1]);
+    const outParams3 = OptCCParams.fromChunk(outParams.vData[2]);
 
     expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
     expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
@@ -201,7 +201,7 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const masterToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_NONE),
+      evalCode: new BN(EVALS.EVAL_NONE),
       m: new BN(1),
       n: new BN(3),
       destinations: [
@@ -209,17 +209,17 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new TxDestination(IdentityID.fromAddress(iaddr)),
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: []
+      vData: []
     })
     const paramsToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
+      evalCode: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
       m: new BN(1),
       n: new BN(1),
       destinations: [
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: [
+      vData: [
         new Identity({
           version: new BN(1),
           flags: new BN(0),
@@ -236,23 +236,23 @@ describe('Serializes and deserializes TxDestination variants', () => {
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_REVOKE),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_REVOKE),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_RECOVER),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_RECOVER),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk()
       ]
     });
@@ -279,8 +279,8 @@ describe('Serializes and deserializes TxDestination variants', () => {
     const identity = new Identity();
     identity.fromBuffer(outParams.getParamObject()!);
 
-    const outParams2 = OptCCParams.fromChunk(outParams.vdata[1]);
-    const outParams3 = OptCCParams.fromChunk(outParams.vdata[2]);
+    const outParams2 = OptCCParams.fromChunk(outParams.vData[1]);
+    const outParams3 = OptCCParams.fromChunk(outParams.vData[2]);
 
     expect(outParams2.destinations[0].toAddress()).toBe(identity.revocationAuthority.toAddress());
     expect(outParams3.destinations[0].toAddress()).toBe(identity.recoveryAuthority.toAddress());
@@ -289,7 +289,7 @@ describe('Serializes and deserializes TxDestination variants', () => {
 
     const masterToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_NONE),
+      evalCode: new BN(EVALS.EVAL_NONE),
       m: new BN(1),
       n: new BN(3),
       destinations: [
@@ -297,17 +297,17 @@ describe('Serializes and deserializes TxDestination variants', () => {
         new TxDestination(IdentityID.fromAddress(iaddr)),
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: []
+      vData: []
     })
     const paramsToBuf = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
+      evalCode: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
       m: new BN(1),
       n: new BN(1),
       destinations: [
         new TxDestination(IdentityID.fromAddress(iaddr))
       ],
-      vdata: [
+      vData: [
         new Identity({
           version: new BN(3),
           flags: new BN(0),
@@ -324,23 +324,23 @@ describe('Serializes and deserializes TxDestination variants', () => {
         }).toBuffer(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_REVOKE),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_REVOKE),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk(),
         new OptCCParams({
           version: new BN(3),
-          eval_code: new BN(EVALS.EVAL_IDENTITY_RECOVER),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_RECOVER),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(IdentityID.fromAddress(iaddr))
           ],
-          vdata: []
+          vData: []
         }).toChunk()
       ]
     });

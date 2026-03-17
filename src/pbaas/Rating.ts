@@ -26,20 +26,28 @@ export class Rating implements SerializableEntity {
   static TRUST_LAST = new BN(2, 10)
 
   version: BigNumber;
-  trust_level: BigNumber;
+  trustLevel: BigNumber;
   ratings: Map<string, Buffer>;
 
-  constructor(data: { version?: BigNumber, trust_level?: BigNumber, ratings?: Map<string, Buffer> } = {}) {
+  constructor(data: { version?: BigNumber, trustLevel?: BigNumber, ratings?: Map<string, Buffer> } = {}) {
+    if (data != null) {
+      if (Object.prototype.hasOwnProperty.call(data, 'trust_level')) {
+        throw new Error("Rating: snake_case property names are no longer supported. Use 'trustLevel' instead of 'trust_level'.");
+      }
+    }
     this.version = data.version || new BN(1, 10);
-    this.trust_level = data.trust_level || new BN(0, 10);
+    this.trustLevel = data.trustLevel || new BN(0, 10);
     this.ratings = new Map(data.ratings || []);
   }
+
+  /** @deprecated Use trustLevel instead */
+  get trust_level(): BigNumber { return this.trustLevel; }
 
   getByteLength() {
     let byteLength = 0;
 
     byteLength += 4; // version uint32
-    byteLength += 1; // trust_level uint8
+    byteLength += 1; // trustLevel uint8
     byteLength += varuint.encodingLength(this.ratings.size);
 
     for (const [key, value] of this.ratings) {
@@ -56,7 +64,7 @@ export class Rating implements SerializableEntity {
     const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()))
 
     bufferWriter.writeUInt32(this.version.toNumber());
-    bufferWriter.writeUInt8(this.trust_level.toNumber());
+    bufferWriter.writeUInt8(this.trustLevel.toNumber());
     bufferWriter.writeCompactSize(this.ratings.size);
 
     const entries: Array<{ [key: string]: Buffer }> = [];
@@ -92,7 +100,7 @@ export class Rating implements SerializableEntity {
     const reader = new BufferReader(buffer, offset);
 
     this.version = new BN(reader.readUInt32());
-    this.trust_level = new BN(reader.readUInt8());
+    this.trustLevel = new BN(reader.readUInt8());
 
     const count = reader.readCompactSize();
 
@@ -110,7 +118,7 @@ export class Rating implements SerializableEntity {
 
   isValid() {
     return this.version.gte(Rating.VERSION_FIRST) && this.version.lte(Rating.VERSION_LAST) &&
-      this.trust_level.gte(Rating.TRUST_FIRST) && this.trust_level.lte(Rating.TRUST_LAST);
+      this.trustLevel.gte(Rating.TRUST_FIRST) && this.trustLevel.lte(Rating.TRUST_LAST);
   }
   toJson() {
 
@@ -122,7 +130,7 @@ export class Rating implements SerializableEntity {
 
     return {
       version: this.version.toNumber(),
-      trustlevel: this.trust_level.toNumber(),
+      trustlevel: this.trustLevel.toNumber(),
       ratingsmap: ratings
     }
   }
@@ -137,7 +145,7 @@ export class Rating implements SerializableEntity {
 
     return new Rating({
       version: new BN(json.version),
-      trust_level: new BN(json.trustlevel),
+      trustLevel: new BN(json.trustlevel),
       ratings: ratings
     })
   }

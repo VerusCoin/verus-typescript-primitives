@@ -26,28 +26,28 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("20010")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
-    expect(trans_frombuf.dest_currency_id).toBe("iQP7TeWNDNsF7aaaCkQzNyS4jDjdKncNWf")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("20010")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
+    expect(trans_frombuf.destCurrencyID).toBe("iQP7TeWNDNsF7aaaCkQzNyS4jDjdKncNWf")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM", new BN("1000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(515, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(4, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id
+      destCurrencyID: trans_frombuf.destCurrencyID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -73,28 +73,28 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("20010")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("R9hJiQ8Evh2ehU68GveFfXGDwdRcPKSbip")
-    expect(trans_frombuf.dest_currency_id).toBe("iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("20010")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("R9hJiQ8Evh2ehU68GveFfXGDwdRcPKSbip")
+    expect(trans_frombuf.destCurrencyID).toBe("iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", new BN("1000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(3, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(2, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id
+      destCurrencyID: trans_frombuf.destCurrencyID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -120,30 +120,30 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("166564")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
-    expect(trans_frombuf.dest_currency_id).toBe("iCmr2i7wECJzuGisQeUFQJJCASW66Jp7QG")
-    expect(trans_frombuf.dest_system_id).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("166564")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
+    expect(trans_frombuf.destCurrencyID).toBe("iCmr2i7wECJzuGisQeUFQJJCASW66Jp7QG")
+    expect(trans_frombuf.destSystemID).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", new BN("25000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(67, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(4, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id,
-      dest_system_id: trans_frombuf.dest_system_id
+      destCurrencyID: trans_frombuf.destCurrencyID,
+      destSystemID: trans_frombuf.destSystemID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -169,32 +169,32 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("166564")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
-    expect(trans_frombuf.dest_currency_id).toBe("iCmr2i7wECJzuGisQeUFQJJCASW66Jp7QG")
-    expect(trans_frombuf.dest_system_id).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
-    expect(trans_frombuf.second_reserve_id).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("166564")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("RP4Qct9197i5vrS11qHVtdyRRoAHVNJS47")
+    expect(trans_frombuf.destCurrencyID).toBe("iCmr2i7wECJzuGisQeUFQJJCASW66Jp7QG")
+    expect(trans_frombuf.destSystemID).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
+    expect(trans_frombuf.secondReserveID).toBe("iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", new BN("25000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(1091, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(2, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id,
-      dest_system_id: trans_frombuf.dest_system_id,
-      second_reserve_id: trans_frombuf.second_reserve_id
+      destCurrencyID: trans_frombuf.destCurrencyID,
+      destSystemID: trans_frombuf.destSystemID,
+      secondReserveID: trans_frombuf.secondReserveID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -220,30 +220,30 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("20010")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
-    expect(trans_frombuf.dest_currency_id).toBe("iBtxnk8gKmgr6jASweZqe6SP6bWZbkV21e")
-    expect(trans_frombuf.second_reserve_id).toBe("iAPgLHjmWZBA4wpfesNT81vMjSoTacgwuU")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("20010")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
+    expect(trans_frombuf.destCurrencyID).toBe("iBtxnk8gKmgr6jASweZqe6SP6bWZbkV21e")
+    expect(trans_frombuf.secondReserveID).toBe("iAPgLHjmWZBA4wpfesNT81vMjSoTacgwuU")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", new BN("25000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(1027, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(4, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id,
-      second_reserve_id: trans_frombuf.second_reserve_id
+      destCurrencyID: trans_frombuf.destCurrencyID,
+      secondReserveID: trans_frombuf.secondReserveID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -269,28 +269,28 @@ describe('Serializes and deserializes token output properly', () => {
     expect(trans_frombuf.isIdentityExport()).toBe(false)
     expect(trans_frombuf.isCurrencyExport()).toBe(false)
     expect(trans_frombuf.isArbitrageOnly()).toBe(false)
-    expect(trans_frombuf.fee_currency_id).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
-    expect(trans_frombuf.fee_amount.toString()).toBe("20000")
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
-    expect(trans_frombuf.dest_currency_id).toBe("iMxcxy7b8B62UM8sumRpjSMJzo95ZKLE5R")
+    expect(trans_frombuf.feeCurrencyID).toBe("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq")
+    expect(trans_frombuf.feeAmount.toString()).toBe("20000")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")
+    expect(trans_frombuf.destCurrencyID).toBe("iMxcxy7b8B62UM8sumRpjSMJzo95ZKLE5R")
 
     const trans_tobuf = new ReserveTransfer({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", new BN("25000000000", 10)]
         ]),
         multivalue: false
       }),
       version: new BN(1, 10),
       flags: new BN(7, 10),
-      fee_currency_id: trans_frombuf.fee_currency_id,
-      fee_amount: new BN(trans_frombuf.fee_amount.toString(), 10),
-      transfer_destination: new TransferDestination({
+      feeCurrencyID: trans_frombuf.feeCurrencyID,
+      feeAmount: new BN(trans_frombuf.feeAmount.toString(), 10),
+      transferDestination: new TransferDestination({
         type: new BN(4, 10),
-        destination_bytes: fromBase58Check(trans_frombuf.transfer_destination.getAddressString()).hash,
+        destinationBytes: fromBase58Check(trans_frombuf.transferDestination.getAddressString()).hash,
         fees: new BN(0, 10)
       }),
-      dest_currency_id: trans_frombuf.dest_currency_id
+      destCurrencyID: trans_frombuf.destCurrencyID
     })
 
     expect(trans_tobuf.toBuffer().toString('hex')).toBe(vdata)
@@ -302,8 +302,8 @@ describe('Serializes and deserializes token output properly', () => {
     const trans_frombuf = new ReserveTransfer()
     trans_frombuf.fromBuffer(Buffer.from(vdata, 'hex'))
 
-    expect(trans_frombuf.transfer_destination.getAddressString()).toBe("RF8ZdvjvGMNdtu3jNwcmaTDeU8hFJ28ajN")
-    expect(trans_frombuf.transfer_destination.aux_dests[0].getAddressString()).toBe("RF8ZdvjvGMNdtu3jNwcmaTDeU8hFJ28ajN")
+    expect(trans_frombuf.transferDestination.getAddressString()).toBe("RF8ZdvjvGMNdtu3jNwcmaTDeU8hFJ28ajN")
+    expect(trans_frombuf.transferDestination.auxDests[0].getAddressString()).toBe("RF8ZdvjvGMNdtu3jNwcmaTDeU8hFJ28ajN")
   });
 
   test('transferdestination getAddressString work as intended', async () => {
@@ -313,7 +313,7 @@ describe('Serializes and deserializes token output properly', () => {
 
     const transdestpkh = new TransferDestination({
       type: DEST_PKH,
-      destination_bytes: fromBase58Check(destpkh).hash
+      destinationBytes: fromBase58Check(destpkh).hash
     });
     expect(transdestpkh.getAddressString()).toBe(destpkh);
     expect(transdestpkh.isPKH()).toBe(true);
@@ -322,7 +322,7 @@ describe('Serializes and deserializes token output properly', () => {
 
     const transdesteth = new TransferDestination({
       type: DEST_ETH,
-      destination_bytes: Buffer.from(desteth.substring(2), 'hex')
+      destinationBytes: Buffer.from(desteth.substring(2), 'hex')
     });
     expect(transdesteth.getAddressString()).toBe(desteth);
     expect(transdesteth.isETHAccount()).toBe(true);
@@ -331,7 +331,7 @@ describe('Serializes and deserializes token output properly', () => {
 
     const transdestid = new TransferDestination({
       type: DEST_ID,
-      destination_bytes: fromBase58Check(destid).hash
+      destinationBytes: fromBase58Check(destid).hash
     });
     expect(transdestid.getAddressString()).toBe(destid);
     expect(transdestid.isIAddr()).toBe(true);

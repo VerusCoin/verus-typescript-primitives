@@ -4,19 +4,23 @@ import { BigNumber } from '../utils/types/BigNumber';
 export type VData = Array<Buffer>;
 export declare class OptCCParams implements SerializableEntity {
     version: BigNumber;
-    eval_code: BigNumber;
+    evalCode: BigNumber;
     m: BigNumber;
     n: BigNumber;
     destinations: Array<TxDestination>;
-    vdata: VData;
+    vData: VData;
     constructor(data?: {
         version?: BigNumber;
-        eval_code?: BigNumber;
+        evalCode?: BigNumber;
         m?: BigNumber;
         n?: BigNumber;
         destinations?: Array<TxDestination>;
-        vdata?: VData;
+        vData?: VData;
     });
+    /** @deprecated Use evalCode instead */
+    get eval_code(): BigNumber;
+    /** @deprecated Use vData instead */
+    get vdata(): VData;
     getParamObject(): null | Buffer;
     isValid(): boolean;
     static fromChunk(chunk: Buffer): OptCCParams;

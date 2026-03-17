@@ -26,15 +26,15 @@ export interface SignatureJsonDataInterface {
 
 export class SignatureData implements SerializableEntity {
   version: BigNumber;
-  system_ID: string;
-  hash_type: BigNumber;
-  signature_hash: Buffer;
-  identity_ID: string;
-  sig_type: BigNumber;
-  vdxf_keys: Array<string>;
-  vdxf_key_names: Array<string>;
-  bound_hashes: Array<Buffer>;
-  signature_as_vch: Buffer;
+  systemID: string;
+  hashType: BigNumber;
+  signatureHash: Buffer;
+  identityID: string;
+  sigType: BigNumber;
+  vdxfKeys: Array<string>;
+  vdxfKeyNames: Array<string>;
+  boundHashes: Array<Buffer>;
+  signatureAsVch: Buffer;
 
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
@@ -42,23 +42,61 @@ export class SignatureData implements SerializableEntity {
   static DEFAULT_VERSION = new BN(1);
   static TYPE_VERUSID_DEFAULT = new BN(1);
 
-  constructor(data?: { version?: BigNumber, system_ID?: string, hash_type?: BigNumber, signature_hash?: Buffer, 
-    identity_ID?: string, sig_type?: BigNumber, vdxf_keys?: Array<string>, vdxf_key_names?: Array<string>, 
-    bound_hashes?: Array<Buffer>, signature_as_vch?: Buffer }) {
+  constructor(data?: { version?: BigNumber, systemID?: string, hashType?: BigNumber, signatureHash?: Buffer,
+    identityID?: string, sigType?: BigNumber, vdxfKeys?: Array<string>, vdxfKeyNames?: Array<string>,
+    boundHashes?: Array<Buffer>, signatureAsVch?: Buffer }) {
+
+    if (data != null) {
+      const d = data as any;
+      const deprecated = ['system_ID', 'hash_type', 'signature_hash', 'identity_ID', 'sig_type', 'vdxf_keys', 'vdxf_key_names', 'bound_hashes', 'signature_as_vch'].filter(k => Object.prototype.hasOwnProperty.call(d, k));
+      if (deprecated.length > 0) {
+        const map: Record<string, string> = {
+          system_ID: 'systemID',
+          hash_type: 'hashType',
+          signature_hash: 'signatureHash',
+          identity_ID: 'identityID',
+          sig_type: 'sigType',
+          vdxf_keys: 'vdxfKeys',
+          vdxf_key_names: 'vdxfKeyNames',
+          bound_hashes: 'boundHashes',
+          signature_as_vch: 'signatureAsVch',
+        };
+        throw new Error(`SignatureData: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+      }
+    }
 
     if (data) {
       this.version = data.version || new BN(1, 10);
-      this.system_ID = data.system_ID || "";
-      this.hash_type = data.hash_type || new BN(0);
-      this.signature_hash = data.signature_hash || Buffer.alloc(0);
-      this.identity_ID = data.identity_ID || "";
-      this.sig_type = data.sig_type || new BN(0);
-      this.vdxf_keys = data.vdxf_keys || [];
-      this.vdxf_key_names = data.vdxf_key_names || [];
-      this.bound_hashes = data.bound_hashes || [];
-      this.signature_as_vch = data.signature_as_vch || Buffer.alloc(0);
+      this.systemID = data.systemID || "";
+      this.hashType = data.hashType || new BN(0);
+      this.signatureHash = data.signatureHash || Buffer.alloc(0);
+      this.identityID = data.identityID || "";
+      this.sigType = data.sigType || new BN(0);
+      this.vdxfKeys = data.vdxfKeys || [];
+      this.vdxfKeyNames = data.vdxfKeyNames || [];
+      this.boundHashes = data.boundHashes || [];
+      this.signatureAsVch = data.signatureAsVch || Buffer.alloc(0);
     }
   }
+
+  /** @deprecated Use systemID instead */
+  get system_ID(): string { return this.systemID; }
+  /** @deprecated Use hashType instead */
+  get hash_type(): BigNumber { return this.hashType; }
+  /** @deprecated Use signatureHash instead */
+  get signature_hash(): Buffer { return this.signatureHash; }
+  /** @deprecated Use identityID instead */
+  get identity_ID(): string { return this.identityID; }
+  /** @deprecated Use sigType instead */
+  get sig_type(): BigNumber { return this.sigType; }
+  /** @deprecated Use vdxfKeys instead */
+  get vdxf_keys(): Array<string> { return this.vdxfKeys; }
+  /** @deprecated Use vdxfKeyNames instead */
+  get vdxf_key_names(): Array<string> { return this.vdxfKeyNames; }
+  /** @deprecated Use boundHashes instead */
+  get bound_hashes(): Array<Buffer> { return this.boundHashes; }
+  /** @deprecated Use signatureAsVch instead */
+  get signature_as_vch(): Buffer { return this.signatureAsVch; }
 
   static fromJson(data: SignatureJsonDataInterface | any) {
 
@@ -66,21 +104,21 @@ export class SignatureData implements SerializableEntity {
 
     if (data) {
       signatureData.version = new BN(data.version);
-      signatureData.system_ID = data.systemid;
-      signatureData.hash_type = new BN(data.hashtype);
-      signatureData.identity_ID = data.identityid;
-      signatureData.sig_type = new BN(data.signaturetype);
+      signatureData.systemID = data.systemid;
+      signatureData.hashType = new BN(data.hashtype);
+      signatureData.identityID = data.identityid;
+      signatureData.sigType = new BN(data.signaturetype);
 
-      if (signatureData.hash_type.eq(new BN(Number(EHashTypes.HASH_SHA256)))) {
-        signatureData.signature_hash = Buffer.from(data.signaturehash, 'hex');
+      if (signatureData.hashType.eq(new BN(Number(EHashTypes.HASH_SHA256)))) {
+        signatureData.signatureHash = Buffer.from(data.signaturehash, 'hex');
       } else {
-        signatureData.signature_hash = Buffer.from(data.signaturehash, 'hex').reverse();
+        signatureData.signatureHash = Buffer.from(data.signaturehash, 'hex').reverse();
       }
 
-      signatureData.signature_as_vch = Buffer.from(data.signature, 'base64');
-      signatureData.vdxf_keys = data.vdxfkeys || [];
-      signatureData.vdxf_key_names = data.vdxfkeynames || [];
-      signatureData.bound_hashes = data.boundhashes?.map((hash) => Buffer.from(hash, 'hex').reverse()) || [];
+      signatureData.signatureAsVch = Buffer.from(data.signature, 'base64');
+      signatureData.vdxfKeys = data.vdxfkeys || [];
+      signatureData.vdxfKeyNames = data.vdxfkeynames || [];
+      signatureData.boundHashes = data.boundhashes?.map((hash) => Buffer.from(hash, 'hex').reverse()) || [];
 
     }
 
@@ -89,12 +127,12 @@ export class SignatureData implements SerializableEntity {
 
   /**
    * Determines the signature hash type based on the input buffer.
-   * 
+   *
    * @param {Buffer} input - The input buffer containing signature data.
    * @returns {number} - The hash type. If the version byte is `2`, the next byte
    *                     in the buffer is returned as the hash type. Otherwise,
    *                     it defaults to `EHashTypes.HASH_SHA256`.
-   * 
+   *
    * The method reads the first byte of the input buffer as the version. If the
    * version is `2`, it reads the next byte as the hash type. This logic is used
    * to support multiple versions of signature data formats, where version `2`
@@ -115,25 +153,25 @@ export class SignatureData implements SerializableEntity {
     let byteLength = 0;
 
     byteLength += varint.encodingLength(this.version);
-    byteLength += HASH160_BYTE_LENGTH; // system_ID uint160
-    byteLength += varint.encodingLength(this.hash_type);
-    byteLength += varuint.encodingLength(this.signature_hash.length);
-    byteLength += this.signature_hash.length;
-    byteLength += HASH160_BYTE_LENGTH; // identity_ID uint160
-    byteLength += varint.encodingLength(this.sig_type);
-    byteLength += varuint.encodingLength(this.vdxf_keys.length);
-    byteLength += this.vdxf_keys.length * 20;
-    byteLength += varuint.encodingLength(this.vdxf_key_names.length);
+    byteLength += HASH160_BYTE_LENGTH; // systemID uint160
+    byteLength += varint.encodingLength(this.hashType);
+    byteLength += varuint.encodingLength(this.signatureHash.length);
+    byteLength += this.signatureHash.length;
+    byteLength += HASH160_BYTE_LENGTH; // identityID uint160
+    byteLength += varint.encodingLength(this.sigType);
+    byteLength += varuint.encodingLength(this.vdxfKeys.length);
+    byteLength += this.vdxfKeys.length * 20;
+    byteLength += varuint.encodingLength(this.vdxfKeyNames.length);
 
-    for (const keyName of this.vdxf_key_names) {
+    for (const keyName of this.vdxfKeyNames) {
       byteLength += varuint.encodingLength(Buffer.from(keyName, 'utf8').length);
       byteLength += Buffer.from(keyName, 'utf8').length;
     }
 
-    byteLength += varuint.encodingLength(this.bound_hashes.length);
-    byteLength += this.bound_hashes.length * 32;
-    byteLength += varuint.encodingLength(this.signature_as_vch.length);
-    byteLength += this.signature_as_vch.length;
+    byteLength += varuint.encodingLength(this.boundHashes.length);
+    byteLength += this.boundHashes.length * 32;
+    byteLength += varuint.encodingLength(this.signatureAsVch.length);
+    byteLength += this.signatureAsVch.length;
 
     return byteLength
   }
@@ -142,26 +180,26 @@ export class SignatureData implements SerializableEntity {
     const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()))
 
     bufferWriter.writeVarInt(this.version);
-    bufferWriter.writeSlice(fromBase58Check(this.system_ID).hash);
-    bufferWriter.writeVarInt(this.hash_type);
-    bufferWriter.writeVarSlice(this.signature_hash);
-    bufferWriter.writeSlice(fromBase58Check(this.identity_ID).hash);
-    bufferWriter.writeVarInt(this.sig_type);
-    bufferWriter.writeCompactSize(this.vdxf_keys.length);
+    bufferWriter.writeSlice(fromBase58Check(this.systemID).hash);
+    bufferWriter.writeVarInt(this.hashType);
+    bufferWriter.writeVarSlice(this.signatureHash);
+    bufferWriter.writeSlice(fromBase58Check(this.identityID).hash);
+    bufferWriter.writeVarInt(this.sigType);
+    bufferWriter.writeCompactSize(this.vdxfKeys.length);
 
-    for (const key of this.vdxf_keys) {
+    for (const key of this.vdxfKeys) {
       bufferWriter.writeSlice(fromBase58Check(key).hash);
     }
 
-    bufferWriter.writeCompactSize(this.vdxf_key_names.length);
-    for (const keyName of this.vdxf_key_names) {
+    bufferWriter.writeCompactSize(this.vdxfKeyNames.length);
+    for (const keyName of this.vdxfKeyNames) {
       bufferWriter.writeVarSlice(Buffer.from(keyName, 'utf8'));
     }
-    bufferWriter.writeCompactSize(this.bound_hashes.length);
-    for (const boundHash of this.bound_hashes) {
+    bufferWriter.writeCompactSize(this.boundHashes.length);
+    for (const boundHash of this.boundHashes) {
       bufferWriter.writeSlice(boundHash);
     }
-    bufferWriter.writeVarSlice(this.signature_as_vch);
+    bufferWriter.writeVarSlice(this.signatureAsVch);
 
     return bufferWriter.buffer
   }
@@ -170,33 +208,33 @@ export class SignatureData implements SerializableEntity {
     const reader = new BufferReader(buffer, offset);
 
     this.version = reader.readVarInt();
-    this.system_ID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
-    this.hash_type = reader.readVarInt();
-    this.signature_hash = reader.readVarSlice();
-    this.identity_ID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
-    this.sig_type = reader.readVarInt();
+    this.systemID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+    this.hashType = reader.readVarInt();
+    this.signatureHash = reader.readVarSlice();
+    this.identityID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+    this.sigType = reader.readVarInt();
     const vdxfKeysLength = reader.readCompactSize();
-    this.vdxf_keys = [];
+    this.vdxfKeys = [];
 
     for (let i = 0; i < vdxfKeysLength; i++) {
-      this.vdxf_keys.push(toBase58Check(reader.readSlice(20), I_ADDR_VERSION));
+      this.vdxfKeys.push(toBase58Check(reader.readSlice(20), I_ADDR_VERSION));
     }
 
     const vdxfKeyNamesLength = reader.readCompactSize();
-    this.vdxf_key_names = [];
+    this.vdxfKeyNames = [];
 
     for (let i = 0; i < vdxfKeyNamesLength; i++) {
-      this.vdxf_key_names.push(reader.readVarSlice().toString('utf8'));
+      this.vdxfKeyNames.push(reader.readVarSlice().toString('utf8'));
     }
 
     const boundHashesLength = reader.readCompactSize();
-    this.bound_hashes = [];
+    this.boundHashes = [];
 
     for (let i = 0; i < boundHashesLength; i++) {
-      this.bound_hashes.push(reader.readSlice(32));
+      this.boundHashes.push(reader.readSlice(32));
     }
 
-    this.signature_as_vch = reader.readVarSlice();
+    this.signatureAsVch = reader.readVarSlice();
 
     return reader.offset;
   }
@@ -204,37 +242,37 @@ export class SignatureData implements SerializableEntity {
   isValid() {
     return !!(this.version.gte(SignatureData.FIRST_VERSION) &&
       this.version.lte(SignatureData.LAST_VERSION) &&
-      this.system_ID);
+      this.systemID);
   }
 
   toJson(): SignatureJsonDataInterface {
 
     const returnObj: SignatureJsonDataInterface = {
       version: this.version.toNumber(),
-      systemid: this.system_ID,
-      hashtype: this.hash_type.toNumber(),
+      systemid: this.systemID,
+      hashtype: this.hashType.toNumber(),
       signaturehash: '', // Will be set below
-      identityid: this.identity_ID,
-      signaturetype: this.sig_type.toNumber(),
-      signature: this.signature_as_vch.toString('base64')
+      identityid: this.identityID,
+      signaturetype: this.sigType.toNumber(),
+      signature: this.signatureAsVch.toString('base64')
     };
 
-    if (this.hash_type.eq(new BN(Number(EHashTypes.HASH_SHA256)))) {
-      returnObj.signaturehash = Buffer.from(this.signature_hash).toString('hex');
+    if (this.hashType.eq(new BN(Number(EHashTypes.HASH_SHA256)))) {
+      returnObj.signaturehash = Buffer.from(this.signatureHash).toString('hex');
     } else {
-      returnObj.signaturehash = Buffer.from(this.signature_hash).reverse().toString('hex');
+      returnObj.signaturehash = Buffer.from(this.signatureHash).reverse().toString('hex');
     }
 
-    if (this.vdxf_keys && this.vdxf_keys.length > 0) {
-      returnObj.vdxfkeys = this.vdxf_keys;
+    if (this.vdxfKeys && this.vdxfKeys.length > 0) {
+      returnObj.vdxfkeys = this.vdxfKeys;
     }
 
-    if (this.vdxf_key_names && this.vdxf_key_names.length > 0) {
-      returnObj.vdxfkeynames = this.vdxf_key_names;
+    if (this.vdxfKeyNames && this.vdxfKeyNames.length > 0) {
+      returnObj.vdxfkeynames = this.vdxfKeyNames;
     }
 
-    if (this.bound_hashes && this.bound_hashes.length > 0) {
-      returnObj.boundhashes = this.bound_hashes.map((hash) => Buffer.from(hash).reverse().toString('hex'));
+    if (this.boundHashes && this.boundHashes.length > 0) {
+      returnObj.boundhashes = this.boundHashes.map((hash) => Buffer.from(hash).reverse().toString('hex'));
     }
 
     return returnObj;
@@ -253,18 +291,18 @@ export class SignatureData implements SerializableEntity {
     if (sigObject.version == 1) {
       return createHash("sha256")
         .update(VERUS_DATA_SIGNATURE_PREFIX)
-        .update(fromBase58Check(this.system_ID).hash)
+        .update(fromBase58Check(this.systemID).hash)
         .update(heightBuffer)
-        .update(fromBase58Check(this.identity_ID).hash)
-        .update(this.signature_hash)
+        .update(fromBase58Check(this.identityID).hash)
+        .update(this.signatureHash)
         .digest();
     } else {
       return createHash("sha256")
-        .update(fromBase58Check(this.system_ID).hash)
+        .update(fromBase58Check(this.systemID).hash)
         .update(heightBuffer)
-        .update(fromBase58Check(this.identity_ID).hash)
+        .update(fromBase58Check(this.identityID).hash)
         .update(VERUS_DATA_SIGNATURE_PREFIX)
-        .update(this.signature_hash)
+        .update(this.signatureHash)
         .digest();
     }
   }

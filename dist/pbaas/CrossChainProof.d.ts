@@ -20,15 +20,17 @@ export declare enum CHAIN_OBJECT_TYPES {
 }
 export declare class CrossChainProof implements SerializableEntity {
     version: BigNumber;
-    chain_objects: Array<EvidenceData>;
+    chainObjects: Array<EvidenceData>;
     static VERSION_INVALID: import("bn.js");
     static VERSION_FIRST: import("bn.js");
     static VERSION_CURRENT: import("bn.js");
     static VERSION_LAST: import("bn.js");
     constructor(data?: {
-        version: any;
-        chain_objects: any;
+        version?: BigNumber;
+        chainObjects?: Array<EvidenceData>;
     });
+    /** @deprecated Use chainObjects instead */
+    get chain_objects(): Array<EvidenceData>;
     static knownVDXFKeys(): Map<string, CHAIN_OBJECT_TYPES>;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

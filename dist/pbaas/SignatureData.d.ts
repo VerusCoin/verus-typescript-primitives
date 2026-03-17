@@ -15,15 +15,15 @@ export interface SignatureJsonDataInterface {
 }
 export declare class SignatureData implements SerializableEntity {
     version: BigNumber;
-    system_ID: string;
-    hash_type: BigNumber;
-    signature_hash: Buffer;
-    identity_ID: string;
-    sig_type: BigNumber;
-    vdxf_keys: Array<string>;
-    vdxf_key_names: Array<string>;
-    bound_hashes: Array<Buffer>;
-    signature_as_vch: Buffer;
+    systemID: string;
+    hashType: BigNumber;
+    signatureHash: Buffer;
+    identityID: string;
+    sigType: BigNumber;
+    vdxfKeys: Array<string>;
+    vdxfKeyNames: Array<string>;
+    boundHashes: Array<Buffer>;
+    signatureAsVch: Buffer;
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");
@@ -31,16 +31,34 @@ export declare class SignatureData implements SerializableEntity {
     static TYPE_VERUSID_DEFAULT: import("bn.js");
     constructor(data?: {
         version?: BigNumber;
-        system_ID?: string;
-        hash_type?: BigNumber;
-        signature_hash?: Buffer;
-        identity_ID?: string;
-        sig_type?: BigNumber;
-        vdxf_keys?: Array<string>;
-        vdxf_key_names?: Array<string>;
-        bound_hashes?: Array<Buffer>;
-        signature_as_vch?: Buffer;
+        systemID?: string;
+        hashType?: BigNumber;
+        signatureHash?: Buffer;
+        identityID?: string;
+        sigType?: BigNumber;
+        vdxfKeys?: Array<string>;
+        vdxfKeyNames?: Array<string>;
+        boundHashes?: Array<Buffer>;
+        signatureAsVch?: Buffer;
     });
+    /** @deprecated Use systemID instead */
+    get system_ID(): string;
+    /** @deprecated Use hashType instead */
+    get hash_type(): BigNumber;
+    /** @deprecated Use signatureHash instead */
+    get signature_hash(): Buffer;
+    /** @deprecated Use identityID instead */
+    get identity_ID(): string;
+    /** @deprecated Use sigType instead */
+    get sig_type(): BigNumber;
+    /** @deprecated Use vdxfKeys instead */
+    get vdxf_keys(): Array<string>;
+    /** @deprecated Use vdxfKeyNames instead */
+    get vdxf_key_names(): Array<string>;
+    /** @deprecated Use boundHashes instead */
+    get bound_hashes(): Array<Buffer>;
+    /** @deprecated Use signatureAsVch instead */
+    get signature_as_vch(): Buffer;
     static fromJson(data: SignatureJsonDataInterface | any): SignatureData;
     /**
      * Determines the signature hash type based on the input buffer.

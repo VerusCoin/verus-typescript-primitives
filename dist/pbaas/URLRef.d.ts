@@ -14,14 +14,16 @@ export declare class URLRef implements SerializableEntity {
     static FLAG_HAS_HASH: import("bn.js");
     version: BigNumber;
     flags: BigNumber;
-    data_hash: Buffer;
+    dataHash: Buffer;
     url: string;
     constructor(data?: {
         version?: BigNumber;
         url?: string;
         flags?: BigNumber;
-        data_hash?: Buffer;
+        dataHash?: Buffer;
     });
+    /** @deprecated Use dataHash instead */
+    get data_hash(): Buffer;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number): number;

@@ -41,50 +41,50 @@ export class IdentityScript extends SmartTransactionScript implements Serializab
 
     const master = new OptCCParams({
       version: Identity.VERSION_CURRENT,
-      eval_code: new BN(EVALS.EVAL_NONE),
+      evalCode: new BN(EVALS.EVAL_NONE),
       m: new BN(1),
       n: new BN(destinationsMaster.length),
       destinations: destinationsMaster,
-      vdata: []
+      vData: []
     })
 
     const params = new OptCCParams({
       version: Identity.VERSION_CURRENT,
-      eval_code: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
+      evalCode: new BN(EVALS.EVAL_IDENTITY_PRIMARY),
       m: new BN(1),
       n: new BN(1),
       destinations: [
         new TxDestination(IdentityID.fromAddress(identityAddress))
       ],
-      vdata: identity.isRevoked() ? [
+      vData: identity.isRevoked() ? [
         identity.toBuffer(),
         new OptCCParams({
           version: Identity.VERSION_CURRENT,
-          eval_code: new BN(EVALS.EVAL_IDENTITY_RECOVER),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_RECOVER),
           m: new BN(1),
           n: new BN(destinationsRecovery.length),
           destinations: destinationsRecovery,
-          vdata: []
+          vData: []
         }).toChunk()
       ] : [
         identity.toBuffer(),
         new OptCCParams({
           version: Identity.VERSION_CURRENT,
-          eval_code: new BN(EVALS.EVAL_IDENTITY_REVOKE),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_REVOKE),
           m: new BN(1),
           n: new BN(1),
           destinations: [
             new TxDestination(identity.revocationAuthority)
           ],
-          vdata: []
+          vData: []
         }).toChunk(),
         new OptCCParams({
           version: Identity.VERSION_CURRENT,
-          eval_code: new BN(EVALS.EVAL_IDENTITY_RECOVER),
+          evalCode: new BN(EVALS.EVAL_IDENTITY_RECOVER),
           m: new BN(1),
           n: new BN(destinationsRecovery.length),
           destinations: destinationsRecovery,
-          vdata: []
+          vData: []
         }).toChunk()
       ]
     });

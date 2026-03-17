@@ -27,35 +27,62 @@ exports.RESERVE_TRANSFER_CURRENCY_EXPORT = new bn_js_1.BN("2000", 16); // this e
 exports.RESERVE_TRANSFER_ARBITRAGE_ONLY = new bn_js_1.BN("4000", 16); // in PBaaS V1, one additional reserve transfer from the local system may be added by the importer
 exports.RESERVE_TRANSFER_DESTINATION = new TransferDestination_1.TransferDestination({
     type: TransferDestination_1.DEST_PKH,
-    destination_bytes: (0, address_1.fromBase58Check)("RTqQe58LSj2yr5CrwYFwcsAQ1edQwmrkUU").hash
+    destinationBytes: (0, address_1.fromBase58Check)("RTqQe58LSj2yr5CrwYFwcsAQ1edQwmrkUU").hash
 });
 class ReserveTransfer extends TokenOutput_1.TokenOutput {
     constructor(data) {
         super(data);
+        if (data != null) {
+            const d = data;
+            const snakeDeprecated = ['fee_currency_id', 'fee_amount', 'transfer_destination', 'dest_currency_id', 'second_reserve_id', 'dest_system_id'].filter(k => Object.prototype.hasOwnProperty.call(d, k));
+            if (snakeDeprecated.length > 0) {
+                const map = {
+                    fee_currency_id: 'feeCurrencyID',
+                    fee_amount: 'feeAmount',
+                    transfer_destination: 'transferDestination',
+                    dest_currency_id: 'destCurrencyID',
+                    second_reserve_id: 'secondReserveID',
+                    dest_system_id: 'destSystemID',
+                };
+                throw new Error(`ReserveTransfer: snake_case property names are no longer supported. Rename: ${snakeDeprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+            }
+        }
         this.flags = exports.RESERVE_TRANSFER_INVALID;
-        this.fee_currency_id = null;
-        this.fee_amount = new bn_js_1.BN(0, 10);
-        this.transfer_destination = new TransferDestination_1.TransferDestination();
-        this.dest_currency_id = null;
-        this.second_reserve_id = null;
-        this.dest_currency_id = null;
+        this.feeCurrencyID = null;
+        this.feeAmount = new bn_js_1.BN(0, 10);
+        this.transferDestination = new TransferDestination_1.TransferDestination();
+        this.destCurrencyID = null;
+        this.secondReserveID = null;
+        this.destCurrencyID = null;
         if (data != null) {
             if (data.flags != null)
                 this.flags = data.flags;
-            if (data.fee_currency_id != null)
-                this.fee_currency_id = data.fee_currency_id;
-            if (data.fee_amount != null)
-                this.fee_amount = data.fee_amount;
-            if (data.transfer_destination != null)
-                this.transfer_destination = data.transfer_destination;
-            if (data.dest_currency_id != null)
-                this.dest_currency_id = data.dest_currency_id;
-            if (data.second_reserve_id != null)
-                this.second_reserve_id = data.second_reserve_id;
-            if (data.dest_system_id != null)
-                this.dest_system_id = data.dest_system_id;
+            if (data.feeCurrencyID != null)
+                this.feeCurrencyID = data.feeCurrencyID;
+            if (data.feeAmount != null)
+                this.feeAmount = data.feeAmount;
+            if (data.transferDestination != null)
+                this.transferDestination = data.transferDestination;
+            if (data.destCurrencyID != null)
+                this.destCurrencyID = data.destCurrencyID;
+            if (data.secondReserveID != null)
+                this.secondReserveID = data.secondReserveID;
+            if (data.destSystemID != null)
+                this.destSystemID = data.destSystemID;
         }
     }
+    /** @deprecated Use feeCurrencyID instead */
+    get fee_currency_id() { return this.feeCurrencyID; }
+    /** @deprecated Use feeAmount instead */
+    get fee_amount() { return this.feeAmount; }
+    /** @deprecated Use transferDestination instead */
+    get transfer_destination() { return this.transferDestination; }
+    /** @deprecated Use destCurrencyID instead */
+    get dest_currency_id() { return this.destCurrencyID; }
+    /** @deprecated Use secondReserveID instead */
+    get second_reserve_id() { return this.secondReserveID; }
+    /** @deprecated Use destSystemID instead */
+    get dest_system_id() { return this.destSystemID; }
     isReserveToReserve() {
         return !!(this.flags.and(exports.RESERVE_TRANSFER_RESERVE_TO_RESERVE).toNumber());
     }
@@ -101,35 +128,35 @@ class ReserveTransfer extends TokenOutput_1.TokenOutput {
     getByteLength() {
         let length = super.getByteLength();
         length += varint_1.default.encodingLength(this.flags);
-        length += (0, address_1.fromBase58Check)(this.fee_currency_id).hash.length;
-        length += varint_1.default.encodingLength(this.fee_amount);
-        length += this.transfer_destination.getByteLength();
-        length += (0, address_1.fromBase58Check)(this.dest_currency_id).hash.length;
+        length += (0, address_1.fromBase58Check)(this.feeCurrencyID).hash.length;
+        length += varint_1.default.encodingLength(this.feeAmount);
+        length += this.transferDestination.getByteLength();
+        length += (0, address_1.fromBase58Check)(this.destCurrencyID).hash.length;
         if (this.isReserveToReserve()) {
-            length += (0, address_1.fromBase58Check)(this.second_reserve_id).hash.length;
+            length += (0, address_1.fromBase58Check)(this.secondReserveID).hash.length;
         }
         if (this.isCrossSystem()) {
-            length += (0, address_1.fromBase58Check)(this.dest_system_id).hash.length;
+            length += (0, address_1.fromBase58Check)(this.destSystemID).hash.length;
         }
         return length;
     }
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
         const ownOutput = new TokenOutput_1.TokenOutput({
-            values: this.reserve_values,
+            values: this.reserveValues,
             version: this.version
         });
         writer.writeSlice(ownOutput.toBuffer());
         writer.writeVarInt(this.flags);
-        writer.writeSlice((0, address_1.fromBase58Check)(this.fee_currency_id).hash);
-        writer.writeVarInt(this.fee_amount);
-        writer.writeSlice(this.transfer_destination.toBuffer());
-        writer.writeSlice((0, address_1.fromBase58Check)(this.dest_currency_id).hash);
+        writer.writeSlice((0, address_1.fromBase58Check)(this.feeCurrencyID).hash);
+        writer.writeVarInt(this.feeAmount);
+        writer.writeSlice(this.transferDestination.toBuffer());
+        writer.writeSlice((0, address_1.fromBase58Check)(this.destCurrencyID).hash);
         if (this.isReserveToReserve()) {
-            writer.writeSlice((0, address_1.fromBase58Check)(this.second_reserve_id).hash);
+            writer.writeSlice((0, address_1.fromBase58Check)(this.secondReserveID).hash);
         }
         if (this.isCrossSystem()) {
-            writer.writeSlice((0, address_1.fromBase58Check)(this.dest_system_id).hash);
+            writer.writeSlice((0, address_1.fromBase58Check)(this.destSystemID).hash);
         }
         return writer.buffer;
     }
@@ -137,16 +164,16 @@ class ReserveTransfer extends TokenOutput_1.TokenOutput {
         const _offset = super.fromBuffer(buffer, offset);
         const reader = new BufferReader(buffer, _offset);
         this.flags = reader.readVarInt();
-        this.fee_currency_id = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
-        this.fee_amount = reader.readVarInt();
-        this.transfer_destination = new TransferDestination_1.TransferDestination();
-        reader.offset = this.transfer_destination.fromBuffer(buffer, reader.offset);
-        this.dest_currency_id = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+        this.feeCurrencyID = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+        this.feeAmount = reader.readVarInt();
+        this.transferDestination = new TransferDestination_1.TransferDestination();
+        reader.offset = this.transferDestination.fromBuffer(buffer, reader.offset);
+        this.destCurrencyID = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
         if (this.isReserveToReserve()) {
-            this.second_reserve_id = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+            this.secondReserveID = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
         }
         if (this.isCrossSystem()) {
-            this.dest_system_id = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+            this.destSystemID = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
         }
         return reader.offset;
     }

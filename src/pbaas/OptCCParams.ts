@@ -11,32 +11,47 @@ export type VData = Array<Buffer>;
 
 export class OptCCParams implements SerializableEntity {
   version: BigNumber;
-  eval_code: BigNumber;
+  evalCode: BigNumber;
   m: BigNumber;
   n: BigNumber;
   destinations: Array<TxDestination>;
-  vdata: VData;
+  vData: VData;
 
   constructor(data?: {
     version?: BigNumber;
-    eval_code?: BigNumber;
+    evalCode?: BigNumber;
     m?: BigNumber;
     n?: BigNumber;
     destinations?: Array<TxDestination>;
-    vdata?: VData;
+    vData?: VData;
   }) {
+    if (data != null) {
+      const d = data as any;
+      if (Object.prototype.hasOwnProperty.call(d, 'eval_code')) {
+        throw new Error("OptCCParams: snake_case property names are no longer supported. Use 'evalCode' instead of 'eval_code'.");
+      }
+      if (Object.prototype.hasOwnProperty.call(d, 'vdata')) {
+        throw new Error("OptCCParams: Use 'vData' instead of 'vdata'.");
+      }
+    }
     if (data?.version) this.version = data.version;
-    if (data?.eval_code) this.eval_code = data.eval_code;
+    if (data?.evalCode) this.evalCode = data.evalCode;
     if (data?.m) this.m = data.m;
     if (data?.n) this.n = data.n;
     if (data?.destinations) this.destinations = data.destinations;
     else this.destinations = [];
-    if (data?.vdata) this.vdata = data.vdata;
-    else this.vdata = [];
+    if (data?.vData) this.vData = data.vData;
+    else this.vData = [];
   }
 
+  /** @deprecated Use evalCode instead */
+  get eval_code(): BigNumber { return this.evalCode; }
+
+  /** @deprecated Use vData instead */
+  get vdata(): VData { return this.vData; }
+
   getParamObject(): null | Buffer {
-    switch (this.eval_code.toNumber()) {
+    switch (this.evalCode.toNumber()) {
       case EVALS.EVAL_NONE:
         {
           return null
@@ -60,8 +75,8 @@ export class OptCCParams implements SerializableEntity {
       case EVALS.EVAL_FEE_POOL:
       case EVALS.EVAL_NOTARY_SIGNATURE:
         {
-          if (this.vdata.length) {
-            return this.vdata[0]
+          if (this.vData.length) {
+            return this.vData[0]
           } else {
             return null
           }
@@ -75,7 +90,7 @@ export class OptCCParams implements SerializableEntity {
 
   isValid(): boolean {
     var validEval = false
-    switch (this.eval_code.toNumber()) {
+    switch (this.evalCode.toNumber()) {
       case EVALS.EVAL_NONE:
         {
           validEval = true
@@ -100,7 +115,7 @@ export class OptCCParams implements SerializableEntity {
       case EVALS.EVAL_FEE_POOL:
       case EVALS.EVAL_NOTARY_SIGNATURE:
         {
-          validEval = this.vdata && this.vdata.length > 0
+          validEval = this.vData && this.vData.length > 0
         }
     }
 
@@ -109,8 +124,8 @@ export class OptCCParams implements SerializableEntity {
       this.version.gt(new BN(0)) &&
       this.version.lt(new BN(4)) &&
       (
-        (this.version.lt(new BN(3)) && this.eval_code.lt(new BN(2))) || 
-        (this.eval_code.lte(new BN(26)) && this.m.lte(this.n))
+        (this.version.lt(new BN(3)) && this.evalCode.lt(new BN(2))) ||
+        (this.evalCode.lte(new BN(26)) && this.m.lte(this.n))
       )
     )
   }
@@ -148,15 +163,15 @@ export class OptCCParams implements SerializableEntity {
     const chunkReader = new bufferutils.BufferReader(firstChunk, 0);
 
     this.version = new BN(chunkReader.readUInt8());
-    this.eval_code = new BN(chunkReader.readUInt8());
+    this.evalCode = new BN(chunkReader.readUInt8());
     this.m = new BN(chunkReader.readUInt8());
     this.n = new BN(chunkReader.readUInt8());
 
     // now, we should have n keys followed by data objects for later versions, otherwise all keys and one data object
     if (this.version.lte(new BN(0)) ||
         this.version.gt(new BN(3)) ||
-        this.eval_code.lt(new BN(0)) ||
-        this.eval_code.gt(new BN(0x1a)) || // this is the last valid eval code as of version 3
+        this.evalCode.lt(new BN(0)) ||
+        this.evalCode.gt(new BN(0x1a)) || // this is the last valid eval code as of version 3
         (this.version.lt(new BN(3)) && this.n.lt(new BN(1))) ||
         this.n.gt(new BN(4)) ||
         (this.version.lt(new BN(3)) && this.n.gte(new BN(chunks.length))) ||
@@ -169,7 +184,7 @@ export class OptCCParams implements SerializableEntity {
     const limit = this.n.eq(new BN(chunks.length)) ? this.n : this.n.add(new BN(1));
     this.destinations = [];
     let loop: number;
-    
+
     for (loop = 1; this.version && loop < limit.toNumber(); loop++) {
       const currChunk = chunks[loop]
       if (Buffer.isBuffer(currChunk)) {
@@ -182,7 +197,7 @@ export class OptCCParams implements SerializableEntity {
     for (; this.version && loop < chunks.length; loop++) {
       const currChunk = chunks[loop];
 
-      if (Buffer.isBuffer(currChunk)) this.vdata.push(currChunk);
+      if (Buffer.isBuffer(currChunk)) this.vData.push(currChunk);
     }
 
     return offset;
@@ -191,7 +206,7 @@ export class OptCCParams implements SerializableEntity {
   internalGetByteLength(asChunk: boolean): number {
     const chunks = [Buffer.alloc(4)];
     chunks[0][0] = this.version.toNumber();
-    chunks[0][1] = this.eval_code.toNumber();
+    chunks[0][1] = this.evalCode.toNumber();
     chunks[0][2] = this.m.toNumber();
     chunks[0][3] = this.n.toNumber();
 
@@ -199,12 +214,12 @@ export class OptCCParams implements SerializableEntity {
       chunks.push(x.toChunk());
     })
 
-    this.vdata.forEach(x => {
+    this.vData.forEach(x => {
       chunks.push(x);
     })
 
     const buf = bscript.compile(chunks);
-    
+
     return asChunk ? buf.length : (varuint.encodingLength(buf.length) + buf.length);
   }
 
@@ -215,7 +230,7 @@ export class OptCCParams implements SerializableEntity {
   private internalToBuffer(asChunk: boolean): Buffer {
     const chunks = [Buffer.alloc(4)];
     chunks[0][0] = this.version.toNumber();
-    chunks[0][1] = this.eval_code.toNumber();
+    chunks[0][1] = this.evalCode.toNumber();
     chunks[0][2] = this.m.toNumber();
     chunks[0][3] = this.n.toNumber();
 
@@ -223,7 +238,7 @@ export class OptCCParams implements SerializableEntity {
       chunks.push(x.toChunk());
     });
 
-    this.vdata.forEach(x => {
+    this.vData.forEach(x => {
       chunks.push(x);
     });
 

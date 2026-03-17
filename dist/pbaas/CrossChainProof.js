@@ -24,9 +24,16 @@ var CHAIN_OBJECT_TYPES;
 ;
 class CrossChainProof {
     constructor(data) {
+        if (data != null) {
+            if (Object.prototype.hasOwnProperty.call(data, 'chain_objects')) {
+                throw new Error("CrossChainProof: snake_case property names are no longer supported. Use 'chainObjects' instead of 'chain_objects'.");
+            }
+        }
         this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(1, 10);
-        this.chain_objects = (data === null || data === void 0 ? void 0 : data.chain_objects) || [];
+        this.chainObjects = (data === null || data === void 0 ? void 0 : data.chainObjects) || [];
     }
+    /** @deprecated Use chainObjects instead */
+    get chain_objects() { return this.chainObjects; }
     static knownVDXFKeys() {
         const keys = new Map();
         keys.set(VDXF_Data.EvidenceDataKey.vdxfid, CHAIN_OBJECT_TYPES.CHAINOBJ_EVIDENCEDATA);
@@ -35,53 +42,53 @@ class CrossChainProof {
     getByteLength() {
         let byteLength = 0;
         byteLength += 4; // version uint32
-        byteLength += varint_1.default.encodingLength(new bn_js_1.BN(this.chain_objects.length));
-        for (let i = 0; i < this.chain_objects.length; i++) {
+        byteLength += varint_1.default.encodingLength(new bn_js_1.BN(this.chainObjects.length));
+        for (let i = 0; i < this.chainObjects.length; i++) {
             byteLength += 2; // objtype uint16
-            byteLength += this.chain_objects[i].getByteLength();
+            byteLength += this.chainObjects[i].getByteLength();
         }
         return byteLength;
     }
     toBuffer() {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()));
         bufferWriter.writeUInt32(this.version.toNumber());
-        bufferWriter.writeVarInt(new bn_js_1.BN(this.chain_objects.length));
-        for (let i = 0; i < this.chain_objects.length; i++) {
-            bufferWriter.writeUInt16(this.chain_objects[i].type.toNumber());
-            bufferWriter.writeSlice(this.chain_objects[i].toBuffer());
+        bufferWriter.writeVarInt(new bn_js_1.BN(this.chainObjects.length));
+        for (let i = 0; i < this.chainObjects.length; i++) {
+            bufferWriter.writeUInt16(this.chainObjects[i].type.toNumber());
+            bufferWriter.writeSlice(this.chainObjects[i].toBuffer());
         }
         return bufferWriter.buffer;
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
         this.version = new bn_js_1.BN(reader.readUInt32());
-        this.chain_objects = [];
-        const chain_objectsLength = reader.readVarInt().toNumber();
-        for (let i = 0; i < chain_objectsLength; i++) {
+        this.chainObjects = [];
+        const chainObjectsLength = reader.readVarInt().toNumber();
+        for (let i = 0; i < chainObjectsLength; i++) {
             const objType = reader.readUInt16();
             //TODO: Implement all proof types
             if (objType != CHAIN_OBJECT_TYPES.CHAINOBJ_EVIDENCEDATA)
                 throw new Error("Invalid chain object type");
             const obj = new EvidenceData_1.EvidenceData();
             reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            this.chain_objects.push(obj);
+            this.chainObjects.push(obj);
         }
         return reader.offset;
     }
     isValid() {
-        for (let i = 0; i < this.chain_objects.length; i++) {
-            if (!this.chain_objects[i].isValid())
+        for (let i = 0; i < this.chainObjects.length; i++) {
+            if (!this.chainObjects[i].isValid())
                 return false;
         }
-        return this.chain_objects.length > 0;
+        return this.chainObjects.length > 0;
     }
     toJson() {
         const outputChainObjects = [];
         //TODO: Implement all proof types
-        for (let i = 0; i < this.chain_objects.length; i++) {
-            if (!(this.chain_objects[i] instanceof EvidenceData_1.EvidenceData))
+        for (let i = 0; i < this.chainObjects.length; i++) {
+            if (!(this.chainObjects[i] instanceof EvidenceData_1.EvidenceData))
                 throw new Error("Invalid chain object type");
-            outputChainObjects.push({ vdxftype: VDXF_Data.EvidenceDataKey.vdxfid, value: this.chain_objects[i].toJson() });
+            outputChainObjects.push({ vdxftype: VDXF_Data.EvidenceDataKey.vdxfid, value: this.chainObjects[i].toJson() });
         }
         return {
             version: this.version.toString(10),
@@ -105,7 +112,7 @@ class CrossChainProof {
         }
         return new CrossChainProof({
             version: new bn_js_1.BN(data.version, 10),
-            chain_objects: chainObjects
+            chainObjects: chainObjects
         });
     }
 }

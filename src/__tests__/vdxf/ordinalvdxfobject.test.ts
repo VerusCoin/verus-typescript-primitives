@@ -248,7 +248,7 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
       amount: new BN(10000000000, 10),
       destination: new TransferDestination({
         type: DEST_PKH,
-        destination_bytes: fromBase58Check("R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx").hash
+        destinationBytes: fromBase58Check("R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx").hash
       }),
       requestedcurrencyid: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
     });

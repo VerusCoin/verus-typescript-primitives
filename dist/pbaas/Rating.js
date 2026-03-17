@@ -9,14 +9,21 @@ const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class Rating {
     constructor(data = {}) {
+        if (data != null) {
+            if (Object.prototype.hasOwnProperty.call(data, 'trust_level')) {
+                throw new Error("Rating: snake_case property names are no longer supported. Use 'trustLevel' instead of 'trust_level'.");
+            }
+        }
         this.version = data.version || new bn_js_1.BN(1, 10);
-        this.trust_level = data.trust_level || new bn_js_1.BN(0, 10);
+        this.trustLevel = data.trustLevel || new bn_js_1.BN(0, 10);
         this.ratings = new Map(data.ratings || []);
     }
+    /** @deprecated Use trustLevel instead */
+    get trust_level() { return this.trustLevel; }
     getByteLength() {
         let byteLength = 0;
         byteLength += 4; // version uint32
-        byteLength += 1; // trust_level uint8
+        byteLength += 1; // trustLevel uint8
         byteLength += varuint_1.default.encodingLength(this.ratings.size);
         for (const [key, value] of this.ratings) {
             byteLength += vdxf_1.HASH160_BYTE_LENGTH;
@@ -28,7 +35,7 @@ class Rating {
     toBuffer() {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()));
         bufferWriter.writeUInt32(this.version.toNumber());
-        bufferWriter.writeUInt8(this.trust_level.toNumber());
+        bufferWriter.writeUInt8(this.trustLevel.toNumber());
         bufferWriter.writeCompactSize(this.ratings.size);
         const entries = [];
         for (const [key, value] of this.ratings) {
@@ -55,7 +62,7 @@ class Rating {
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
         this.version = new bn_js_1.BN(reader.readUInt32());
-        this.trust_level = new bn_js_1.BN(reader.readUInt8());
+        this.trustLevel = new bn_js_1.BN(reader.readUInt8());
         const count = reader.readCompactSize();
         for (let i = 0; i < count; i++) {
             const hash = reader.readSlice(20);
@@ -67,7 +74,7 @@ class Rating {
     }
     isValid() {
         return this.version.gte(Rating.VERSION_FIRST) && this.version.lte(Rating.VERSION_LAST) &&
-            this.trust_level.gte(Rating.TRUST_FIRST) && this.trust_level.lte(Rating.TRUST_LAST);
+            this.trustLevel.gte(Rating.TRUST_FIRST) && this.trustLevel.lte(Rating.TRUST_LAST);
     }
     toJson() {
         const ratings = {};
@@ -76,7 +83,7 @@ class Rating {
         });
         return {
             version: this.version.toNumber(),
-            trustlevel: this.trust_level.toNumber(),
+            trustlevel: this.trustLevel.toNumber(),
             ratingsmap: ratings
         };
     }
@@ -87,7 +94,7 @@ class Rating {
         }
         return new Rating({
             version: new bn_js_1.BN(json.version),
-            trust_level: new bn_js_1.BN(json.trustlevel),
+            trustLevel: new bn_js_1.BN(json.trustlevel),
             ratings: ratings
         });
     }

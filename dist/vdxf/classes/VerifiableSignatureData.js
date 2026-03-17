@@ -289,15 +289,15 @@ class VerifiableSignatureData {
     toSignatureData(sigHash) {
         return new pbaas_2.SignatureData({
             version: this.version,
-            system_ID: this.systemID.toIAddress(),
-            hash_type: this.hashType,
-            signature_hash: sigHash,
-            identity_ID: this.identityID.toIAddress(),
-            sig_type: pbaas_2.SignatureData.TYPE_VERUSID_DEFAULT,
-            vdxf_keys: this.vdxfKeys,
-            vdxf_key_names: this.vdxfKeyNames,
-            bound_hashes: this.boundHashes,
-            signature_as_vch: this.signatureAsVch
+            systemID: this.systemID.toIAddress(),
+            hashType: this.hashType,
+            signatureHash: sigHash,
+            identityID: this.identityID.toIAddress(),
+            sigType: pbaas_2.SignatureData.TYPE_VERUSID_DEFAULT,
+            vdxfKeys: this.vdxfKeys,
+            vdxfKeyNames: this.vdxfKeyNames,
+            boundHashes: this.boundHashes,
+            signatureAsVch: this.signatureAsVch
         });
     }
     toJson() {

@@ -29,49 +29,78 @@ export const RESERVE_TRANSFER_ARBITRAGE_ONLY = new BN("4000", 16)            // 
 
 export const RESERVE_TRANSFER_DESTINATION = new TransferDestination({
   type: DEST_PKH,
-  destination_bytes: fromBase58Check("RTqQe58LSj2yr5CrwYFwcsAQ1edQwmrkUU").hash
+  destinationBytes: fromBase58Check("RTqQe58LSj2yr5CrwYFwcsAQ1edQwmrkUU").hash
 })
 
 export class ReserveTransfer extends TokenOutput implements SerializableEntity {
   flags: BigNumber;
-  fee_currency_id: string;
-  fee_amount: BigNumber;
-  transfer_destination: TransferDestination;
-  dest_currency_id: string;
-  second_reserve_id: string;
-  dest_system_id: string;
-  
-  constructor (data?: { 
-    values?: CurrencyValueMap, 
-    version?: BigNumber, 
-    flags?: BigNumber, 
-    fee_currency_id?: string, 
-    fee_amount?: BigNumber, 
-    transfer_destination?: TransferDestination, 
-    dest_currency_id?: string, 
-    second_reserve_id?: string, 
-    dest_system_id?: string 
+  feeCurrencyID: string;
+  feeAmount: BigNumber;
+  transferDestination: TransferDestination;
+  destCurrencyID: string;
+  secondReserveID: string;
+  destSystemID: string;
+
+  constructor (data?: {
+    values?: CurrencyValueMap,
+    version?: BigNumber,
+    flags?: BigNumber,
+    feeCurrencyID?: string,
+    feeAmount?: BigNumber,
+    transferDestination?: TransferDestination,
+    destCurrencyID?: string,
+    secondReserveID?: string,
+    destSystemID?: string
   }) {
     super(data)
 
+    if (data != null) {
+      const d = data as any;
+      const snakeDeprecated = ['fee_currency_id', 'fee_amount', 'transfer_destination', 'dest_currency_id', 'second_reserve_id', 'dest_system_id'].filter(k => Object.prototype.hasOwnProperty.call(d, k));
+      if (snakeDeprecated.length > 0) {
+        const map: Record<string, string> = {
+          fee_currency_id: 'feeCurrencyID',
+          fee_amount: 'feeAmount',
+          transfer_destination: 'transferDestination',
+          dest_currency_id: 'destCurrencyID',
+          second_reserve_id: 'secondReserveID',
+          dest_system_id: 'destSystemID',
+        };
+        throw new Error(`ReserveTransfer: snake_case property names are no longer supported. Rename: ${snakeDeprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+      }
+    }
+
     this.flags = RESERVE_TRANSFER_INVALID;
-    this.fee_currency_id = null;
-    this.fee_amount = new BN(0, 10);
-    this.transfer_destination = new TransferDestination();
-    this.dest_currency_id = null;
-    this.second_reserve_id = null;
-    this.dest_currency_id = null;
+    this.feeCurrencyID = null;
+    this.feeAmount = new BN(0, 10);
+    this.transferDestination = new TransferDestination();
+    this.destCurrencyID = null;
+    this.secondReserveID = null;
+    this.destCurrencyID = null;
 
     if (data != null) {
       if (data.flags != null) this.flags = data.flags
-      if (data.fee_currency_id != null) this.fee_currency_id = data.fee_currency_id
-      if (data.fee_amount != null) this.fee_amount = data.fee_amount
-      if (data.transfer_destination != null) this.transfer_destination = data.transfer_destination
-      if (data.dest_currency_id != null) this.dest_currency_id = data.dest_currency_id
-      if (data.second_reserve_id != null) this.second_reserve_id = data.second_reserve_id
-      if (data.dest_system_id != null) this.dest_system_id = data.dest_system_id
+      if (data.feeCurrencyID != null) this.feeCurrencyID = data.feeCurrencyID
+      if (data.feeAmount != null) this.feeAmount = data.feeAmount
+      if (data.transferDestination != null) this.transferDestination = data.transferDestination
+      if (data.destCurrencyID != null) this.destCurrencyID = data.destCurrencyID
+      if (data.secondReserveID != null) this.secondReserveID = data.secondReserveID
+      if (data.destSystemID != null) this.destSystemID = data.destSystemID
     }
   }
+
+  /** @deprecated Use feeCurrencyID instead */
+  get fee_currency_id(): string { return this.feeCurrencyID; }
+  /** @deprecated Use feeAmount instead */
+  get fee_amount(): BigNumber { return this.feeAmount; }
+  /** @deprecated Use transferDestination instead */
+  get transfer_destination(): TransferDestination { return this.transferDestination; }
+  /** @deprecated Use destCurrencyID instead */
+  get dest_currency_id(): string { return this.destCurrencyID; }
+  /** @deprecated Use secondReserveID instead */
+  get second_reserve_id(): string { return this.secondReserveID; }
+  /** @deprecated Use destSystemID instead */
+  get dest_system_id(): string { return this.destSystemID; }
 
   isReserveToReserve() {
     return !!(this.flags.and(RESERVE_TRANSFER_RESERVE_TO_RESERVE).toNumber())
@@ -133,17 +162,17 @@ export class ReserveTransfer extends TokenOutput implements SerializableEntity {
     let length = super.getByteLength();
 
     length += varint.encodingLength(this.flags);
-    length += fromBase58Check(this.fee_currency_id).hash.length;
-    length += varint.encodingLength(this.fee_amount);
-    length += this.transfer_destination.getByteLength();
-    length += fromBase58Check(this.dest_currency_id).hash.length;
+    length += fromBase58Check(this.feeCurrencyID).hash.length;
+    length += varint.encodingLength(this.feeAmount);
+    length += this.transferDestination.getByteLength();
+    length += fromBase58Check(this.destCurrencyID).hash.length;
 
     if (this.isReserveToReserve()) {
-      length += fromBase58Check(this.second_reserve_id).hash.length;
+      length += fromBase58Check(this.secondReserveID).hash.length;
     }
 
     if (this.isCrossSystem()) {
-      length += fromBase58Check(this.dest_system_id).hash.length;
+      length += fromBase58Check(this.destSystemID).hash.length;
     }
 
     return length;
@@ -152,23 +181,23 @@ export class ReserveTransfer extends TokenOutput implements SerializableEntity {
   toBuffer () {
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()))
     const ownOutput = new TokenOutput({
-      values: this.reserve_values,
+      values: this.reserveValues,
       version: this.version
     })
 
     writer.writeSlice(ownOutput.toBuffer())
     writer.writeVarInt(this.flags)
-    writer.writeSlice(fromBase58Check(this.fee_currency_id).hash)
-    writer.writeVarInt(this.fee_amount)
-    writer.writeSlice(this.transfer_destination.toBuffer())
-    writer.writeSlice(fromBase58Check(this.dest_currency_id).hash)
+    writer.writeSlice(fromBase58Check(this.feeCurrencyID).hash)
+    writer.writeVarInt(this.feeAmount)
+    writer.writeSlice(this.transferDestination.toBuffer())
+    writer.writeSlice(fromBase58Check(this.destCurrencyID).hash)
 
     if (this.isReserveToReserve()) {
-      writer.writeSlice(fromBase58Check(this.second_reserve_id).hash)
+      writer.writeSlice(fromBase58Check(this.secondReserveID).hash)
     }
 
     if (this.isCrossSystem()) {
-      writer.writeSlice(fromBase58Check(this.dest_system_id).hash)
+      writer.writeSlice(fromBase58Check(this.destSystemID).hash)
     }
 
     return writer.buffer;
@@ -179,20 +208,20 @@ export class ReserveTransfer extends TokenOutput implements SerializableEntity {
     const reader = new BufferReader(buffer, _offset)
 
     this.flags = reader.readVarInt()
-    this.fee_currency_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
-    this.fee_amount = reader.readVarInt()
+    this.feeCurrencyID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
+    this.feeAmount = reader.readVarInt()
 
-    this.transfer_destination = new TransferDestination()
-    reader.offset = this.transfer_destination.fromBuffer(buffer, reader.offset)
+    this.transferDestination = new TransferDestination()
+    reader.offset = this.transferDestination.fromBuffer(buffer, reader.offset)
 
-    this.dest_currency_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
+    this.destCurrencyID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
 
     if (this.isReserveToReserve()) {
-      this.second_reserve_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
+      this.secondReserveID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
     }
 
     if (this.isCrossSystem()) {
-      this.dest_system_id = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
+      this.destSystemID = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
     }
 
     return reader.offset;

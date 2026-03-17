@@ -430,15 +430,15 @@ export class VerifiableSignatureData implements SerializableEntity {
   toSignatureData(sigHash: Buffer): SignatureData {
     return new SignatureData({
       version: this.version,
-      system_ID: this.systemID.toIAddress(),
-      hash_type: this.hashType,
-      signature_hash: sigHash,
-      identity_ID: this.identityID.toIAddress(),
-      sig_type: SignatureData.TYPE_VERUSID_DEFAULT,
-      vdxf_keys: this.vdxfKeys,
-      vdxf_key_names: this.vdxfKeyNames,
-      bound_hashes: this.boundHashes,
-      signature_as_vch: this.signatureAsVch
+      systemID: this.systemID.toIAddress(),
+      hashType: this.hashType,
+      signatureHash: sigHash,
+      identityID: this.identityID.toIAddress(),
+      sigType: SignatureData.TYPE_VERUSID_DEFAULT,
+      vdxfKeys: this.vdxfKeys,
+      vdxfKeyNames: this.vdxfKeyNames,
+      boundHashes: this.boundHashes,
+      signatureAsVch: this.signatureAsVch
     })
   }
 

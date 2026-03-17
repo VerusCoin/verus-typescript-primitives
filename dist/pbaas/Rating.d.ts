@@ -18,13 +18,15 @@ export declare class Rating implements SerializableEntity {
     static TRUST_FIRST: import("bn.js");
     static TRUST_LAST: import("bn.js");
     version: BigNumber;
-    trust_level: BigNumber;
+    trustLevel: BigNumber;
     ratings: Map<string, Buffer>;
     constructor(data?: {
         version?: BigNumber;
-        trust_level?: BigNumber;
+        trustLevel?: BigNumber;
         ratings?: Map<string, Buffer>;
     });
+    /** @deprecated Use trustLevel instead */
+    get trust_level(): BigNumber;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number): number;

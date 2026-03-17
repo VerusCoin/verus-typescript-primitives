@@ -9,12 +9,12 @@ describe('Serializes and deserializes token output properly', () => {
     const out_frombuf = new TokenOutput()
     out_frombuf.fromBuffer(Buffer.from(multivalue_vdata, 'hex'))
 
-    expect(out_frombuf.reserve_values.value_map.get("iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM")!.toString()).toBe("9728028248208")
-    expect(out_frombuf.reserve_values.value_map.get("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")!.toString()).toBe("90000000")
+    expect(out_frombuf.reserveValues.valueMap.get("iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM")!.toString()).toBe("9728028248208")
+    expect(out_frombuf.reserveValues.valueMap.get("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")!.toString()).toBe("90000000")
 
     const to_outbuf = new TokenOutput({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iECDGNNufPkSa9aHfbnQUjvhRN6YGR8eKM", new BN("9728028248208", 10)],
           ["iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm", new BN("90000000", 10)]
         ]),
@@ -31,11 +31,11 @@ describe('Serializes and deserializes token output properly', () => {
     const out_frombuf = new TokenOutput()
     out_frombuf.fromBuffer(Buffer.from(nonmultivalue_vdata, 'hex'))
 
-    expect(out_frombuf.reserve_values.value_map.get("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")!.toString()).toBe("10000000")
+    expect(out_frombuf.reserveValues.valueMap.get("iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm")!.toString()).toBe("10000000")
 
     const to_outbuf = new TokenOutput({
       values: new CurrencyValueMap({
-        value_map: new Map<string, BigNumber>([
+        valueMap: new Map<string, BigNumber>([
           ["iFZC7A1HnnJGwBmoPjX3mG37RKbjZZLPhm", new BN("10000000", 10)]
         ])
       }),

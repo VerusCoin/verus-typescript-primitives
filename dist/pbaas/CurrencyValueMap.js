@@ -11,18 +11,25 @@ const { BufferReader, BufferWriter } = bufferutils_1.default;
 const numberConversion_1 = require("../utils/numberConversion");
 class CurrencyValueMap {
     constructor(data = {}) {
-        this.value_map = new Map(data.value_map || []);
+        if (data != null) {
+            if (Object.prototype.hasOwnProperty.call(data, 'value_map')) {
+                throw new Error("CurrencyValueMap: snake_case property names are no longer supported. Use 'valueMap' instead of 'value_map'.");
+            }
+        }
+        this.valueMap = new Map(data.valueMap || []);
         this.multivalue = !!(data.multivalue);
     }
+    /** @deprecated Use valueMap instead */
+    get value_map() { return this.valueMap; }
     getNumValues() {
-        return new bn_js_1.BN(this.value_map.size, 10);
+        return new bn_js_1.BN(this.valueMap.size, 10);
     }
     getByteLength() {
         let byteLength = 0;
         if (this.multivalue) {
-            byteLength += varuint_1.default.encodingLength(this.value_map.size);
+            byteLength += varuint_1.default.encodingLength(this.valueMap.size);
         }
-        for (const [key, value] of this.value_map) {
+        for (const [key, value] of this.valueMap) {
             byteLength += vdxf_1.HASH160_BYTE_LENGTH;
             byteLength += this.multivalue ? 8 : varint_1.default.encodingLength(value);
         }
@@ -32,9 +39,9 @@ class CurrencyValueMap {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()));
         if (this.multivalue) {
             const entries = [];
-            bufferWriter.writeCompactSize(this.value_map.size);
+            bufferWriter.writeCompactSize(this.valueMap.size);
             // Convert entries to array with [Buffer, BigNumber]
-            for (const [key, value] of this.value_map) {
+            for (const [key, value] of this.valueMap) {
                 const { hash } = (0, address_1.fromBase58Check)(key);
                 entries.push({ [hash.toString('hex')]: value });
             }
@@ -54,7 +61,7 @@ class CurrencyValueMap {
             }
         }
         else {
-            for (const [key, value] of this.value_map) {
+            for (const [key, value] of this.valueMap) {
                 const { hash } = (0, address_1.fromBase58Check)(key);
                 bufferWriter.writeSlice(hash);
                 bufferWriter.writeVarInt(value);
@@ -75,12 +82,12 @@ class CurrencyValueMap {
             const hash = reader.readSlice(20);
             const value = this.multivalue ? reader.readInt64() : reader.readVarInt();
             const base58Key = (0, address_1.toBase58Check)(hash, vdxf_1.I_ADDR_VERSION);
-            this.value_map.set(base58Key, value);
+            this.valueMap.set(base58Key, value);
         }
         return reader.offset;
     }
     isValid() {
-        for (let [key, value] of this.value_map) {
+        for (let [key, value] of this.valueMap) {
             if (!key || (typeof (key) == 'string' && key.length == 0)) {
                 return false;
             }
@@ -89,19 +96,19 @@ class CurrencyValueMap {
     }
     toJson() {
         const value_map = {};
-        for (let [key, value] of this.value_map) {
+        for (let [key, value] of this.valueMap) {
             value_map[key] = (0, numberConversion_1.bnToDecimal)(value);
         }
         return value_map;
     }
     static fromJson(data, multivalue = false) {
-        const value_map = new Map();
+        const valueMap = new Map();
         // Object.entries preserves the insertion order of the object's keys
         // If the input object is created with insertion order in mind, this will preserve it
         for (const key of Object.keys(data)) {
-            value_map.set(key, (0, numberConversion_1.decimalToBn)(data[key]));
+            valueMap.set(key, (0, numberConversion_1.decimalToBn)(data[key]));
         }
-        return new CurrencyValueMap({ value_map, multivalue });
+        return new CurrencyValueMap({ valueMap, multivalue });
     }
 }
 exports.CurrencyValueMap = CurrencyValueMap;

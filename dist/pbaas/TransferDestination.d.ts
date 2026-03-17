@@ -26,19 +26,29 @@ export type TransferDestinationJson = {
 };
 export declare class TransferDestination implements SerializableEntity {
     type: BigNumber;
-    destination_bytes: Buffer;
-    gateway_id: string;
-    gateway_code: string;
+    destinationBytes: Buffer;
+    gatewayID: string;
+    gatewayCode: string;
     fees: BigNumber;
-    aux_dests: Array<TransferDestination>;
+    auxDests: Array<TransferDestination>;
     constructor(data?: {
         type?: BigNumber;
-        destination_bytes?: Buffer;
-        gateway_id?: string;
-        gateway_code?: string;
+        destinationBytes?: Buffer;
+        gatewayID?: string;
+        gatewayCode?: string;
         fees?: BigNumber;
-        aux_dests?: Array<TransferDestination>;
+        auxDests?: Array<TransferDestination>;
     });
+    /** @deprecated Use destinationBytes instead */
+    get destination_bytes(): Buffer;
+    /** @deprecated Use gatewayID instead */
+    get gatewayId(): string;
+    /** @deprecated Use gatewayID instead */
+    get gateway_id(): string;
+    /** @deprecated Use gatewayCode instead */
+    get gateway_code(): string;
+    /** @deprecated Use auxDests instead */
+    get aux_dests(): Array<TransferDestination>;
     isGateway(): boolean;
     hasAuxDests(): boolean;
     isIAddr(): boolean;

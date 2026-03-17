@@ -19,13 +19,13 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
 
     const prevOutMaster = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(0),
       n: new BN(0)
     })
     const prevOutParams = new OptCCParams({
       version: new BN(3),
-      eval_code: new BN(0),
+      evalCode: new BN(0),
       m: new BN(1),
       n: new BN(1),
       destinations: [new TxDestination(IdentityID.fromAddress(prevOutDest))]

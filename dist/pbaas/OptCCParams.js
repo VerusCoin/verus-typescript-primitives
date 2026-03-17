@@ -9,10 +9,19 @@ const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
 class OptCCParams {
     constructor(data) {
+        if (data != null) {
+            const d = data;
+            if (Object.prototype.hasOwnProperty.call(d, 'eval_code')) {
+                throw new Error("OptCCParams: snake_case property names are no longer supported. Use 'evalCode' instead of 'eval_code'.");
+            }
+            if (Object.prototype.hasOwnProperty.call(d, 'vdata')) {
+                throw new Error("OptCCParams: Use 'vData' instead of 'vdata'.");
+            }
+        }
         if (data === null || data === void 0 ? void 0 : data.version)
             this.version = data.version;
-        if (data === null || data === void 0 ? void 0 : data.eval_code)
-            this.eval_code = data.eval_code;
+        if (data === null || data === void 0 ? void 0 : data.evalCode)
+            this.evalCode = data.evalCode;
         if (data === null || data === void 0 ? void 0 : data.m)
             this.m = data.m;
         if (data === null || data === void 0 ? void 0 : data.n)
@@ -21,13 +30,17 @@ class OptCCParams {
             this.destinations = data.destinations;
         else
             this.destinations = [];
-        if (data === null || data === void 0 ? void 0 : data.vdata)
-            this.vdata = data.vdata;
+        if (data === null || data === void 0 ? void 0 : data.vData)
+            this.vData = data.vData;
         else
-            this.vdata = [];
+            this.vData = [];
     }
+    /** @deprecated Use evalCode instead */
+    get eval_code() { return this.evalCode; }
+    /** @deprecated Use vData instead */
+    get vdata() { return this.vData; }
     getParamObject() {
-        switch (this.eval_code.toNumber()) {
+        switch (this.evalCode.toNumber()) {
             case evals_1.EVALS.EVAL_NONE:
                 {
                     return null;
@@ -51,8 +64,8 @@ class OptCCParams {
             case evals_1.EVALS.EVAL_FEE_POOL:
             case evals_1.EVALS.EVAL_NOTARY_SIGNATURE:
                 {
-                    if (this.vdata.length) {
-                        return this.vdata[0];
+                    if (this.vData.length) {
+                        return this.vData[0];
                     }
                     else {
                         return null;
@@ -66,7 +79,7 @@ class OptCCParams {
     }
     isValid() {
         var validEval = false;
-        switch (this.eval_code.toNumber()) {
+        switch (this.evalCode.toNumber()) {
             case evals_1.EVALS.EVAL_NONE:
                 {
                     validEval = true;
@@ -91,14 +104,14 @@ class OptCCParams {
             case evals_1.EVALS.EVAL_FEE_POOL:
             case evals_1.EVALS.EVAL_NOTARY_SIGNATURE:
                 {
-                    validEval = this.vdata && this.vdata.length > 0;
+                    validEval = this.vData && this.vData.length > 0;
                 }
         }
         return (validEval &&
             this.version.gt(new bn_js_1.BN(0)) &&
             this.version.lt(new bn_js_1.BN(4)) &&
-            ((this.version.lt(new bn_js_1.BN(3)) && this.eval_code.lt(new bn_js_1.BN(2))) ||
-                (this.eval_code.lte(new bn_js_1.BN(26)) && this.m.lte(this.n))));
+            ((this.version.lt(new bn_js_1.BN(3)) && this.evalCode.lt(new bn_js_1.BN(2))) ||
+                (this.evalCode.lte(new bn_js_1.BN(26)) && this.m.lte(this.n))));
     }
     static fromChunk(chunk) {
         const writer = new bufferutils_1.default.BufferWriter(Buffer.alloc(varuint_1.default.encodingLength(chunk.length)), 0);
@@ -123,14 +136,14 @@ class OptCCParams {
         }
         const chunkReader = new bufferutils_1.default.BufferReader(firstChunk, 0);
         this.version = new bn_js_1.BN(chunkReader.readUInt8());
-        this.eval_code = new bn_js_1.BN(chunkReader.readUInt8());
+        this.evalCode = new bn_js_1.BN(chunkReader.readUInt8());
         this.m = new bn_js_1.BN(chunkReader.readUInt8());
         this.n = new bn_js_1.BN(chunkReader.readUInt8());
         // now, we should have n keys followed by data objects for later versions, otherwise all keys and one data object
         if (this.version.lte(new bn_js_1.BN(0)) ||
             this.version.gt(new bn_js_1.BN(3)) ||
-            this.eval_code.lt(new bn_js_1.BN(0)) ||
-            this.eval_code.gt(new bn_js_1.BN(0x1a)) || // this is the last valid eval code as of version 3
+            this.evalCode.lt(new bn_js_1.BN(0)) ||
+            this.evalCode.gt(new bn_js_1.BN(0x1a)) || // this is the last valid eval code as of version 3
             (this.version.lt(new bn_js_1.BN(3)) && this.n.lt(new bn_js_1.BN(1))) ||
             this.n.gt(new bn_js_1.BN(4)) ||
             (this.version.lt(new bn_js_1.BN(3)) && this.n.gte(new bn_js_1.BN(chunks.length))) ||
@@ -152,20 +165,20 @@ class OptCCParams {
         for (; this.version && loop < chunks.length; loop++) {
             const currChunk = chunks[loop];
             if (Buffer.isBuffer(currChunk))
-                this.vdata.push(currChunk);
+                this.vData.push(currChunk);
         }
         return offset;
     }
     internalGetByteLength(asChunk) {
         const chunks = [Buffer.alloc(4)];
         chunks[0][0] = this.version.toNumber();
-        chunks[0][1] = this.eval_code.toNumber();
+        chunks[0][1] = this.evalCode.toNumber();
         chunks[0][2] = this.m.toNumber();
         chunks[0][3] = this.n.toNumber();
         this.destinations.forEach(x => {
             chunks.push(x.toChunk());
         });
-        this.vdata.forEach(x => {
+        this.vData.forEach(x => {
             chunks.push(x);
         });
         const buf = bscript.compile(chunks);
@@ -177,13 +190,13 @@ class OptCCParams {
     internalToBuffer(asChunk) {
         const chunks = [Buffer.alloc(4)];
         chunks[0][0] = this.version.toNumber();
-        chunks[0][1] = this.eval_code.toNumber();
+        chunks[0][1] = this.evalCode.toNumber();
         chunks[0][2] = this.m.toNumber();
         chunks[0][3] = this.n.toNumber();
         this.destinations.forEach(x => {
             chunks.push(x.toChunk());
         });
-        this.vdata.forEach(x => {
+        this.vData.forEach(x => {
             chunks.push(x);
         });
         const scriptStore = bscript.compile(chunks);

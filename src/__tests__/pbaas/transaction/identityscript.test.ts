@@ -57,7 +57,7 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
 
     expect(idscript.masterOptCC.destinations.length).toBe(2);
     expect(idscript.masterOptCC.destinations[1].toAddress()).toBe("i9ps1xDcr7eM66Fko6aTkeuvvBPZFLEXRN");
-    expect(idscript.paramsOptCC.vdata.length).toBe(2);
+    expect(idscript.paramsOptCC.vData.length).toBe(2);
   });
 
   test('(de)serialize a basic identity registration outscript for a revoked ID with tokenized ID control', () => {
@@ -88,9 +88,9 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
     const idscript = IdentityScript.fromIdentity(identity);
 
     expect(idscript.masterOptCC.destinations.length).toBe(3);
-    expect(OptCCParams.fromChunk(idscript.paramsOptCC.vdata[2]).destinations[1].toAddress()).toBe(IDENTITY_RECOVER_ADDR);
-    expect(OptCCParams.fromChunk(idscript.paramsOptCC.vdata[2]).n.toNumber()).toBe(2);
-    expect(idscript.paramsOptCC.vdata.length).toBe(3);
+    expect(OptCCParams.fromChunk(idscript.paramsOptCC.vData[2]).destinations[1].toAddress()).toBe(IDENTITY_RECOVER_ADDR);
+    expect(OptCCParams.fromChunk(idscript.paramsOptCC.vData[2]).n.toNumber()).toBe(2);
+    expect(idscript.paramsOptCC.vData.length).toBe(3);
   });
 
 

@@ -9,13 +9,20 @@ const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 class URLRef {
     constructor(data) {
+        if (data != null) {
+            if (Object.prototype.hasOwnProperty.call(data, 'data_hash')) {
+                throw new Error("URLRef: snake_case property names are no longer supported. Use 'dataHash' instead of 'data_hash'.");
+            }
+        }
         if (data) {
             this.version = data.version || new bn_js_1.BN(2, 10);
             this.url = data.url || "";
             this.flags = data.flags || new bn_js_1.BN(0);
-            this.data_hash = data.data_hash || Buffer.alloc(0);
+            this.dataHash = data.dataHash || Buffer.alloc(0);
         }
     }
+    /** @deprecated Use dataHash instead */
+    get data_hash() { return this.dataHash; }
     getByteLength() {
         let byteLength = 0;
         byteLength += varint_1.default.encodingLength(this.version);
@@ -43,7 +50,7 @@ class URLRef {
             bufferWriter.writeVarInt(this.flags);
             if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
                 // If the FLAG_HAS_HASH is set, we include the data hash
-                bufferWriter.writeSlice(this.data_hash);
+                bufferWriter.writeSlice(this.dataHash);
             }
         }
         bufferWriter.writeVarSlice(Buffer.from(this.url, 'utf8'));
@@ -57,7 +64,7 @@ class URLRef {
             this.flags = reader.readVarInt();
             if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
                 // If the FLAG_HAS_HASH is set, we read the data hash
-                this.data_hash = reader.readSlice(32);
+                this.dataHash = reader.readSlice(32);
             }
         }
         this.url = reader.readVarSlice().toString('utf8');
@@ -72,7 +79,7 @@ class URLRef {
         return {
             version: this.version.toNumber(),
             flags: this.flags ? this.flags.toNumber() : 0,
-            datahash: this.data_hash ? this.data_hash.toString('hex') : "",
+            datahash: this.dataHash ? this.dataHash.toString('hex') : "",
             url: this.url
         };
     }
@@ -80,7 +87,7 @@ class URLRef {
         return new URLRef({
             version: new bn_js_1.BN(data.version, 10),
             flags: data.flags ? new bn_js_1.BN(data.flags, 10) : new bn_js_1.BN(0, 10),
-            data_hash: data.datahash ? Buffer.from(data.datahash, 'hex') : Buffer.alloc(0),
+            dataHash: data.datahash ? Buffer.from(data.datahash, 'hex') : Buffer.alloc(0),
             url: data.url
         });
     }

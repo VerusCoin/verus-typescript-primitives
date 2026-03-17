@@ -22,23 +22,35 @@ export declare const RESERVE_TRANSFER_ARBITRAGE_ONLY: import("bn.js");
 export declare const RESERVE_TRANSFER_DESTINATION: TransferDestination;
 export declare class ReserveTransfer extends TokenOutput implements SerializableEntity {
     flags: BigNumber;
-    fee_currency_id: string;
-    fee_amount: BigNumber;
-    transfer_destination: TransferDestination;
-    dest_currency_id: string;
-    second_reserve_id: string;
-    dest_system_id: string;
+    feeCurrencyID: string;
+    feeAmount: BigNumber;
+    transferDestination: TransferDestination;
+    destCurrencyID: string;
+    secondReserveID: string;
+    destSystemID: string;
     constructor(data?: {
         values?: CurrencyValueMap;
         version?: BigNumber;
         flags?: BigNumber;
-        fee_currency_id?: string;
-        fee_amount?: BigNumber;
-        transfer_destination?: TransferDestination;
-        dest_currency_id?: string;
-        second_reserve_id?: string;
-        dest_system_id?: string;
+        feeCurrencyID?: string;
+        feeAmount?: BigNumber;
+        transferDestination?: TransferDestination;
+        destCurrencyID?: string;
+        secondReserveID?: string;
+        destSystemID?: string;
     });
+    /** @deprecated Use feeCurrencyID instead */
+    get fee_currency_id(): string;
+    /** @deprecated Use feeAmount instead */
+    get fee_amount(): BigNumber;
+    /** @deprecated Use transferDestination instead */
+    get transfer_destination(): TransferDestination;
+    /** @deprecated Use destCurrencyID instead */
+    get dest_currency_id(): string;
+    /** @deprecated Use secondReserveID instead */
+    get second_reserve_id(): string;
+    /** @deprecated Use destSystemID instead */
+    get dest_system_id(): string;
     isReserveToReserve(): boolean;
     isCrossSystem(): boolean;
     isConversion(): boolean;

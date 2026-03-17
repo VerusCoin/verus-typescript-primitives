@@ -77,7 +77,7 @@ describe('Serializes and deserializes dataDescriptors', () => {
 
     const txDest = new TransferDestination({
       type: DEST_ID,
-      destination_bytes: fromBase58Check(destid).hash
+      destinationBytes: fromBase58Check(destid).hash
     });
 
     const destinationKeyMap = new Array<{[key: string]: VdxfUniType}>;

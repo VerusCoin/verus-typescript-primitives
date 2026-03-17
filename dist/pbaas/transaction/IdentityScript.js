@@ -36,49 +36,49 @@ class IdentityScript extends SmartTransactionScript_1.SmartTransactionScript {
         }
         const master = new OptCCParams_1.OptCCParams({
             version: Identity_1.Identity.VERSION_CURRENT,
-            eval_code: new bn_js_1.BN(evals_1.EVALS.EVAL_NONE),
+            evalCode: new bn_js_1.BN(evals_1.EVALS.EVAL_NONE),
             m: new bn_js_1.BN(1),
             n: new bn_js_1.BN(destinationsMaster.length),
             destinations: destinationsMaster,
-            vdata: []
+            vData: []
         });
         const params = new OptCCParams_1.OptCCParams({
             version: Identity_1.Identity.VERSION_CURRENT,
-            eval_code: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_PRIMARY),
+            evalCode: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_PRIMARY),
             m: new bn_js_1.BN(1),
             n: new bn_js_1.BN(1),
             destinations: [
                 new TxDestination_1.TxDestination(IdentityID_1.IdentityID.fromAddress(identityAddress))
             ],
-            vdata: identity.isRevoked() ? [
+            vData: identity.isRevoked() ? [
                 identity.toBuffer(),
                 new OptCCParams_1.OptCCParams({
                     version: Identity_1.Identity.VERSION_CURRENT,
-                    eval_code: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_RECOVER),
+                    evalCode: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_RECOVER),
                     m: new bn_js_1.BN(1),
                     n: new bn_js_1.BN(destinationsRecovery.length),
                     destinations: destinationsRecovery,
-                    vdata: []
+                    vData: []
                 }).toChunk()
             ] : [
                 identity.toBuffer(),
                 new OptCCParams_1.OptCCParams({
                     version: Identity_1.Identity.VERSION_CURRENT,
-                    eval_code: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_REVOKE),
+                    evalCode: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_REVOKE),
                     m: new bn_js_1.BN(1),
                     n: new bn_js_1.BN(1),
                     destinations: [
                         new TxDestination_1.TxDestination(identity.revocationAuthority)
                     ],
-                    vdata: []
+                    vData: []
                 }).toChunk(),
                 new OptCCParams_1.OptCCParams({
                     version: Identity_1.Identity.VERSION_CURRENT,
-                    eval_code: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_RECOVER),
+                    evalCode: new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_RECOVER),
                     m: new bn_js_1.BN(1),
                     n: new bn_js_1.BN(destinationsRecovery.length),
                     destinations: destinationsRecovery,
-                    vdata: []
+                    vData: []
                 }).toChunk()
             ]
         });

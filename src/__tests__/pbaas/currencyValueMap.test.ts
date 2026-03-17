@@ -14,7 +14,7 @@ describe('Serializes and deserializes CurrencyValueMap', () => {
         valueMap.set("i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", new BN(100000));
 
         const c = new CurrencyValueMap({
-            value_map: valueMap,
+            valueMap: valueMap,
         });
 
         const cFromBuf = new CurrencyValueMap();

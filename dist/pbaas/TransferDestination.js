@@ -27,26 +27,50 @@ exports.FLAG_MASK = exports.FLAG_DEST_AUX.add(exports.FLAG_DEST_GATEWAY);
 class TransferDestination {
     constructor(data) {
         this.type = exports.DEST_INVALID;
-        this.destination_bytes = Buffer.alloc(0);
-        this.gateway_id = null;
-        this.gateway_code = null;
+        this.destinationBytes = Buffer.alloc(0);
+        this.gatewayID = null;
+        this.gatewayCode = null;
         this.fees = new bn_js_1.BN(0, 10);
-        this.aux_dests = [];
+        this.auxDests = [];
         if (data != null) {
+            const d = data;
+            const snakeDeprecated = ['destination_bytes', 'gateway_id', 'gateway_code', 'aux_dests'].filter(k => Object.prototype.hasOwnProperty.call(d, k));
+            if (snakeDeprecated.length > 0) {
+                const map = {
+                    destination_bytes: 'destinationBytes',
+                    gateway_id: 'gatewayID',
+                    gateway_code: 'gatewayCode',
+                    aux_dests: 'auxDests',
+                };
+                throw new Error(`TransferDestination: snake_case property names are no longer supported. Rename: ${snakeDeprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
+            }
+            if (Object.prototype.hasOwnProperty.call(d, 'gatewayId')) {
+                throw new Error("TransferDestination: Use fully-capitalised ID suffix. Rename: 'gatewayId' → 'gatewayID'.");
+            }
             if (data.type != null)
                 this.type = data.type;
-            if (data.destination_bytes != null)
-                this.destination_bytes = data.destination_bytes;
-            if (data.gateway_id != null)
-                this.gateway_id = data.gateway_id;
-            if (data.gateway_code != null)
-                this.gateway_code = data.gateway_code;
+            if (data.destinationBytes != null)
+                this.destinationBytes = data.destinationBytes;
+            if (data.gatewayID != null)
+                this.gatewayID = data.gatewayID;
+            if (data.gatewayCode != null)
+                this.gatewayCode = data.gatewayCode;
             if (data.fees != null)
                 this.fees = data.fees;
-            if (data.aux_dests != null)
-                this.aux_dests = data.aux_dests;
+            if (data.auxDests != null)
+                this.auxDests = data.auxDests;
         }
     }
+    /** @deprecated Use destinationBytes instead */
+    get destination_bytes() { return this.destinationBytes; }
+    /** @deprecated Use gatewayID instead */
+    get gatewayId() { return this.gatewayID; }
+    /** @deprecated Use gatewayID instead */
+    get gateway_id() { return this.gatewayID; }
+    /** @deprecated Use gatewayCode instead */
+    get gateway_code() { return this.gatewayCode; }
+    /** @deprecated Use auxDests instead */
+    get aux_dests() { return this.auxDests; }
     isGateway() {
         return !!(this.type.and(exports.FLAG_DEST_GATEWAY).toNumber());
     }
@@ -67,13 +91,13 @@ class TransferDestination {
     }
     getAddressString() {
         if (this.isPKH()) {
-            return (0, address_1.toBase58Check)(this.destination_bytes, vdxf_1.R_ADDR_VERSION);
+            return (0, address_1.toBase58Check)(this.destinationBytes, vdxf_1.R_ADDR_VERSION);
         }
         else if (this.isIAddr()) {
-            return (0, address_1.toBase58Check)(this.destination_bytes, vdxf_1.I_ADDR_VERSION);
+            return (0, address_1.toBase58Check)(this.destinationBytes, vdxf_1.I_ADDR_VERSION);
         }
         else if (this.isETHAccount()) {
-            return "0x" + this.destination_bytes.toString('hex');
+            return "0x" + this.destinationBytes.toString('hex');
         }
         else {
             throw new Error("Cannot get address for unsupported transfer destination type.");
@@ -82,12 +106,12 @@ class TransferDestination {
     getByteLength() {
         let length = 0;
         length += 1; // type
-        length += varuint_1.default.encodingLength(this.destination_bytes.length); // destination_bytes compact size
-        length += this.destination_bytes.length; // destination_bytes
+        length += varuint_1.default.encodingLength(this.destinationBytes.length); // destinationBytes compact size
+        length += this.destinationBytes.length; // destinationBytes
         if (this.isGateway()) {
-            length += (0, address_1.fromBase58Check)(this.gateway_id).hash.length; // gateway_id
-            if (this.gateway_code) {
-                length += (0, address_1.fromBase58Check)(this.gateway_code).hash.length; // gateway_code
+            length += (0, address_1.fromBase58Check)(this.gatewayID).hash.length; // gatewayId
+            if (this.gatewayCode) {
+                length += (0, address_1.fromBase58Check)(this.gatewayCode).hash.length; // gatewayCode
             }
             else {
                 length += vdxf_1.HASH160_BYTE_LENGTH;
@@ -95,8 +119,8 @@ class TransferDestination {
             length += 8; // fees int64
         }
         if (this.hasAuxDests()) {
-            length += varuint_1.default.encodingLength(this.aux_dests.length); // aux dests compact size
-            for (const dest of this.aux_dests) {
+            length += varuint_1.default.encodingLength(this.auxDests.length); // aux dests compact size
+            for (const dest of this.auxDests) {
                 const destLength = dest.getByteLength();
                 length += varuint_1.default.encodingLength(destLength); // one aux dest compact size
                 length += destLength; // one aux dest compact size
@@ -107,11 +131,11 @@ class TransferDestination {
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
         writer.writeUInt8(this.type.toNumber());
-        writer.writeVarSlice(this.destination_bytes);
+        writer.writeVarSlice(this.destinationBytes);
         if (this.isGateway()) {
-            writer.writeSlice((0, address_1.fromBase58Check)(this.gateway_id).hash);
-            if (this.gateway_code) {
-                writer.writeSlice((0, address_1.fromBase58Check)(this.gateway_code).hash);
+            writer.writeSlice((0, address_1.fromBase58Check)(this.gatewayID).hash);
+            if (this.gatewayCode) {
+                writer.writeSlice((0, address_1.fromBase58Check)(this.gatewayCode).hash);
             }
             else {
                 writer.writeSlice(Buffer.alloc(vdxf_1.HASH160_BYTE_LENGTH));
@@ -119,18 +143,18 @@ class TransferDestination {
             writer.writeInt64(this.fees);
         }
         if (this.hasAuxDests()) {
-            writer.writeCompactSize(this.aux_dests.length);
-            this.aux_dests.forEach((aux_dest) => writer.writeVarSlice(aux_dest.toBuffer()));
+            writer.writeCompactSize(this.auxDests.length);
+            this.auxDests.forEach((auxDest) => writer.writeVarSlice(auxDest.toBuffer()));
         }
         return writer.buffer;
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
         this.type = new bn_js_1.BN(reader.readUInt8(), 10);
-        this.destination_bytes = reader.readVarSlice();
+        this.destinationBytes = reader.readVarSlice();
         if (this.isGateway()) {
-            this.gateway_id = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
-            this.gateway_code = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+            this.gatewayID = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+            this.gatewayCode = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
             this.fees = reader.readInt64();
         }
         if (this.hasAuxDests()) {
@@ -138,7 +162,7 @@ class TransferDestination {
             for (let i = 0; i < numAuxDests; i++) {
                 const newAuxDest = new TransferDestination();
                 newAuxDest.fromBuffer(reader.readVarSlice());
-                this.aux_dests.push(newAuxDest);
+                this.auxDests.push(newAuxDest);
             }
         }
         return reader.offset;
@@ -169,10 +193,10 @@ class TransferDestination {
         }
         return new TransferDestination({
             type: type,
-            destination_bytes: destination,
-            gateway_code: data.gatewaycode,
+            destinationBytes: destination,
+            gatewayCode: data.gatewaycode,
             fees: fees,
-            aux_dests: auxDests
+            auxDests: auxDests
         });
     }
     toJson() {
@@ -192,18 +216,18 @@ class TransferDestination {
                 throw new Error("Unknown destination type: " + this.typeNoFlags() + "\nNote: Only DEST_PKH, DEST_SH, DEST_ID, DEST_QUANTUM and DEST_ETH are supported for now.");
         }
         if (this.hasAuxDests()) {
-            destVal.auxdests = this.aux_dests.map(auxDest => auxDest.toJson());
+            destVal.auxdests = this.auxDests.map(auxDest => auxDest.toJson());
         }
         if (this.isGateway()) {
-            destVal.gateway = this.gateway_id;
+            destVal.gateway = this.gatewayID;
         }
         return destVal;
     }
     isValid() {
         // verify aux dests
-        let valid = (((this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && this.aux_dests.length > 0) || (!(this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && !(this.aux_dests.length > 0)));
-        if (valid && this.aux_dests && this.aux_dests.length > 0) {
-            for (let i = 0; i < this.aux_dests.length; i++) {
+        let valid = (((this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && this.auxDests.length > 0) || (!(this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && !(this.auxDests.length > 0)));
+        if (valid && this.auxDests && this.auxDests.length > 0) {
+            for (let i = 0; i < this.auxDests.length; i++) {
                 if (!this.getAuxDest(i).isValid()) {
                     valid = false;
                     break;
@@ -213,12 +237,12 @@ class TransferDestination {
         return !!(valid &&
             !this.typeNoFlags().eq(exports.DEST_INVALID) &&
             this.typeNoFlags().lte(exports.LAST_VALID_TYPE_NO_FLAGS) &&
-            (((this.type.and(exports.FLAG_DEST_GATEWAY).eq(new bn_js_1.BN(0))) && (this.gateway_id == null)) || this.gateway_id != null));
+            (((this.type.and(exports.FLAG_DEST_GATEWAY).eq(new bn_js_1.BN(0))) && (this.gatewayID == null)) || this.gatewayID != null));
     }
     getAuxDest(destNum) {
-        const retVal = this.aux_dests[destNum];
-        if (destNum >= 0 && destNum < this.aux_dests.length) {
-            if (retVal.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0)) || retVal.aux_dests.length > 0) {
+        const retVal = this.auxDests[destNum];
+        if (destNum >= 0 && destNum < this.auxDests.length) {
+            if (retVal.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0)) || retVal.auxDests.length > 0) {
                 retVal.type = exports.DEST_INVALID;
             }
             // no gateways or flags, only simple destinations work

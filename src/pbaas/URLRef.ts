@@ -27,18 +27,27 @@ export class URLRef implements SerializableEntity {
 
   version: BigNumber;
   flags: BigNumber;
-  data_hash: Buffer;
+  dataHash: Buffer;
   url: string;
 
-  constructor(data?: { version?: BigNumber, url?: string, flags?: BigNumber, data_hash?: Buffer }) {
+  constructor(data?: { version?: BigNumber, url?: string, flags?: BigNumber, dataHash?: Buffer }) {
+
+    if (data != null) {
+      if (Object.prototype.hasOwnProperty.call(data, 'data_hash')) {
+        throw new Error("URLRef: snake_case property names are no longer supported. Use 'dataHash' instead of 'data_hash'.");
+      }
+    }
 
     if (data) {
       this.version = data.version || new BN(2, 10);
       this.url = data.url || "";
       this.flags = data.flags || new BN(0);
-      this.data_hash = data.data_hash || Buffer.alloc(0);
+      this.dataHash = data.dataHash || Buffer.alloc(0);
     }
   }
+
+  /** @deprecated Use dataHash instead */
+  get data_hash(): Buffer { return this.dataHash; }
 
   getByteLength() {
     let byteLength = 0;
@@ -74,7 +83,7 @@ export class URLRef implements SerializableEntity {
 
       if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
         // If the FLAG_HAS_HASH is set, we include the data hash
-        bufferWriter.writeSlice(this.data_hash);
+        bufferWriter.writeSlice(this.dataHash);
       }
     }
     bufferWriter.writeVarSlice(Buffer.from(this.url, 'utf8'));
@@ -92,9 +101,9 @@ export class URLRef implements SerializableEntity {
 
       if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
         // If the FLAG_HAS_HASH is set, we read the data hash
-        this.data_hash = reader.readSlice(32);
-      } 
-    } 
+        this.dataHash = reader.readSlice(32);
+      }
+    }
 
     this.url = reader.readVarSlice().toString('utf8');
 
@@ -111,7 +120,7 @@ export class URLRef implements SerializableEntity {
     return {
       version: this.version.toNumber(),
       flags: this.flags ? this.flags.toNumber() : 0,
-      datahash: this.data_hash ? this.data_hash.toString('hex') : "",
+      datahash: this.dataHash ? this.dataHash.toString('hex') : "",
       url: this.url
     }
   }
@@ -120,7 +129,7 @@ export class URLRef implements SerializableEntity {
     return new URLRef({
       version: new BN(data.version, 10),
       flags: data.flags ? new BN(data.flags, 10) : new BN(0, 10),
-      data_hash: data.datahash ? Buffer.from(data.datahash, 'hex') : Buffer.alloc(0),
+      dataHash: data.datahash ? Buffer.from(data.datahash, 'hex') : Buffer.alloc(0),
       url: data.url
     });
   }

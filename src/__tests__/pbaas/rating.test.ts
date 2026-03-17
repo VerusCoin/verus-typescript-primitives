@@ -13,7 +13,7 @@ describe('Serializes and deserializes Rating', () => {
 
         const r = new Rating({
         version: Rating.VERSION_CURRENT,
-        trust_level: Rating.TRUST_APPROVED,
+        trustLevel: Rating.TRUST_APPROVED,
         ratings
         });
         const rFromBuf = new Rating();
