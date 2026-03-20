@@ -17,6 +17,7 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
         super(envelope);
         this.responseURIs = envelope === null || envelope === void 0 ? void 0 : envelope.responseURIs;
         this.encryptResponseToAddress = envelope === null || envelope === void 0 ? void 0 : envelope.encryptResponseToAddress;
+        this.preferredHandler = envelope === null || envelope === void 0 ? void 0 : envelope.preferredHandler;
         this.setFlags();
     }
     hasResponseURIs() {
@@ -25,11 +26,17 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
     hasEncryptResponseToAddress() {
         return !!(this.flags.and(GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS).toNumber());
     }
+    hasPreferredHandler() {
+        return !!(this.flags.and(GenericRequest.FLAG_HAS_PREFERRED_HANDLER).toNumber());
+    }
     setHasResponseURIs() {
         this.flags = this.flags.or(GenericRequest.FLAG_HAS_RESPONSE_URIS);
     }
     setHasEncryptResponseToAddress() {
         this.flags = this.flags.or(GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS);
+    }
+    setHasPreferredHandler() {
+        this.flags = this.flags.or(GenericRequest.FLAG_HAS_PREFERRED_HANDLER);
     }
     setFlags() {
         super.setFlags();
@@ -37,6 +44,8 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
             this.setHasResponseURIs();
         if (this.encryptResponseToAddress)
             this.setHasEncryptResponseToAddress();
+        if (this.preferredHandler != null)
+            this.setHasPreferredHandler();
     }
     getByteLengthOptionalSig(includeSig = true, forHashing = false) {
         let length = super.getByteLengthOptionalSig(includeSig, forHashing);
@@ -48,6 +57,9 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
         }
         if (this.hasEncryptResponseToAddress()) {
             length += this.encryptResponseToAddress.getByteLength();
+        }
+        if (this.hasPreferredHandler()) {
+            length += varuint_1.default.encodingLength(this.preferredHandler);
         }
         return length;
     }
@@ -63,6 +75,9 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
         }
         if (this.hasEncryptResponseToAddress()) {
             writer.writeSlice(this.encryptResponseToAddress.toBuffer());
+        }
+        if (this.hasPreferredHandler()) {
+            writer.writeCompactSize(this.preferredHandler);
         }
         return writer.buffer;
     }
@@ -84,6 +99,9 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
             this.encryptResponseToAddress = new SaplingPaymentAddress_1.SaplingPaymentAddress();
             reader.offset = this.encryptResponseToAddress.fromBuffer(reader.buffer, reader.offset);
         }
+        if (this.hasPreferredHandler()) {
+            this.preferredHandler = reader.readCompactSize();
+        }
         return reader.offset;
     }
     toJson() {
@@ -93,6 +111,9 @@ class GenericRequest extends GenericEnvelope_1.GenericEnvelope {
         }
         if (this.hasEncryptResponseToAddress()) {
             parentJson["encryptresponsetoaddress"] = this.encryptResponseToAddress.toAddressString();
+        }
+        if (this.hasPreferredHandler()) {
+            parentJson["preferredhandler"] = this.preferredHandler;
         }
         return parentJson;
     }
@@ -135,3 +156,4 @@ GenericRequest.FLAG_HAS_SALT = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_SALT;
 GenericRequest.FLAG_HAS_APP_OR_DELEGATED_ID = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID;
 GenericRequest.FLAG_HAS_RESPONSE_URIS = new bn_js_1.BN(128, 10);
 GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS = new bn_js_1.BN(256, 10);
+GenericRequest.FLAG_HAS_PREFERRED_HANDLER = new bn_js_1.BN(512, 10);

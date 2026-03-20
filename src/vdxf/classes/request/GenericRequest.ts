@@ -1,6 +1,6 @@
 import { BN } from 'bn.js';
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
-import { GenericEnvelope, GenericEnvelopeInterface, GenericEnvelopeJson } from "../envelope/GenericEnvelope";
+import { GenericEnvelope, GenericEnvelopeInterface, GenericEnvelopeJson, GenericRequestHandlerIdentifier } from "../envelope/GenericEnvelope";
 import { SaplingPaymentAddress } from '../../../pbaas/SaplingPaymentAddress';
 import bufferutils from '../../../utils/bufferutils';
 import base64url from 'base64url';
@@ -11,16 +11,19 @@ import varuint from '../../../utils/varuint';
 export type GenericRequestJson = GenericEnvelopeJson & {
   responseuris?: Array<ResponseURIJson>;
   encryptresponsetoaddress?: string;
+  preferredhandler?: number;
 };
 
 export type GenericRequestInterface = GenericEnvelopeInterface & {
   responseURIs?: Array<ResponseURI>;
   encryptResponseToAddress?: SaplingPaymentAddress;
+  preferredHandler?: GenericRequestHandlerIdentifier;
 }
 
 export class GenericRequest extends GenericEnvelope implements SerializableEntity {
   responseURIs?: Array<ResponseURI>; 
   encryptResponseToAddress?: SaplingPaymentAddress;
+  preferredHandler: GenericRequestHandlerIdentifier;
 
   static VERSION_CURRENT = new BN(1, 10);
   static VERSION_FIRSTVALID = new BN(1, 10);
@@ -36,6 +39,7 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
 
   static FLAG_HAS_RESPONSE_URIS = new BN(128, 10);
   static FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS = new BN(256, 10);
+  static FLAG_HAS_PREFERRED_HANDLER = new BN(512, 10);
 
   constructor(
     envelope: GenericRequestInterface = {
@@ -47,6 +51,7 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
 
     this.responseURIs = envelope?.responseURIs;
     this.encryptResponseToAddress = envelope?.encryptResponseToAddress;
+    this.preferredHandler = envelope?.preferredHandler;
 
     this.setFlags();
   }
@@ -59,6 +64,10 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
     return !!(this.flags.and(GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS).toNumber());
   }
 
+  hasPreferredHandler() {
+    return !!(this.flags.and(GenericRequest.FLAG_HAS_PREFERRED_HANDLER).toNumber());
+  }
+
   setHasResponseURIs() {
     this.flags = this.flags.or(GenericRequest.FLAG_HAS_RESPONSE_URIS);
   }
@@ -67,11 +76,16 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
     this.flags = this.flags.or(GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS);
   }
 
+  setHasPreferredHandler() {
+    this.flags = this.flags.or(GenericRequest.FLAG_HAS_PREFERRED_HANDLER);
+  }
+
   setFlags() {
     super.setFlags();
 
     if (this.responseURIs) this.setHasResponseURIs();
     if (this.encryptResponseToAddress) this.setHasEncryptResponseToAddress();
+    if (this.preferredHandler != null) this.setHasPreferredHandler();
   }
 
   protected getByteLengthOptionalSig(includeSig = true, forHashing = false): number {
@@ -87,6 +101,10 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
 
     if (this.hasEncryptResponseToAddress()) {
       length += this.encryptResponseToAddress.getByteLength();
+    }
+
+    if (this.hasPreferredHandler()) {
+      length += varuint.encodingLength(this.preferredHandler);
     }
 
     return length;
@@ -111,6 +129,10 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
 
     if (this.hasEncryptResponseToAddress()) {
       writer.writeSlice(this.encryptResponseToAddress.toBuffer());
+    }
+
+    if (this.hasPreferredHandler()) {
+      writer.writeCompactSize(this.preferredHandler);
     }
 
     return writer.buffer;
@@ -140,6 +162,10 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
       reader.offset = this.encryptResponseToAddress.fromBuffer(reader.buffer, reader.offset);
     }
 
+    if (this.hasPreferredHandler()) {
+      this.preferredHandler = reader.readCompactSize() as GenericRequestHandlerIdentifier;
+    }
+
     return reader.offset;
   }
 
@@ -152,6 +178,10 @@ export class GenericRequest extends GenericEnvelope implements SerializableEntit
 
     if (this.hasEncryptResponseToAddress()) {
       parentJson["encryptresponsetoaddress"] = this.encryptResponseToAddress.toAddressString();
+    }
+
+    if (this.hasPreferredHandler()) {
+      parentJson["preferredhandler"] = this.preferredHandler;
     }
 
     return parentJson;

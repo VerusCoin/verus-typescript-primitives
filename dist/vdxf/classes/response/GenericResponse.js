@@ -13,6 +13,7 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
     }) {
         super(envelope);
         this.requestHash = envelope.requestHash;
+        this.handledBy = envelope.handledBy;
         this.setFlags();
         this.requestHashType = envelope.requestHashType;
         if (this.requestHashType == null && this.hasRequestHash()) {
@@ -22,13 +23,21 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
     hasRequestHash() {
         return !!(this.flags.and(GenericResponse.FLAG_HAS_REQUEST_HASH).toNumber());
     }
+    hasHandledBy() {
+        return !!(this.flags.and(GenericResponse.FLAG_HAS_HANDLED_BY).toNumber());
+    }
     setHasRequestHash() {
         this.flags = this.flags.or(GenericResponse.FLAG_HAS_REQUEST_HASH);
+    }
+    setHasHandledBy() {
+        this.flags = this.flags.or(GenericResponse.FLAG_HAS_HANDLED_BY);
     }
     setFlags() {
         super.setFlags();
         if (this.requestHash)
             this.setHasRequestHash();
+        if (this.handledBy != null)
+            this.setHasHandledBy();
     }
     getByteLengthOptionalSig(includeSig = true, forHashing = false) {
         let length = super.getByteLengthOptionalSig(includeSig, forHashing);
@@ -37,6 +46,9 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
             length += varuint_1.default.encodingLength(this.requestHashType.toNumber());
             length += varuint_1.default.encodingLength(this.requestHash.length);
             length += hashLen;
+        }
+        if (this.hasHandledBy()) {
+            length += varuint_1.default.encodingLength(this.handledBy);
         }
         return length;
     }
@@ -47,6 +59,9 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
         if (this.hasRequestHash()) {
             writer.writeCompactSize(this.requestHashType.toNumber());
             writer.writeVarSlice(this.requestHash);
+        }
+        if (this.hasHandledBy()) {
+            writer.writeCompactSize(this.handledBy);
         }
         return writer.buffer;
     }
@@ -59,6 +74,9 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
             this.requestHashType = new bn_js_1.BN(reader.readCompactSize());
             this.requestHash = reader.readVarSlice();
         }
+        if (this.hasHandledBy()) {
+            this.handledBy = reader.readCompactSize();
+        }
         return reader.offset;
     }
     toJson() {
@@ -66,6 +84,9 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
         if (this.hasRequestHash()) {
             parentJson["requesthash"] = this.requestHash.toString('hex');
             parentJson["requesthashtype"] = this.requestHashType.toNumber();
+        }
+        if (this.hasHandledBy()) {
+            parentJson["handledby"] = this.handledBy;
         }
         return parentJson;
     }
@@ -82,3 +103,4 @@ GenericResponse.FLAG_IS_TESTNET = GenericEnvelope_1.GenericEnvelope.FLAG_IS_TEST
 GenericResponse.FLAG_HAS_SALT = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_SALT;
 GenericResponse.FLAG_HAS_APP_OR_DELEGATED_ID = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID;
 GenericResponse.FLAG_HAS_REQUEST_HASH = new bn_js_1.BN(128, 10);
+GenericResponse.FLAG_HAS_HANDLED_BY = new bn_js_1.BN(256, 10);

@@ -358,6 +358,86 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
     expect(parsed.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
   });
 
+  it('round trips with preferredHandler set to 0', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericRequest({ details: [detail], preferredHandler: 0 });
+
+    expect(req.hasPreferredHandler()).toBe(true);
+    expect(req.preferredHandler).toBe(0);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasPreferredHandler()).toBe(true);
+    expect(round.preferredHandler).toBe(0);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('round trips with preferredHandler set to 1', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericRequest({ details: [detail], preferredHandler: 1 });
+
+    expect(req.hasPreferredHandler()).toBe(true);
+    expect(req.preferredHandler).toBe(1);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasPreferredHandler()).toBe(true);
+    expect(round.preferredHandler).toBe(1);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+
+    const json = round.toJson();
+    expect(json.preferredhandler).toBe(1);
+  });
+
+  it('round trips with preferredHandler and other optional fields', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('abcd', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const saplingAddr = "zs1wczplx4kegw32h8g0f7xwl57p5tvnprwdmnzmdnsw50chcl26f7tws92wk2ap03ykaq6jyyztfa";
+
+    const req = new GenericRequest({
+      details: [detail],
+      createdAt: new BN(9999),
+      encryptResponseToAddress: SaplingPaymentAddress.fromAddressString(saplingAddr),
+      responseURIs: [ResponseURI.fromUriString("https://verus.io/callback", ResponseURI.TYPE_POST)],
+      preferredHandler: 1
+    });
+
+    expect(req.hasPreferredHandler()).toBe(true);
+    expect(req.hasResponseURIs()).toBe(true);
+    expect(req.hasEncryptResponseToAddress()).toBe(true);
+    expect(req.hasCreatedAt()).toBe(true);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasPreferredHandler()).toBe(true);
+    expect(round.preferredHandler).toBe(1);
+    expect(round.hasResponseURIs()).toBe(true);
+    expect(round.responseURIs![0].getUriString()).toBe("https://verus.io/callback");
+    expect(round.hasEncryptResponseToAddress()).toBe(true);
+    expect(round.encryptResponseToAddress?.toAddressString()).toBe(saplingAddr);
+    expect(round.createdAt?.toString()).toEqual("9999");
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('does not set preferredHandler flag when preferredHandler is undefined', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericRequest({ details: [detail] });
+
+    expect(req.hasPreferredHandler()).toBe(false);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasPreferredHandler()).toBe(false);
+    expect(round.preferredHandler).toBeUndefined();
+  });
+
   it('fromBuffer with empty buffer should throw', () => {
     const empty = Buffer.alloc(0);
     const req = new GenericRequest();

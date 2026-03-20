@@ -207,6 +207,85 @@ describe('GenericResponse — buffer / URI / QR operations', () => {
     expect(parsed.details[0].toJson()).toEqual(detail.toJson());
   });
 
+  it('round trips with handledBy set to 0', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericResponse({ details: [detail], handledBy: 0 });
+
+    expect(req.hasHandledBy()).toBe(true);
+    expect(req.handledBy).toBe(0);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasHandledBy()).toBe(true);
+    expect(round.handledBy).toBe(0);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('round trips with handledBy set to 1', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericResponse({ details: [detail], handledBy: 1 });
+
+    expect(req.hasHandledBy()).toBe(true);
+    expect(req.handledBy).toBe(1);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasHandledBy()).toBe(true);
+    expect(round.handledBy).toBe(1);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+
+    const json = round.toJson();
+    expect(json.handledby).toBe(1);
+  });
+
+  it('round trips with handledBy and requestHash', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('abcd', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const requestHash = Buffer.from('abcdabcdabcdabcdabcdabcdabcdabcdabcdabcd', 'hex');
+    const requestHashType = HASH_TYPE_SHA256;
+
+    const req = new GenericResponse({
+      details: [detail],
+      createdAt: new BN(9999),
+      requestHash,
+      requestHashType,
+      handledBy: 1
+    });
+
+    expect(req.hasHandledBy()).toBe(true);
+    expect(req.hasRequestHash()).toBe(true);
+    expect(req.hasCreatedAt()).toBe(true);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasHandledBy()).toBe(true);
+    expect(round.handledBy).toBe(1);
+    expect(round.hasRequestHash()).toBe(true);
+    expect(round.requestHash?.toString('hex')).toBe(requestHash.toString('hex'));
+    expect(round.requestHashType?.toNumber()).toBe(requestHashType.toNumber());
+    expect(round.createdAt?.toString()).toEqual("9999");
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('does not set handledBy flag when handledBy is undefined', () => {
+    const detail = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('cafebabe', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const req = new GenericResponse({ details: [detail] });
+
+    expect(req.hasHandledBy()).toBe(false);
+
+    const round = roundTripBuffer(req);
+    expect(round.hasHandledBy()).toBe(false);
+    expect(round.handledBy).toBeUndefined();
+  });
+
   it('fromBuffer with empty buffer should throw', () => {
     const empty = Buffer.alloc(0);
     const req = new GenericResponse();

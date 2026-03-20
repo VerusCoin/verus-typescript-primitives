@@ -1,6 +1,6 @@
 import { BN } from 'bn.js';
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
-import { GenericEnvelope, GenericEnvelopeInterface, GenericEnvelopeJson } from "../envelope/GenericEnvelope";
+import { GenericEnvelope, GenericEnvelopeInterface, GenericEnvelopeJson, GenericRequestHandlerIdentifier } from "../envelope/GenericEnvelope";
 import bufferutils from '../../../utils/bufferutils';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { EHashTypes } from '../../../pbaas/DataDescriptor';
@@ -8,17 +8,20 @@ import varuint from '../../../utils/varuint';
 
 export type GenericResponseJson = GenericEnvelopeJson & {
   requesthash?: string,
-  requesthashtype?: number
+  requesthashtype?: number,
+  handledby?: number
 }
 
 export type GenericResponseInterface = GenericEnvelopeInterface & {
   requestHash?: Buffer,
-  requestHashType?: BigNumber
+  requestHashType?: BigNumber,
+  handledBy?: GenericRequestHandlerIdentifier
 }
 
 export class GenericResponse extends GenericEnvelope implements SerializableEntity {
   requestHash?: Buffer;
   requestHashType?: BigNumber;
+  handledBy: GenericRequestHandlerIdentifier;
 
   static VERSION_CURRENT = new BN(1, 10);
   static VERSION_FIRSTVALID = new BN(1, 10);
@@ -31,7 +34,9 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
   static FLAG_IS_TESTNET = GenericEnvelope.FLAG_IS_TESTNET;
   static FLAG_HAS_SALT = GenericEnvelope.FLAG_HAS_SALT;
   static FLAG_HAS_APP_OR_DELEGATED_ID = GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID;
+
   static FLAG_HAS_REQUEST_HASH = new BN(128, 10);
+  static FLAG_HAS_HANDLED_BY = new BN(256, 10);
 
   constructor(
     envelope: GenericResponseInterface = {
@@ -42,6 +47,7 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
     super(envelope)
 
     this.requestHash = envelope.requestHash;
+    this.handledBy = envelope.handledBy;
 
     this.setFlags();
 
@@ -56,14 +62,23 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
     return !!(this.flags.and(GenericResponse.FLAG_HAS_REQUEST_HASH).toNumber());
   }
 
+  hasHandledBy() {
+    return !!(this.flags.and(GenericResponse.FLAG_HAS_HANDLED_BY).toNumber());
+  }
+
   setHasRequestHash() {
     this.flags = this.flags.or(GenericResponse.FLAG_HAS_REQUEST_HASH);
+  }
+
+  setHasHandledBy() {
+    this.flags = this.flags.or(GenericResponse.FLAG_HAS_HANDLED_BY);
   }
 
   setFlags() {
     super.setFlags();
 
     if (this.requestHash) this.setHasRequestHash();
+    if (this.handledBy != null) this.setHasHandledBy();
   }
 
   protected getByteLengthOptionalSig(includeSig = true, forHashing = false): number {
@@ -76,6 +91,10 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
 
       length += varuint.encodingLength(this.requestHash.length);
       length += hashLen;
+    }
+
+    if (this.hasHandledBy()) {
+      length += varuint.encodingLength(this.handledBy);
     }
 
     return length;
@@ -95,6 +114,10 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
       writer.writeVarSlice(this.requestHash);
     }
 
+    if (this.hasHandledBy()) {
+      writer.writeCompactSize(this.handledBy);
+    }
+
     return writer.buffer;
   }
 
@@ -110,6 +133,10 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
       this.requestHash = reader.readVarSlice();
     }
 
+    if (this.hasHandledBy()) {
+      this.handledBy = reader.readCompactSize() as GenericRequestHandlerIdentifier;
+    }
+
     return reader.offset;
   }
 
@@ -119,6 +146,10 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
     if (this.hasRequestHash()) {
       parentJson["requesthash"] = this.requestHash.toString('hex');
       parentJson["requesthashtype"] = this.requestHashType.toNumber();
+    }
+
+    if (this.hasHandledBy()) {
+      parentJson["handledby"] = this.handledBy;
     }
 
     return parentJson;

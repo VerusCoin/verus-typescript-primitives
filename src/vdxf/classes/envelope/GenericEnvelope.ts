@@ -31,6 +31,8 @@ export type GenericEnvelopeJson = {
   details: Array<OrdinalVDXFObjectJson>;
 }
 
+export type GenericRequestHandlerIdentifier = 0 | 1;
+
 export class GenericEnvelope implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;

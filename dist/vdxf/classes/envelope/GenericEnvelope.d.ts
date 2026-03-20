@@ -23,6 +23,7 @@ export type GenericEnvelopeJson = {
     appOrDelegatedID?: CompactAddressObjectJson;
     details: Array<OrdinalVDXFObjectJson>;
 };
+export type GenericRequestHandlerIdentifier = 0 | 1;
 export declare class GenericEnvelope implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
