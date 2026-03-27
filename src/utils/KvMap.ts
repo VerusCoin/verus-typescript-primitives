@@ -57,6 +57,44 @@ export class KvMap<T> {
     return this._map.delete(KvMap.toInternalKey(key));
   }
 
+  private findInternalKeyByAddress(iAddress: string): string | undefined {
+    for (const hexKey of this._map.keys()) {
+      const existing = KvMap.keyFromInternalKey(hexKey);
+      if (existing.toIAddress() === iAddress) {
+        return hexKey;
+      }
+    }
+    return undefined;
+  }
+
+  getByAddress(iAddress: string): T | undefined {
+    const hexKey = this.findInternalKeyByAddress(iAddress);
+    return hexKey !== undefined ? this._map.get(hexKey) : undefined;
+  }
+
+  hasAddress(iAddress: string): boolean {
+    return this.findInternalKeyByAddress(iAddress) !== undefined;
+  }
+
+  setByAddress(iAddress: string, value: T): this {
+    const hexKey = this.findInternalKeyByAddress(iAddress);
+    if (hexKey !== undefined) {
+      this._map.set(hexKey, value);
+    } else {
+      const key = CompactIAddressObject.fromAddress(iAddress);
+      this._map.set(KvMap.toInternalKey(key), value);
+    }
+    return this;
+  }
+
+  deleteByAddress(iAddress: string): boolean {
+    const hexKey = this.findInternalKeyByAddress(iAddress);
+    if (hexKey !== undefined) {
+      return this._map.delete(hexKey);
+    }
+    return false;
+  }
+
   entries(): IterableIterator<[CompactIAddressObject, T]> {
     const map = this._map;
 

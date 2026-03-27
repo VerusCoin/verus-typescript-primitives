@@ -102,6 +102,51 @@ class GenericEnvelope {
     getDetails(index = 0) {
         return this.details[index];
     }
+    getDetailsBufferLength() {
+        let length = 0;
+        if (this.hasMultiDetails()) {
+            length += varuint_1.default.encodingLength(this.details.length);
+            for (const detail of this.details) {
+                length += detail.getByteLength();
+            }
+        }
+        else {
+            length += this.getDetails().getByteLength();
+        }
+        return length;
+    }
+    getDetailsBuffer() {
+        const writer = new bufferutils_1.default.BufferWriter(Buffer.alloc(this.getDetailsBufferLength()));
+        if (this.hasMultiDetails()) {
+            writer.writeCompactSize(this.details.length);
+            for (const detail of this.details) {
+                writer.writeSlice(detail.toBuffer());
+            }
+        }
+        else {
+            writer.writeSlice(this.getDetails().toBuffer());
+        }
+        return writer.buffer;
+    }
+    setDetailsFromBuffer(buffer, offset = 0) {
+        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
+        const rootSystemName = this.isTestnet() ? 'VRSCTEST' : 'VRSC';
+        if (this.hasMultiDetails()) {
+            this.details = [];
+            const numItems = reader.readCompactSize();
+            for (let i = 0; i < numItems; i++) {
+                const ord = OrdinalVDXFObject_1.OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+                reader.offset = ord.offset;
+                this.details.push(ord.obj);
+            }
+        }
+        else {
+            const ord = OrdinalVDXFObject_1.OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+            reader.offset = ord.offset;
+            this.details = [ord.obj];
+        }
+        return reader.offset;
+    }
     getDataBufferLengthAfterSig() {
         let length = 0;
         if (this.hasRequestID()) {
@@ -118,15 +163,7 @@ class GenericEnvelope {
         if (this.hasAppOrDelegatedID()) {
             length += this.appOrDelegatedID.getByteLength();
         }
-        if (this.hasMultiDetails()) {
-            length += varuint_1.default.encodingLength(this.details.length);
-            for (const detail of this.details) {
-                length += detail.getByteLength();
-            }
-        }
-        else {
-            length += this.getDetails().getByteLength();
-        }
+        length += this.getDetailsBufferLength();
         return length;
     }
     getDataBufferAfterSig() {
@@ -143,15 +180,7 @@ class GenericEnvelope {
         if (this.hasAppOrDelegatedID()) {
             writer.writeSlice(this.appOrDelegatedID.toBuffer());
         }
-        if (this.hasMultiDetails()) {
-            writer.writeCompactSize(this.details.length);
-            for (const detail of this.details) {
-                writer.writeSlice(detail.toBuffer());
-            }
-        }
-        else {
-            writer.writeSlice(this.getDetails().toBuffer());
-        }
+        writer.writeSlice(this.getDetailsBuffer());
         return writer.buffer;
     }
     internalGetByteLength(includeSig = true, forHashing = false) {
@@ -209,20 +238,7 @@ class GenericEnvelope {
             this.appOrDelegatedID = new CompactAddressObject_1.CompactIAddressObject({ type: CompactAddressObject_1.CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
             reader.offset = this.appOrDelegatedID.fromBuffer(reader.buffer, reader.offset);
         }
-        if (this.hasMultiDetails()) {
-            this.details = [];
-            const numItems = reader.readCompactSize();
-            for (let i = 0; i < numItems; i++) {
-                const ord = OrdinalVDXFObject_1.OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
-                reader.offset = ord.offset;
-                this.details.push(ord.obj);
-            }
-        }
-        else {
-            const ord = OrdinalVDXFObject_1.OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
-            reader.offset = ord.offset;
-            this.details = [ord.obj];
-        }
+        reader.offset = this.setDetailsFromBuffer(reader.buffer, reader.offset);
         return reader.offset;
     }
     toString() {

@@ -18,5 +18,10 @@ export declare class KvMap<T> {
     get(key: CompactIAddressObject): T | undefined;
     has(key: CompactIAddressObject): boolean;
     delete(key: CompactIAddressObject): boolean;
+    private findInternalKeyByAddress;
+    getByAddress(iAddress: string): T | undefined;
+    hasAddress(iAddress: string): boolean;
+    setByAddress(iAddress: string, value: T): this;
+    deleteByAddress(iAddress: string): boolean;
     entries(): IterableIterator<[CompactIAddressObject, T]>;
 }

@@ -161,6 +161,65 @@ export class GenericEnvelope implements SerializableEntity {
     return this.details[index];
   }
 
+  getDetailsBufferLength(): number {
+    let length = 0;
+
+    if (this.hasMultiDetails()) {
+      length += varuint.encodingLength(this.details.length);
+
+      for (const detail of this.details) {
+        length += detail.getByteLength();
+      }
+    } else {
+      length += this.getDetails().getByteLength();
+    }
+
+    return length;
+  }
+
+  getDetailsBuffer(): Buffer {
+    const writer = new bufferutils.BufferWriter(
+      Buffer.alloc(this.getDetailsBufferLength())
+    );
+
+    if (this.hasMultiDetails()) {
+      writer.writeCompactSize(this.details.length);
+
+      for (const detail of this.details) {
+        writer.writeSlice(detail.toBuffer());
+      }
+    } else {
+      writer.writeSlice(this.getDetails().toBuffer());
+    }
+
+    return writer.buffer;
+  }
+
+  setDetailsFromBuffer(buffer: Buffer, offset = 0): number {
+    const reader = new bufferutils.BufferReader(buffer, offset);
+    const rootSystemName = this.isTestnet() ? 'VRSCTEST' : 'VRSC';
+
+    if (this.hasMultiDetails()) {
+      this.details = [];
+
+      const numItems = reader.readCompactSize();
+
+      for (let i = 0; i < numItems; i++) {
+        const ord = OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+
+        reader.offset = ord.offset;
+        this.details.push(ord.obj);
+      }
+    } else {
+      const ord = OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+
+      reader.offset = ord.offset;
+      this.details = [ord.obj];
+    }
+
+    return reader.offset;
+  }
+
   protected getDataBufferLengthAfterSig(): number {
     let length = 0;
 
@@ -183,15 +242,7 @@ export class GenericEnvelope implements SerializableEntity {
       length += this.appOrDelegatedID.getByteLength();
     }
 
-    if (this.hasMultiDetails()) {
-      length += varuint.encodingLength(this.details.length);
-      
-      for (const detail of this.details) {
-        length += detail.getByteLength();
-      }
-    } else {
-      length += this.getDetails().getByteLength();
-    }
+    length += this.getDetailsBufferLength();
 
     return length;
   }
@@ -217,15 +268,7 @@ export class GenericEnvelope implements SerializableEntity {
       writer.writeSlice(this.appOrDelegatedID.toBuffer());
     }
 
-    if (this.hasMultiDetails()) {
-      writer.writeCompactSize(this.details.length);
-
-      for (const detail of this.details) {
-        writer.writeSlice(detail.toBuffer());
-      }
-    } else {
-      writer.writeSlice(this.getDetails().toBuffer());
-    }
+    writer.writeSlice(this.getDetailsBuffer());
 
     return writer.buffer;
   }
@@ -310,23 +353,7 @@ export class GenericEnvelope implements SerializableEntity {
       reader.offset = this.appOrDelegatedID.fromBuffer(reader.buffer, reader.offset);
     }
 
-    if (this.hasMultiDetails()) {
-      this.details = [];
-
-      const numItems = reader.readCompactSize();
-
-      for (let i = 0; i < numItems; i++) {
-        const ord = OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
-
-        reader.offset = ord.offset;
-        this.details.push(ord.obj);
-      }
-    } else {
-      const ord = OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
-
-      reader.offset = ord.offset;
-      this.details = [ord.obj];
-    }
+    reader.offset = this.setDetailsFromBuffer(reader.buffer, reader.offset);
 
     return reader.offset;
   }

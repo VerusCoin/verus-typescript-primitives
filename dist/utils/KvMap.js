@@ -50,6 +50,40 @@ class KvMap {
     delete(key) {
         return this._map.delete(KvMap.toInternalKey(key));
     }
+    findInternalKeyByAddress(iAddress) {
+        for (const hexKey of this._map.keys()) {
+            const existing = KvMap.keyFromInternalKey(hexKey);
+            if (existing.toIAddress() === iAddress) {
+                return hexKey;
+            }
+        }
+        return undefined;
+    }
+    getByAddress(iAddress) {
+        const hexKey = this.findInternalKeyByAddress(iAddress);
+        return hexKey !== undefined ? this._map.get(hexKey) : undefined;
+    }
+    hasAddress(iAddress) {
+        return this.findInternalKeyByAddress(iAddress) !== undefined;
+    }
+    setByAddress(iAddress, value) {
+        const hexKey = this.findInternalKeyByAddress(iAddress);
+        if (hexKey !== undefined) {
+            this._map.set(hexKey, value);
+        }
+        else {
+            const key = CompactAddressObject_1.CompactIAddressObject.fromAddress(iAddress);
+            this._map.set(KvMap.toInternalKey(key), value);
+        }
+        return this;
+    }
+    deleteByAddress(iAddress) {
+        const hexKey = this.findInternalKeyByAddress(iAddress);
+        if (hexKey !== undefined) {
+            return this._map.delete(hexKey);
+        }
+        return false;
+    }
     entries() {
         const map = this._map;
         function* gen() {
