@@ -28,10 +28,12 @@ import { DataDescriptor, DataDescriptorJson } from '../../../pbaas';
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from '../VerifiableSignatureData';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
 
+export type SignableObjectJson = { type: number; data: DataDescriptorJson | string };
+
 export interface DataPacketRequestDetailsInterface {
   version?: BigNumber;
   flags: BigNumber;
-  signableObjects: Array<DataDescriptor>;
+  signableObjects: Array<DataDescriptor | string>;
   statements?: Array<string>;
   signature?: VerifiableSignatureData;
   requestID?: CompactIAddressObject;
@@ -40,7 +42,7 @@ export interface DataPacketRequestDetailsInterface {
 export interface DataPacketRequestDetailsJson {
   version: number;
   flags: number;
-  signableobjects: Array<DataDescriptorJson>;   // Array of signable data objects
+  signableobjects: Array<SignableObjectJson>;
   statements?: Array<string>;
   signature?: VerifiableSignatureDataJson;
   requestid?: CompactAddressObjectJson;
@@ -60,9 +62,12 @@ export class DataPacketRequestDetails implements SerializableEntity {
   static FLAG_FOR_TRANSMITTAL_TO_USER = new BN(16);
   static FLAG_HAS_URL_FOR_DOWNLOAD = new BN(32);
 
+  static SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR = 0;
+  static SIGNABLE_OBJECT_TYPE_STRING = 1;
+
   version: BigNumber;
   flags: BigNumber;
-  signableObjects: Array<DataDescriptor>;
+  signableObjects: Array<DataDescriptor | string>;
   statements?: Array<string>;
   signature?: VerifiableSignatureData;
   requestID?: CompactIAddressObject;
@@ -138,8 +143,15 @@ export class DataPacketRequestDetails implements SerializableEntity {
     length += varuint.encodingLength(this.signableObjects.length);
 
     for (const obj of this.signableObjects) {
-
-      length += obj.getByteLength();
+      if (typeof obj === 'string') {
+        length += varuint.encodingLength(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING);
+        const strBytes = Buffer.byteLength(obj, 'utf8');
+        length += varuint.encodingLength(strBytes);
+        length += strBytes;
+      } else {
+        length += varuint.encodingLength(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR);
+        length += obj.getByteLength();
+      }
     }
 
     // Add signer length if present
@@ -170,7 +182,13 @@ export class DataPacketRequestDetails implements SerializableEntity {
     writer.writeCompactSize(this.signableObjects.length);
 
     for (const obj of this.signableObjects) {
-      writer.writeSlice(obj.toBuffer());
+      if (typeof obj === 'string') {
+        writer.writeCompactSize(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING);
+        writer.writeVarSlice(Buffer.from(obj, 'utf8'));
+      } else {
+        writer.writeCompactSize(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR);
+        writer.writeSlice(obj.toBuffer());
+      }
     }
 
     // Write statements if present    
@@ -202,9 +220,15 @@ export class DataPacketRequestDetails implements SerializableEntity {
     this.signableObjects = [];
 
     for (let i = 0; i < objectCount; i++) {
-      const obj = new DataDescriptor();
-      reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-      this.signableObjects.push(obj);
+      const type = reader.readCompactSize();
+
+      if (type === DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING) {
+        this.signableObjects.push(reader.readVarSlice().toString('utf8'));
+      } else {
+        const obj = new DataDescriptor();
+        reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
+        this.signableObjects.push(obj);
+      }
     }
 
     // Read statements if flag is set
@@ -236,7 +260,11 @@ export class DataPacketRequestDetails implements SerializableEntity {
     return {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
-      signableobjects: this.signableObjects.map(obj => obj.toJson()),
+      signableobjects: this.signableObjects.map(obj =>
+        typeof obj === 'string'
+          ? { type: DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING, data: obj }
+          : { type: DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR, data: obj.toJson() }
+      ),
       statements: this.statements,
       signature: this.signature ? this.signature.toJson() : undefined,
       requestid: this.requestID ? this.requestID.toJson() : undefined,
@@ -248,14 +276,17 @@ export class DataPacketRequestDetails implements SerializableEntity {
     instance.version = new BN(json.version);
     instance.flags = new BN(json.flags);
 
-    const dataDescriptorObjects: Array<DataDescriptor> = [];
+    const signableObjects: Array<DataDescriptor | string> = [];
 
-    for (const objJson of json.signableobjects) {
-      const dataDescriptor = DataDescriptor.fromJson(objJson);
-      dataDescriptorObjects.push(dataDescriptor);
+    for (const entry of json.signableobjects) {
+      if (entry.type === DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING) {
+        signableObjects.push(entry.data as string);
+      } else {
+        signableObjects.push(DataDescriptor.fromJson(entry.data as DataDescriptorJson));
+      }
     }
-    
-    instance.signableObjects = dataDescriptorObjects;
+
+    instance.signableObjects = signableObjects;
     instance.statements = json.statements || [];
     instance.signature = json.signature ? VerifiableSignatureData.fromJson(json.signature) : undefined;
     instance.requestID = json.requestid ? CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;

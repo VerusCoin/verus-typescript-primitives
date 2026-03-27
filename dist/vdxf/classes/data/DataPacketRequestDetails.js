@@ -81,7 +81,16 @@ class DataPacketRequestDetails {
         // Add length for signableObjects array
         length += varuint_1.default.encodingLength(this.signableObjects.length);
         for (const obj of this.signableObjects) {
-            length += obj.getByteLength();
+            if (typeof obj === 'string') {
+                length += varuint_1.default.encodingLength(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING);
+                const strBytes = Buffer.byteLength(obj, 'utf8');
+                length += varuint_1.default.encodingLength(strBytes);
+                length += strBytes;
+            }
+            else {
+                length += varuint_1.default.encodingLength(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR);
+                length += obj.getByteLength();
+            }
         }
         // Add signer length if present
         if (this.hasStatements()) {
@@ -105,7 +114,14 @@ class DataPacketRequestDetails {
         // Write signableObjects array
         writer.writeCompactSize(this.signableObjects.length);
         for (const obj of this.signableObjects) {
-            writer.writeSlice(obj.toBuffer());
+            if (typeof obj === 'string') {
+                writer.writeCompactSize(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING);
+                writer.writeVarSlice(Buffer.from(obj, 'utf8'));
+            }
+            else {
+                writer.writeCompactSize(DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR);
+                writer.writeSlice(obj.toBuffer());
+            }
         }
         // Write statements if present    
         if (this.hasStatements()) {
@@ -129,9 +145,15 @@ class DataPacketRequestDetails {
         const objectCount = reader.readCompactSize();
         this.signableObjects = [];
         for (let i = 0; i < objectCount; i++) {
-            const obj = new pbaas_1.DataDescriptor();
-            reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
-            this.signableObjects.push(obj);
+            const type = reader.readCompactSize();
+            if (type === DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING) {
+                this.signableObjects.push(reader.readVarSlice().toString('utf8'));
+            }
+            else {
+                const obj = new pbaas_1.DataDescriptor();
+                reader.offset = obj.fromBuffer(reader.buffer, reader.offset);
+                this.signableObjects.push(obj);
+            }
         }
         // Read statements if flag is set
         if (this.hasStatements()) {
@@ -157,7 +179,9 @@ class DataPacketRequestDetails {
         return {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
-            signableobjects: this.signableObjects.map(obj => obj.toJson()),
+            signableobjects: this.signableObjects.map(obj => typeof obj === 'string'
+                ? { type: DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING, data: obj }
+                : { type: DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR, data: obj.toJson() }),
             statements: this.statements,
             signature: this.signature ? this.signature.toJson() : undefined,
             requestid: this.requestID ? this.requestID.toJson() : undefined,
@@ -167,12 +191,16 @@ class DataPacketRequestDetails {
         const instance = new DataPacketRequestDetails();
         instance.version = new bn_js_1.BN(json.version);
         instance.flags = new bn_js_1.BN(json.flags);
-        const dataDescriptorObjects = [];
-        for (const objJson of json.signableobjects) {
-            const dataDescriptor = pbaas_1.DataDescriptor.fromJson(objJson);
-            dataDescriptorObjects.push(dataDescriptor);
+        const signableObjects = [];
+        for (const entry of json.signableobjects) {
+            if (entry.type === DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING) {
+                signableObjects.push(entry.data);
+            }
+            else {
+                signableObjects.push(pbaas_1.DataDescriptor.fromJson(entry.data));
+            }
         }
-        instance.signableObjects = dataDescriptorObjects;
+        instance.signableObjects = signableObjects;
         instance.statements = json.statements || [];
         instance.signature = json.signature ? VerifiableSignatureData_1.VerifiableSignatureData.fromJson(json.signature) : undefined;
         instance.requestID = json.requestid ? CompactAddressObject_1.CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;
@@ -191,3 +219,5 @@ DataPacketRequestDetails.FLAG_HAS_SIGNATURE = new bn_js_1.BN(4);
 DataPacketRequestDetails.FLAG_FOR_USERS_SIGNATURE = new bn_js_1.BN(8);
 DataPacketRequestDetails.FLAG_FOR_TRANSMITTAL_TO_USER = new bn_js_1.BN(16);
 DataPacketRequestDetails.FLAG_HAS_URL_FOR_DOWNLOAD = new bn_js_1.BN(32);
+DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR = 0;
+DataPacketRequestDetails.SIGNABLE_OBJECT_TYPE_STRING = 1;

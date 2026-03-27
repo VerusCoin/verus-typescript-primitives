@@ -22,10 +22,14 @@ import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { DataDescriptor, DataDescriptorJson } from '../../../pbaas';
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from '../VerifiableSignatureData';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
+export type SignableObjectJson = {
+    type: number;
+    data: DataDescriptorJson | string;
+};
 export interface DataPacketRequestDetailsInterface {
     version?: BigNumber;
     flags: BigNumber;
-    signableObjects: Array<DataDescriptor>;
+    signableObjects: Array<DataDescriptor | string>;
     statements?: Array<string>;
     signature?: VerifiableSignatureData;
     requestID?: CompactIAddressObject;
@@ -33,7 +37,7 @@ export interface DataPacketRequestDetailsInterface {
 export interface DataPacketRequestDetailsJson {
     version: number;
     flags: number;
-    signableobjects: Array<DataDescriptorJson>;
+    signableobjects: Array<SignableObjectJson>;
     statements?: Array<string>;
     signature?: VerifiableSignatureDataJson;
     requestid?: CompactAddressObjectJson;
@@ -49,9 +53,11 @@ export declare class DataPacketRequestDetails implements SerializableEntity {
     static FLAG_FOR_USERS_SIGNATURE: import("bn.js");
     static FLAG_FOR_TRANSMITTAL_TO_USER: import("bn.js");
     static FLAG_HAS_URL_FOR_DOWNLOAD: import("bn.js");
+    static SIGNABLE_OBJECT_TYPE_DATA_DESCRIPTOR: number;
+    static SIGNABLE_OBJECT_TYPE_STRING: number;
     version: BigNumber;
     flags: BigNumber;
-    signableObjects: Array<DataDescriptor>;
+    signableObjects: Array<DataDescriptor | string>;
     statements?: Array<string>;
     signature?: VerifiableSignatureData;
     requestID?: CompactIAddressObject;
