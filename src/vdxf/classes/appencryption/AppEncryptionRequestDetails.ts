@@ -38,7 +38,7 @@ export interface AppEncryptionRequestDetailsInterface {
 export interface AppEncryptionRequestDetailsJson {
   version: number;
   flags: number;
-  encrypttozaddress: string;
+  encryptresponsetoaddress: string;
   derivationnumber: number;
   derivationid?: CompactAddressObjectJson;
   requestid?: CompactAddressObjectJson;
@@ -200,7 +200,7 @@ export class AppEncryptionRequestDetails implements SerializableEntity {
     return {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
-      encrypttozaddress: this.encryptResponseToAddress.toAddressString(),
+      encryptresponsetoaddress: this.encryptResponseToAddress.toAddressString(),
       derivationnumber: this.derivationNumber.toNumber(),
       derivationid: this.derivationID?.toJson(),
       requestid: this.requestID?.toJson()
@@ -213,7 +213,7 @@ export class AppEncryptionRequestDetails implements SerializableEntity {
     instance.flags = new BN(json.flags);
 
     if (instance.hasEncryptResponseToAddress()) {
-      instance.encryptResponseToAddress = SaplingPaymentAddress.fromAddressString(json.encrypttozaddress);
+      instance.encryptResponseToAddress = SaplingPaymentAddress.fromAddressString(json.encryptresponsetoaddress);
     }
   
     instance.derivationNumber = new BN(json.derivationnumber);

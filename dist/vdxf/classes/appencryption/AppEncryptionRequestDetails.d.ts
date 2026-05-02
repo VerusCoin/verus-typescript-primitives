@@ -30,7 +30,7 @@ export interface AppEncryptionRequestDetailsInterface {
 export interface AppEncryptionRequestDetailsJson {
     version: number;
     flags: number;
-    encrypttozaddress: string;
+    encryptresponsetoaddress: string;
     derivationnumber: number;
     derivationid?: CompactAddressObjectJson;
     requestid?: CompactAddressObjectJson;

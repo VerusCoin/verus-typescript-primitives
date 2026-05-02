@@ -126,7 +126,7 @@ class AppEncryptionRequestDetails {
         return {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
-            encrypttozaddress: this.encryptResponseToAddress.toAddressString(),
+            encryptresponsetoaddress: this.encryptResponseToAddress.toAddressString(),
             derivationnumber: this.derivationNumber.toNumber(),
             derivationid: (_a = this.derivationID) === null || _a === void 0 ? void 0 : _a.toJson(),
             requestid: (_b = this.requestID) === null || _b === void 0 ? void 0 : _b.toJson()
@@ -137,7 +137,7 @@ class AppEncryptionRequestDetails {
         instance.version = new bn_js_1.BN(json.version);
         instance.flags = new bn_js_1.BN(json.flags);
         if (instance.hasEncryptResponseToAddress()) {
-            instance.encryptResponseToAddress = pbaas_1.SaplingPaymentAddress.fromAddressString(json.encrypttozaddress);
+            instance.encryptResponseToAddress = pbaas_1.SaplingPaymentAddress.fromAddressString(json.encryptresponsetoaddress);
         }
         instance.derivationNumber = new bn_js_1.BN(json.derivationnumber);
         if (instance.hasDerivationID()) {
