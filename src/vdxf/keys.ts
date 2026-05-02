@@ -780,3 +780,23 @@ export const APP_ENCRYPTION_RESPONSE_VDXF_KEY: VDXFKeyInterface = {
     "name": "vrsc::application.encryption.response"
   }
 }
+
+export const CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY: VDXFKeyInterface = {
+  "hash160result": "0678b8b4efe1737b24bf1029765bd6e47ab998b8",
+  "indexid": "xR8hBfGQdgRifsUCToPsrH7La2VH9JARSm",
+  "qualifiedname": {
+    "name": "vrsc::create.wallet.backup.details",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iLJairqKnND43hbAc7jistaoYNUGHmX254"
+}
+
+export const WALLET_BACKUP: VDXFKeyInterface = {
+  "hash160result": "e747f94b1bef20e309ec94f1fdbe95ccf9343a9a",
+  "indexid": "xNN7gi26CfH99F7gfxjhDswto5PSiLbgaW",
+  "qualifiedname": {
+    "name": "vrsc::wallet.backup",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iHY1Dub1MM4UX5EepH5YFVRMmRNRs8chRe"
+}

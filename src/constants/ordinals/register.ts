@@ -1,4 +1,4 @@
-import { APP_ENCRYPTION_REQUEST_VDXF_KEY, APP_ENCRYPTION_RESPONSE_VDXF_KEY, DATA_RESPONSE_VDXF_KEY, DATA_DESCRIPTOR_VDXF_KEY, AUTHENTICATION_REQUEST_VDXF_KEY, AUTHENTICATION_RESPONSE_VDXF_KEY, PROVISION_IDENTITY_DETAILS_VDXF_KEY, USER_DATA_REQUEST_VDXF_KEY, DATA_PACKET_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_DETAILS_VDXF_KEY, IDENTITY_UPDATE_RESPONSE_VDXF_KEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY } from "../../vdxf";
+import { APP_ENCRYPTION_REQUEST_VDXF_KEY, APP_ENCRYPTION_RESPONSE_VDXF_KEY, CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY, DATA_RESPONSE_VDXF_KEY, DATA_DESCRIPTOR_VDXF_KEY, AUTHENTICATION_REQUEST_VDXF_KEY, AUTHENTICATION_RESPONSE_VDXF_KEY, PROVISION_IDENTITY_DETAILS_VDXF_KEY, USER_DATA_REQUEST_VDXF_KEY, DATA_PACKET_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_DETAILS_VDXF_KEY, IDENTITY_UPDATE_RESPONSE_VDXF_KEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY, WALLET_BACKUP } from "../../vdxf";
 import { AppEncryptionRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppEncryptionRequestOrdinalVDXFObject";
 import { DataDescriptorOrdinalVDXFObject } from "../../vdxf/classes/ordinals/DataDescriptorOrdinalVDXFObject";
 import { DataResponseOrdinalVDXFObject } from "../../vdxf/classes/ordinals/DataResponseOrdinalVDXFObject";
@@ -11,8 +11,10 @@ import { AuthenticationResponseOrdinalVDXFObject } from "../../vdxf/classes/ordi
 import { OrdinalVDXFObjectOrdinalMap } from "../../vdxf/classes/ordinals/OrdinalVDXFObjectOrdinalMap";
 import { ProvisionIdentityDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/ProvisionIdentityDetailsOrdinalVDXFObject";
 import { VerusPayInvoiceDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/VerusPayInvoiceDetailsOrdinalVDXFObject";
-import { APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, DATA_RESPONSE_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, AUTHENTICATION_RESPONSE_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, USER_DATA_REQUEST_VDXF_ORDINAL, DATA_PACKET_REQUEST_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL } from "./ordinals";
+import { APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, DATA_RESPONSE_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, AUTHENTICATION_RESPONSE_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, USER_DATA_REQUEST_VDXF_ORDINAL, DATA_PACKET_REQUEST_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL, WALLET_BACKUP_VDXF_ORDINAL } from "./ordinals";
 import { AppEncryptionResponseOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppEncryptionResponseOrdinalVDXFObject";
+import { CreateWalletBackupDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/CreateWalletBackupDetailsOrdinalVDXFObject";
+import { WalletBackupOrdinalVDXFObject } from "../../vdxf/classes/ordinals/WalletBackupOrdinalVDXFObject";
 
 // This is where all ordinals are currently registered for ordinal VDXF objects. Standard naming convention for the VDXF keys is to
 // include the word "response" at the end if it is a response and "request" at the end if it is a request. In case it isn't a request
@@ -31,4 +33,6 @@ export const registerOrdinals = () => {
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(DATA_PACKET_REQUEST_VDXF_ORDINAL.toNumber(), DATA_PACKET_REQUEST_VDXF_KEY.vdxfid, DataPacketRequestOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(USER_DATA_REQUEST_VDXF_ORDINAL.toNumber(), USER_DATA_REQUEST_VDXF_KEY.vdxfid, UserDataRequestOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(DATA_RESPONSE_VDXF_ORDINAL.toNumber(), DATA_RESPONSE_VDXF_KEY.vdxfid, DataResponseOrdinalVDXFObject, false);
+  OrdinalVDXFObjectOrdinalMap.registerOrdinal(CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL.toNumber(), CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY.vdxfid, CreateWalletBackupDetailsOrdinalVDXFObject, false);
+  OrdinalVDXFObjectOrdinalMap.registerOrdinal(WALLET_BACKUP_VDXF_ORDINAL.toNumber(), WALLET_BACKUP.vdxfid, WalletBackupOrdinalVDXFObject, false);
 }

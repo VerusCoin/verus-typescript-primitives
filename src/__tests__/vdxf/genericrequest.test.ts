@@ -1,11 +1,11 @@
 import { BN } from 'bn.js';
 import base64url from 'base64url';
 import { DATA_TYPE_MMRDATA, DEFAULT_VERUS_CHAINID, HASH_TYPE_SHA256, NULL_I_ADDR } from '../../constants/pbaas';
-import { ContentMultiMap, DEST_PKH, fromBase58Check, GenericRequest, IDENTITY_VERSION_PBAAS, IdentityID, IdentityUpdateRequestDetails, KeyID, PartialIdentity, PartialMMRData, PartialSignData, PartialSignDataInitData, ResponseURI, SaplingPaymentAddress, TransferDestination, VerusPayInvoiceDetails } from '../../';
+import { ContentMultiMap, CreateWalletBackupDetails, DEST_PKH, fromBase58Check, GenericRequest, IDENTITY_VERSION_PBAAS, IdentityID, IdentityUpdateRequestDetails, KeyID, PartialIdentity, PartialMMRData, PartialSignData, PartialSignDataInitData, ResponseURI, SaplingPaymentAddress, TransferDestination, VerusPayInvoiceDetails } from '../../';
 import { VerifiableSignatureData, VerifiableSignatureDataInterface } from '../../vdxf/classes/VerifiableSignatureData';
 import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject';
 import { KvMap } from '../../utils/KvMap';
-import { GeneralTypeOrdinalVDXFObject, IdentityUpdateRequestOrdinalVDXFObject, VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
+import { CreateWalletBackupDetailsOrdinalVDXFObject, GeneralTypeOrdinalVDXFObject, IdentityUpdateRequestOrdinalVDXFObject, VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
 import { DEEPLINK_PROTOCOL_URL_CURRENT_VERSION, DEEPLINK_PROTOCOL_URL_STRING } from '../../constants/deeplink';
 
 describe('GenericRequest — buffer / URI / QR operations', () => {
@@ -55,6 +55,35 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
     expect(round.details.length).toBe(2);
     expect((round.getDetails(0) as GeneralTypeOrdinalVDXFObject).data).toEqual(d1.data);
     expect((round.getDetails(1) as GeneralTypeOrdinalVDXFObject).data).toEqual(d2.data);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('round trips with wallet backup details as the first detail', () => {
+    const backupDetails = new CreateWalletBackupDetails({
+      backupType: new BN(1, 10)
+    });
+    const invoiceDetails = new VerusPayInvoiceDetails({
+      amount: new BN(12345, 10),
+      destination: new TransferDestination({
+        type: DEST_PKH,
+        destinationBytes: fromBase58Check("R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx").hash
+      }),
+      requestedcurrencyid: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+    });
+
+    const req = new GenericRequest({
+      details: [
+        new CreateWalletBackupDetailsOrdinalVDXFObject({ data: backupDetails }),
+        new VerusPayInvoiceDetailsOrdinalVDXFObject({ data: invoiceDetails })
+      ]
+    });
+
+    const round = roundTripBuffer(req);
+
+    expect(round.hasMultiDetails()).toBe(true);
+    expect(round.getDetails(0)).toBeInstanceOf(CreateWalletBackupDetailsOrdinalVDXFObject);
+    expect((round.getDetails(0) as CreateWalletBackupDetailsOrdinalVDXFObject).data.backupType.toString()).toBe("1");
+    expect(round.getDetails(1)).toBeInstanceOf(VerusPayInvoiceDetailsOrdinalVDXFObject);
     expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
   });
 
