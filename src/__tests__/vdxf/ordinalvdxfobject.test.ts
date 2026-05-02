@@ -50,7 +50,6 @@ import { VerifiableSignatureData } from '../../vdxf/classes/VerifiableSignatureD
 import { SaplingExtendedSpendingKey } from '../../pbaas/SaplingExtendedSpendingKey';
 import { SaplingExtendedViewingKey } from '../../pbaas/SaplingExtendedViewingKey';
 import { VERUSPAY_INVOICE_DETAILS_VDXF_KEY } from '../../vdxf';
-import { entropyToMnemonic, mnemonicToEntropy } from 'bip39';
 
 // Helper function to create TransferDestination from address string
 function createCompactAddressObject(type: BigNumber, address: string): CompactIAddressObject {
@@ -656,8 +655,7 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
   });
 
   it('should serialize / deserialize an unencrypted WalletBackupOrdinalVDXFObject', () => {
-    const mnemonic = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
-    const entropy = Buffer.from(mnemonicToEntropy(mnemonic), 'hex');
+    const entropy = Buffer.from('00000000000000000000000000000000', 'hex');
     const backup = new WalletBackup({
       seedFormat: WalletBackup.SEED_FORMAT_BIP39,
       encryptionFormat: WalletBackup.ENCRYPTION_FORMAT_NONE,
@@ -677,7 +675,6 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     expect(d2.seedFormat.toString()).toBe(WalletBackup.SEED_FORMAT_BIP39.toString());
     expect(d2.encryptionFormat.toString()).toBe(WalletBackup.ENCRYPTION_FORMAT_NONE.toString());
     expect(d2.data).toEqual(entropy);
-    expect(entropyToMnemonic(d2.data)).toBe(mnemonic);
 
     const json = obj.toJson();
     expect(json.type).toBe(WALLET_BACKUP_VDXF_ORDINAL.toString());
@@ -691,7 +688,6 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     const roundJ = roundTripJson(obj);
     expect(roundJ).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
     expect((roundJ as WalletBackupOrdinalVDXFObject).data.data).toEqual(entropy);
-    expect(entropyToMnemonic((roundJ as WalletBackupOrdinalVDXFObject).data.data)).toBe(mnemonic);
   });
 
   it('should serialize / deserialize an encrypted WalletBackupOrdinalVDXFObject with kdf iterations', () => {
