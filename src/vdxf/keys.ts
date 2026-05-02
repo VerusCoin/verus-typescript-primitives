@@ -780,3 +780,13 @@ export const APP_ENCRYPTION_RESPONSE_VDXF_KEY: VDXFKeyInterface = {
     "name": "vrsc::application.encryption.response"
   }
 }
+
+export const CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY: VDXFKeyInterface = {
+  "hash160result": "0678b8b4efe1737b24bf1029765bd6e47ab998b8",
+  "indexid": "xR8hBfGQdgRifsUCToPsrH7La2VH9JARSm",
+  "qualifiedname": {
+    "name": "vrsc::create.wallet.backup.details",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iLJairqKnND43hbAc7jistaoYNUGHmX254"
+}

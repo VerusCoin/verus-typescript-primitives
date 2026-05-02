@@ -30,4 +30,5 @@ __exportStar(require("./ProvisionIdentityDetailsOrdinalVDXFObject"), exports);
 __exportStar(require("./DataResponseOrdinalVDXFObject"), exports);
 __exportStar(require("./UserDataRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./DataPacketRequestOrdinalVDXFObject"), exports);
+__exportStar(require("./CreateWalletBackupDetailsOrdinalVDXFObject"), exports);
 (0, register_1.registerOrdinals)();

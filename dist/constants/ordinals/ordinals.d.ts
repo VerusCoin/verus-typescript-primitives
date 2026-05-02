@@ -13,3 +13,4 @@ export declare const APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL: import("bn.js");
 export declare const DATA_PACKET_REQUEST_VDXF_ORDINAL: import("bn.js");
 export declare const USER_DATA_REQUEST_VDXF_ORDINAL: import("bn.js");
 export declare const DATA_RESPONSE_VDXF_ORDINAL: import("bn.js");
+export declare const CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL: import("bn.js");

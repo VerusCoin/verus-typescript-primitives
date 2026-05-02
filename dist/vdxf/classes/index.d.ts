@@ -41,5 +41,6 @@ export * from './login/RecipientConstraint';
 export * from './provisioning/ProvisionIdentityDetails';
 export * from './appencryption/AppEncryptionRequestDetails';
 export * from './data/DataPacketRequestDetails';
+export * from './backup/CreateWalletBackupDetails';
 export * from './CompactAddressObject';
 export * from './VerifiableSignatureData';

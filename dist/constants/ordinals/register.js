@@ -16,6 +16,7 @@ const ProvisionIdentityDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/
 const VerusPayInvoiceDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/VerusPayInvoiceDetailsOrdinalVDXFObject");
 const ordinals_1 = require("./ordinals");
 const AppEncryptionResponseOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/AppEncryptionResponseOrdinalVDXFObject");
+const CreateWalletBackupDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/CreateWalletBackupDetailsOrdinalVDXFObject");
 // This is where all ordinals are currently registered for ordinal VDXF objects. Standard naming convention for the VDXF keys is to
 // include the word "response" at the end if it is a response and "request" at the end if it is a request. In case it isn't a request
 // (an object expecting a response) or a response, you can use the world "details" at the end, but best not to mix request + details
@@ -33,5 +34,6 @@ const registerOrdinals = () => {
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.DATA_PACKET_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.DATA_PACKET_REQUEST_VDXF_KEY.vdxfid, DataPacketRequestOrdinalVDXFObject_1.DataPacketRequestOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.USER_DATA_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.USER_DATA_REQUEST_VDXF_KEY.vdxfid, UserDataRequestOrdinalVDXFObject_1.UserDataRequestOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.DATA_RESPONSE_VDXF_ORDINAL.toNumber(), vdxf_1.DATA_RESPONSE_VDXF_KEY.vdxfid, DataResponseOrdinalVDXFObject_1.DataResponseOrdinalVDXFObject, false);
+    OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL.toNumber(), vdxf_1.CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY.vdxfid, CreateWalletBackupDetailsOrdinalVDXFObject_1.CreateWalletBackupDetailsOrdinalVDXFObject, false);
 };
 exports.registerOrdinals = registerOrdinals;
