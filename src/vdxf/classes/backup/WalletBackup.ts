@@ -10,15 +10,17 @@ export interface WalletBackupInterface {
   flags?: BigNumber;
   seedFormat?: BigNumber;
   encryptionFormat?: BigNumber;
+  KDFIters?: BigNumber;
   data?: Buffer;
   encrypted?: boolean;
-  containsKdfIters?: boolean;
+  containsKDFIters?: boolean;
 }
 
 export interface WalletBackupJson {
   flags: number;
   seedformat: number;
   encryptionformat: number;
+  KDFIters?: number;
   data: string;
 }
 
@@ -26,6 +28,7 @@ export class WalletBackup implements SerializableEntity {
   flags: BigNumber;
   seedFormat: BigNumber;
   encryptionFormat: BigNumber;
+  KDFIters: BigNumber;
   data: Buffer;
 
   static FLAG_ENCRYPTED = new BN(1, 10);
@@ -42,17 +45,18 @@ export class WalletBackup implements SerializableEntity {
     this.flags = data?.flags || new BN(0, 10);
     this.seedFormat = data?.seedFormat || WalletBackup.DEFAULT_SEED_FORMAT;
     this.encryptionFormat = data?.encryptionFormat || WalletBackup.DEFAULT_ENCRYPTION_FORMAT;
+    this.KDFIters = data?.KDFIters || new BN(0, 10);
     this.data = data?.data || Buffer.alloc(0);
 
     if (data?.encrypted) this.setEncrypted();
-    if (data?.containsKdfIters) this.setContainsKdfIters();
+    if (data?.containsKDFIters) this.setContainsKDFIters();
   }
 
   isEncrypted(): boolean {
     return this.flags.and(WalletBackup.FLAG_ENCRYPTED).eq(WalletBackup.FLAG_ENCRYPTED);
   }
 
-  containsKdfIters(): boolean {
+  containsKDFIters(): boolean {
     return this.flags.and(WalletBackup.FLAG_CONTAINS_KDF_ITERS).eq(WalletBackup.FLAG_CONTAINS_KDF_ITERS);
   }
 
@@ -60,7 +64,7 @@ export class WalletBackup implements SerializableEntity {
     this.flags = this.flags.or(WalletBackup.FLAG_ENCRYPTED);
   }
 
-  setContainsKdfIters(): void {
+  setContainsKDFIters(): void {
     this.flags = this.flags.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS);
   }
 
@@ -76,10 +80,11 @@ export class WalletBackup implements SerializableEntity {
     let valid = this.flags.gte(new BN(0, 10));
     valid &&= this.seedFormat.gte(new BN(1, 10));
     valid &&= this.encryptionFormat.gte(new BN(0, 10));
+    valid &&= this.KDFIters.gte(new BN(0, 10));
     valid &&= Buffer.isBuffer(this.data);
 
     if (this.isEncrypted() && this.usesSaltedTaggedAes256Gcm()) {
-      valid &&= this.containsKdfIters();
+      valid &&= this.containsKDFIters();
     }
 
     return valid;
@@ -91,6 +96,7 @@ export class WalletBackup implements SerializableEntity {
     length += varuint.encodingLength(this.flags.toNumber());
     length += varuint.encodingLength(this.seedFormat.toNumber());
     length += varuint.encodingLength(this.encryptionFormat.toNumber());
+    if (this.containsKDFIters()) length += varuint.encodingLength(this.KDFIters.toNumber());
     length += varuint.encodingLength(this.data.length);
     length += this.data.length;
 
@@ -103,6 +109,7 @@ export class WalletBackup implements SerializableEntity {
     writer.writeCompactSize(this.flags.toNumber());
     writer.writeCompactSize(this.seedFormat.toNumber());
     writer.writeCompactSize(this.encryptionFormat.toNumber());
+    if (this.containsKDFIters()) writer.writeCompactSize(this.KDFIters.toNumber());
     writer.writeVarSlice(this.data);
 
     return writer.buffer;
@@ -114,18 +121,23 @@ export class WalletBackup implements SerializableEntity {
     this.flags = new BN(reader.readCompactSize(), 10);
     this.seedFormat = new BN(reader.readCompactSize(), 10);
     this.encryptionFormat = new BN(reader.readCompactSize(), 10);
+    this.KDFIters = this.containsKDFIters() ? new BN(reader.readCompactSize(), 10) : new BN(0, 10);
     this.data = reader.readVarSlice();
 
     return reader.offset;
   }
 
   toJson(): WalletBackupJson {
-    return {
+    const json: WalletBackupJson = {
       flags: this.flags.toNumber(),
       seedformat: this.seedFormat.toNumber(),
       encryptionformat: this.encryptionFormat.toNumber(),
       data: this.data.toString('hex')
     };
+
+    if (this.containsKDFIters()) json.KDFIters = this.KDFIters.toNumber();
+
+    return json;
   }
 
   static fromJson(json: WalletBackupJson): WalletBackup {
@@ -133,6 +145,7 @@ export class WalletBackup implements SerializableEntity {
       flags: new BN(json.flags ?? 0, 10),
       seedFormat: new BN(json.seedformat ?? WalletBackup.DEFAULT_SEED_FORMAT.toNumber(), 10),
       encryptionFormat: new BN(json.encryptionformat ?? WalletBackup.DEFAULT_ENCRYPTION_FORMAT.toNumber(), 10),
+      KDFIters: new BN(json.KDFIters ?? 0, 10),
       data: json.data ? Buffer.from(json.data, 'hex') : Buffer.alloc(0)
     });
   }

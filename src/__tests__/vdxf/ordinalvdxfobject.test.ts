@@ -690,17 +690,19 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     expect((roundJ as WalletBackupOrdinalVDXFObject).data.data).toEqual(entropy);
   });
 
-  it('should serialize / deserialize an encrypted WalletBackupOrdinalVDXFObject with kdf iterations', () => {
+  it('should serialize / deserialize an encrypted WalletBackupOrdinalVDXFObject with KDF iterations', () => {
     const encryptedSeed = Buffer.from('00112233445566778899aabbccddeeff', 'hex');
+    const KDFIters = 100000;
     const backup = new WalletBackup({
       flags: WalletBackup.FLAG_ENCRYPTED.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS),
       seedFormat: WalletBackup.SEED_FORMAT_BIP39,
       encryptionFormat: WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM,
+      KDFIters: new BN(KDFIters, 10),
       data: encryptedSeed
     });
 
     expect(backup.isEncrypted()).toBe(true);
-    expect(backup.containsKdfIters()).toBe(true);
+    expect(backup.containsKDFIters()).toBe(true);
     expect(backup.usesSaltedTaggedAes256Gcm()).toBe(true);
     expect(backup.isValid()).toBe(true);
 
@@ -720,11 +722,22 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     const d2 = (round as WalletBackupOrdinalVDXFObject).data;
     expect(d2.flags.toString()).toBe(WalletBackup.FLAG_ENCRYPTED.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS).toString());
     expect(d2.encryptionFormat.toString()).toBe(WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM.toString());
+    expect(d2.KDFIters.toNumber()).toBe(KDFIters);
     expect(d2.data).toEqual(encryptedSeed);
+
+    const json = obj.toJson();
+    expect(json.data).toEqual({
+      flags: WalletBackup.FLAG_ENCRYPTED.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS).toNumber(),
+      seedformat: 1,
+      encryptionformat: 1,
+      KDFIters,
+      data: encryptedSeed.toString('hex')
+    });
 
     const roundJ = roundTripJson(obj);
     expect(roundJ).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
     expect((roundJ as WalletBackupOrdinalVDXFObject).data.isValid()).toBe(true);
+    expect((roundJ as WalletBackupOrdinalVDXFObject).data.KDFIters.toNumber()).toBe(KDFIters);
     expect((roundJ as WalletBackupOrdinalVDXFObject).data.data).toEqual(encryptedSeed);
   });
 });

@@ -4,20 +4,23 @@ export interface WalletBackupInterface {
     flags?: BigNumber;
     seedFormat?: BigNumber;
     encryptionFormat?: BigNumber;
+    KDFIters?: BigNumber;
     data?: Buffer;
     encrypted?: boolean;
-    containsKdfIters?: boolean;
+    containsKDFIters?: boolean;
 }
 export interface WalletBackupJson {
     flags: number;
     seedformat: number;
     encryptionformat: number;
+    KDFIters?: number;
     data: string;
 }
 export declare class WalletBackup implements SerializableEntity {
     flags: BigNumber;
     seedFormat: BigNumber;
     encryptionFormat: BigNumber;
+    KDFIters: BigNumber;
     data: Buffer;
     static FLAG_ENCRYPTED: import("bn.js");
     static FLAG_CONTAINS_KDF_ITERS: import("bn.js");
@@ -28,9 +31,9 @@ export declare class WalletBackup implements SerializableEntity {
     static DEFAULT_ENCRYPTION_FORMAT: import("bn.js");
     constructor(data?: WalletBackupInterface);
     isEncrypted(): boolean;
-    containsKdfIters(): boolean;
+    containsKDFIters(): boolean;
     setEncrypted(): void;
-    setContainsKdfIters(): void;
+    setContainsKDFIters(): void;
     isBIP39(): boolean;
     usesSaltedTaggedAes256Gcm(): boolean;
     isValid(): boolean;
