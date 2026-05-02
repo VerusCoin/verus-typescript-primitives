@@ -11,7 +11,8 @@ import {
   UserDataRequestOrdinalVDXFObject,
   DataPacketRequestOrdinalVDXFObject,
   DataResponseOrdinalVDXFObject,
-  CreateWalletBackupDetailsOrdinalVDXFObject
+  CreateWalletBackupDetailsOrdinalVDXFObject,
+  WalletBackupOrdinalVDXFObject
 } from '../../vdxf/classes/ordinals';
 import {
   DataDescriptorOrdinalVDXFObject
@@ -31,6 +32,7 @@ import {
   UserDataRequestDetails,
   DataPacketRequestDetails,
   CreateWalletBackupDetails,
+  WalletBackup,
   AppEncryptionResponseOrdinalVDXFObject,
   AppEncryptionResponseDetails,
   CompactIAddressObject,
@@ -38,7 +40,7 @@ import {
 } from '../../vdxf/classes';
 import { DEFAULT_VERUS_CHAINID } from '../../constants/pbaas';
 import { fromBase58Check } from '../../utils/address';
-import { VDXF_OBJECT_RESERVED_BYTE_I_ADDR, APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL, VDXF_OBJECT_RESERVED_BYTE_VDXF_ID_STRING, VDXF_OBJECT_RESERVED_BYTE_ID_OR_CURRENCY } from '../../constants/ordinals/ordinals';
+import { VDXF_OBJECT_RESERVED_BYTE_I_ADDR, APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL, VDXF_OBJECT_RESERVED_BYTE_VDXF_ID_STRING, VDXF_OBJECT_RESERVED_BYTE_ID_OR_CURRENCY, WALLET_BACKUP_VDXF_ORDINAL } from '../../constants/ordinals/ordinals';
 import { VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals/VerusPayInvoiceDetailsOrdinalVDXFObject';
 import { TEST_CHALLENGE_ID, TEST_CLI_ID_UPDATE_REQUEST_JSON_HEX, TEST_EXPIRYHEIGHT, TEST_IDENTITY_ID_1, TEST_IDENTITY_ID_2, TEST_IDENTITY_ID_3, TEST_REQUESTID, TEST_SYSTEMID, TEST_TXID } from '../constants/fixtures';
 import { ProvisionIdentityDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals/ProvisionIdentityDetailsOrdinalVDXFObject';
@@ -48,6 +50,7 @@ import { VerifiableSignatureData } from '../../vdxf/classes/VerifiableSignatureD
 import { SaplingExtendedSpendingKey } from '../../pbaas/SaplingExtendedSpendingKey';
 import { SaplingExtendedViewingKey } from '../../pbaas/SaplingExtendedViewingKey';
 import { VERUSPAY_INVOICE_DETAILS_VDXF_KEY } from '../../vdxf';
+import { entropyToMnemonic, mnemonicToEntropy } from 'bip39';
 
 // Helper function to create TransferDestination from address string
 function createCompactAddressObject(type: BigNumber, address: string): CompactIAddressObject {
@@ -105,6 +108,8 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
       newObj = AppEncryptionResponseOrdinalVDXFObject.fromJson(json as any);
     } else if (obj instanceof CreateWalletBackupDetailsOrdinalVDXFObject) {
       newObj = CreateWalletBackupDetailsOrdinalVDXFObject.fromJson(json as any);
+    } else if (obj instanceof WalletBackupOrdinalVDXFObject) {
+      newObj = WalletBackupOrdinalVDXFObject.fromJson(json as any);
     } else {
       throw new Error("Unrecognized type");
     }
@@ -477,6 +482,8 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
       .toBe(AppEncryptionResponseOrdinalVDXFObject);
     expect(getOrdinalVDXFObjectClassForType(CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL))
       .toBe(CreateWalletBackupDetailsOrdinalVDXFObject);
+    expect(getOrdinalVDXFObjectClassForType(WALLET_BACKUP_VDXF_ORDINAL))
+      .toBe(WalletBackupOrdinalVDXFObject);
 
     // unrecognized
     expect(() => getOrdinalVDXFObjectClassForType(new BN(999))).toThrow();
@@ -646,5 +653,82 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     const roundJ = roundTripJson(obj);
     expect(roundJ).toBeInstanceOf(CreateWalletBackupDetailsOrdinalVDXFObject);
     expect((roundJ as CreateWalletBackupDetailsOrdinalVDXFObject).data.backupType.toString()).toBe("3");
+  });
+
+  it('should serialize / deserialize an unencrypted WalletBackupOrdinalVDXFObject', () => {
+    const mnemonic = 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const entropy = Buffer.from(mnemonicToEntropy(mnemonic), 'hex');
+    const backup = new WalletBackup({
+      seedFormat: WalletBackup.SEED_FORMAT_BIP39,
+      encryptionFormat: WalletBackup.ENCRYPTION_FORMAT_NONE,
+      data: entropy
+    });
+
+    expect(backup.isEncrypted()).toBe(false);
+    expect(backup.isBIP39()).toBe(true);
+    expect(backup.isValid()).toBe(true);
+
+    const obj = new WalletBackupOrdinalVDXFObject({ data: backup });
+    const round = roundTripBuffer(obj);
+
+    expect(round).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
+    const d2 = (round as WalletBackupOrdinalVDXFObject).data;
+    expect(d2.flags.toString()).toBe("0");
+    expect(d2.seedFormat.toString()).toBe(WalletBackup.SEED_FORMAT_BIP39.toString());
+    expect(d2.encryptionFormat.toString()).toBe(WalletBackup.ENCRYPTION_FORMAT_NONE.toString());
+    expect(d2.data).toEqual(entropy);
+    expect(entropyToMnemonic(d2.data)).toBe(mnemonic);
+
+    const json = obj.toJson();
+    expect(json.type).toBe(WALLET_BACKUP_VDXF_ORDINAL.toString());
+    expect(json.data).toEqual({
+      flags: 0,
+      seedformat: 1,
+      encryptionformat: 0,
+      data: entropy.toString('hex')
+    });
+
+    const roundJ = roundTripJson(obj);
+    expect(roundJ).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
+    expect((roundJ as WalletBackupOrdinalVDXFObject).data.data).toEqual(entropy);
+    expect(entropyToMnemonic((roundJ as WalletBackupOrdinalVDXFObject).data.data)).toBe(mnemonic);
+  });
+
+  it('should serialize / deserialize an encrypted WalletBackupOrdinalVDXFObject with kdf iterations', () => {
+    const encryptedSeed = Buffer.from('00112233445566778899aabbccddeeff', 'hex');
+    const backup = new WalletBackup({
+      flags: WalletBackup.FLAG_ENCRYPTED.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS),
+      seedFormat: WalletBackup.SEED_FORMAT_BIP39,
+      encryptionFormat: WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM,
+      data: encryptedSeed
+    });
+
+    expect(backup.isEncrypted()).toBe(true);
+    expect(backup.containsKdfIters()).toBe(true);
+    expect(backup.usesSaltedTaggedAes256Gcm()).toBe(true);
+    expect(backup.isValid()).toBe(true);
+
+    const invalidBackup = new WalletBackup({
+      flags: WalletBackup.FLAG_ENCRYPTED,
+      seedFormat: WalletBackup.SEED_FORMAT_BIP39,
+      encryptionFormat: WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM,
+      data: encryptedSeed
+    });
+
+    expect(invalidBackup.isValid()).toBe(false);
+
+    const obj = new WalletBackupOrdinalVDXFObject({ data: backup });
+    const round = roundTripBuffer(obj);
+
+    expect(round).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
+    const d2 = (round as WalletBackupOrdinalVDXFObject).data;
+    expect(d2.flags.toString()).toBe(WalletBackup.FLAG_ENCRYPTED.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS).toString());
+    expect(d2.encryptionFormat.toString()).toBe(WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM.toString());
+    expect(d2.data).toEqual(encryptedSeed);
+
+    const roundJ = roundTripJson(obj);
+    expect(roundJ).toBeInstanceOf(WalletBackupOrdinalVDXFObject);
+    expect((roundJ as WalletBackupOrdinalVDXFObject).data.isValid()).toBe(true);
+    expect((roundJ as WalletBackupOrdinalVDXFObject).data.data).toEqual(encryptedSeed);
   });
 });

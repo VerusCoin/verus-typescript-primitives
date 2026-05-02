@@ -790,3 +790,13 @@ export const CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY: VDXFKeyInterface = {
   },
   "vdxfid": "iLJairqKnND43hbAc7jistaoYNUGHmX254"
 }
+
+export const WALLET_BACKUP: VDXFKeyInterface = {
+  "hash160result": "e747f94b1bef20e309ec94f1fdbe95ccf9343a9a",
+  "indexid": "xNN7gi26CfH99F7gfxjhDswto5PSiLbgaW",
+  "qualifiedname": {
+    "name": "vrsc::wallet.backup",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iHY1Dub1MM4UX5EepH5YFVRMmRNRs8chRe"
+}

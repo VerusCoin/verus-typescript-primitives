@@ -31,4 +31,5 @@ __exportStar(require("./DataResponseOrdinalVDXFObject"), exports);
 __exportStar(require("./UserDataRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./DataPacketRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./CreateWalletBackupDetailsOrdinalVDXFObject"), exports);
+__exportStar(require("./WalletBackupOrdinalVDXFObject"), exports);
 (0, register_1.registerOrdinals)();
