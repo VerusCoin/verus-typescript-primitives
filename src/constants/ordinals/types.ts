@@ -20,6 +20,8 @@ import {
   CreateWalletBackupDetailsJson,
   WalletBackup,
   WalletBackupJson,
+  SpendableKeyDetails,
+  SpendableKeyDetailsJson,
   VerusPayInvoiceDetails,
   AppEncryptionResponseDetails,
   AppEncryptionResponseDetailsJson 
@@ -41,6 +43,7 @@ export type OrdinalVDXFObjectReservedData =
   DataPacketRequestDetails |
   CreateWalletBackupDetails |
   WalletBackup |
+  SpendableKeyDetails |
   AppEncryptionResponseDetails;
 
 export type OrdinalVDXFObjectReservedDataJson = 
@@ -57,4 +60,5 @@ export type OrdinalVDXFObjectReservedDataJson =
   DataPacketRequestDetailsJson |
   CreateWalletBackupDetailsJson |
   WalletBackupJson |
+  SpendableKeyDetailsJson |
   AppEncryptionResponseDetailsJson;

@@ -800,3 +800,13 @@ export const WALLET_BACKUP: VDXFKeyInterface = {
   },
   "vdxfid": "iHY1Dub1MM4UX5EepH5YFVRMmRNRs8chRe"
 }
+
+export const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface = {
+  "hash160result": "ebc879cb15fd46ef0c5537eece38b0d00331bd2c",
+  "indexid": "xVoLrFs9gtS3EBFRUTQeyhzPfAdFX7xYs6",
+  "qualifiedname": {
+    "name": "vrsc::spendable.key.details",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iQyEPTS4qaDNc1NPcmkW1KTrdWcEfQdm5Y"
+}

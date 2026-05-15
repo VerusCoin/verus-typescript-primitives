@@ -15,3 +15,4 @@ export * from './UserDataRequestOrdinalVDXFObject';
 export * from './DataPacketRequestOrdinalVDXFObject';
 export * from './CreateWalletBackupDetailsOrdinalVDXFObject';
 export * from './WalletBackupOrdinalVDXFObject';
+export * from './SpendableKeyDetailsOrdinalVDXFObject';

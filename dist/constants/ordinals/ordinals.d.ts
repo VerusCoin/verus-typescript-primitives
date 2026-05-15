@@ -15,3 +15,4 @@ export declare const USER_DATA_REQUEST_VDXF_ORDINAL: import("bn.js");
 export declare const DATA_RESPONSE_VDXF_ORDINAL: import("bn.js");
 export declare const CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL: import("bn.js");
 export declare const WALLET_BACKUP_VDXF_ORDINAL: import("bn.js");
+export declare const SPENDABLE_KEY_DETAILS_VDXF_ORDINAL: import("bn.js");

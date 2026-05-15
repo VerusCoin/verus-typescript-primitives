@@ -2,90 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletBackup = void 0;
 const bn_js_1 = require("bn.js");
-const bufferutils_1 = require("../../../utils/bufferutils");
-const varuint_1 = require("../../../utils/varuint");
-const { BufferReader, BufferWriter } = bufferutils_1.default;
-class WalletBackup {
+const SeedDetails_1 = require("./SeedDetails");
+class WalletBackup extends SeedDetails_1.SeedDetails {
     constructor(data) {
-        this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0, 10);
-        this.seedFormat = (data === null || data === void 0 ? void 0 : data.seedFormat) || WalletBackup.DEFAULT_SEED_FORMAT;
-        this.encryptionFormat = (data === null || data === void 0 ? void 0 : data.encryptionFormat) || WalletBackup.DEFAULT_ENCRYPTION_FORMAT;
-        this.KDFIters = (data === null || data === void 0 ? void 0 : data.KDFIters) || new bn_js_1.BN(0, 10);
-        this.data = (data === null || data === void 0 ? void 0 : data.data) || Buffer.alloc(0);
-        if (data === null || data === void 0 ? void 0 : data.encrypted)
-            this.setEncrypted();
-        if (data === null || data === void 0 ? void 0 : data.containsKDFIters)
-            this.setContainsKDFIters();
-    }
-    isEncrypted() {
-        return this.flags.and(WalletBackup.FLAG_ENCRYPTED).eq(WalletBackup.FLAG_ENCRYPTED);
-    }
-    containsKDFIters() {
-        return this.flags.and(WalletBackup.FLAG_CONTAINS_KDF_ITERS).eq(WalletBackup.FLAG_CONTAINS_KDF_ITERS);
-    }
-    setEncrypted() {
-        this.flags = this.flags.or(WalletBackup.FLAG_ENCRYPTED);
-    }
-    setContainsKDFIters() {
-        this.flags = this.flags.or(WalletBackup.FLAG_CONTAINS_KDF_ITERS);
-    }
-    isBIP39() {
-        return this.seedFormat.eq(WalletBackup.SEED_FORMAT_BIP39);
-    }
-    usesSaltedTaggedAes256Gcm() {
-        return this.encryptionFormat.eq(WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM);
-    }
-    isValid() {
-        let valid = this.flags.gte(new bn_js_1.BN(0, 10));
-        valid && (valid = this.seedFormat.gte(new bn_js_1.BN(1, 10)));
-        valid && (valid = this.encryptionFormat.gte(new bn_js_1.BN(0, 10)));
-        valid && (valid = this.KDFIters.gte(new bn_js_1.BN(0, 10)));
-        valid && (valid = Buffer.isBuffer(this.data));
-        if (this.isEncrypted() && this.usesSaltedTaggedAes256Gcm()) {
-            valid && (valid = this.containsKDFIters());
-        }
-        return valid;
-    }
-    getByteLength() {
-        let length = 0;
-        length += varuint_1.default.encodingLength(this.flags.toNumber());
-        length += varuint_1.default.encodingLength(this.seedFormat.toNumber());
-        length += varuint_1.default.encodingLength(this.encryptionFormat.toNumber());
-        if (this.containsKDFIters())
-            length += varuint_1.default.encodingLength(this.KDFIters.toNumber());
-        length += varuint_1.default.encodingLength(this.data.length);
-        length += this.data.length;
-        return length;
-    }
-    toBuffer() {
-        const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
-        writer.writeCompactSize(this.flags.toNumber());
-        writer.writeCompactSize(this.seedFormat.toNumber());
-        writer.writeCompactSize(this.encryptionFormat.toNumber());
-        if (this.containsKDFIters())
-            writer.writeCompactSize(this.KDFIters.toNumber());
-        writer.writeVarSlice(this.data);
-        return writer.buffer;
-    }
-    fromBuffer(buffer, offset = 0) {
-        const reader = new BufferReader(buffer, offset);
-        this.flags = new bn_js_1.BN(reader.readCompactSize(), 10);
-        this.seedFormat = new bn_js_1.BN(reader.readCompactSize(), 10);
-        this.encryptionFormat = new bn_js_1.BN(reader.readCompactSize(), 10);
-        this.KDFIters = this.containsKDFIters() ? new bn_js_1.BN(reader.readCompactSize(), 10) : new bn_js_1.BN(0, 10);
-        this.data = reader.readVarSlice();
-        return reader.offset;
-    }
-    toJson() {
-        const json = {
-            flags: this.flags.toNumber(),
-            seedformat: this.seedFormat.toNumber(),
-            encryptionformat: this.encryptionFormat.toNumber(),
-            data: this.data.toString('hex')
-        };
-        if (this.containsKDFIters())
-            json.KDFIters = this.KDFIters.toNumber();
-        return json;
+        super(data);
     }
     static fromJson(json) {
         var _a, _b, _c, _d;
@@ -99,10 +19,10 @@ class WalletBackup {
     }
 }
 exports.WalletBackup = WalletBackup;
-WalletBackup.FLAG_ENCRYPTED = new bn_js_1.BN(1, 10);
-WalletBackup.FLAG_CONTAINS_KDF_ITERS = new bn_js_1.BN(2, 10);
-WalletBackup.SEED_FORMAT_BIP39 = new bn_js_1.BN(1, 10);
-WalletBackup.DEFAULT_SEED_FORMAT = WalletBackup.SEED_FORMAT_BIP39;
-WalletBackup.ENCRYPTION_FORMAT_NONE = new bn_js_1.BN(0, 10);
-WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM = new bn_js_1.BN(1, 10);
-WalletBackup.DEFAULT_ENCRYPTION_FORMAT = WalletBackup.ENCRYPTION_FORMAT_NONE;
+WalletBackup.FLAG_ENCRYPTED = SeedDetails_1.SeedDetails.FLAG_ENCRYPTED;
+WalletBackup.FLAG_CONTAINS_KDF_ITERS = SeedDetails_1.SeedDetails.FLAG_CONTAINS_KDF_ITERS;
+WalletBackup.SEED_FORMAT_BIP39 = SeedDetails_1.SeedDetails.SEED_FORMAT_BIP39;
+WalletBackup.DEFAULT_SEED_FORMAT = SeedDetails_1.SeedDetails.DEFAULT_SEED_FORMAT;
+WalletBackup.ENCRYPTION_FORMAT_NONE = SeedDetails_1.SeedDetails.ENCRYPTION_FORMAT_NONE;
+WalletBackup.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM = SeedDetails_1.SeedDetails.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM;
+WalletBackup.DEFAULT_ENCRYPTION_FORMAT = SeedDetails_1.SeedDetails.DEFAULT_ENCRYPTION_FORMAT;

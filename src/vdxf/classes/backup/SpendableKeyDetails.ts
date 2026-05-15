@@ -1,10 +1,10 @@
 import { BN } from 'bn.js';
 import { SeedDetails, SeedDetailsInterface, SeedDetailsJson } from './SeedDetails';
 
-export type WalletBackupInterface = SeedDetailsInterface;
-export type WalletBackupJson = SeedDetailsJson;
+export type SpendableKeyDetailsInterface = SeedDetailsInterface;
+export type SpendableKeyDetailsJson = SeedDetailsJson;
 
-export class WalletBackup extends SeedDetails {
+export class SpendableKeyDetails extends SeedDetails {
   static FLAG_ENCRYPTED = SeedDetails.FLAG_ENCRYPTED;
   static FLAG_CONTAINS_KDF_ITERS = SeedDetails.FLAG_CONTAINS_KDF_ITERS;
 
@@ -15,15 +15,15 @@ export class WalletBackup extends SeedDetails {
   static ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM = SeedDetails.ENCRYPTION_FORMAT_SALTED_TAGGED_AES_256_GCM;
   static DEFAULT_ENCRYPTION_FORMAT = SeedDetails.DEFAULT_ENCRYPTION_FORMAT;
 
-  constructor(data?: WalletBackupInterface) {
+  constructor(data?: SpendableKeyDetailsInterface) {
     super(data);
   }
 
-  static fromJson(json: WalletBackupJson): WalletBackup {
-    return new WalletBackup({
+  static fromJson(json: SpendableKeyDetailsJson): SpendableKeyDetails {
+    return new SpendableKeyDetails({
       flags: new BN(json.flags ?? 0, 10),
-      seedFormat: new BN(json.seedformat ?? WalletBackup.DEFAULT_SEED_FORMAT.toNumber(), 10),
-      encryptionFormat: new BN(json.encryptionformat ?? WalletBackup.DEFAULT_ENCRYPTION_FORMAT.toNumber(), 10),
+      seedFormat: new BN(json.seedformat ?? SpendableKeyDetails.DEFAULT_SEED_FORMAT.toNumber(), 10),
+      encryptionFormat: new BN(json.encryptionformat ?? SpendableKeyDetails.DEFAULT_ENCRYPTION_FORMAT.toNumber(), 10),
       KDFIters: new BN(json.KDFIters ?? 0, 10),
       data: json.data ? Buffer.from(json.data, 'hex') : Buffer.alloc(0)
     });
