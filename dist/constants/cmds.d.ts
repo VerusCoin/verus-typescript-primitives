@@ -1,6 +1,7 @@
 export declare const MAKE_OFFER = "makeoffer";
 export declare const GET_OFFERS = "getoffers";
 export declare const GET_IDENTITY = "getidentity";
+export declare const GET_IDENTITIES_WITH_ADDRESS = "getidentitieswithaddress";
 export declare const GET_IDENTITY_CONTENT = "getidentitycontent";
 export declare const GET_CURRENCY = "getcurrency";
 export declare const GET_ADDRESS_BALANCE = "getaddressbalance";

@@ -13,6 +13,8 @@ import { GetVdxfIdResponse } from './GetVdxfId/GetVdxfIdResponse'
 import { GetIdentityRequest } from './GetIdentity/GetIdentityRequest'
 import { GetIdentityContentRequest } from './GetIdentityContent/GetIdentityContentRequest'
 import { GetIdentityResponse } from './GetIdentity/GetIdentityResponse'
+import { GetIdentitiesWithAddressRequest } from './GetIdentitiesWithAddress/GetIdentitiesWithAddressRequest'
+import { GetIdentitiesWithAddressResponse } from './GetIdentitiesWithAddress/GetIdentitiesWithAddressResponse'
 import { GetCurrencyRequest } from './GetCurrency/GetCurrencyRequest'
 import { GetCurrencyResponse } from './GetCurrency/GetCurrencyResponse'
 import { GetInfoRequest } from './GetInfo/GetInfoRequest'
@@ -68,6 +70,8 @@ export {
   GetIdentityRequest,
   GetIdentityContentRequest,
   GetIdentityResponse,
+  GetIdentitiesWithAddressRequest,
+  GetIdentitiesWithAddressResponse,
   GetCurrencyRequest,
   GetCurrencyResponse,
   GetOffersRequest,
@@ -117,6 +121,7 @@ export type RpcRequest =
   | typeof GetInfoRequest
   | typeof GetIdentityRequest
   | typeof GetIdentityContentRequest
+  | typeof GetIdentitiesWithAddressRequest
   | typeof GetCurrencyRequest
   | typeof SendRawTransactionRequest
   | typeof GetRawTransactionRequest
@@ -144,6 +149,7 @@ export type RpcResponse =
   | typeof GetVdxfIdResponse
   | typeof GetInfoResponse
   | typeof GetIdentityResponse
+  | typeof GetIdentitiesWithAddressResponse
   | typeof GetCurrencyResponse
   | typeof SendRawTransactionResponse
   | typeof GetRawTransactionResponse

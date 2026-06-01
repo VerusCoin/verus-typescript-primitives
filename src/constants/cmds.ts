@@ -1,6 +1,7 @@
 export const MAKE_OFFER = 'makeoffer'
 export const GET_OFFERS = 'getoffers'
 export const GET_IDENTITY = 'getidentity'
+export const GET_IDENTITIES_WITH_ADDRESS = 'getidentitieswithaddress'
 export const GET_IDENTITY_CONTENT = 'getidentitycontent'
 export const GET_CURRENCY = 'getcurrency'
 export const GET_ADDRESS_BALANCE = 'getaddressbalance'
