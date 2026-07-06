@@ -19,7 +19,8 @@ const AppEncryptionResponseOrdinalVDXFObject_1 = require("../../vdxf/classes/ord
 const CreateWalletBackupDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/CreateWalletBackupDetailsOrdinalVDXFObject");
 const WalletBackupOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/WalletBackupOrdinalVDXFObject");
 const SpendableKeyDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/SpendableKeyDetailsOrdinalVDXFObject");
-// This is where all ordinals are currently registered for ordinal VDXF objects. Standard naming convention for the VDXF keys is to
+const MarketplaceMakeOfferRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/MarketplaceMakeOfferRequestOrdinalVDXFObject");
+const MarketplaceTakeOfferRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/MarketplaceTakeOfferRequestOrdinalVDXFObject");
 // include the word "response" at the end if it is a response and "request" at the end if it is a request. In case it isn't a request
 // (an object expecting a response) or a response, you can use the world "details" at the end, but best not to mix request + details
 // or response + details
@@ -39,5 +40,7 @@ const registerOrdinals = () => {
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL.toNumber(), vdxf_1.CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY.vdxfid, CreateWalletBackupDetailsOrdinalVDXFObject_1.CreateWalletBackupDetailsOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.WALLET_BACKUP_VDXF_ORDINAL.toNumber(), vdxf_1.WALLET_BACKUP.vdxfid, WalletBackupOrdinalVDXFObject_1.WalletBackupOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.SPENDABLE_KEY_DETAILS_VDXF_ORDINAL.toNumber(), vdxf_1.SPENDABLE_KEY_DETAILS_VDXF_KEY.vdxfid, SpendableKeyDetailsOrdinalVDXFObject_1.SpendableKeyDetailsOrdinalVDXFObject, false);
+    OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.MARKETPLACE_MAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceMakeOfferRequestOrdinalVDXFObject_1.MarketplaceMakeOfferRequestOrdinalVDXFObject, false);
+    OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.MARKETPLACE_TAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceTakeOfferRequestOrdinalVDXFObject_1.MarketplaceTakeOfferRequestOrdinalVDXFObject, false);
 };
 exports.registerOrdinals = registerOrdinals;

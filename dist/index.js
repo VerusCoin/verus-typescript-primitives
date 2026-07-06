@@ -23,6 +23,7 @@ __exportStar(require("./vdxf/classes/index"), exports);
 __exportStar(require("./vdxf/index"), exports);
 __exportStar(require("./vdxf/parser"), exports);
 __exportStar(require("./utils/address"), exports);
+__exportStar(require("./utils/onchainoffers"), exports);
 __exportStar(require("./utils/bufferutils"), exports);
 __exportStar(require("./utils/varuint"), exports);
 __exportStar(require("./utils/ops"), exports);

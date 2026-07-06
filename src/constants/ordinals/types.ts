@@ -24,7 +24,11 @@ import {
   SpendableKeyDetailsJson,
   VerusPayInvoiceDetails,
   AppEncryptionResponseDetails,
-  AppEncryptionResponseDetailsJson 
+  AppEncryptionResponseDetailsJson,
+  MarketplaceMakeOfferRequestDetails,
+  MarketplaceMakeOfferRequestDetailsJson,
+  MarketplaceTakeOfferRequestDetails,
+  MarketplaceTakeOfferRequestDetailsJson
 } from "../../vdxf/classes";
 import { VerusPayInvoiceDetailsJson } from "../../vdxf/classes/payment/VerusPayInvoiceDetails";
 import { DataResponseDetails, DataResponseDetailsJson } from "../../vdxf/classes/data/DataResponseDetails";
@@ -44,7 +48,9 @@ export type OrdinalVDXFObjectReservedData =
   CreateWalletBackupDetails |
   WalletBackup |
   SpendableKeyDetails |
-  AppEncryptionResponseDetails;
+  AppEncryptionResponseDetails |
+  MarketplaceMakeOfferRequestDetails |
+  MarketplaceTakeOfferRequestDetails;
 
 export type OrdinalVDXFObjectReservedDataJson = 
   DataDescriptorJson | 
@@ -61,4 +67,6 @@ export type OrdinalVDXFObjectReservedDataJson =
   CreateWalletBackupDetailsJson |
   WalletBackupJson |
   SpendableKeyDetailsJson |
-  AppEncryptionResponseDetailsJson;
+  AppEncryptionResponseDetailsJson |
+  MarketplaceMakeOfferRequestDetailsJson |
+  MarketplaceTakeOfferRequestDetailsJson;

@@ -94,3 +94,5 @@ export declare const APP_ENCRYPTION_RESPONSE_VDXF_KEY: VDXFKeyInterface;
 export declare const CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY: VDXFKeyInterface;
 export declare const WALLET_BACKUP: VDXFKeyInterface;
 export declare const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface;
+export declare const MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface;
+export declare const MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface;

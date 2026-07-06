@@ -810,3 +810,23 @@ export const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface = {
   },
   "vdxfid": "iQyEPTS4qaDNc1NPcmkW1KTrdWcEfQdm5Y"
 }
+
+export const MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "iQiUWZcSFQKrGumFwmsBXfjRLfYVpRMaKG",
+  "indexid": "xVYayN3X6iYWu5eHoTXLW4FxNKZWhFqopE",
+  "hash160result": "98d138508ac4ead9082dba5b558db7ca7406fee8",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::request.marketplace.makeoffer"
+  }
+}
+
+export const MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "iF3YnfPRipDxsH52BLYaKuqncTr4XHF3Lx",
+  "indexid": "xKsfFTpWa8SdVSx432CjJJNKe7s5QVBdaW",
+  "hash160result": "708855f407d71eca7032a126393c1e52cc3de87e",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::request.marketplace.takeoffer"
+  }
+}

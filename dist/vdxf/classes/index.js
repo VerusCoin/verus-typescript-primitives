@@ -46,6 +46,8 @@ __exportStar(require("./identity/IdentityUpdateResponseDetails"), exports);
 __exportStar(require("./ResponseURI"), exports);
 __exportStar(require("./RequestURI"), exports);
 __exportStar(require("./request/GenericRequest"), exports);
+__exportStar(require("./request/MarketplaceMakeOfferRequestDetails"), exports);
+__exportStar(require("./request/MarketplaceTakeOfferRequestDetails"), exports);
 __exportStar(require("./response/GenericResponse"), exports);
 __exportStar(require("./appencryption/AppEncryptionResponseDetails"), exports);
 __exportStar(require("./data/DataResponseDetails"), exports);

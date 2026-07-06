@@ -6,6 +6,7 @@ export * from './vdxf/classes/index';
 export * from './vdxf/index';
 export * from './vdxf/parser';
 export * from './utils/address';
+export * from './utils/onchainoffers';
 export * from './utils/bufferutils';
 export * from './utils/varuint';
 export * from './utils/ops';
