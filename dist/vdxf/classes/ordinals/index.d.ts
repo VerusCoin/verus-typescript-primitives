@@ -18,3 +18,4 @@ export * from './WalletBackupOrdinalVDXFObject';
 export * from './SpendableKeyDetailsOrdinalVDXFObject';
 export * from './MarketplaceMakeOfferRequestOrdinalVDXFObject';
 export * from './MarketplaceTakeOfferRequestOrdinalVDXFObject';
+export * from './MarketplaceCloseOfferRequestOrdinalVDXFObject';

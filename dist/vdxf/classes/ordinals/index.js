@@ -35,4 +35,5 @@ __exportStar(require("./WalletBackupOrdinalVDXFObject"), exports);
 __exportStar(require("./SpendableKeyDetailsOrdinalVDXFObject"), exports);
 __exportStar(require("./MarketplaceMakeOfferRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./MarketplaceTakeOfferRequestOrdinalVDXFObject"), exports);
+__exportStar(require("./MarketplaceCloseOfferRequestOrdinalVDXFObject"), exports);
 (0, register_1.registerOrdinals)();

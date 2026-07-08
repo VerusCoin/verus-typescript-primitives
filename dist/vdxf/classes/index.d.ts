@@ -27,6 +27,7 @@ export * from './RequestURI';
 export * from './request/GenericRequest';
 export * from './request/MarketplaceMakeOfferRequestDetails';
 export * from './request/MarketplaceTakeOfferRequestDetails';
+export * from './request/MarketplaceCloseOfferRequestDetails';
 export * from './response/GenericResponse';
 export * from './appencryption/AppEncryptionResponseDetails';
 export * from './data/DataResponseDetails';

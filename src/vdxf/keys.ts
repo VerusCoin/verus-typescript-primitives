@@ -830,3 +830,13 @@ export const MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface = {
     "name": "vrsc::request.marketplace.takeoffer"
   }
 }
+
+export const MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "i6P9nvfandSDfAJ6Kt3BEVkVbpyYZe79t9",
+  "indexid": "xBDGFj6fdwetHLB8BZhLCtH2dUzZQgpn7p",
+  "hash160result": "0e50d4be70fc06be491e517447fe13e2a13be41f",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::request.marketplace.closeoffer"
+  }
+}
