@@ -95,7 +95,7 @@ const compactSize = (n: number): Buffer => {
 export const buildListingOpReturnScript = (signedOfferTxHex: string): Buffer => {
   const tx = Buffer.from(signedOfferTxHex, "hex");
   const payload = Buffer.concat([
-    Buffer.from("0500000003000101000000000100000000", "hex"),
+    Buffer.from("0500000003000201000000000100000000", "hex"),
     compactSize(tx.length),
     tx,
     Buffer.alloc(4),
