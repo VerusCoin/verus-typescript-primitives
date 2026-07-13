@@ -3,6 +3,7 @@ import { OrdinalVDXFObject, OrdinalVDXFObjectJson } from "../ordinals/OrdinalVDX
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from "../VerifiableSignatureData";
 import { CompactAddressObjectJson, CompactIAddressObject } from "../CompactAddressObject";
+import { DataDescriptorOrdinalVDXFObject } from "../ordinals/DataDescriptorOrdinalVDXFObject";
 export interface GenericEnvelopeInterface {
     version?: BigNumber;
     flags?: BigNumber;
@@ -44,6 +45,7 @@ export declare class GenericEnvelope implements SerializableEntity {
     static FLAG_IS_TESTNET: import("bn.js");
     static FLAG_HAS_SALT: import("bn.js");
     static FLAG_HAS_APP_OR_DELEGATED_ID: import("bn.js");
+    static FLAG_DETAILS_ARE_ENCRYPTED: import("bn.js");
     constructor(envelope?: GenericEnvelopeInterface);
     isValidVersion(): boolean;
     isSigned(): boolean;
@@ -53,6 +55,7 @@ export declare class GenericEnvelope implements SerializableEntity {
     hasSalt(): boolean;
     hasAppOrDelegatedID(): boolean;
     isTestnet(): boolean;
+    detailsAreEncrypted(): boolean;
     setSigned(): void;
     setHasRequestID(): void;
     setHasMultiDetails(): void;
@@ -60,10 +63,12 @@ export declare class GenericEnvelope implements SerializableEntity {
     setHasSalt(): void;
     setHasAppOrDelegatedID(): void;
     setIsTestnet(): void;
+    setDetailsAreEncrypted(): void;
     setFlags(): void;
     getRawDataSha256(includeSig?: boolean): Buffer<ArrayBufferLike>;
     getDetailsIdentitySignatureHash(signedBlockheight: number): Buffer<ArrayBufferLike>;
     getDetails(index?: number): OrdinalVDXFObject;
+    protected getEncryptedDetailsDescriptor(): DataDescriptorOrdinalVDXFObject;
     getDetailsBufferLength(): number;
     getDetailsBuffer(): Buffer;
     setDetailsFromBuffer(buffer: Buffer, offset?: number): number;

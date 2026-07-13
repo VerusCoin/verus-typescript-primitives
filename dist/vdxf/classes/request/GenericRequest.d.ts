@@ -26,6 +26,7 @@ export declare class GenericRequest extends GenericEnvelope implements Serializa
     static FLAG_IS_TESTNET: import("bn.js");
     static FLAG_HAS_SALT: import("bn.js");
     static FLAG_HAS_APP_OR_DELEGATED_ID: import("bn.js");
+    static FLAG_DETAILS_ARE_ENCRYPTED: import("bn.js");
     static FLAG_HAS_RESPONSE_URIS: import("bn.js");
     static FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS: import("bn.js");
     static FLAG_HAS_PREFERRED_HANDLER: import("bn.js");

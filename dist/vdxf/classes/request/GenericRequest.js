@@ -154,6 +154,7 @@ GenericRequest.FLAG_MULTI_DETAILS = GenericEnvelope_1.GenericEnvelope.FLAG_MULTI
 GenericRequest.FLAG_IS_TESTNET = GenericEnvelope_1.GenericEnvelope.FLAG_IS_TESTNET;
 GenericRequest.FLAG_HAS_SALT = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_SALT;
 GenericRequest.FLAG_HAS_APP_OR_DELEGATED_ID = GenericEnvelope_1.GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID;
+GenericRequest.FLAG_DETAILS_ARE_ENCRYPTED = GenericEnvelope_1.GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED;
 GenericRequest.FLAG_HAS_RESPONSE_URIS = new bn_js_1.BN(128, 10);
 GenericRequest.FLAG_HAS_ENCRYPT_RESPONSE_TO_ADDRESS = new bn_js_1.BN(256, 10);
 GenericRequest.FLAG_HAS_PREFERRED_HANDLER = new bn_js_1.BN(512, 10);

@@ -1,11 +1,13 @@
 import { BN } from 'bn.js';
 import base64url from 'base64url';
+import { createHash } from 'crypto';
 import { DATA_TYPE_MMRDATA, DEFAULT_VERUS_CHAINID, HASH_TYPE_SHA256, NULL_I_ADDR } from '../../constants/pbaas';
 import { ContentMultiMap, CreateWalletBackupDetails, DEST_PKH, fromBase58Check, GenericRequest, IDENTITY_VERSION_PBAAS, IdentityID, IdentityUpdateRequestDetails, KeyID, PartialIdentity, PartialMMRData, PartialSignData, PartialSignDataInitData, ResponseURI, SaplingPaymentAddress, SpendableKeyDetails, TransferDestination, VerusPayInvoiceDetails } from '../../';
+import { DataDescriptor } from '../../pbaas/DataDescriptor';
 import { VerifiableSignatureData, VerifiableSignatureDataInterface } from '../../vdxf/classes/VerifiableSignatureData';
 import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject';
 import { KvMap } from '../../utils/KvMap';
-import { CreateWalletBackupDetailsOrdinalVDXFObject, GeneralTypeOrdinalVDXFObject, IdentityUpdateRequestOrdinalVDXFObject, SpendableKeyDetailsOrdinalVDXFObject, VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
+import { CreateWalletBackupDetailsOrdinalVDXFObject, DataDescriptorOrdinalVDXFObject, GeneralTypeOrdinalVDXFObject, IdentityUpdateRequestOrdinalVDXFObject, SpendableKeyDetailsOrdinalVDXFObject, VerusPayInvoiceDetailsOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
 import { DEEPLINK_PROTOCOL_URL_CURRENT_VERSION, DEEPLINK_PROTOCOL_URL_STRING } from '../../constants/deeplink';
 
 describe('GenericRequest — buffer / URI / QR operations', () => {
@@ -15,6 +17,23 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
     clone.fromBuffer(buf, 0);
     
     return GenericRequest.fromQrString((GenericRequest.fromWalletDeeplinkUri(clone.toWalletDeeplinkUri())).toQrString());
+  }
+
+  function makeCipherData(plainText: Buffer): Buffer {
+    return Buffer.concat([
+      Buffer.from('encrypted-details:', 'utf8'),
+      createHash('sha256').update(plainText).digest()
+    ]);
+  }
+
+  function makeEncryptedDetailsDescriptor(cipherData: Buffer): DataDescriptorOrdinalVDXFObject {
+    return new DataDescriptorOrdinalVDXFObject({
+      data: new DataDescriptor({
+        flags: DataDescriptor.FLAG_ENCRYPTED_DATA,
+        objectdata: cipherData,
+        epk: Buffer.alloc(32, 1)
+      })
+    });
   }
 
   it('round trips with a single detail (no signature / createdAt)', () => {
@@ -55,6 +74,44 @@ describe('GenericRequest — buffer / URI / QR operations', () => {
     expect(round.details.length).toBe(2);
     expect((round.getDetails(0) as GeneralTypeOrdinalVDXFObject).data).toEqual(d1.data);
     expect((round.getDetails(1) as GeneralTypeOrdinalVDXFObject).data).toEqual(d2.data);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('round trips encrypted details with request-specific flags', () => {
+    const d1 = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('aa', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const d2 = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('bb', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const plaintextDetails = new GenericRequest({ details: [d1, d2] }).getDetailsBuffer();
+    const cipherData = makeCipherData(plaintextDetails);
+    const encryptedDetails = makeEncryptedDetailsDescriptor(cipherData);
+    const flags = GenericRequest.FLAG_DETAILS_ARE_ENCRYPTED.or(GenericRequest.FLAG_MULTI_DETAILS);
+    const req = new GenericRequest({
+      details: [encryptedDetails],
+      flags,
+      preferredHandler: 1
+    });
+
+    expect(GenericRequest.FLAG_DETAILS_ARE_ENCRYPTED.and(GenericRequest.FLAG_HAS_PREFERRED_HANDLER).eq(new BN(0))).toBe(true);
+    expect(cipherData).not.toEqual(plaintextDetails);
+    expect(req.detailsAreEncrypted()).toBe(true);
+    expect(req.hasMultiDetails()).toBe(true);
+    expect(req.hasPreferredHandler()).toBe(true);
+
+    const round = roundTripBuffer(req);
+    expect(round.detailsAreEncrypted()).toBe(true);
+    expect(round.hasMultiDetails()).toBe(true);
+    expect(round.hasPreferredHandler()).toBe(true);
+    expect(round.preferredHandler).toBe(1);
+    expect(round.details.length).toBe(1);
+    expect(round.getDetails(0)).toBeInstanceOf(DataDescriptorOrdinalVDXFObject);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.hasEPK()).toBe(true);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.objectdata).toEqual(cipherData);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.objectdata).not.toEqual(plaintextDetails);
     expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
   });
 

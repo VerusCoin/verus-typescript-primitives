@@ -8,6 +8,7 @@ import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { createHash } from "crypto";
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from "../VerifiableSignatureData";
 import { CompactAddressObjectJson, CompactIAddressObject } from "../CompactAddressObject";
+import { DataDescriptorOrdinalVDXFObject } from "../ordinals/DataDescriptorOrdinalVDXFObject";
 
 export interface GenericEnvelopeInterface {
   version?: BigNumber;
@@ -55,6 +56,7 @@ export class GenericEnvelope implements SerializableEntity {
   static FLAG_IS_TESTNET = new BN(16, 10)
   static FLAG_HAS_SALT = new BN(32, 10)
   static FLAG_HAS_APP_OR_DELEGATED_ID = new BN(64, 10);
+  static FLAG_DETAILS_ARE_ENCRYPTED = new BN(1024, 10);
 
   constructor(
     envelope: GenericEnvelopeInterface = {
@@ -110,6 +112,10 @@ export class GenericEnvelope implements SerializableEntity {
     return !!(this.flags.and(GenericEnvelope.FLAG_IS_TESTNET).toNumber());
   }
 
+  detailsAreEncrypted() {
+    return !!(this.flags.and(GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED).toNumber());
+  }
+
   setSigned() {
     this.flags = this.flags.or(GenericEnvelope.FLAG_SIGNED);
   }
@@ -138,6 +144,10 @@ export class GenericEnvelope implements SerializableEntity {
     this.flags = this.flags.or(GenericEnvelope.FLAG_IS_TESTNET);
   }
 
+  setDetailsAreEncrypted() {
+    this.flags = this.flags.or(GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED);
+  }
+
   setFlags() {
     if (this.signature) this.setSigned();
     if (this.requestID) this.setHasRequestID();
@@ -161,7 +171,29 @@ export class GenericEnvelope implements SerializableEntity {
     return this.details[index];
   }
 
+  protected getEncryptedDetailsDescriptor(): DataDescriptorOrdinalVDXFObject {
+    if (this.details == null || this.details.length !== 1) {
+      throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain exactly one DataDescriptorOrdinalVDXFObject");
+    }
+
+    const detail = this.details[0];
+
+    if (!(detail instanceof DataDescriptorOrdinalVDXFObject)) {
+      throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain a DataDescriptorOrdinalVDXFObject");
+    }
+
+    if (!detail.data.hasEncryptedData()) {
+      throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain an encrypted DataDescriptor");
+    }
+
+    return detail;
+  }
+
   getDetailsBufferLength(): number {
+    if (this.detailsAreEncrypted()) {
+      return this.getEncryptedDetailsDescriptor().getByteLength();
+    }
+
     let length = 0;
 
     if (this.hasMultiDetails()) {
@@ -182,7 +214,9 @@ export class GenericEnvelope implements SerializableEntity {
       Buffer.alloc(this.getDetailsBufferLength())
     );
 
-    if (this.hasMultiDetails()) {
+    if (this.detailsAreEncrypted()) {
+      writer.writeSlice(this.getEncryptedDetailsDescriptor().toBuffer());
+    } else if (this.hasMultiDetails()) {
       writer.writeCompactSize(this.details.length);
 
       for (const detail of this.details) {
@@ -199,7 +233,20 @@ export class GenericEnvelope implements SerializableEntity {
     const reader = new bufferutils.BufferReader(buffer, offset);
     const rootSystemName = this.isTestnet() ? 'VRSCTEST' : 'VRSC';
 
-    if (this.hasMultiDetails()) {
+    if (this.detailsAreEncrypted()) {
+      const ord = OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+
+      if (!(ord.obj instanceof DataDescriptorOrdinalVDXFObject)) {
+        throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain a DataDescriptorOrdinalVDXFObject");
+      }
+
+      if (!ord.obj.data.hasEncryptedData()) {
+        throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain an encrypted DataDescriptor");
+      }
+
+      reader.offset = ord.offset;
+      this.details = [ord.obj];
+    } else if (this.hasMultiDetails()) {
       this.details = [];
 
       const numItems = reader.readCompactSize();

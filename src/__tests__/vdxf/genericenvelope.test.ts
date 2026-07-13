@@ -1,13 +1,31 @@
-import { BN } from 'bn.js';
 import { DEFAULT_VERUS_CHAINID } from '../../constants/pbaas';
+import { createHash } from 'crypto';
+import { DataDescriptor } from '../../pbaas/DataDescriptor';
 import { GenericEnvelope } from '../../vdxf/classes/envelope/GenericEnvelope';
-import { GeneralTypeOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
+import { DataDescriptorOrdinalVDXFObject, GeneralTypeOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
 
 describe('GenericEnvelope — details isolating functions', () => {
   function makeDetail(hex: string): GeneralTypeOrdinalVDXFObject {
     return new GeneralTypeOrdinalVDXFObject({
       data: Buffer.from(hex, 'hex'),
       key: DEFAULT_VERUS_CHAINID,
+    });
+  }
+
+  function makeCipherData(plainText: Buffer): Buffer {
+    return Buffer.concat([
+      Buffer.from('encrypted-details:', 'utf8'),
+      createHash('sha256').update(plainText).digest()
+    ]);
+  }
+
+  function makeEncryptedDetailsDescriptor(cipherData: Buffer): DataDescriptorOrdinalVDXFObject {
+    return new DataDescriptorOrdinalVDXFObject({
+      data: new DataDescriptor({
+        flags: DataDescriptor.FLAG_ENCRYPTED_DATA,
+        objectdata: cipherData,
+        epk: Buffer.alloc(32, 1)
+      })
     });
   }
 
@@ -63,6 +81,61 @@ describe('GenericEnvelope — details isolating functions', () => {
       expect((restored.details[0] as GeneralTypeOrdinalVDXFObject).data).toEqual(d1.data);
       expect((restored.details[1] as GeneralTypeOrdinalVDXFObject).data).toEqual(d2.data);
       expect((restored.details[2] as GeneralTypeOrdinalVDXFObject).data).toEqual(d3.data);
+    });
+  });
+
+  describe('FLAG_DETAILS_ARE_ENCRYPTED', () => {
+    it('uses a non-colliding flag number above inherited request/response flags', () => {
+      expect(GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED.toNumber()).toBe(1024);
+    });
+
+    it('serializes one encrypted data descriptor even when the plaintext details were multi-detail', () => {
+      const d1 = makeDetail('11223344');
+      const d2 = makeDetail('55667788');
+      const plaintextDetails = new GenericEnvelope({ details: [d1, d2] }).getDetailsBuffer();
+      const cipherData = makeCipherData(plaintextDetails);
+      const encryptedDetails = makeEncryptedDetailsDescriptor(cipherData);
+      const flags = GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED.or(GenericEnvelope.FLAG_MULTI_DETAILS);
+      const env = new GenericEnvelope({ details: [encryptedDetails], flags });
+
+      expect(cipherData).not.toEqual(plaintextDetails);
+      expect(env.detailsAreEncrypted()).toBe(true);
+      expect(env.hasMultiDetails()).toBe(true);
+      expect(env.getDetailsBufferLength()).toBe(encryptedDetails.getByteLength());
+      expect(env.getDetailsBuffer().toString('hex')).toBe(encryptedDetails.toBuffer().toString('hex'));
+
+      const restored = new GenericEnvelope({ details: [], flags });
+      const endOffset = restored.setDetailsFromBuffer(env.getDetailsBuffer(), 0);
+
+      expect(endOffset).toBe(env.getDetailsBufferLength());
+      expect(restored.details.length).toBe(1);
+      expect(restored.getDetails(0)).toBeInstanceOf(DataDescriptorOrdinalVDXFObject);
+      const descriptor = restored.getDetails(0) as DataDescriptorOrdinalVDXFObject;
+      expect(descriptor.data.hasEncryptedData()).toBe(true);
+      expect(descriptor.data.hasEPK()).toBe(true);
+      expect(descriptor.data.objectdata).toEqual(cipherData);
+      expect(descriptor.data.objectdata).not.toEqual(plaintextDetails);
+    });
+
+    it('rejects the encrypted-details flag without a data descriptor', () => {
+      const env = new GenericEnvelope({
+        details: [makeDetail('aa')],
+        flags: GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED
+      });
+
+      expect(() => env.getDetailsBuffer()).toThrow(/DataDescriptorOrdinalVDXFObject/);
+    });
+
+    it('rejects a data descriptor that is not marked encrypted', () => {
+      const descriptor = new DataDescriptorOrdinalVDXFObject({
+        data: new DataDescriptor({ objectdata: Buffer.from('aa', 'hex') })
+      });
+      const env = new GenericEnvelope({
+        details: [descriptor],
+        flags: GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED
+      });
+
+      expect(() => env.getDetailsBuffer()).toThrow(/encrypted DataDescriptor/);
     });
   });
 

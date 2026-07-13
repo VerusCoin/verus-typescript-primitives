@@ -2,10 +2,11 @@ import { BN } from 'bn.js';
 import base64url from 'base64url';
 import { DEFAULT_VERUS_CHAINID, HASH_TYPE_SHA256, NULL_I_ADDR } from '../../constants/pbaas';
 import { GenericResponse, IdentityID, IdentityUpdateResponseDetails } from '../../';
+import { DataDescriptor } from '../../pbaas/DataDescriptor';
 import { createHash } from 'crypto';
 import { VerifiableSignatureData, VerifiableSignatureDataInterface } from '../../vdxf/classes/VerifiableSignatureData';
 import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject';
-import { GeneralTypeOrdinalVDXFObject, IdentityUpdateResponseOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
+import { DataDescriptorOrdinalVDXFObject, GeneralTypeOrdinalVDXFObject, IdentityUpdateResponseOrdinalVDXFObject } from '../../vdxf/classes/ordinals';
 import { TEST_TXID } from '../constants/fixtures';
 
 describe('GenericResponse — buffer / URI / QR operations', () => {
@@ -21,6 +22,23 @@ describe('GenericResponse — buffer / URI / QR operations', () => {
     // replicate the same behavior as getRawDetailsSha256()
     const buf = req['toBufferOptionalSig'](false);  // call internal method
     return createHash("sha256").update(buf).digest();
+  }
+
+  function makeCipherData(plainText: Buffer): Buffer {
+    return Buffer.concat([
+      Buffer.from('encrypted-details:', 'utf8'),
+      createHash('sha256').update(plainText).digest()
+    ]);
+  }
+
+  function makeEncryptedDetailsDescriptor(cipherData: Buffer): DataDescriptorOrdinalVDXFObject {
+    return new DataDescriptorOrdinalVDXFObject({
+      data: new DataDescriptor({
+        flags: DataDescriptor.FLAG_ENCRYPTED_DATA,
+        objectdata: cipherData,
+        epk: Buffer.alloc(32, 1)
+      })
+    });
   }
 
   it('round trips with a single detail (no signature / createdAt)', () => {
@@ -61,6 +79,44 @@ describe('GenericResponse — buffer / URI / QR operations', () => {
     expect(round.details.length).toBe(2);
     expect((round.getDetails(0) as GeneralTypeOrdinalVDXFObject).data).toEqual(d1.data);
     expect((round.getDetails(1) as GeneralTypeOrdinalVDXFObject).data).toEqual(d2.data);
+    expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
+  });
+
+  it('round trips encrypted details with response-specific flags', () => {
+    const d1 = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('aa', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const d2 = new GeneralTypeOrdinalVDXFObject({
+      data: Buffer.from('bb', 'hex'),
+      key: DEFAULT_VERUS_CHAINID
+    });
+    const plaintextDetails = new GenericResponse({ details: [d1, d2] }).getDetailsBuffer();
+    const cipherData = makeCipherData(plaintextDetails);
+    const encryptedDetails = makeEncryptedDetailsDescriptor(cipherData);
+    const flags = GenericResponse.FLAG_DETAILS_ARE_ENCRYPTED.or(GenericResponse.FLAG_MULTI_DETAILS);
+    const req = new GenericResponse({
+      details: [encryptedDetails],
+      flags,
+      handledBy: 1
+    });
+
+    expect(GenericResponse.FLAG_DETAILS_ARE_ENCRYPTED.and(GenericResponse.FLAG_HAS_HANDLED_BY).eq(new BN(0))).toBe(true);
+    expect(cipherData).not.toEqual(plaintextDetails);
+    expect(req.detailsAreEncrypted()).toBe(true);
+    expect(req.hasMultiDetails()).toBe(true);
+    expect(req.hasHandledBy()).toBe(true);
+
+    const round = roundTripBuffer(req);
+    expect(round.detailsAreEncrypted()).toBe(true);
+    expect(round.hasMultiDetails()).toBe(true);
+    expect(round.hasHandledBy()).toBe(true);
+    expect(round.handledBy).toBe(1);
+    expect(round.details.length).toBe(1);
+    expect(round.getDetails(0)).toBeInstanceOf(DataDescriptorOrdinalVDXFObject);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.hasEPK()).toBe(true);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.objectdata).toEqual(cipherData);
+    expect((round.getDetails(0) as DataDescriptorOrdinalVDXFObject).data.objectdata).not.toEqual(plaintextDetails);
     expect(round.toBuffer().toString('hex')).toEqual(req.toBuffer().toString('hex'));
   });
 

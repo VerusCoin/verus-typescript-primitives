@@ -9,6 +9,7 @@ const varuint_1 = require("../../../utils/varuint");
 const crypto_1 = require("crypto");
 const VerifiableSignatureData_1 = require("../VerifiableSignatureData");
 const CompactAddressObject_1 = require("../CompactAddressObject");
+const DataDescriptorOrdinalVDXFObject_1 = require("../ordinals/DataDescriptorOrdinalVDXFObject");
 class GenericEnvelope {
     constructor(envelope = {
         details: [],
@@ -54,6 +55,9 @@ class GenericEnvelope {
     isTestnet() {
         return !!(this.flags.and(GenericEnvelope.FLAG_IS_TESTNET).toNumber());
     }
+    detailsAreEncrypted() {
+        return !!(this.flags.and(GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED).toNumber());
+    }
     setSigned() {
         this.flags = this.flags.or(GenericEnvelope.FLAG_SIGNED);
     }
@@ -74,6 +78,9 @@ class GenericEnvelope {
     }
     setIsTestnet() {
         this.flags = this.flags.or(GenericEnvelope.FLAG_IS_TESTNET);
+    }
+    setDetailsAreEncrypted() {
+        this.flags = this.flags.or(GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED);
     }
     setFlags() {
         if (this.signature)
@@ -102,7 +109,23 @@ class GenericEnvelope {
     getDetails(index = 0) {
         return this.details[index];
     }
+    getEncryptedDetailsDescriptor() {
+        if (this.details == null || this.details.length !== 1) {
+            throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain exactly one DataDescriptorOrdinalVDXFObject");
+        }
+        const detail = this.details[0];
+        if (!(detail instanceof DataDescriptorOrdinalVDXFObject_1.DataDescriptorOrdinalVDXFObject)) {
+            throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain a DataDescriptorOrdinalVDXFObject");
+        }
+        if (!detail.data.hasEncryptedData()) {
+            throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain an encrypted DataDescriptor");
+        }
+        return detail;
+    }
     getDetailsBufferLength() {
+        if (this.detailsAreEncrypted()) {
+            return this.getEncryptedDetailsDescriptor().getByteLength();
+        }
         let length = 0;
         if (this.hasMultiDetails()) {
             length += varuint_1.default.encodingLength(this.details.length);
@@ -117,7 +140,10 @@ class GenericEnvelope {
     }
     getDetailsBuffer() {
         const writer = new bufferutils_1.default.BufferWriter(Buffer.alloc(this.getDetailsBufferLength()));
-        if (this.hasMultiDetails()) {
+        if (this.detailsAreEncrypted()) {
+            writer.writeSlice(this.getEncryptedDetailsDescriptor().toBuffer());
+        }
+        else if (this.hasMultiDetails()) {
             writer.writeCompactSize(this.details.length);
             for (const detail of this.details) {
                 writer.writeSlice(detail.toBuffer());
@@ -131,7 +157,18 @@ class GenericEnvelope {
     setDetailsFromBuffer(buffer, offset = 0) {
         const reader = new bufferutils_1.default.BufferReader(buffer, offset);
         const rootSystemName = this.isTestnet() ? 'VRSCTEST' : 'VRSC';
-        if (this.hasMultiDetails()) {
+        if (this.detailsAreEncrypted()) {
+            const ord = OrdinalVDXFObject_1.OrdinalVDXFObject.createFromBuffer(reader.buffer, reader.offset, false, rootSystemName);
+            if (!(ord.obj instanceof DataDescriptorOrdinalVDXFObject_1.DataDescriptorOrdinalVDXFObject)) {
+                throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain a DataDescriptorOrdinalVDXFObject");
+            }
+            if (!ord.obj.data.hasEncryptedData()) {
+                throw new Error("Envelope with FLAG_DETAILS_ARE_ENCRYPTED must contain an encrypted DataDescriptor");
+            }
+            reader.offset = ord.offset;
+            this.details = [ord.obj];
+        }
+        else if (this.hasMultiDetails()) {
             this.details = [];
             const numItems = reader.readCompactSize();
             for (let i = 0; i < numItems; i++) {
@@ -275,3 +312,4 @@ GenericEnvelope.FLAG_MULTI_DETAILS = new bn_js_1.BN(8, 10);
 GenericEnvelope.FLAG_IS_TESTNET = new bn_js_1.BN(16, 10);
 GenericEnvelope.FLAG_HAS_SALT = new bn_js_1.BN(32, 10);
 GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID = new bn_js_1.BN(64, 10);
+GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED = new bn_js_1.BN(1024, 10);
