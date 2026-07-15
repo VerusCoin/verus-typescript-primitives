@@ -21,6 +21,8 @@ import {
 } from '../../vdxf/classes';
 import { DataDescriptor } from '../../pbaas';
 
+const TEST_SEARCH_DATA_HASH = Buffer.alloc(32, 1);
+
 describe('rootSystemName propagation through object tree', () => {
   describe('GenericRequest with testnet flag', () => {
     test('UserDataRequestDetails in testnet request receives VRSCTEST', () => {
@@ -29,7 +31,7 @@ describe('rootSystemName propagation through object tree', () => {
         flags: UserDataRequestDetails.FLAG_HAS_SIGNER,
         dataType: UserDataRequestDetails.FULL_DATA,
         requestType: UserDataRequestDetails.ATTESTATION,
-        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": "Test" }],
+        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": TEST_SEARCH_DATA_HASH }],
         signer: new CompactIAddressObject({
           type: CompactAddressObject.TYPE_FQN,
           address: "alice.vrsctest",
@@ -59,7 +61,7 @@ describe('rootSystemName propagation through object tree', () => {
         flags: UserDataRequestDetails.FLAG_HAS_SIGNER,
         dataType: UserDataRequestDetails.FULL_DATA,
         requestType: UserDataRequestDetails.ATTESTATION,
-        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": "Test" }],
+        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": TEST_SEARCH_DATA_HASH }],
         signer: new CompactIAddressObject({
           type: CompactAddressObject.TYPE_FQN,
           address: "bob.vrsc",
@@ -294,7 +296,7 @@ describe('rootSystemName propagation through object tree', () => {
         flags: UserDataRequestDetails.FLAG_HAS_SIGNER.or(UserDataRequestDetails.FLAG_HAS_REQUEST_ID),
         dataType: UserDataRequestDetails.FULL_DATA,
         requestType: UserDataRequestDetails.ATTESTATION,
-        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": "Test" }],
+        searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": TEST_SEARCH_DATA_HASH }],
         signer: new CompactIAddressObject({
           type: CompactAddressObject.TYPE_FQN,
           address: "signer.vrsctest",

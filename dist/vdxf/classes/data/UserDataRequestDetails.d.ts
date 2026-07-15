@@ -27,8 +27,9 @@ export interface UserDataRequestInterface {
     flags: BigNumber;
     dataType: BigNumber;
     requestType: BigNumber;
+    searchDataKeyHashType?: BigNumber;
     searchDataKey: Array<{
-        [key: string]: string;
+        [key: string]: Buffer;
     }>;
     signer?: CompactIAddressObject;
     requestedKeys?: string[];
@@ -39,8 +40,9 @@ export interface UserDataRequestJson {
     flags: number;
     datatype: number;
     requesttype: number;
+    searchdatakeyhashtype?: number;
     searchdatakey: Array<{
-        [key: string]: string;
+        [key: string]: Buffer;
     }>;
     signer?: CompactAddressObjectJson;
     requestedkeys?: string[];
@@ -64,8 +66,9 @@ export declare class UserDataRequestDetails implements SerializableEntity {
     flags: BigNumber;
     dataType: BigNumber;
     requestType: BigNumber;
+    searchDataKeyHashType: BigNumber;
     searchDataKey: Array<{
-        [key: string]: string;
+        [key: string]: Buffer;
     }>;
     signer?: CompactIAddressObject;
     requestedKeys?: string[];
@@ -86,6 +89,7 @@ export declare class UserDataRequestDetails implements SerializableEntity {
      * @returns True if requestType is valid
      */
     hasRequestTypeSet(): boolean;
+    hasSearchDataKeyHashTypeSet(): boolean;
     isValid(): boolean;
     getByteLength(): number;
     toBuffer(): Buffer;

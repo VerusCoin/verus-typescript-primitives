@@ -54,6 +54,8 @@ import { SaplingExtendedSpendingKey } from '../../pbaas/SaplingExtendedSpendingK
 import { SaplingExtendedViewingKey } from '../../pbaas/SaplingExtendedViewingKey';
 import { VERUSPAY_INVOICE_DETAILS_VDXF_KEY } from '../../vdxf';
 
+const TEST_SEARCH_DATA_HASH = Buffer.alloc(32, 1);
+
 // Helper function to create TransferDestination from address string
 function createCompactAddressObject(type: BigNumber, address: string): CompactIAddressObject {
   const obj = new CompactIAddressObject({
@@ -544,7 +546,7 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
       flags: UserDataRequestDetails.FLAG_HAS_SIGNER,
       dataType: UserDataRequestDetails.FULL_DATA,
       requestType: UserDataRequestDetails.ATTESTATION,
-      searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": "Attestation Name" }],
+      searchDataKey: [{ "iEEjVkvM9Niz4u2WCr6QQzx1zpVSvDFub1": TEST_SEARCH_DATA_HASH }],
       signer: new CompactIAddressObject({ version: CompactAddressObject.DEFAULT_VERSION, type: CompactAddressObject.TYPE_I_ADDRESS, address: "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq", rootSystemName: "VRSC" }),
       requestID: CompactIAddressObject.fromAddress("iD4CrjbJBZmwEZQ4bCWgbHx9tBHGP9mdSQ")
     });

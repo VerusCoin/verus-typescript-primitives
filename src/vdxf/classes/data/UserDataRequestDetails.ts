@@ -30,13 +30,15 @@ import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from '../CompactAddressObject';
 import { fromBase58Check, toBase58Check } from '../../../utils/address';
 import { I_ADDR_VERSION, HASH160_BYTE_LENGTH } from '../../../constants/vdxf';
+import { DEFAULT_HASH_TYPE, HASH_TYPE_BLAKE2B, HASH_TYPE_BLAKE2BMMR2, HASH_TYPE_KECCAK256, HASH_TYPE_SHA256, HASH_TYPE_SHA256D } from '../../../constants/pbaas';
 
 export interface UserDataRequestInterface {
   version?: BigNumber;
   flags: BigNumber;
   dataType: BigNumber;
   requestType: BigNumber;
-  searchDataKey: Array<{[key: string]: string}>; 
+  searchDataKeyHashType?: BigNumber;
+  searchDataKey: Array<{[key: string]: Buffer}>;
   signer?: CompactIAddressObject;
   requestedKeys?: string[];
   requestID?: CompactIAddressObject;
@@ -47,7 +49,8 @@ export interface UserDataRequestJson {
   flags: number;
   datatype: number;
   requesttype: number;
-  searchdatakey: Array<{[key: string]: string}>;   // ID object of the specific information requested
+  searchdatakeyhashtype?: number;
+  searchdatakey: Array<{[key: string]: Buffer}>;   // ID object of the specific information requested
   signer?: CompactAddressObjectJson;
   requestedkeys?: string[]; // Specific keys within the data object being requested
   requestid?: CompactAddressObjectJson;
@@ -77,7 +80,8 @@ export class UserDataRequestDetails implements SerializableEntity {
   flags: BigNumber;
   dataType: BigNumber;
   requestType: BigNumber;
-  searchDataKey: Array<{[key: string]: string}>; 
+  searchDataKeyHashType: BigNumber;
+  searchDataKey: Array<{[key: string]: Buffer}>;
   signer?: CompactIAddressObject;
   requestedKeys?: string[];
   requestID?: CompactIAddressObject;
@@ -87,6 +91,7 @@ export class UserDataRequestDetails implements SerializableEntity {
     this.flags = data?.flags || new BN(0);
     this.dataType = data?.dataType || UserDataRequestDetails.FULL_DATA;
     this.requestType = data?.requestType || UserDataRequestDetails.ATTESTATION;
+    this.searchDataKeyHashType = data?.searchDataKeyHashType || DEFAULT_HASH_TYPE;
     this.searchDataKey = data?.searchDataKey || [];
     this.signer = data?.signer;
     this.requestedKeys = data?.requestedKeys;
@@ -146,6 +151,14 @@ export class UserDataRequestDetails implements SerializableEntity {
       this.requestType.eq(UserDataRequestDetails.CREDENTIAL);
   }
 
+  hasSearchDataKeyHashTypeSet(): boolean {
+    return this.searchDataKeyHashType.eq(HASH_TYPE_BLAKE2B) ||
+      this.searchDataKeyHashType.eq(HASH_TYPE_BLAKE2BMMR2) ||
+      this.searchDataKeyHashType.eq(HASH_TYPE_KECCAK256) ||
+      this.searchDataKeyHashType.eq(HASH_TYPE_SHA256D) ||
+      this.searchDataKeyHashType.eq(HASH_TYPE_SHA256);
+  }
+
   isValid(): boolean {
     let valid = this.version.gte(UserDataRequestDetails.FIRST_VERSION) && this.version.lte(UserDataRequestDetails.LAST_VERSION);
     
@@ -154,6 +167,9 @@ export class UserDataRequestDetails implements SerializableEntity {
     
     // Check that exactly one request type flag is set
     valid &&= this.hasRequestTypeSet();
+
+    // Check that searchDataKeyHashType is one of the supported hash types
+    valid &&= this.hasSearchDataKeyHashTypeSet();
     
     // Check that searchDataKey is present
     valid &&= Object.keys(this.searchDataKey).length > 0;
@@ -167,14 +183,15 @@ export class UserDataRequestDetails implements SerializableEntity {
     length += varuint.encodingLength(this.flags.toNumber());
     length += varuint.encodingLength(this.dataType.toNumber());
     length += varuint.encodingLength(this.requestType.toNumber());
+    length += varuint.encodingLength(this.searchDataKeyHashType.toNumber());
     length += varuint.encodingLength(this.searchDataKey.length);
 
     for (const item of this.searchDataKey) {
       const key = Object.keys(item)[0];
       const value = item[key];
       length += HASH160_BYTE_LENGTH;
-      length += varuint.encodingLength(Buffer.byteLength(value, 'utf8'));
-      length += Buffer.byteLength(value, 'utf8');
+      length += varuint.encodingLength(value.length);
+      length += value.length;
     }
 
     if (this.hasSigner()) {
@@ -202,6 +219,7 @@ export class UserDataRequestDetails implements SerializableEntity {
     writer.writeCompactSize(this.flags.toNumber());
     writer.writeCompactSize(this.dataType.toNumber());
     writer.writeCompactSize(this.requestType.toNumber());
+    writer.writeCompactSize(this.searchDataKeyHashType.toNumber());
 
     writer.writeCompactSize(this.searchDataKey.length);
 
@@ -209,7 +227,7 @@ export class UserDataRequestDetails implements SerializableEntity {
       const key = Object.keys(item)[0];
       const value = item[key];
       writer.writeSlice(fromBase58Check(key).hash); // 20-byte VDXF key
-      writer.writeVarSlice(Buffer.from(value, 'utf8'));
+      writer.writeVarSlice(value);
     }
 
     if (this.hasSigner()) {
@@ -235,14 +253,14 @@ export class UserDataRequestDetails implements SerializableEntity {
     this.flags = new BN(reader.readCompactSize());
     this.dataType = new BN(reader.readCompactSize());
     this.requestType = new BN(reader.readCompactSize());
+    this.searchDataKeyHashType = new BN(reader.readCompactSize());
     
     const searchDataKeyLength = reader.readCompactSize();    
     this.searchDataKey = [];
 
     for (let i = 0; i < searchDataKeyLength; i++) {
       const keyHash = reader.readSlice(HASH160_BYTE_LENGTH); // 20-byte VDXF key
-      const valueBuffer = reader.readVarSlice();
-      const value = valueBuffer.toString('utf8');
+      const value = reader.readVarSlice();
       const key = toBase58Check(keyHash, I_ADDR_VERSION);
       this.searchDataKey.push({ [key]: value });
     }
@@ -280,6 +298,7 @@ export class UserDataRequestDetails implements SerializableEntity {
       flags: this.flags.toNumber(),
       datatype: this.dataType.toNumber(),
       requesttype: this.requestType.toNumber(),
+      searchdatakeyhashtype: this.searchDataKeyHashType.toNumber(),
       searchdatakey: this.searchDataKey,
       signer: this.signer?.toJson(),
       requestedkeys: this.requestedKeys,
@@ -293,6 +312,7 @@ export class UserDataRequestDetails implements SerializableEntity {
     requestData.flags = new BN(json.flags);
     requestData.dataType = new BN(json.datatype);
     requestData.requestType = new BN(json.requesttype);
+    requestData.searchDataKeyHashType = json.searchdatakeyhashtype == null ? DEFAULT_HASH_TYPE : new BN(json.searchdatakeyhashtype);
     requestData.searchDataKey = json.searchdatakey;
     requestData.signer = json.signer ? CompactIAddressObject.fromCompactAddressObjectJson(json.signer) : undefined;
     requestData.requestedKeys = json.requestedkeys;
