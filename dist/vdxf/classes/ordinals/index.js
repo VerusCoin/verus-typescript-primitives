@@ -36,4 +36,5 @@ __exportStar(require("./SpendableKeyDetailsOrdinalVDXFObject"), exports);
 __exportStar(require("./MarketplaceMakeOfferRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./MarketplaceTakeOfferRequestOrdinalVDXFObject"), exports);
 __exportStar(require("./MarketplaceCloseOfferRequestOrdinalVDXFObject"), exports);
+__exportStar(require("./RegisterIdentityRequestOrdinalVDXFObject"), exports);
 (0, register_1.registerOrdinals)();

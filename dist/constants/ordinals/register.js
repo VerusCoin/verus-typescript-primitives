@@ -22,6 +22,7 @@ const SpendableKeyDetailsOrdinalVDXFObject_1 = require("../../vdxf/classes/ordin
 const MarketplaceMakeOfferRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/MarketplaceMakeOfferRequestOrdinalVDXFObject");
 const MarketplaceTakeOfferRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/MarketplaceTakeOfferRequestOrdinalVDXFObject");
 const MarketplaceCloseOfferRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/MarketplaceCloseOfferRequestOrdinalVDXFObject");
+const RegisterIdentityRequestOrdinalVDXFObject_1 = require("../../vdxf/classes/ordinals/RegisterIdentityRequestOrdinalVDXFObject");
 // include the word "response" at the end if it is a response and "request" at the end if it is a request. In case it isn't a request
 // (an object expecting a response) or a response, you can use the world "details" at the end, but best not to mix request + details
 // or response + details
@@ -44,5 +45,6 @@ const registerOrdinals = () => {
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.MARKETPLACE_MAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceMakeOfferRequestOrdinalVDXFObject_1.MarketplaceMakeOfferRequestOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.MARKETPLACE_TAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceTakeOfferRequestOrdinalVDXFObject_1.MarketplaceTakeOfferRequestOrdinalVDXFObject, false);
     OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceCloseOfferRequestOrdinalVDXFObject_1.MarketplaceCloseOfferRequestOrdinalVDXFObject, false);
+    OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.registerOrdinal(ordinals_1.REGISTER_IDENTITY_REQUEST_VDXF_ORDINAL.toNumber(), vdxf_1.REGISTER_IDENTITY_REQUEST_VDXF_KEY.vdxfid, RegisterIdentityRequestOrdinalVDXFObject_1.RegisterIdentityRequestOrdinalVDXFObject, false);
 };
 exports.registerOrdinals = registerOrdinals;

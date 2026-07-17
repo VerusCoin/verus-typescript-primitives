@@ -21,5 +21,6 @@ export * from './SpendableKeyDetailsOrdinalVDXFObject'
 export * from './MarketplaceMakeOfferRequestOrdinalVDXFObject'
 export * from './MarketplaceTakeOfferRequestOrdinalVDXFObject'
 export * from './MarketplaceCloseOfferRequestOrdinalVDXFObject'
+export * from './RegisterIdentityRequestOrdinalVDXFObject'
 
 registerOrdinals();

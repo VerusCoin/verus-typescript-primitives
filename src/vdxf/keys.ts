@@ -840,3 +840,13 @@ export const MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface = {
     "name": "vrsc::request.marketplace.closeoffer"
   }
 }
+
+export const REGISTER_IDENTITY_REQUEST_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "iA1r9XFaBFvwrTm5qwMQASYWCbZQjNJwNM",
+  "indexid": "xEqxcKgf2a9cUde7hd1Z8q53EFaRaHeeyv",
+  "hash160result": "d82f5d63eec5a41175be7bab7c0919b58b45bd47",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::request.identity.register"
+  }
+}

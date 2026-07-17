@@ -30,7 +30,9 @@ import {
   MarketplaceTakeOfferRequestDetails,
   MarketplaceTakeOfferRequestDetailsJson,
   MarketplaceCloseOfferRequestDetails,
-  MarketplaceCloseOfferRequestDetailsJson
+  MarketplaceCloseOfferRequestDetailsJson,
+  RegisterIdentityRequestDetails,
+  RegisterIdentityRequestDetailsJson
 } from "../../vdxf/classes";
 import { VerusPayInvoiceDetailsJson } from "../../vdxf/classes/payment/VerusPayInvoiceDetails";
 import { DataResponseDetails, DataResponseDetailsJson } from "../../vdxf/classes/data/DataResponseDetails";
@@ -53,7 +55,8 @@ export type OrdinalVDXFObjectReservedData =
   AppEncryptionResponseDetails |
   MarketplaceMakeOfferRequestDetails |
   MarketplaceTakeOfferRequestDetails |
-  MarketplaceCloseOfferRequestDetails;
+  MarketplaceCloseOfferRequestDetails |
+  RegisterIdentityRequestDetails;
 
 export type OrdinalVDXFObjectReservedDataJson = 
   DataDescriptorJson | 
@@ -73,4 +76,5 @@ export type OrdinalVDXFObjectReservedDataJson =
   AppEncryptionResponseDetailsJson |
   MarketplaceMakeOfferRequestDetailsJson |
   MarketplaceTakeOfferRequestDetailsJson |
-  MarketplaceCloseOfferRequestDetailsJson;
+  MarketplaceCloseOfferRequestDetailsJson |
+  RegisterIdentityRequestDetailsJson;

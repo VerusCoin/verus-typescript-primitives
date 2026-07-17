@@ -97,3 +97,4 @@ export declare const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface;
 export declare const MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface;
 export declare const MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface;
 export declare const MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY: VDXFKeyInterface;
+export declare const REGISTER_IDENTITY_REQUEST_VDXF_KEY: VDXFKeyInterface;

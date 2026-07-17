@@ -49,6 +49,7 @@ __exportStar(require("./request/GenericRequest"), exports);
 __exportStar(require("./request/MarketplaceMakeOfferRequestDetails"), exports);
 __exportStar(require("./request/MarketplaceTakeOfferRequestDetails"), exports);
 __exportStar(require("./request/MarketplaceCloseOfferRequestDetails"), exports);
+__exportStar(require("./request/RegisterIdentityRequestDetails"), exports);
 __exportStar(require("./response/GenericResponse"), exports);
 __exportStar(require("./appencryption/AppEncryptionResponseDetails"), exports);
 __exportStar(require("./data/DataResponseDetails"), exports);

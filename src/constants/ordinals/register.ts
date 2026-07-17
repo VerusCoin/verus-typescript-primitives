@@ -1,4 +1,4 @@
-import { APP_ENCRYPTION_REQUEST_VDXF_KEY, APP_ENCRYPTION_RESPONSE_VDXF_KEY, CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY, DATA_RESPONSE_VDXF_KEY, DATA_DESCRIPTOR_VDXF_KEY, AUTHENTICATION_REQUEST_VDXF_KEY, AUTHENTICATION_RESPONSE_VDXF_KEY, PROVISION_IDENTITY_DETAILS_VDXF_KEY, USER_DATA_REQUEST_VDXF_KEY, DATA_PACKET_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_DETAILS_VDXF_KEY, IDENTITY_UPDATE_RESPONSE_VDXF_KEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY, WALLET_BACKUP, SPENDABLE_KEY_DETAILS_VDXF_KEY, MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY, MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY, MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY } from "../../vdxf";
+import { APP_ENCRYPTION_REQUEST_VDXF_KEY, APP_ENCRYPTION_RESPONSE_VDXF_KEY, CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY, DATA_RESPONSE_VDXF_KEY, DATA_DESCRIPTOR_VDXF_KEY, AUTHENTICATION_REQUEST_VDXF_KEY, AUTHENTICATION_RESPONSE_VDXF_KEY, PROVISION_IDENTITY_DETAILS_VDXF_KEY, USER_DATA_REQUEST_VDXF_KEY, DATA_PACKET_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_DETAILS_VDXF_KEY, IDENTITY_UPDATE_RESPONSE_VDXF_KEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY, WALLET_BACKUP, SPENDABLE_KEY_DETAILS_VDXF_KEY, MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY, MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY, MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY, REGISTER_IDENTITY_REQUEST_VDXF_KEY } from "../../vdxf";
 import { AppEncryptionRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppEncryptionRequestOrdinalVDXFObject";
 import { DataDescriptorOrdinalVDXFObject } from "../../vdxf/classes/ordinals/DataDescriptorOrdinalVDXFObject";
 import { DataResponseOrdinalVDXFObject } from "../../vdxf/classes/ordinals/DataResponseOrdinalVDXFObject";
@@ -11,7 +11,7 @@ import { AuthenticationResponseOrdinalVDXFObject } from "../../vdxf/classes/ordi
 import { OrdinalVDXFObjectOrdinalMap } from "../../vdxf/classes/ordinals/OrdinalVDXFObjectOrdinalMap";
 import { ProvisionIdentityDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/ProvisionIdentityDetailsOrdinalVDXFObject";
 import { VerusPayInvoiceDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/VerusPayInvoiceDetailsOrdinalVDXFObject";
-import { APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, DATA_RESPONSE_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, AUTHENTICATION_RESPONSE_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, USER_DATA_REQUEST_VDXF_ORDINAL, DATA_PACKET_REQUEST_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL, WALLET_BACKUP_VDXF_ORDINAL, SPENDABLE_KEY_DETAILS_VDXF_ORDINAL, MARKETPLACE_MAKEOFFER_REQUEST_VDXF_ORDINAL, MARKETPLACE_TAKEOFFER_REQUEST_VDXF_ORDINAL, MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_ORDINAL } from "./ordinals";
+import { APP_ENCRYPTION_REQUEST_VDXF_ORDINAL, APP_ENCRYPTION_RESPONSE_VDXF_ORDINAL, CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL, DATA_DESCRIPTOR_VDXF_ORDINAL, DATA_RESPONSE_VDXF_ORDINAL, IDENTITY_UPDATE_REQUEST_VDXF_ORDINAL, IDENTITY_UPDATE_RESPONSE_VDXF_ORDINAL, AUTHENTICATION_REQUEST_VDXF_ORDINAL, AUTHENTICATION_RESPONSE_VDXF_ORDINAL, PROVISION_IDENTITY_DETAILS_VDXF_ORDINAL, USER_DATA_REQUEST_VDXF_ORDINAL, DATA_PACKET_REQUEST_VDXF_ORDINAL, VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL, WALLET_BACKUP_VDXF_ORDINAL, SPENDABLE_KEY_DETAILS_VDXF_ORDINAL, MARKETPLACE_MAKEOFFER_REQUEST_VDXF_ORDINAL, MARKETPLACE_TAKEOFFER_REQUEST_VDXF_ORDINAL, MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_ORDINAL, REGISTER_IDENTITY_REQUEST_VDXF_ORDINAL } from "./ordinals";
 import { AppEncryptionResponseOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppEncryptionResponseOrdinalVDXFObject";
 import { CreateWalletBackupDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinals/CreateWalletBackupDetailsOrdinalVDXFObject";
 import { WalletBackupOrdinalVDXFObject } from "../../vdxf/classes/ordinals/WalletBackupOrdinalVDXFObject";
@@ -19,6 +19,7 @@ import { SpendableKeyDetailsOrdinalVDXFObject } from "../../vdxf/classes/ordinal
 import { MarketplaceMakeOfferRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/MarketplaceMakeOfferRequestOrdinalVDXFObject";
 import { MarketplaceTakeOfferRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/MarketplaceTakeOfferRequestOrdinalVDXFObject";
 import { MarketplaceCloseOfferRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/MarketplaceCloseOfferRequestOrdinalVDXFObject";
+import { RegisterIdentityRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/RegisterIdentityRequestOrdinalVDXFObject";
 
 // include the word "response" at the end if it is a response and "request" at the end if it is a request. In case it isn't a request
 // (an object expecting a response) or a response, you can use the world "details" at the end, but best not to mix request + details
@@ -42,4 +43,5 @@ export const registerOrdinals = () => {
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(MARKETPLACE_MAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), MARKETPLACE_MAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceMakeOfferRequestOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(MARKETPLACE_TAKEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), MARKETPLACE_TAKEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceTakeOfferRequestOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_ORDINAL.toNumber(), MARKETPLACE_CLOSEOFFER_REQUEST_VDXF_KEY.vdxfid, MarketplaceCloseOfferRequestOrdinalVDXFObject, false);
+  OrdinalVDXFObjectOrdinalMap.registerOrdinal(REGISTER_IDENTITY_REQUEST_VDXF_ORDINAL.toNumber(), REGISTER_IDENTITY_REQUEST_VDXF_KEY.vdxfid, RegisterIdentityRequestOrdinalVDXFObject, false);
 }
