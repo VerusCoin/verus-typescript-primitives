@@ -15,6 +15,7 @@ export declare const VERUSPAY_IS_TESTNET: import("bn.js");
 export declare const VERUSPAY_IS_PRECONVERT: import("bn.js");
 export declare const VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS: import("bn.js");
 export declare const VERUSPAY_IS_TAGGED: import("bn.js");
+export declare const VERUSPAY_IS_BURN_CHANGE_PRICE: import("bn.js");
 export type VerusPayInvoiceDetailsJson = {
     flags?: string;
     amount?: string;
@@ -56,6 +57,7 @@ export declare class VerusPayInvoiceDetails implements SerializableEntity {
         isPreconvert?: boolean;
         destinationIsSaplingPaymentAddress?: boolean;
         isTagged?: boolean;
+        isBurnChangePrice?: boolean;
     }): void;
     getFlagsJson(): {
         [key: string]: boolean;
@@ -71,6 +73,7 @@ export declare class VerusPayInvoiceDetails implements SerializableEntity {
     isPreconvert(): boolean;
     destinationIsSaplingPaymentAddress(): boolean;
     isTagged(): boolean;
+    isBurnChangePrice(): boolean;
     isValid(): boolean;
     isGTEV4(): boolean;
     private getVarUIntEncodingLength;

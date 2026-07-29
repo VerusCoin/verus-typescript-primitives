@@ -28,6 +28,7 @@ export const VERUSPAY_IS_TESTNET = new BN(128, 10)
 export const VERUSPAY_IS_PRECONVERT = new BN(256, 10)
 export const VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = new BN(512, 10)
 export const VERUSPAY_IS_TAGGED = new BN(1024, 10)
+export const VERUSPAY_IS_BURN_CHANGE_PRICE = new BN(2048, 10)
 
 export type VerusPayInvoiceDetailsJson = {
   flags?: string,
@@ -94,7 +95,8 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
     isTestnet?: boolean,
     isPreconvert?: boolean,
     destinationIsSaplingPaymentAddress?: boolean,
-    isTagged?: boolean
+    isTagged?: boolean,
+    isBurnChangePrice?: boolean
   }) {
     if (flags.acceptsConversion) this.flags = this.flags.or(VERUSPAY_ACCEPTS_CONVERSION);
     if (flags.acceptsNonVerusSystems) this.flags = this.flags.or(VERUSPAY_ACCEPTS_NON_VERUS_SYSTEMS);
@@ -108,6 +110,7 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
       if (flags.isPreconvert) this.flags = this.flags.or(VERUSPAY_IS_PRECONVERT);
       if (flags.destinationIsSaplingPaymentAddress) this.flags = this.flags.or(VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS);
       if (flags.isTagged) this.flags = this.flags.or(VERUSPAY_IS_TAGGED);
+      if (flags.isBurnChangePrice) this.flags = this.flags.or(VERUSPAY_IS_BURN_CHANGE_PRICE);
     }
   }
 
@@ -122,7 +125,8 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
       isTestnet: this.isTestnet(),
       isPreconvert: this.isPreconvert(),
       destinationIsSaplingPaymentAddress: this.destinationIsSaplingPaymentAddress(),
-      isTagged: this.isTagged()
+      isTagged: this.isTagged(),
+      isBurnChangePrice: this.isBurnChangePrice()
     }
   }
 
@@ -168,6 +172,10 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
 
   isTagged() {
     return this.isGTEV4() && !!(this.flags.and(VERUSPAY_IS_TAGGED).toNumber())
+  }
+
+  isBurnChangePrice() {
+    return this.isGTEV4() && !!(this.flags.and(VERUSPAY_IS_BURN_CHANGE_PRICE).toNumber())
   }
 
   isValid () {

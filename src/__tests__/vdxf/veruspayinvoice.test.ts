@@ -426,4 +426,45 @@ describe('Serializes and deserializes VerusPay invoice', () => {
   test('verus pay invoice without signature that accepts any amount and destination for preconvert', async () => {
     await testNoSigAcceptsAnyAmountAcceptsAnyDestPreconvert(VERUSPAY_VERSION_4);
   })
+
+  test('verus pay v4 invoice with burn change price flag', async () => {
+    const details = new VerusPayInvoiceDetails({
+      requestedcurrencyid: "iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu"
+    }, VERUSPAY_VERSION_4)
+
+    details.setFlags({
+      acceptsAnyAmount: true,
+      acceptsAnyDestination: true,
+      isBurnChangePrice: true
+    })
+
+    expect(details.isBurnChangePrice()).toBe(true)
+    expect(details.getFlagsJson().isBurnChangePrice).toBe(true)
+
+    const invoice = new VerusPayInvoice({
+      details,
+      version: VERUSPAY_VERSION_4
+    })
+    const invoiceFromBuffer = new VerusPayInvoice()
+    invoiceFromBuffer.fromBuffer(invoice.toBuffer())
+    const invoiceFromJson = VerusPayInvoice.fromJson(invoice.toJson())
+
+    expect(invoiceFromBuffer.details.isBurnChangePrice()).toBe(true)
+    expect(invoiceFromBuffer.toBuffer()).toEqual(invoice.toBuffer())
+    expect(invoiceFromJson.details.isBurnChangePrice()).toBe(true)
+    expect(invoiceFromJson.toBuffer()).toEqual(invoice.toBuffer())
+  })
+
+  test('burn change price flag is unavailable before verus pay v4', async () => {
+    const details = new VerusPayInvoiceDetails({
+      requestedcurrencyid: "iNC9NG5Jqk2tqVtqfjfiSpaqxrXaFU6RDu"
+    }, VERUSPAY_VERSION_3)
+
+    details.setFlags({
+      isBurnChangePrice: true
+    })
+
+    expect(details.isBurnChangePrice()).toBe(false)
+    expect(details.getFlagsJson().isBurnChangePrice).toBe(false)
+  })
 });

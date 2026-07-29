@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerusPayInvoiceDetails = exports.VERUSPAY_IS_TAGGED = exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = exports.VERUSPAY_IS_PRECONVERT = exports.VERUSPAY_IS_TESTNET = exports.VERUSPAY_EXCLUDES_VERUS_BLOCKCHAIN = exports.VERUSPAY_ACCEPTS_ANY_AMOUNT = exports.VERUSPAY_ACCEPTS_ANY_DESTINATION = exports.VERUSPAY_EXPIRES = exports.VERUSPAY_ACCEPTS_NON_VERUS_SYSTEMS = exports.VERUSPAY_ACCEPTS_CONVERSION = exports.VERUSPAY_VALID = exports.VERUSPAY_INVALID = void 0;
+exports.VerusPayInvoiceDetails = exports.VERUSPAY_IS_BURN_CHANGE_PRICE = exports.VERUSPAY_IS_TAGGED = exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = exports.VERUSPAY_IS_PRECONVERT = exports.VERUSPAY_IS_TESTNET = exports.VERUSPAY_EXCLUDES_VERUS_BLOCKCHAIN = exports.VERUSPAY_ACCEPTS_ANY_AMOUNT = exports.VERUSPAY_ACCEPTS_ANY_DESTINATION = exports.VERUSPAY_EXPIRES = exports.VERUSPAY_ACCEPTS_NON_VERUS_SYSTEMS = exports.VERUSPAY_ACCEPTS_CONVERSION = exports.VERUSPAY_VALID = exports.VERUSPAY_INVALID = void 0;
 const varint_1 = require("../../../utils/varint");
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -27,6 +27,7 @@ exports.VERUSPAY_IS_TESTNET = new bn_js_1.BN(128, 10);
 exports.VERUSPAY_IS_PRECONVERT = new bn_js_1.BN(256, 10);
 exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = new bn_js_1.BN(512, 10);
 exports.VERUSPAY_IS_TAGGED = new bn_js_1.BN(1024, 10);
+exports.VERUSPAY_IS_BURN_CHANGE_PRICE = new bn_js_1.BN(2048, 10);
 class VerusPayInvoiceDetails {
     constructor(data, verusPayVersion = veruspay_1.VERUSPAY_VERSION_CURRENT) {
         this.flags = exports.VERUSPAY_VALID;
@@ -79,6 +80,8 @@ class VerusPayInvoiceDetails {
                 this.flags = this.flags.or(exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS);
             if (flags.isTagged)
                 this.flags = this.flags.or(exports.VERUSPAY_IS_TAGGED);
+            if (flags.isBurnChangePrice)
+                this.flags = this.flags.or(exports.VERUSPAY_IS_BURN_CHANGE_PRICE);
         }
     }
     getFlagsJson() {
@@ -92,7 +95,8 @@ class VerusPayInvoiceDetails {
             isTestnet: this.isTestnet(),
             isPreconvert: this.isPreconvert(),
             destinationIsSaplingPaymentAddress: this.destinationIsSaplingPaymentAddress(),
-            isTagged: this.isTagged()
+            isTagged: this.isTagged(),
+            isBurnChangePrice: this.isBurnChangePrice()
         };
     }
     toSha256() {
@@ -127,6 +131,9 @@ class VerusPayInvoiceDetails {
     }
     isTagged() {
         return this.isGTEV4() && !!(this.flags.and(exports.VERUSPAY_IS_TAGGED).toNumber());
+    }
+    isBurnChangePrice() {
+        return this.isGTEV4() && !!(this.flags.and(exports.VERUSPAY_IS_BURN_CHANGE_PRICE).toNumber());
     }
     isValid() {
         return (!!(this.flags.and(exports.VERUSPAY_VALID).toNumber()));
