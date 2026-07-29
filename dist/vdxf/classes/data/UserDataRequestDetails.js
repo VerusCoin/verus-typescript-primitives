@@ -29,12 +29,14 @@ const { BufferReader, BufferWriter } = bufferutils_1.default;
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const address_1 = require("../../../utils/address");
 const vdxf_1 = require("../../../constants/vdxf");
+const pbaas_1 = require("../../../constants/pbaas");
 class UserDataRequestDetails {
     constructor(data) {
         this.version = (data === null || data === void 0 ? void 0 : data.version) || UserDataRequestDetails.DEFAULT_VERSION;
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0);
         this.dataType = (data === null || data === void 0 ? void 0 : data.dataType) || UserDataRequestDetails.FULL_DATA;
         this.requestType = (data === null || data === void 0 ? void 0 : data.requestType) || UserDataRequestDetails.ATTESTATION;
+        this.searchDataKeyHashType = (data === null || data === void 0 ? void 0 : data.searchDataKeyHashType) || pbaas_1.DEFAULT_HASH_TYPE;
         this.searchDataKey = (data === null || data === void 0 ? void 0 : data.searchDataKey) || [];
         this.signer = data === null || data === void 0 ? void 0 : data.signer;
         this.requestedKeys = data === null || data === void 0 ? void 0 : data.requestedKeys;
@@ -84,12 +86,21 @@ class UserDataRequestDetails {
             this.requestType.eq(UserDataRequestDetails.CLAIM) ||
             this.requestType.eq(UserDataRequestDetails.CREDENTIAL);
     }
+    hasSearchDataKeyHashTypeSet() {
+        return this.searchDataKeyHashType.eq(pbaas_1.HASH_TYPE_BLAKE2B) ||
+            this.searchDataKeyHashType.eq(pbaas_1.HASH_TYPE_BLAKE2BMMR2) ||
+            this.searchDataKeyHashType.eq(pbaas_1.HASH_TYPE_KECCAK256) ||
+            this.searchDataKeyHashType.eq(pbaas_1.HASH_TYPE_SHA256D) ||
+            this.searchDataKeyHashType.eq(pbaas_1.HASH_TYPE_SHA256);
+    }
     isValid() {
         let valid = this.version.gte(UserDataRequestDetails.FIRST_VERSION) && this.version.lte(UserDataRequestDetails.LAST_VERSION);
         // Check that exactly one data type flag is set
         valid && (valid = this.hasDataTypeSet());
         // Check that exactly one request type flag is set
         valid && (valid = this.hasRequestTypeSet());
+        // Check that searchDataKeyHashType is one of the supported hash types
+        valid && (valid = this.hasSearchDataKeyHashTypeSet());
         // Check that searchDataKey is present
         valid && (valid = Object.keys(this.searchDataKey).length > 0);
         return valid;
@@ -99,13 +110,14 @@ class UserDataRequestDetails {
         length += varuint_1.default.encodingLength(this.flags.toNumber());
         length += varuint_1.default.encodingLength(this.dataType.toNumber());
         length += varuint_1.default.encodingLength(this.requestType.toNumber());
+        length += varuint_1.default.encodingLength(this.searchDataKeyHashType.toNumber());
         length += varuint_1.default.encodingLength(this.searchDataKey.length);
         for (const item of this.searchDataKey) {
             const key = Object.keys(item)[0];
             const value = item[key];
             length += vdxf_1.HASH160_BYTE_LENGTH;
-            length += varuint_1.default.encodingLength(Buffer.byteLength(value, 'utf8'));
-            length += Buffer.byteLength(value, 'utf8');
+            length += varuint_1.default.encodingLength(value.length);
+            length += value.length;
         }
         if (this.hasSigner()) {
             length += this.signer.getByteLength();
@@ -128,12 +140,13 @@ class UserDataRequestDetails {
         writer.writeCompactSize(this.flags.toNumber());
         writer.writeCompactSize(this.dataType.toNumber());
         writer.writeCompactSize(this.requestType.toNumber());
+        writer.writeCompactSize(this.searchDataKeyHashType.toNumber());
         writer.writeCompactSize(this.searchDataKey.length);
         for (const item of this.searchDataKey) {
             const key = Object.keys(item)[0];
             const value = item[key];
             writer.writeSlice((0, address_1.fromBase58Check)(key).hash); // 20-byte VDXF key
-            writer.writeVarSlice(Buffer.from(value, 'utf8'));
+            writer.writeVarSlice(value);
         }
         if (this.hasSigner()) {
             writer.writeSlice(this.signer.toBuffer());
@@ -154,12 +167,12 @@ class UserDataRequestDetails {
         this.flags = new bn_js_1.BN(reader.readCompactSize());
         this.dataType = new bn_js_1.BN(reader.readCompactSize());
         this.requestType = new bn_js_1.BN(reader.readCompactSize());
+        this.searchDataKeyHashType = new bn_js_1.BN(reader.readCompactSize());
         const searchDataKeyLength = reader.readCompactSize();
         this.searchDataKey = [];
         for (let i = 0; i < searchDataKeyLength; i++) {
             const keyHash = reader.readSlice(vdxf_1.HASH160_BYTE_LENGTH); // 20-byte VDXF key
-            const valueBuffer = reader.readVarSlice();
-            const value = valueBuffer.toString('utf8');
+            const value = reader.readVarSlice();
             const key = (0, address_1.toBase58Check)(keyHash, vdxf_1.I_ADDR_VERSION);
             this.searchDataKey.push({ [key]: value });
         }
@@ -191,6 +204,7 @@ class UserDataRequestDetails {
             flags: this.flags.toNumber(),
             datatype: this.dataType.toNumber(),
             requesttype: this.requestType.toNumber(),
+            searchdatakeyhashtype: this.searchDataKeyHashType.toNumber(),
             searchdatakey: this.searchDataKey,
             signer: (_a = this.signer) === null || _a === void 0 ? void 0 : _a.toJson(),
             requestedkeys: this.requestedKeys,
@@ -203,6 +217,7 @@ class UserDataRequestDetails {
         requestData.flags = new bn_js_1.BN(json.flags);
         requestData.dataType = new bn_js_1.BN(json.datatype);
         requestData.requestType = new bn_js_1.BN(json.requesttype);
+        requestData.searchDataKeyHashType = json.searchdatakeyhashtype == null ? pbaas_1.DEFAULT_HASH_TYPE : new bn_js_1.BN(json.searchdatakeyhashtype);
         requestData.searchDataKey = json.searchdatakey;
         requestData.signer = json.signer ? CompactAddressObject_1.CompactIAddressObject.fromCompactAddressObjectJson(json.signer) : undefined;
         requestData.requestedKeys = json.requestedkeys;
