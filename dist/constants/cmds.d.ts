@@ -7,6 +7,7 @@ export declare const GET_CURRENCY = "getcurrency";
 export declare const GET_ADDRESS_BALANCE = "getaddressbalance";
 export declare const GET_INFO = "getinfo";
 export declare const GET_BLOCK = "getblock";
+export declare const GET_BLOCK_HASH = "getblockhash";
 export declare const GET_BLOCK_COUNT = "getblockcount";
 export declare const GET_VDXF_ID = "getvdxfid";
 export declare const GET_RAW_TRANSACTION = "getrawtransaction";

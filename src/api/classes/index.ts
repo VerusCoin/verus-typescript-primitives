@@ -6,6 +6,8 @@ import { GetAddressUtxosRequest } from './GetAddressUtxos/GetAddressUtxosRequest
 import { GetAddressUtxosResponse } from './GetAddressUtxos/GetAddressUtxosResponse'
 import { GetBlockRequest } from './GetBlock/GetBlockRequest'
 import { GetBlockResponse } from './GetBlock/GetBlockResponse'
+import { GetBlockHashRequest } from './GetBlockHash/GetBlockHashRequest'
+import { GetBlockHashResponse } from './GetBlockHash/GetBlockHashResponse'
 import { GetBlockCountRequest } from './GetBlockCount/GetBlockCountRequest'
 import { GetBlockCountResponse } from './GetBlockCount/GetBlockCountResponse'
 import { GetVdxfIdRequest } from './GetVdxfId/GetVdxfIdRequest'
@@ -63,6 +65,8 @@ export {
   GetAddressUtxosResponse,
   GetBlockRequest,
   GetBlockResponse,
+  GetBlockHashRequest,
+  GetBlockHashResponse,
   GetBlockCountRequest,
   GetBlockCountResponse,
   GetVdxfIdRequest,
@@ -116,6 +120,7 @@ export type RpcRequest =
   | typeof GetAddressMempoolRequest
   | typeof GetAddressUtxosRequest
   | typeof GetBlockRequest
+  | typeof GetBlockHashRequest
   | typeof GetBlockCountRequest
   | typeof GetVdxfIdRequest
   | typeof GetInfoRequest
@@ -145,6 +150,7 @@ export type RpcResponse =
   | typeof GetAddressMempoolResponse
   | typeof GetAddressUtxosResponse
   | typeof GetBlockResponse
+  | typeof GetBlockHashResponse
   | typeof GetBlockCountResponse
   | typeof GetVdxfIdResponse
   | typeof GetInfoResponse

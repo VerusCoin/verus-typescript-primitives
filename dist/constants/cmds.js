@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SIGN_RAW_TRANSACTION = exports.Z_GET_OPERATION_STATUS = exports.ESTIMATE_CONVERSION = exports.LIST_CURRENCIES = exports.GET_CURRENCY_CONVERTERS = exports.UPDATE_IDENTITY = exports.SEND_CURRENCY = exports.FUND_RAW_TRANSACTION = exports.VERIFY_MESSAGE = exports.SIGN_MESSAGE = exports.SIGN_DATA = exports.GET_ADDRESS_UTXOS = exports.SEND_RAW_TRANSACTION = exports.GET_ADDRESS_MEMPOOL = exports.GET_ADDRESS_DELTAS = exports.GET_RAW_TRANSACTION = exports.GET_VDXF_ID = exports.GET_BLOCK_COUNT = exports.GET_BLOCK = exports.GET_INFO = exports.GET_ADDRESS_BALANCE = exports.GET_CURRENCY = exports.GET_IDENTITY_CONTENT = exports.GET_IDENTITIES_WITH_ADDRESS = exports.GET_IDENTITY = exports.GET_OFFERS = exports.MAKE_OFFER = void 0;
+exports.SIGN_RAW_TRANSACTION = exports.Z_GET_OPERATION_STATUS = exports.ESTIMATE_CONVERSION = exports.LIST_CURRENCIES = exports.GET_CURRENCY_CONVERTERS = exports.UPDATE_IDENTITY = exports.SEND_CURRENCY = exports.FUND_RAW_TRANSACTION = exports.VERIFY_MESSAGE = exports.SIGN_MESSAGE = exports.SIGN_DATA = exports.GET_ADDRESS_UTXOS = exports.SEND_RAW_TRANSACTION = exports.GET_ADDRESS_MEMPOOL = exports.GET_ADDRESS_DELTAS = exports.GET_RAW_TRANSACTION = exports.GET_VDXF_ID = exports.GET_BLOCK_COUNT = exports.GET_BLOCK_HASH = exports.GET_BLOCK = exports.GET_INFO = exports.GET_ADDRESS_BALANCE = exports.GET_CURRENCY = exports.GET_IDENTITY_CONTENT = exports.GET_IDENTITIES_WITH_ADDRESS = exports.GET_IDENTITY = exports.GET_OFFERS = exports.MAKE_OFFER = void 0;
 exports.MAKE_OFFER = 'makeoffer';
 exports.GET_OFFERS = 'getoffers';
 exports.GET_IDENTITY = 'getidentity';
@@ -10,6 +10,7 @@ exports.GET_CURRENCY = 'getcurrency';
 exports.GET_ADDRESS_BALANCE = 'getaddressbalance';
 exports.GET_INFO = 'getinfo';
 exports.GET_BLOCK = 'getblock';
+exports.GET_BLOCK_HASH = 'getblockhash';
 exports.GET_BLOCK_COUNT = 'getblockcount';
 exports.GET_VDXF_ID = 'getvdxfid';
 exports.GET_RAW_TRANSACTION = 'getrawtransaction';
