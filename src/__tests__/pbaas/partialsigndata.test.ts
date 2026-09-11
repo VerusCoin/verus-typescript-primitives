@@ -1,14 +1,72 @@
 import { BN } from 'bn.js'
-import { PartialSignData, PartialSignDataInitData } from '../../pbaas/PartialSignData'
+import { PartialSignData, PartialSignDataCLIJson, PartialSignDataInitData } from '../../pbaas/PartialSignData'
 import { IdentityID } from '../../pbaas/IdentityID'
 import { SaplingPaymentAddress } from '../../pbaas/SaplingPaymentAddress'
 import { PartialMMRData } from '../../pbaas/PartialMMRData'
-import { DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA, DATA_TYPE_VDXFDATA } from '../../constants/pbaas'
+import { DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA, DATA_TYPE_VDXFDATA, HASH_TYPE_SHA256, HASH_TYPE_SHA256D, HASH_TYPE_BLAKE2B, HASH_TYPE_KECCAK256 } from '../../constants/pbaas'
 import { FqnVdxfUniValue } from '../../pbaas/VdxfUniValue'
 import { CompactIAddressObject } from '../../vdxf/classes/CompactAddressObject'
 import * as VDXF_Data from '../../vdxf/vdxfdatakeys'
 
 describe('PartialSignData serialization/deserialization', () => {
+  describe('lowercase CLI signing metadata', () => {
+    const cliJson: PartialSignDataCLIJson = {
+      address: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq',
+      prefixstring: 'Custom signing prefix',
+      vdxfkeys: ['i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz'],
+      vdxfkeynames: ['VDXFNAME'],
+      boundhashes: ['0873c6ba879ce87f5c207a4382b273cac164361af0b9fe63d6d7b0d7af401fec'],
+      hashtype: 'sha256',
+      encrypttoaddress: 'zs1wczplx4kegw32h8g0f7xwl57p5tvnprwdmnzmdnsw50chcl26f7tws92wk2ap03ykaq6jyyztfa',
+      createmmr: true,
+      signature: 'AQID',
+      message: 'Inspect this signing request',
+    };
+    const initData: PartialSignDataInitData = {
+      address: IdentityID.fromAddress(cliJson.address),
+      prefixString: Buffer.from('Custom signing prefix', 'utf8'),
+      vdxfKeys: [IdentityID.fromAddress('i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz')],
+      vdxfKeyNames: [Buffer.from('VDXFNAME', 'utf8')],
+      boundHashes: [Buffer.from('0873c6ba879ce87f5c207a4382b273cac164361af0b9fe63d6d7b0d7af401fec', 'hex')],
+      hashType: HASH_TYPE_SHA256,
+      encryptToAddress: SaplingPaymentAddress.fromAddressString(cliJson.encrypttoaddress),
+      createMMR: true,
+      signature: Buffer.from([1, 2, 3]),
+      dataType: DATA_TYPE_MESSAGE,
+      data: Buffer.from('Inspect this signing request', 'utf8'),
+    };
+
+    test('exports every metadata field for inspection after binary parsing', () => {
+      const parsed = new PartialSignData();
+      parsed.fromBuffer(new PartialSignData(initData).toBuffer());
+
+      expect(parsed.toCLIJson()).toEqual(cliJson);
+    });
+
+    test('imports every lowercase metadata field without changing the signing request', () => {
+      const parsed = PartialSignData.fromCLIJson(cliJson);
+
+      expect(parsed).toMatchObject(initData);
+      expect(parsed.toBuffer()).toEqual(new PartialSignData(initData).toBuffer());
+    });
+
+    test.each([
+      ['sha256', HASH_TYPE_SHA256],
+      ['sha256D', HASH_TYPE_SHA256D],
+      ['blake2b', HASH_TYPE_BLAKE2B],
+      ['keccak256', HASH_TYPE_KECCAK256],
+    ])('reads and writes %s using hashtype', (name, hashType) => {
+      const parsed = PartialSignData.fromCLIJson({ message: 'Hash selection', hashtype: name });
+
+      expect(parsed.hashType.eq(hashType)).toBe(true);
+      expect(new PartialSignData({
+        hashType,
+        dataType: DATA_TYPE_MESSAGE,
+        data: Buffer.from('Hash selection', 'utf8'),
+      }).toCLIJson()).toEqual({ message: 'Hash selection', hashtype: name, createmmr: false });
+    });
+  });
+
   function testCLIJsonSerialization(instance) {
     const cliJson = instance.toCLIJson();
     const fromCLIJsonInstance = PartialSignData.fromCLIJson(cliJson);
@@ -20,6 +78,25 @@ describe('PartialSignData serialization/deserialization', () => {
     fromBufferInstance.fromBuffer(instance.toBuffer());
     expect(fromBufferInstance.toBuffer().toString("hex")).toBe(instance.toBuffer().toString("hex"));
   }
+
+  test('binary round-trip preserves the current signature when its flag is set', () => {
+    const signature = Buffer.from('3045022100deadbeef02200123456789abcdef', 'hex');
+    const data = Buffer.from('data covered by the partial signature', 'utf8');
+    const original = new PartialSignData({
+      signature,
+      dataType: DATA_TYPE_MESSAGE,
+      data,
+    });
+
+    expect(original.flags.and(PartialSignData.CONTAINS_CURRENTSIG).isZero()).toBe(false);
+
+    const restored = new PartialSignData();
+    restored.fromBuffer(original.toBuffer());
+
+    expect(restored.flags.and(PartialSignData.CONTAINS_CURRENTSIG).isZero()).toBe(false);
+    expect(restored.signature).toEqual(signature);
+    expect(restored.data).toEqual(data);
+  });
 
   test('Round-trip with both standard buffer data and PartialMMRData', () => {
     // Create an instance of PartialMMRData to be used as our "MMR data"

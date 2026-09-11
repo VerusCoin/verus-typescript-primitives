@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SaplingExtendedSpendingKey = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const sapling_1 = require("../utils/sapling");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class SaplingExtendedSpendingKey {
+class SaplingExtendedSpendingKey extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
+        super();
         if (data != null) {
             this.depth = (_a = data.depth) !== null && _a !== void 0 ? _a : 0;
             this.parentFVKTag = (_b = data.parentFVKTag) !== null && _b !== void 0 ? _b : Buffer.alloc(4);

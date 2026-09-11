@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { VdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { KvMap } from '../utils/KvMap';
@@ -15,7 +16,7 @@ export declare function isKvValueArrayItemVdxfUniValueJson(x: ContentMultiMapJso
  */
 export declare class KvContent extends KvMap<Array<ContentMultiMapPrimitive>> {
 }
-export declare class ContentMultiMap implements SerializableEntity {
+export declare class ContentMultiMap extends SerializableEntityBase implements SerializableEntity {
     kvContent: KvContent;
     constructor(data?: {
         kvContent: KvContent;

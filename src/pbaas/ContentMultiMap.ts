@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varuint from '../utils/varuint';
 import bufferutils from '../utils/bufferutils';
 import { fromBase58Check, toBase58Check } from '../utils/address';
@@ -35,10 +36,11 @@ export function isKvValueArrayItemVdxfUniValueJson(x: ContentMultiMapJsonValue):
  */
 export class KvContent extends KvMap<Array<ContentMultiMapPrimitive>> {}
 
-export class ContentMultiMap implements SerializableEntity {
+export class ContentMultiMap extends SerializableEntityBase implements SerializableEntity {
   kvContent: KvContent;
 
   constructor(data?: { kvContent: KvContent }) {
+    super();
     if (data?.kvContent) this.kvContent = data.kvContent;
   }
 

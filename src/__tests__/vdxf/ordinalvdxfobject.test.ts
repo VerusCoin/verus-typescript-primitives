@@ -56,6 +56,70 @@ import { VERUSPAY_INVOICE_DETAILS_VDXF_KEY } from '../../vdxf';
 
 const TEST_SEARCH_DATA_HASH = Buffer.alloc(32, 1);
 
+describe('OrdinalVDXFObject optimized factory', () => {
+  it.each([
+    {
+      name: 'I address',
+      type: VDXF_OBJECT_RESERVED_BYTE_I_ADDR,
+      key: VERUSPAY_INVOICE_DETAILS_VDXF_KEY.vdxfid
+    },
+    {
+      name: 'text VDXF key',
+      type: VDXF_OBJECT_RESERVED_BYTE_VDXF_ID_STRING,
+      key: VERUSPAY_INVOICE_DETAILS_VDXF_KEY.qualifiedname.name
+    }
+  ])('decodes a known $name into its concrete ordinal class', ({ type, key }) => {
+    const details = new VerusPayInvoiceDetails({
+      amount: new BN(12345),
+      destination: new TransferDestination({
+        type: DEST_PKH,
+        destinationBytes: fromBase58Check('R9J8E2no2HVjQmzX6Ntes2ShSGcn7WiRcx').hash
+      }),
+      requestedcurrencyid: DEFAULT_VERUS_CHAINID
+    });
+    const general = new GeneralTypeOrdinalVDXFObject({ type, key, data: details.toBuffer() });
+    const serialized = general.toBuffer();
+    const prefix = Buffer.from('010203', 'hex');
+    const framed = Buffer.concat([prefix, serialized, Buffer.from('0405', 'hex')]);
+
+    const { obj: optimized, offset } = OrdinalVDXFObject.createFromBuffer(framed, prefix.length, true);
+
+    expect(offset).toBe(prefix.length + serialized.length);
+    expect(optimized).toBeInstanceOf(VerusPayInvoiceDetailsOrdinalVDXFObject);
+    expect(optimized.type.eq(VERUSPAY_INVOICE_DETAILS_VDXF_ORDINAL)).toBe(true);
+    expect(optimized.getIAddressKey()).toBe(VERUSPAY_INVOICE_DETAILS_VDXF_KEY.vdxfid);
+    expect(optimized.data).toBeInstanceOf(VerusPayInvoiceDetails);
+    expect(optimized.toJson().data).toEqual(details.toJson());
+    expect(optimized.toBuffer()).toEqual(new VerusPayInvoiceDetailsOrdinalVDXFObject({ data: details }).toBuffer());
+
+    const { obj: unoptimized, offset: unoptimizedOffset } = OrdinalVDXFObject.createFromBuffer(framed, prefix.length);
+    expect(unoptimizedOffset).toBe(offset);
+    expect(unoptimized).toBeInstanceOf(GeneralTypeOrdinalVDXFObject);
+    expect(unoptimized.data).toEqual(details.toBuffer());
+    expect(unoptimized.toBuffer()).toEqual(serialized);
+  });
+
+  it.each([
+    { name: 'I address', type: VDXF_OBJECT_RESERVED_BYTE_I_ADDR, key: TEST_IDENTITY_ID_1 },
+    { name: 'text VDXF key', type: VDXF_OBJECT_RESERVED_BYTE_VDXF_ID_STRING, key: 'vrsc::test.ordinal.opaque' },
+    { name: 'identity FQN', type: VDXF_OBJECT_RESERVED_BYTE_ID_OR_CURRENCY, key: 'service.VRSCTEST' }
+  ])('preserves opaque data for an unknown $name when optimization is enabled', ({ type, key }) => {
+    const data = Buffer.from('01020304', 'hex');
+    const general = new GeneralTypeOrdinalVDXFObject({ type, key, data });
+    const serialized = general.toBuffer();
+
+    const { obj, offset } = OrdinalVDXFObject.createFromBuffer(serialized, 0, true);
+
+    expect(offset).toBe(serialized.length);
+    expect(obj).toBeInstanceOf(GeneralTypeOrdinalVDXFObject);
+    expect(obj.type.eq(type)).toBe(true);
+    expect(obj.key).toBe(key);
+    expect(obj.data).toEqual(data);
+    expect(obj.toJson().data).toBe(data.toString('hex'));
+    expect(obj.toBuffer()).toEqual(serialized);
+  });
+});
+
 // Helper function to create TransferDestination from address string
 function createCompactAddressObject(type: BigNumber, address: string): CompactIAddressObject {
   const obj = new CompactIAddressObject({

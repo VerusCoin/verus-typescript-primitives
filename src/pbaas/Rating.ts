@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
 import bufferutils from '../utils/bufferutils'
@@ -12,7 +13,7 @@ export interface RatingJson {
   trustlevel: number;
   ratingsmap: {[key: string]: string};
 }
-export class Rating implements SerializableEntity {
+export class Rating extends SerializableEntityBase implements SerializableEntity {
 
   static VERSION_INVALID = new BN(0, 10)
   static VERSION_FIRST = new BN(1, 10)
@@ -30,6 +31,7 @@ export class Rating implements SerializableEntity {
   ratings: Map<string, Buffer>;
 
   constructor(data: { version?: BigNumber, trustLevel?: BigNumber, ratings?: Map<string, Buffer> } = {}) {
+    super();
     if (data != null) {
       if (Object.prototype.hasOwnProperty.call(data, 'trust_level')) {
         throw new Error("Rating: snake_case property names are no longer supported. Use 'trustLevel' instead of 'trust_level'.");

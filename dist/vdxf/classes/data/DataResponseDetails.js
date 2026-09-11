@@ -37,6 +37,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataResponseDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../../../utils/varint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -44,8 +45,9 @@ const { BufferReader, BufferWriter } = bufferutils_1.default;
 const pbaas_1 = require("../../../pbaas");
 const createHash = require("create-hash");
 const CompactAddressObject_1 = require("../CompactAddressObject");
-class DataResponseDetails {
+class DataResponseDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(initialData) {
+        super();
         this.flags = initialData && initialData.flags ? initialData.flags : new bn_js_1.BN("0", 10);
         if (initialData === null || initialData === void 0 ? void 0 : initialData.requestID) {
             if (!this.containsRequestID())

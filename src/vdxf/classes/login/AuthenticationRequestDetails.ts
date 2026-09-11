@@ -15,6 +15,7 @@
  */
 
 import bufferutils from "../../../utils/bufferutils";
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { BN } from "bn.js";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
@@ -40,7 +41,7 @@ export interface AuthenticationRequestDetailsJson {
   expirytime?: number;
 }
 
-export class AuthenticationRequestDetails implements SerializableEntity {
+export class AuthenticationRequestDetails extends SerializableEntityBase implements SerializableEntity {
   flags?: BigNumber;
   requestID?: CompactIAddressObject;
   recipientConstraints?: Array<RecipientConstraint>;
@@ -53,6 +54,7 @@ export class AuthenticationRequestDetails implements SerializableEntity {
   constructor(
     request?: AuthenticationRequestDetailsInterface 
   ) {
+    super();
     this.flags = request?.flags || new BN(0, 10);
     this.requestID = request?.requestID || null;
     this.recipientConstraints = request?.recipientConstraints ? request.recipientConstraints.map(RecipientConstraint.fromData) : null;
@@ -155,7 +157,7 @@ export class AuthenticationRequestDetails implements SerializableEntity {
     } 
 
     if (this.hasExpiryTime()) {
-      this.expiryTime = new BN(reader.readCompactSize());
+      this.expiryTime = new BN(reader.readCompactSize(false));
     }
 
     return reader.offset;
@@ -165,7 +167,7 @@ export class AuthenticationRequestDetails implements SerializableEntity {
     const retval = {
       flags: this.flags.toNumber(),
       requestid: this.hasRequestID() ? this.requestID.toJson() : undefined,
-      recipientConstraints: this.recipientConstraints ? this.recipientConstraints.map(p => p.toJson()) : undefined,
+      recipientconstraints: this.recipientConstraints ? this.recipientConstraints.map(p => p.toJson()) : undefined,
       expirytime: this.expiryTime ? this.expiryTime.toNumber() : undefined
     };
 

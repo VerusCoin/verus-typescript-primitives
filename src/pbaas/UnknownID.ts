@@ -1,12 +1,14 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from "../utils/bufferutils";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
 
-export class UnknownID implements SerializableEntity {
+export class UnknownID extends SerializableEntityBase implements SerializableEntity {
   bytes: Buffer;
 
   constructor(
     bytes: Buffer = Buffer.alloc(0)
   ) {
+    super();
     this.bytes = bytes;
   }
 

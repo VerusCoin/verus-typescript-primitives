@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifiableSignatureData = void 0;
+const SerializableEntityBase_1 = require("../../utils/types/SerializableEntityBase");
 const varuint_1 = require("../../utils/varuint");
 const address_1 = require("../../utils/address");
 const bufferutils_1 = require("../../utils/bufferutils");
@@ -14,8 +15,9 @@ const CompactAddressObject_1 = require("./CompactAddressObject");
 const pbaas_1 = require("../../constants/pbaas");
 const varint_1 = require("../../utils/varint");
 const pbaas_2 = require("../../pbaas");
-class VerifiableSignatureData {
+class VerifiableSignatureData extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = data && data.version ? data.version : new bn_js_1.BN(0);
         this.flags = data && data.flags ? data.flags : new bn_js_1.BN(0);
         this.signatureVersion = data && data.signatureVersion ? data.signatureVersion : new bn_js_1.BN(2, 10);
@@ -97,6 +99,8 @@ class VerifiableSignatureData {
             this.setHasBoundHashes();
         if (this.statements)
             this.setHasStatements();
+        if (this.systemID)
+            this.setHasSystem();
     }
     getBufferEncodingLength(buf) {
         const bufLen = buf.byteLength;
@@ -133,9 +137,9 @@ class VerifiableSignatureData {
             bufferWriter.writeArray(sortedBuffers);
         }
         if (this.vdxfKeyNames && this.vdxfKeyNames.length > 0) {
-            // Sort vdxfKeyNames before writing
-            const sortedNames = [...this.vdxfKeyNames].sort();
-            bufferWriter.writeVector(sortedNames.map(x => Buffer.from(x, 'utf8')));
+            // Match the daemon's std::string ordering by comparing UTF-8 bytes.
+            const sortedNames = this.vdxfKeyNames.map(x => Buffer.from(x, 'utf8')).sort(Buffer.compare);
+            bufferWriter.writeVector(sortedNames);
         }
         if (this.boundHashes && this.boundHashes.length > 0) {
             // Sort boundHashes before writing
@@ -228,11 +232,16 @@ class VerifiableSignatureData {
         this.flags = new bn_js_1.BN(bufferReader.readCompactSize());
         this.signatureVersion = new bn_js_1.BN(bufferReader.readCompactSize());
         this.hashType = new bn_js_1.BN(bufferReader.readCompactSize());
+        const rootSystemName = this.isTestnet ? 'VRSCTEST' : 'VRSC';
         if (this.hasSystem()) {
-            this.systemID = new CompactAddressObject_1.CompactIAddressObject();
+            this.systemID = new CompactAddressObject_1.CompactIAddressObject({ type: CompactAddressObject_1.CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
             bufferReader.offset = this.systemID.fromBuffer(bufferReader.buffer, bufferReader.offset);
         }
-        this.identityID = new CompactAddressObject_1.CompactIAddressObject();
+        else {
+            const defaultChainId = this.isTestnet ? pbaas_1.TESTNET_VERUS_CHAINID : pbaas_1.DEFAULT_VERUS_CHAINID;
+            this.systemID = CompactAddressObject_1.CompactIAddressObject.fromAddress(defaultChainId, rootSystemName);
+        }
+        this.identityID = new CompactAddressObject_1.CompactIAddressObject({ type: CompactAddressObject_1.CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
         bufferReader.offset = this.identityID.fromBuffer(bufferReader.buffer, bufferReader.offset);
         if (this.hasVdxfKeys()) {
             this.vdxfKeys = bufferReader.readArray(vdxf_1.HASH160_BYTE_LENGTH).map(x => (0, address_1.toBase58Check)(x, vdxf_1.I_ADDR_VERSION));

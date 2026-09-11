@@ -3,6 +3,38 @@ import { IdentityID } from "../../../pbaas/IdentityID";
 import { SmartTransactionScript } from "../../../pbaas/transaction/SmartTransactionScript";
 import { OptCCParams } from "../../../pbaas/OptCCParams";
 import { TxDestination } from "../../../pbaas/TxDestination";
+import { UnknownID } from "../../../pbaas/UnknownID";
+import { OPS } from "../../../utils/ops";
+import { compile } from "../../../utils/script";
+
+const PREV_OUT_DEST = 'iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF';
+
+function getValidParams(): { master: OptCCParams, params: OptCCParams } {
+  const destination = new TxDestination(IdentityID.fromAddress(PREV_OUT_DEST));
+
+  return {
+    master: new OptCCParams({
+      version: new BN(3),
+      evalCode: new BN(0),
+      m: new BN(1),
+      n: new BN(1),
+      destinations: [destination]
+    }),
+    params: new OptCCParams({
+      version: new BN(3),
+      evalCode: new BN(0),
+      m: new BN(1),
+      n: new BN(1),
+      destinations: [destination]
+    })
+  };
+}
+
+function expectScriptToBeRejected(buffer: Buffer): void {
+  const parsed = new SmartTransactionScript();
+
+  expect(() => parsed.fromBuffer(buffer)).toThrow();
+}
 
 describe('Serializes and deserializes SmartTransactionScripts', () => {
   test('(de)serialize a basic identity registration outscript (v2) from daemon', () => {
@@ -15,7 +47,7 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
   });
 
   test('(de)serialize a basic output script', () => {
-    var prevOutDest = 'iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF'
+    var prevOutDest = PREV_OUT_DEST
 
     const prevOutMaster = new OptCCParams({
       version: new BN(3),
@@ -37,5 +69,101 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
     scriptFromBuf.fromBuffer(script.toBuffer());
 
     expect(script.toBuffer().toString('hex')).toBe(scriptFromBuf.toBuffer().toString('hex'));
+  });
+
+  test('accepts an index destination in the master parameters', () => {
+    const { params } = getValidParams();
+    const indexDestination = new TxDestination(
+      new UnknownID(Buffer.alloc(20, 1)),
+      TxDestination.TYPE_INDEX
+    );
+    const master = new OptCCParams({
+      version: new BN(3),
+      evalCode: new BN(0),
+      m: new BN(1),
+      n: new BN(1),
+      destinations: [indexDestination]
+    });
+    const parsed = new SmartTransactionScript();
+
+    parsed.fromBuffer(new SmartTransactionScript(master, params).toBuffer());
+
+    expect(parsed.masterOptCC.destinations[0].type.eq(TxDestination.TYPE_INDEX)).toBe(true);
+  });
+
+  test('rejects a script with a different crypto-condition opcode', () => {
+    const { master, params } = getValidParams();
+    const malformed = compile([
+      master.toChunk(),
+      OPS.OP_CHECKSIG,
+      params.toChunk(),
+      OPS.OP_DROP
+    ]);
+
+    expectScriptToBeRejected(malformed);
+  });
+
+  test('rejects a script without the terminating OP_DROP', () => {
+    const { master, params } = getValidParams();
+    const malformed = compile([
+      master.toChunk(),
+      OPS.OP_CHECKCRYPTOCONDITION,
+      params.toChunk(),
+      OPS.OP_DUP
+    ]);
+
+    expectScriptToBeRejected(malformed);
+  });
+
+  test('rejects an unbalanced trailing opcode', () => {
+    const { master, params } = getValidParams();
+    const malformed = compile([
+      master.toChunk(),
+      OPS.OP_CHECKCRYPTOCONDITION,
+      params.toChunk(),
+      OPS.OP_DROP,
+      OPS.OP_1
+    ]);
+
+    expectScriptToBeRejected(malformed);
+  });
+
+  test.each(['master', 'params'] as const)(
+    'rejects an invalid %s threshold',
+    invalidPart => {
+      const { master, params } = getValidParams();
+      const masterChunk = Buffer.from(master.toChunk());
+      const paramsChunk = Buffer.from(params.toChunk());
+
+      // Each chunk begins with PUSH(4), followed by [version, evalCode, m, n].
+      // Raise m above n without relying on the serializer to create invalid data.
+      if (invalidPart === 'master') masterChunk[3] = 2;
+      else paramsChunk[3] = 2;
+
+      const malformed = compile([
+        masterChunk,
+        OPS.OP_CHECKCRYPTOCONDITION,
+        paramsChunk,
+        OPS.OP_DROP
+      ]);
+
+      expectScriptToBeRejected(malformed);
+    }
+  );
+
+  test('rejects an unexpected opcode inside OptCCParams', () => {
+    const { master, params } = getValidParams();
+    const malformedMaster = Buffer.concat([
+      master.toChunk(),
+      Buffer.from([OPS.OP_DROP])
+    ]);
+    const malformed = compile([
+      malformedMaster,
+      OPS.OP_CHECKCRYPTOCONDITION,
+      params.toChunk(),
+      OPS.OP_DROP
+    ]);
+
+    expectScriptToBeRejected(malformed);
   });
 });

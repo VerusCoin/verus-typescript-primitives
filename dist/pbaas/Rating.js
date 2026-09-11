@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rating = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varuint_1 = require("../utils/varuint");
 const address_1 = require("../utils/address");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class Rating {
+class Rating extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data = {}) {
+        super();
         if (data != null) {
             if (Object.prototype.hasOwnProperty.call(data, 'trust_level')) {
                 throw new Error("Rating: snake_case property names are no longer supported. Use 'trustLevel' instead of 'trust_level'.");

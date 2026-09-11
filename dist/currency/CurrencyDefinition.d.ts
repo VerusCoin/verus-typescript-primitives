@@ -1,35 +1,39 @@
-export type CurrencyDefinition = {
+/** Fields emitted by CCurrencyDefinition::ToUniValue, without RPC metadata. */
+export type RawCurrencyDefinition = {
     version: number;
     options: number;
     name: string;
     currencyid: string;
-    parent: string;
+    parent?: string;
     systemid: string;
     maxpreconversion?: Array<number>;
     minpreconversion?: Array<number>;
     notarizationprotocol: number;
     proofprotocol: number;
-    launchsystemid: string;
+    launchsystemid?: string;
     startblock: number;
     endblock: number;
-    currencies: Array<string>;
-    weights: Array<number>;
-    conversions: Array<number>;
-    initialsupply: number;
-    prelaunchcarveout: number;
-    initialcontributions: Array<number>;
+    currencies?: Array<string>;
+    weights?: Array<number>;
+    conversions?: Array<number>;
+    initialsupply?: number;
+    prelaunchcarveout?: number;
+    initialcontributions?: Array<number>;
     idregistrationfees: number;
     idreferrallevels: number;
     idimportfees: number;
+};
+/** Currency definition enriched by getcurrency. */
+export type CurrencyDefinition = RawCurrencyDefinition & {
     currencyidhex: string;
     fullyqualifiedname: string;
-    currencynames: {
+    currencynames?: {
         [key: string]: string;
     };
-    definitiontxid: string;
-    definitiontxout: number;
+    definitiontxid?: string;
+    definitiontxout?: number;
     bestheight: number;
-    lastconfirmedheight: number;
+    lastconfirmedheight?: number;
     bestcurrencystate?: {
         flags: number;
         version: number;

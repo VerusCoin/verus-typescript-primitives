@@ -38,7 +38,7 @@ describe('Encodes and decodes VdxfUniValue', () => {
     const vFromBuf = new VdxfUniValue();
 
     vFromBuf.fromBuffer(v.toBuffer(), 0);
-    vFromBuf.fromBuffer(v.toBuffer(), 0);
+    expect(() => vFromBuf.fromBuffer(v.toBuffer(), 0)).toThrow("Deserialization already attempted");
 
     expect(vFromBuf.toBuffer().toString('hex')).toBe(v.toBuffer().toString('hex'));
     expect(VdxfUniValue.fromJson(v.toJson()).toBuffer().toString('hex')).toBe(vFromBuf.toBuffer().toString('hex'));
@@ -332,6 +332,45 @@ describe('Encodes and decodes VdxfUniValue', () => {
 
 });
 
+describe.each([
+  ['VdxfUniValue', (json: VdxfUniValueJson) => VdxfUniValue.fromJson(json)],
+  ['FqnVdxfUniValue', (json: VdxfUniValueJson) => FqnVdxfUniValue.fromJson(json)],
+])('%s fixed-size integer JSON serialization', (_name, fromJson) => {
+  test.each([
+    [VDXF_Data.DataInt16Key.vdxfid, -123, '85ff'],
+    [VDXF_Data.DataUint16Key.vdxfid, 123, '7b00'],
+    [VDXF_Data.DataInt32Key.vdxfid, -123456, 'c01dfeff'],
+    [VDXF_Data.DataUint32Key.vdxfid, 4000000000, '00286bee'],
+    // Use a decimal string so the value is not rounded through JavaScript's
+    // Number type before it reaches the serializer.
+    [VDXF_Data.DataInt64Key.vdxfid, '9007199254740993', '0100000000002000'],
+  ])('serializes %s from daemon-compatible JSON', (key, jsonValue, expectedHex) => {
+    const value = fromJson({ [key]: jsonValue } as VdxfUniValueJson);
+
+    expect(value.toBuffer().toString('hex')).toBe(expectedHex);
+    expect(value.toJson()).toEqual({ [key]: String(jsonValue) });
+  });
+});
+
+describe('VdxfUniValue uint256 JSON serialization', () => {
+  test('writes the daemon-compatible 32 raw little-endian bytes', () => {
+    const hashHex = Array.from(
+      { length: 32 },
+      (_, index) => index.toString(16).padStart(2, '0'),
+    ).join('');
+    const expectedHex = Buffer.from(hashHex, 'hex').reverse().toString('hex');
+    const value = VdxfUniValue.fromJson({
+      [VDXF_Data.DataUint256Key.vdxfid]: hashHex,
+    });
+
+    expect(value.getByteLength()).toBe(32);
+    expect(value.toBuffer().toString('hex')).toBe(expectedHex);
+    expect(value.toJson()).toEqual({
+      [VDXF_Data.DataUint256Key.vdxfid]: hashHex,
+    });
+  });
+});
+
 describe('VdxfUniValue FQN key support', () => {
   // "vrsc::identity.multimapremove" resolves to this vdxfid
   const CMM_REMOVE_VDXFID = VDXF_Data.ContentMultiMapRemoveKey.vdxfid;
@@ -596,7 +635,7 @@ describe('FqnVdxfUniValue', () => {
       expect(uni.getByteLength()).toBe(32);
     });
 
-    test('DataUint256Key toBuffer writes reversed hash preceded by a varuint length prefix', () => {
+    test('DataUint256Key toBuffer writes the reversed hash without a varuint length prefix', () => {
       const hashHex = 'aa'.repeat(32);
       const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataUint256KeyName]: hashHex });
 
@@ -604,14 +643,10 @@ describe('FqnVdxfUniValue', () => {
     });
 
     test('DataUint256Key toBuffer does not mutate the stored Buffer (no in-place reverse)', () => {
-      // The refactor changed .reverse() to Buffer.from(oneHash).reverse() to avoid
-      // mutating the value stored in _kvValues. We verify the stored value is unchanged
-      // by checking toJson() still returns the original hex after a toBuffer() call.
-      // If this test is changed to not throw once getByteLength is fixed, also add this check.
       const hashHex = 'bb'.repeat(32);
       const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataUint256KeyName]: hashHex });
-      // toBuffer currently throws due to getByteLength/writeVarSlice mismatch;
-      // toJson() must still work correctly regardless.
+
+      uni.toBuffer();
       const json = uni.toJson() as any;
       expect(json[VDXF_Data.DataUint256KeyName]).toBe(hashHex);
     });

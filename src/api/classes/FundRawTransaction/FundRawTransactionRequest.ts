@@ -1,10 +1,10 @@
-import { ApiRequest } from "../../ApiRequest";
+import { ApiRequest, positionalParams } from "../../ApiRequest";
 import { ApiPrimitiveJson, RequestParams } from "../../ApiPrimitive";
 import { FUND_RAW_TRANSACTION } from "../../../constants/cmds";
 
 type Utxo = {
-  voutnum: number,
-  txid: string,
+  voutnum: number;
+  txid: string;
 };
 
 export class FundRawTransactionRequest extends ApiRequest {
@@ -13,7 +13,13 @@ export class FundRawTransactionRequest extends ApiRequest {
   changeaddr?: string;
   explicitfee?: number;
 
-  constructor(chain: string, txhex: string, utxos?: Array<Utxo>, changeaddr?: string, explicitfee?: number) {
+  constructor(
+    chain: string,
+    txhex: string,
+    utxos?: Array<Utxo>,
+    changeaddr?: string,
+    explicitfee?: number
+  ) {
     super(chain, FUND_RAW_TRANSACTION);
     this.txhex = txhex;
     this.utxos = utxos;
@@ -22,14 +28,21 @@ export class FundRawTransactionRequest extends ApiRequest {
   }
 
   getParams(): RequestParams {
-    const params = [
-      this.txhex,
-      this.utxos,
-      this.changeaddr,
-      this.explicitfee
-    ];
+    if (this.utxos != null && this.changeaddr == null) {
+      throw new Error("changeaddr is required when utxos are provided");
+    }
+    if (
+      this.utxos == null &&
+      (this.changeaddr != null || this.explicitfee != null)
+    ) {
+      throw new Error(
+        "utxos are required when changeaddr or explicitfee is provided"
+      );
+    }
 
-    return params.filter((x) => x != null);
+    const params = [this.txhex, this.utxos, this.changeaddr, this.explicitfee];
+
+    return positionalParams(params);
   }
 
   static fromJson(object: ApiPrimitiveJson): FundRawTransactionRequest {
@@ -38,7 +51,7 @@ export class FundRawTransactionRequest extends ApiRequest {
       object.txhex as string,
       object.utxos != null ? (object.utxos as Array<Utxo>) : undefined,
       object.changeaddr != null ? (object.changeaddr as string) : undefined,
-      object.explicitfee != null ? (object.explicitfee as number) : undefined,
+      object.explicitfee != null ? (object.explicitfee as number) : undefined
     );
   }
 

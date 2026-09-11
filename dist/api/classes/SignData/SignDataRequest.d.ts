@@ -1,16 +1,9 @@
 import { ApiRequest } from "../../ApiRequest";
 import { ApiPrimitiveJson, RequestParams } from "../../ApiPrimitive";
-import { DataDescriptorInfo } from "../../../utils/types/DataDescriptor";
-import { SignDataParameters } from "../../../utils/types/SignData";
-export type SignDataArgs = {
+import { SignDataMMRDataParameters, SignDataParameters } from "../../../utils/types/SignData";
+export type SignDataArgs = SignDataParameters & {
     address?: string;
-    filename?: string;
-    message?: string;
-    messagehex?: string;
-    messagebase64?: string;
-    datahash?: string;
-    vdxfdata?: string;
-    mmrdata?: Array<DataDescriptorInfo | SignDataParameters>;
+    mmrdata?: Array<SignDataMMRDataParameters>;
     mmrsalt?: Array<string>;
     mmrhashtype?: string;
     priormmr?: Array<string>;

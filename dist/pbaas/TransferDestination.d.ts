@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export declare const DEST_INVALID: import("bn.js");
@@ -13,6 +14,8 @@ export declare const DEST_ETH: import("bn.js");
 export declare const DEST_ETHNFT: import("bn.js");
 export declare const DEST_RAW: import("bn.js");
 export declare const LAST_VALID_TYPE_NO_FLAGS: import("bn.js");
+export declare const FLAG_RESERVED1: import("bn.js");
+export declare const FLAG_RESERVED2: import("bn.js");
 export declare const FLAG_DEST_AUX: import("bn.js");
 export declare const FLAG_DEST_GATEWAY: import("bn.js");
 export declare const FLAG_MASK: import("bn.js");
@@ -24,7 +27,7 @@ export type TransferDestinationJson = {
     fees?: string;
     auxdests?: Array<TransferDestinationJson>;
 };
-export declare class TransferDestination implements SerializableEntity {
+export declare class TransferDestination extends SerializableEntityBase implements SerializableEntity {
     type: BigNumber;
     destinationBytes: Buffer;
     gatewayID: string;

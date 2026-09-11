@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import bufferutils from "../../../utils/bufferutils";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import varuint from "../../../utils/varuint";
@@ -13,7 +14,7 @@ export interface RecipientConstraintInterface {
   identity: CompactIAddressObject;
 }
 
-export class RecipientConstraint implements SerializableEntity {
+export class RecipientConstraint extends SerializableEntityBase implements SerializableEntity {
   type: number;
   identity: CompactIAddressObject;
 
@@ -23,6 +24,7 @@ export class RecipientConstraint implements SerializableEntity {
   static REQUIRED_PARENT = 3;
 
   constructor(data?: RecipientConstraintInterface) {
+    super();
     this.type = data?.type ?? 0;
     this.identity = data?.identity || new CompactIAddressObject();
   }

@@ -227,16 +227,16 @@ class Identity extends Principal_1.Principal {
         if (this.containsContentMap()) {
             // contentmap
             if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
-                const contentMapSize = reader.readVarInt();
+                const contentMapSize = reader.readCompactSize();
                 this.contentMap = new Map();
-                for (var i = 0; i < contentMapSize.toNumber(); i++) {
+                for (var i = 0; i < contentMapSize; i++) {
                     const contentMapKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
                     this.contentMap.set(contentMapKey, reader.readSlice(32));
                 }
             }
-            const contentMapSize = reader.readVarInt();
+            const contentMapSize = reader.readCompactSize();
             this.contentMap = new Map();
-            for (var i = 0; i < contentMapSize.toNumber(); i++) {
+            for (var i = 0; i < contentMapSize; i++) {
                 const contentMapKey = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
                 this.contentMap.set(contentMapKey, reader.readSlice(32));
             }
@@ -252,10 +252,10 @@ class Identity extends Principal_1.Principal {
             this.recoveryAuthority = _recovery;
         }
         if (this.containsPrivateAddresses()) {
-            const numPrivateAddresses = reader.readVarInt();
-            if (numPrivateAddresses.gt(new bn_js_1.BN(0)))
+            const numPrivateAddresses = reader.readCompactSize();
+            if (numPrivateAddresses > 0)
                 this.privateAddresses = [];
-            for (var i = 0; i < numPrivateAddresses.toNumber(); i++) {
+            for (var i = 0; i < numPrivateAddresses; i++) {
                 const saplingAddr = new SaplingPaymentAddress_1.SaplingPaymentAddress();
                 reader.offset = saplingAddr.fromBuffer(reader.buffer, reader.offset);
                 this.privateAddresses.push(saplingAddr);

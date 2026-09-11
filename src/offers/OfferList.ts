@@ -6,7 +6,7 @@ export interface ListedIdentityOffering {
   name: string;
   identityid: string;
   systemid: string;
-  original: number;
+  original: boolean;
 }
 
 export type ListedValueOffering = ListedCurrencyOffering | ListedIdentityOffering;
@@ -15,14 +15,17 @@ export interface ListedOfferTerms {
   offer: ListedValueOffering;
   accept: ListedValueOffering;
   blockexpiry: number;
-  txid: number;
+  txid: string;
+  tx?: string;
 }
 
-export interface ListedOffer {
-  currencyid: string;
+export type ListedOffer = {
   price: number;
   offer: ListedOfferTerms;
-}
+} & (
+  | { currencyid: string; identityid?: never }
+  | { identityid: string; currencyid?: never }
+);
 
 export type OfferList = {
   [key: string]: Array<ListedOffer>

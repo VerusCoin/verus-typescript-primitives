@@ -7,6 +7,7 @@ import { DATA_TYPE_STRING } from "../../vdxf";
 import { ContentMultiMapPrimitive } from "../../pbaas/ContentMultiMap";
 import { VdxfUniValue } from "../../pbaas/VdxfUniValue";
 import { CompactIAddressObject } from "../../vdxf/classes/CompactAddressObject";
+import { SaplingPaymentAddress } from "../../pbaas/SaplingPaymentAddress";
 
 describe('Serializes and deserializes identity properly', () => {
   test('deserialize/serialize VerusID without zaddr, post pbaas, with multimap and contentmap', () => {
@@ -105,6 +106,35 @@ describe('Serializes and deserializes identity properly', () => {
     expect(idJson.primaryaddresses![0]).toBe("RKjVHqM4VF2pCfVcwGzKH7CxvfMUE4H6o8");
     expect(idJson.primaryaddresses![1]).toBe("RP1j8ziHUzgs6THJiAQa2BiqjRLLCWQxAk");
   })
+
+  test('round-trips the CompactSize boundary of 128 private addresses', () => {
+    const privateAddress = "zs1wczplx4kegw32h8g0f7xwl57p5tvnprwdmnzmdnsw50chcl26f7tws92wk2ap03ykaq6jyyztfa";
+    const identity = new Identity({
+      version: IDENTITY_VERSION_PBAAS,
+      minSigs: new BN(1),
+      primaryAddresses: [
+        KeyID.fromAddress("RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH")
+      ],
+      parent: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      systemId: IdentityID.fromAddress("iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"),
+      name: "CompactSizeBoundary",
+      contentMap: new Map(),
+      recoveryAuthority: IdentityID.fromAddress("i81XL8ZpuCo9jmWLv5L5ikdxrGuHrrpQLz"),
+      revocationAuthority: IdentityID.fromAddress("i5v3h9FWVdRFbNHU7DfcpGykQjRaHtMqu7"),
+      privateAddresses: Array.from(
+        { length: 128 },
+        () => SaplingPaymentAddress.fromAddressString(privateAddress)
+      ),
+      unlockAfter: new BN(0)
+    });
+
+    const serialized = identity.toBuffer();
+    const deserialized = new Identity();
+    deserialized.fromBuffer(serialized);
+
+    expect(deserialized.privateAddresses).toHaveLength(128);
+    expect(deserialized.toBuffer()).toEqual(serialized);
+  });
 
   test('deserialize/serialize VerusID without zaddr, post pbaas, without multimap', () => {
     const contentmap = new Map();

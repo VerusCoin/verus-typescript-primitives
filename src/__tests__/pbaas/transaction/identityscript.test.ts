@@ -1,7 +1,38 @@
+import { BN } from "bn.js";
 import { Identity, IDENTITY_FLAG_TOKENIZED_CONTROL } from "../../../pbaas/Identity";
+import { IdentityID } from "../../../pbaas/IdentityID";
 import { OptCCParams } from "../../../pbaas/OptCCParams";
 import { IdentityScript } from "../../../pbaas/transaction/IdentityScript";
+import { TxDestination } from "../../../pbaas/TxDestination";
 import { IDENTITY_RECOVER_ADDR } from "../../../utils/cccustom";
+import { EVALS } from "../../../utils/evals";
+import { OPS } from "../../../utils/ops";
+import { compile } from "../../../utils/script";
+
+const IDENTITY_DEST = 'iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF';
+
+function makeSmartScript(evalCode: number, vData: Buffer[]): Buffer {
+  const destination = new TxDestination(IdentityID.fromAddress(IDENTITY_DEST));
+  const master = new OptCCParams({
+    version: new BN(3),
+    evalCode: new BN(EVALS.EVAL_NONE),
+    m: new BN(1),
+    n: new BN(1),
+    destinations: [destination]
+  });
+  const paramsChunk = compile([
+    Buffer.from([3, evalCode, 1, 1]),
+    destination.toChunk(),
+    ...vData
+  ]);
+
+  return compile([
+    master.toChunk(),
+    OPS.OP_CHECKCRYPTOCONDITION,
+    paramsChunk,
+    OPS.OP_DROP
+  ]);
+}
 
 describe('Serializes and deserializes SmartTransactionScripts', () => {
   test('(de)serialize a basic identity registration outscript (v1) from daemon', () => {
@@ -28,6 +59,27 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
     });
     expect(() => IdentityScript.fromIdentity(script.getIdentity())).toThrow()
   });
+
+  test('rejects a smart-transaction script with a non-identity eval code', () => {
+    const currencyDefinitionScript = makeSmartScript(
+      EVALS.EVAL_CURRENCY_DEFINITION,
+      [Buffer.from('0102', 'hex')]
+    );
+    const identityScript = new IdentityScript();
+
+    expect(() => identityScript.fromBuffer(currencyDefinitionScript)).toThrow();
+  });
+
+  test('rejects an identity-primary script without an identity payload', () => {
+    const identityScript = new IdentityScript();
+
+    expect(() => {
+      identityScript.fromBuffer(
+        makeSmartScript(EVALS.EVAL_IDENTITY_PRIMARY, [])
+      );
+    }).toThrow();
+  });
+
   test('(de)serialize a basic identity registration outscript for a revoked ID', () => {
     const idjson = {
       "contentmap": {

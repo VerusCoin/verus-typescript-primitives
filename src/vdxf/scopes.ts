@@ -18,7 +18,12 @@ export const IDENTITY_AGREEMENT: VDXFKeyInterface = {
   }
 };
 
-export const ATTESTATION_READ_REQUEST: VDXFKeyInterface = {
+/**
+ * @deprecated Legacy scope retained for compatibility. Do not use for new requests.
+ * Its qualified name reflects a historical naming mistake and does not derive
+ * the stored vdxfid/hash160result. Preserve these legacy values unchanged.
+ */
+export const IDENTITY_DATA_REQUEST: VDXFKeyInterface = {
   vdxfid: "iNqLaiDJjcADGCvXcQZnPqwTqMXzQbDCFu",
   hash160result: "fbd8fe825062b19a9bd26dc51b6f768828115ad4",
   qualifiedname: {

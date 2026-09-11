@@ -35,6 +35,7 @@
  * - Response validation and integrity checking via SHA-256 is required
  */
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { DataDescriptor, DataDescriptorJson } from '../../../pbaas';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
@@ -48,7 +49,7 @@ export interface DataResponseDetailsJson {
     requestid?: CompactAddressObjectJson;
     data: DataDescriptorJson;
 }
-export declare class DataResponseDetails implements SerializableEntity {
+export declare class DataResponseDetails extends SerializableEntityBase implements SerializableEntity {
     flags?: BigNumber;
     requestID?: CompactIAddressObject;
     data: DataDescriptor;

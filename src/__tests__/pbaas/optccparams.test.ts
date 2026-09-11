@@ -26,6 +26,22 @@ describe('Serializes and deserializes TxDestination variants', () => {
     expect(paramFromChunk.toBuffer().toString('hex')).toBe(params.toBuffer().toString('hex'));
   });
 
+  test('preserves one-byte vData encoded as a minimal integer opcode', () => {
+    const params = new OptCCParams({
+      version: new BN(3),
+      evalCode: new BN(EVALS.EVAL_CURRENCY_DEFINITION),
+      m: new BN(1),
+      n: new BN(1),
+      destinations: [new TxDestination(IdentityID.fromAddress('iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF'))],
+      vData: [Buffer.from([1])]
+    });
+    const encoded = params.toChunk();
+    const decoded = OptCCParams.fromChunk(encoded);
+
+    expect(decoded.vData).toEqual([Buffer.from([1])]);
+    expect(decoded.toChunk()).toEqual(encoded);
+  });
+
   test('(de)serialize a basic OptCCParams class to/from a chunk without a tx destination', () => {
     var prevOutDest = 'iQa13cLx5a4bB9nnd8EZPigrqLTsn75VrF'
 

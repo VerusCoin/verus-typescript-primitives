@@ -1,4 +1,4 @@
-import { ApiRequest } from "../../ApiRequest";
+import { ApiRequest, positionalParams } from "../../ApiRequest";
 import { RequestParams, ApiPrimitiveJson } from "../../ApiPrimitive";
 import { GET_IDENTITY } from "../../../constants/cmds";
 
@@ -27,10 +27,10 @@ export class GetIdentityRequest extends ApiRequest {
       this.nameOrAddress,
       this.height,
       this.txproof,
-      this.txproofheight
+      this.txproofheight,
     ];
 
-    return params.filter((x) => x != null);
+    return positionalParams(params);
   }
 
   static fromJson(object: ApiPrimitiveJson): GetIdentityRequest {
@@ -39,7 +39,9 @@ export class GetIdentityRequest extends ApiRequest {
       object.nameOrAddress as string,
       object.height != null ? (object.height as number) : undefined,
       object.txproof != null ? (object.txproof as boolean) : undefined,
-      object.txproofheight != null ? (object.txproofheight as number) : undefined
+      object.txproofheight != null
+        ? (object.txproofheight as number)
+        : undefined
     );
   }
 
@@ -49,7 +51,7 @@ export class GetIdentityRequest extends ApiRequest {
       nameOrAddress: this.nameOrAddress,
       height: this.height,
       txproof: this.txproof,
-      txproofheight: this.txproofheight
+      txproofheight: this.txproofheight,
     };
   }
 }

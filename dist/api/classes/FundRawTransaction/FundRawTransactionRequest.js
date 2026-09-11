@@ -12,13 +12,15 @@ class FundRawTransactionRequest extends ApiRequest_1.ApiRequest {
         this.explicitfee = explicitfee;
     }
     getParams() {
-        const params = [
-            this.txhex,
-            this.utxos,
-            this.changeaddr,
-            this.explicitfee
-        ];
-        return params.filter((x) => x != null);
+        if (this.utxos != null && this.changeaddr == null) {
+            throw new Error("changeaddr is required when utxos are provided");
+        }
+        if (this.utxos == null &&
+            (this.changeaddr != null || this.explicitfee != null)) {
+            throw new Error("utxos are required when changeaddr or explicitfee is provided");
+        }
+        const params = [this.txhex, this.utxos, this.changeaddr, this.explicitfee];
+        return (0, ApiRequest_1.positionalParams)(params);
     }
     static fromJson(object) {
         return new FundRawTransactionRequest(object.chain, object.txhex, object.utxos != null ? object.utxos : undefined, object.changeaddr != null ? object.changeaddr : undefined, object.explicitfee != null ? object.explicitfee : undefined);

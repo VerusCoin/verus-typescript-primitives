@@ -16,7 +16,10 @@ class IdentityUpdateRequestOrdinalVDXFObject extends SerializableEntityOrdinalVD
     fromDataBuffer(buffer, rootSystemName) {
         this.data = new IdentityUpdateRequestDetails_1.IdentityUpdateRequestDetails();
         // IdentityUpdateRequestDetails.fromBuffer has parseVdxfObjects as 3rd parameter, rootSystemName as 4th
-        this.data.fromBuffer(buffer, 0, true, rootSystemName || 'VRSC');
+        const consumed = this.data.fromBuffer(buffer, 0, true, rootSystemName || 'VRSC');
+        if (consumed !== buffer.length) {
+            throw new Error("Ordinal payload length mismatch");
+        }
     }
     static fromJson(details) {
         return new IdentityUpdateRequestOrdinalVDXFObject({

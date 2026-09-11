@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefinedKey = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../utils/varuint");
@@ -8,8 +9,9 @@ const varint_1 = require("../utils/varint");
 const address_1 = require("../utils/address");
 const pbaas_1 = require("../constants/pbaas");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class DefinedKey {
+class DefinedKey extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = DefinedKey.DEFINEDKEY_DEFAULT_FLAGS;
         this.version = DefinedKey.DEFINEDKEY_VERSION_INVALID;
         if (data != null) {

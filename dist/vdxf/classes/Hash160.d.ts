@@ -1,5 +1,6 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from "../../utils/types/SerializableEntity";
-export declare class Hash160 {
+export declare class Hash160 extends SerializableEntityBase {
     hash: Buffer;
     version: number;
     varlength: boolean;

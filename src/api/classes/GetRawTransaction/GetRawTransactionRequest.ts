@@ -22,7 +22,7 @@ export class GetRawTransactionRequest extends ApiRequest {
     return new GetRawTransactionRequest(
       object.chain as string,
       object.txid as string,
-      object.verbose != null ? (object.verbose as number) : undefined
+      (object.verbosity ?? object.verbose ?? undefined) as number | undefined
     );
   }
 

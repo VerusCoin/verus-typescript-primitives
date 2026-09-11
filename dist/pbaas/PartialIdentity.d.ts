@@ -50,6 +50,11 @@ export declare class PartialIdentity extends Identity implements SerializableEnt
     fromBuffer(buffer: Buffer, offset?: number, parseVdxfObjects?: boolean): number;
     toBuffer(): Buffer;
     static fromJson(json: VerusCLIVerusIDJson): PartialIdentity;
+    setPrimaryAddresses(addresses: Array<string>): void;
+    setRevocation(iAddr: string): void;
+    setRecovery(iAddr: string): void;
+    setPrivateAddress(zAddr: string): void;
+    upgradeVersion(version?: BigNumber): void;
     lock(unlockTime: BigNumber): void;
     unlock(height?: BigNumber, txExpiryHeight?: BigNumber): void;
     revoke(): void;

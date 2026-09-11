@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { CompactAddressObjectJson, CompactIAddressObject } from "../CompactAddressObject";
 export interface RecipientConstraintJson {
@@ -8,7 +9,7 @@ export interface RecipientConstraintInterface {
     type: number;
     identity: CompactIAddressObject;
 }
-export declare class RecipientConstraint implements SerializableEntity {
+export declare class RecipientConstraint extends SerializableEntityBase implements SerializableEntity {
     type: number;
     identity: CompactIAddressObject;
     static REQUIRED_ID: number;

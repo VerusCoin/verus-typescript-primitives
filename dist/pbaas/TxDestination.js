@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TxDestination = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const IdentityID_1 = require("./IdentityID");
 const KeyID_1 = require("./KeyID");
@@ -10,8 +11,9 @@ const bufferutils_1 = require("../utils/bufferutils");
 const PubKey_1 = require("./PubKey");
 const UnknownID_1 = require("./UnknownID");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class TxDestination {
+class TxDestination extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data = new NoDestination_1.NoDestination(), type) {
+        super();
         this.data = data;
         if (!type) {
             this.type = TxDestination.getTxDestinationVariantType(data);
@@ -64,7 +66,7 @@ class TxDestination {
         }
         else if (destBytes.length === 33) {
             this.type = TxDestination.TYPE_PK;
-            this.data = new KeyID_1.KeyID(destBytes);
+            this.data = new PubKey_1.PubKey(destBytes);
         }
         else {
             const subReader = new BufferReader(destBytes, 0);

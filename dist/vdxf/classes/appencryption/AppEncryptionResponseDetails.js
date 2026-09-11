@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppEncryptionResponseDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../../../utils/varint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -10,9 +11,10 @@ const createHash = require("create-hash");
 const SaplingExtendedSpendingKey_1 = require("../../../pbaas/SaplingExtendedSpendingKey");
 const SaplingExtendedViewingKey_1 = require("../../../pbaas/SaplingExtendedViewingKey");
 const CompactAddressObject_1 = require("../CompactAddressObject");
-class AppEncryptionResponseDetails {
+class AppEncryptionResponseDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         var _a, _b, _c, _d, _e;
+        super();
         this.version = (_a = data === null || data === void 0 ? void 0 : data.version) !== null && _a !== void 0 ? _a : new bn_js_1.BN(1);
         this.flags = (_b = data === null || data === void 0 ? void 0 : data.flags) !== null && _b !== void 0 ? _b : new bn_js_1.BN(0, 10);
         this.incomingViewingKey = (_c = data === null || data === void 0 ? void 0 : data.incomingViewingKey) !== null && _c !== void 0 ? _c : Buffer.alloc(32);

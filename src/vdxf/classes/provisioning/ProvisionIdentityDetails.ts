@@ -15,6 +15,7 @@
  */
 
 import bufferutils from "../../../utils/bufferutils";
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { BN } from "bn.js";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
@@ -40,7 +41,7 @@ export interface ProvisionIdentityDetailsJson {
   identityid?: CompactAddressObjectJson;
 }
 
-export class ProvisionIdentityDetails implements SerializableEntity {
+export class ProvisionIdentityDetails extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   uri?: RequestURI;
@@ -60,6 +61,7 @@ export class ProvisionIdentityDetails implements SerializableEntity {
   static FLAG_HAS_URI = new BN(8, 10);
 
   constructor(data?: ProvisionIdentityDetailsInterface) {
+    super();
     this.version = data?.version || ProvisionIdentityDetails.DEFAULT_VERSION;
     this.flags = data?.flags || new BN(0, 10);
     this.uri = data?.uri;

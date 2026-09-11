@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerusIDSignature = exports.Utf8OrBase58Object = exports.HexDataVdxfObject = exports.Utf8DataVdxfObject = exports.VDXFData = exports.BufferDataVdxfObject = exports.VDXFObject = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const base64url_1 = require("base64url");
 const createHash = require("create-hash");
 const vdxf_1 = require("../constants/vdxf");
@@ -30,8 +31,9 @@ __exportStar(require("./scopes"), exports);
 __exportStar(require("./keymap"), exports);
 __exportStar(require("./identitydatakeys"), exports);
 __exportStar(require("./vdxfdatakeys"), exports);
-class VDXFObject {
+class VDXFObject extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(key = "", serializekey = true) {
+        super();
         this.serializekey = true;
         this.vdxfkey = key;
         this.version = vdxf_1.VDXF_OBJECT_DEFAULT_VERSION;

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartialMMRData = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
@@ -8,8 +9,9 @@ const varuint_1 = require("../utils/varuint");
 const pbaas_1 = require("../constants/pbaas");
 const VdxfUniValue_1 = require("./VdxfUniValue");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class PartialMMRData {
+class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = data && data.flags ? data.flags : new bn_js_1.BN("0");
         this.data = data && data.data ? data.data : [];
         this.mmrhashtype = data && data.mmrhashtype ? data.mmrhashtype : pbaas_1.DEFAULT_HASH_TYPE_MMR;

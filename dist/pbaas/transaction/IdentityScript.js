@@ -84,9 +84,26 @@ class IdentityScript extends SmartTransactionScript_1.SmartTransactionScript {
         });
         return new IdentityScript(master, params);
     }
+    fromBuffer(buffer, offset, length) {
+        const newOffset = super.fromBuffer(buffer, offset, length);
+        if (!this.params.evalCode.eq(new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_PRIMARY))) {
+            throw new Error('identity script must use EVAL_IDENTITY_PRIMARY');
+        }
+        if (this.params.getParamObject() == null) {
+            throw new Error('identity script is missing its identity payload');
+        }
+        return newOffset;
+    }
     getIdentity(parseVdxfObjects = false) {
+        if (this.params == null || !this.params.evalCode.eq(new bn_js_1.BN(evals_1.EVALS.EVAL_IDENTITY_PRIMARY))) {
+            throw new Error('identity script must use EVAL_IDENTITY_PRIMARY');
+        }
+        const paramObject = this.params.getParamObject();
+        if (paramObject == null) {
+            throw new Error('identity script is missing its identity payload');
+        }
         const identity = new Identity_1.Identity();
-        identity.fromBuffer(this.params.getParamObject(), 0, parseVdxfObjects);
+        identity.fromBuffer(paramObject, 0, parseVdxfObjects);
         return identity;
     }
 }

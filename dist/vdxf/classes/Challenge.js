@@ -91,8 +91,18 @@ class Challenge extends __1.VDXFObject {
             ? new Context_1.Context(challenge.context.kv)
             : challenge.context;
         this.skip = challenge.skip ? true : false;
+        this.validateSupportedFields();
+    }
+    validateSupportedFields() {
+        if (this.requested_access_audience && this.requested_access_audience.length > 0) {
+            throw new Error("Requested access audience currently unsupported");
+        }
+        if (this.alt_auth_factors && this.alt_auth_factors.length > 0) {
+            throw new Error("Alt auth factors currently unsupported");
+        }
     }
     dataByteLength() {
+        this.validateSupportedFields();
         let length = 0;
         const _challenge_id = Hash160_1.Hash160.fromAddress(this.challenge_id, true);
         const _created_at = this.created_at;
@@ -173,8 +183,10 @@ class Challenge extends __1.VDXFObject {
         return writer.buffer;
     }
     fromDataBuffer(buffer, offset) {
-        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
-        const challengeLength = reader.readCompactSize();
+        const frameReader = new bufferutils_1.default.BufferReader(buffer, offset);
+        const challengeLength = frameReader.readCompactSize();
+        const bodyOffset = frameReader.offset;
+        const reader = new bufferutils_1.default.BufferReader(frameReader.readSlice(challengeLength));
         if (challengeLength == 0) {
             throw new Error("Cannot create challenge from empty buffer");
         }
@@ -241,9 +253,14 @@ class Challenge extends __1.VDXFObject {
             reader.offset = _context.fromBuffer(reader.buffer, reader.offset);
             this.context = _context;
         }
-        return reader.offset;
+        // ProvisioningChallenge consumes its extension after this shared prefix.
+        if (this.vdxfkey !== __1.LOGIN_CONSENT_PROVISIONING_CHALLENGE_VDXF_KEY.vdxfid && reader.offset !== challengeLength) {
+            throw new Error("Challenge body length mismatch");
+        }
+        return bodyOffset + reader.offset;
     }
     toJson() {
+        this.validateSupportedFields();
         return {
             vdxfkey: this.vdxfkey,
             challenge_id: this.challenge_id,

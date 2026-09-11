@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import base64url from "base64url";
 import createHash = require("create-hash");
 import { VDXF_OBJECT_DEFAULT_VERSION, HASH160_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
@@ -37,12 +38,13 @@ export type VerusIDSignatureJson = {
   serializekey: boolean
 }
 
-export class VDXFObject implements VDXFObjectInterface {
+export class VDXFObject extends SerializableEntityBase implements VDXFObjectInterface {
   vdxfkey: string;
   version: BigNumber;
   serializekey: boolean = true;
 
   constructor(key: string = "", serializekey: boolean = true) {
+    super();
     this.vdxfkey = key;
     this.version = VDXF_OBJECT_DEFAULT_VERSION;
     this.serializekey = serializekey;

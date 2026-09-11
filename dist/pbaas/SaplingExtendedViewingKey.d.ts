@@ -1,6 +1,7 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { SaplingExtendedViewingKeyData } from '../utils/sapling';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
-export declare class SaplingExtendedViewingKey implements SerializableEntity, SaplingExtendedViewingKeyData {
+export declare class SaplingExtendedViewingKey extends SerializableEntityBase implements SerializableEntity, SaplingExtendedViewingKeyData {
     depth: number;
     parentFVKTag: Buffer;
     childIndex: Buffer;

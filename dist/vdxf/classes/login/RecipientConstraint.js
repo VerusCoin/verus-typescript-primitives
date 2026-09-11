@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RecipientConstraint = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const varuint_1 = require("../../../utils/varuint");
 const CompactAddressObject_1 = require("../CompactAddressObject");
-class RecipientConstraint {
+class RecipientConstraint extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         var _a;
+        super();
         this.type = (_a = data === null || data === void 0 ? void 0 : data.type) !== null && _a !== void 0 ? _a : 0;
         this.identity = (data === null || data === void 0 ? void 0 : data.identity) || new CompactAddressObject_1.CompactIAddressObject();
     }

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
 import varint from '../utils/varint'
@@ -19,7 +20,7 @@ export interface MMRDescriptorJson {
   datadescriptors?: DataDescriptorJson[];
 }
 
-export class MMRDescriptor implements SerializableEntity {
+export class MMRDescriptor extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -40,6 +41,7 @@ export class MMRDescriptor implements SerializableEntity {
     mmrHashes?: DataDescriptor,
     dataDescriptors?: DataDescriptor[]
   }) {
+    super();
 
     if (data) {
       if (data.version) this.version = data.version;

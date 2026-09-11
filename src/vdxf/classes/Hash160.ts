@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from "../../constants/vdxf";
 import { fromBase58Check, toBase58Check } from "../../utils/address";
 import bufferutils from "../../utils/bufferutils";
 import { SerializableEntity } from "../../utils/types/SerializableEntity";
 import varuint from "../../utils/varuint";
 
-export class Hash160 {
+export class Hash160 extends SerializableEntityBase {
   hash: Buffer;
   version: number;
   varlength: boolean;
@@ -14,6 +15,7 @@ export class Hash160 {
     version: number = I_ADDR_VERSION,
     varlength: boolean = false
   ) {
+    super();
     this.hash = hash;
     this.version = version;
     this.varlength = varlength;

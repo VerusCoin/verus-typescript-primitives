@@ -6,6 +6,9 @@ export interface AuthorizedWebRequestInterface {
     signature?: VerusIDSignatureInterface;
     data: SignedSessionObjectData;
 }
+/**
+ * @deprecated Disabled and scheduled for removal in a future release. Construction always throws.
+ */
 export declare class SignedSessionObject extends VDXFObject {
     system_id: string;
     signing_id: string;

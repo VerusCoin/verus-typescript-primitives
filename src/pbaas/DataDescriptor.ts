@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
 import varint from '../utils/varint'
@@ -9,10 +10,14 @@ import { BufferDataVdxfObject } from '../vdxf/index';
 import * as VDXF_Data from '../vdxf/vdxfdatakeys';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { HASH_TYPE_BLAKE2B, HASH_TYPE_BLAKE2BMMR2, HASH_TYPE_INVALID, HASH_TYPE_KECCAK256, HASH_TYPE_SHA256, HASH_TYPE_SHA256D } from '../constants/pbaas';
+import { HASH160_BYTE_LENGTH, I_ADDR_VERSION, NULL_ADDRESS } from '../constants/vdxf';
+import { fromBase58Check, toBase58Check } from '../utils/address';
+import { readLimitedString } from '../utils/string';
 
 export interface DataDescriptorJson {
   version: number;
   flags?: number;
+  vdxfkey?: string;
   objectdata?: string | { ['message']: string } | object;
   label?: string;
   mimetype?: string;
@@ -22,7 +27,7 @@ export interface DataDescriptorJson {
   ssk?: string;
 }
 
-export class DataDescriptor implements SerializableEntity {
+export class DataDescriptor extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static VERSION_FIRST = new BN(1);
   static FIRST_VERSION = new BN(1);
@@ -36,16 +41,19 @@ export class DataDescriptor implements SerializableEntity {
   static FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT = new BN(0x10);
   static FLAG_LABEL_PRESENT = new BN(0x20);
   static FLAG_MIME_TYPE_PRESENT = new BN(0x40);
+  static FLAG_VDXF_KEY_PRESENT = new BN(0x80);
   static FLAG_MASK = (DataDescriptor.FLAG_ENCRYPTED_DATA.add(
     DataDescriptor.FLAG_SALT_PRESENT).add(
       DataDescriptor.FLAG_ENCRYPTION_PUBLIC_KEY_PRESENT).add(
         DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT).add(
           DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT).add(
             DataDescriptor.FLAG_LABEL_PRESENT).add(
-              DataDescriptor.FLAG_MIME_TYPE_PRESENT));
+              DataDescriptor.FLAG_MIME_TYPE_PRESENT).add(
+                DataDescriptor.FLAG_VDXF_KEY_PRESENT));
 
   version: BigNumber;
   flags: BigNumber;   // Flags indicating what items are present in the object
+  vdxfKey: string;    // optional VDXF key identifying the object data type
   objectdata: Buffer; // either direct data or serialized UTXORef +offset, length, and/or other type of info for different links
   label: string;      // label associated with this data
   mimeType: string;   // optional mime type
@@ -57,6 +65,7 @@ export class DataDescriptor implements SerializableEntity {
   constructor(data?: {
     version?: BigNumber,
     flags?: BigNumber,
+    vdxfKey?: string,
     objectdata?: Buffer,
     label?: string,
     mimeType?: string,
@@ -65,13 +74,16 @@ export class DataDescriptor implements SerializableEntity {
     ivk?: Buffer,
     ssk?: Buffer
   }) {
+    super();
     this.flags = new BN(0);
     this.version = DataDescriptor.DEFAULT_VERSION;
+    this.vdxfKey = "";
     this.objectdata = Buffer.from([]);
 
     if (data != null) {
       if (data.flags != null) this.flags = data.flags
       if (data.version != null) this.version = data.version
+      if (data.vdxfKey != null) this.vdxfKey = data.vdxfKey
       if (data.objectdata != null) this.objectdata = data.objectdata
       if (data.label != null) this.label = data.label;
       if (data.mimeType != null) this.mimeType = data.mimeType;
@@ -99,6 +111,7 @@ export class DataDescriptor implements SerializableEntity {
     if (data != null) {
       if (data.flags != null) newDataDescriptor.flags = new BN(data.flags)
       if (data.version != null) newDataDescriptor.version = new BN(data.version)
+      if (data.vdxfkey != null) newDataDescriptor.vdxfKey = data.vdxfkey;
       if (data.objectdata != null) newDataDescriptor.objectdata = VdxfUniValue.fromJson(data.objectdata).toBuffer();
       if (data.label != null) newDataDescriptor.label = data.label;
       if (data.mimetype != null) newDataDescriptor.mimeType = data.mimetype;
@@ -127,8 +140,8 @@ export class DataDescriptor implements SerializableEntity {
 
     if (vdxfData.vdxfkey == VDXF_Data.VectorUint256Key.vdxfid) {
       const reader = new BufferReader(Buffer.from(vdxfData.data, 'hex'));
-      const count = reader.readVarInt();
-      for (let i = 0; i < count.toNumber(); i++) {
+      const count = reader.readCompactSize();
+      for (let i = 0; i < count; i++) {
         hashes.push(reader.readSlice(32));
       }
     }
@@ -137,27 +150,34 @@ export class DataDescriptor implements SerializableEntity {
 
   getByteLength(): number {
 
+    this.setFlags();
+
     let length = 0;
 
     length += varint.encodingLength(this.version);
     length += varint.encodingLength(this.flags);
+    if (this.hasVDXFKey()) {
+      length += HASH160_BYTE_LENGTH;
+    }
     length += varuint.encodingLength(this.objectdata.length);
     length += this.objectdata.length;
 
     if (this.hasLabel()) {
-      if (this.label.length > 64) {
+      const labelLength = Buffer.byteLength(this.label, 'utf8');
+      if (labelLength > 64) {
         throw new Error("Label too long");
       }
-      length += varuint.encodingLength(this.label.length);
-      length += this.label.length;
+      length += varuint.encodingLength(labelLength);
+      length += labelLength;
     }
 
     if (this.hasMIME()) {
-      if (this.mimeType.length > 128) {
+      const mimeLength = Buffer.byteLength(this.mimeType, 'utf8');
+      if (mimeLength > 128) {
         throw new Error("MIME type too long");
       }
-      length += varuint.encodingLength(this.mimeType.length);
-      length += this.mimeType.length;
+      length += varuint.encodingLength(mimeLength);
+      length += mimeLength;
     }
 
     if (this.hasSalt()) {
@@ -187,6 +207,9 @@ export class DataDescriptor implements SerializableEntity {
 
     writer.writeVarInt(this.version);
     writer.writeVarInt(this.flags);
+    if (this.hasVDXFKey()) {
+      writer.writeSlice(fromBase58Check(this.vdxfKey).hash);
+    }
     writer.writeVarSlice(this.objectdata);
 
     if (this.hasLabel()) {
@@ -220,37 +243,46 @@ export class DataDescriptor implements SerializableEntity {
     const reader = new BufferReader(buffer, offset);
     this.version = reader.readVarInt();
     this.flags = reader.readVarInt();
+    if (this.hasVDXFKey()) {
+      this.vdxfKey = toBase58Check(reader.readSlice(HASH160_BYTE_LENGTH), I_ADDR_VERSION);
+    } else {
+      this.vdxfKey = "";
+    }
     this.objectdata = reader.readVarSlice();
 
     if (this.hasLabel()) {
-      this.label = reader.readVarSlice().toString();
-    }
+      this.label = readLimitedString(reader, 64).toString('utf8');
+    } else this.label = undefined;
 
     if (this.hasMIME()) {
-      this.mimeType = reader.readVarSlice().toString();
-    }
+      this.mimeType = readLimitedString(reader, 128).toString('utf8');
+    } else this.mimeType = undefined;
 
     if (this.hasSalt()) {
       this.salt = reader.readVarSlice();
-    }
+    } else this.salt = undefined;
 
     if (this.hasEPK()) {
       this.epk = reader.readVarSlice();
-    }
+    } else this.epk = undefined;
 
     if (this.hasIVK()) {
       this.ivk = reader.readVarSlice();
-    }
+    } else this.ivk = undefined;
 
     if (this.hasSSK()) {
       this.ssk = reader.readVarSlice();
-    }
+    } else this.ssk = undefined;
     return reader.offset;
 
   }
 
   hasEncryptedData(): boolean {
     return this.flags.and(DataDescriptor.FLAG_ENCRYPTED_DATA).gt(new BN(0));
+  }
+
+  hasVDXFKey(): boolean {
+    return this.flags.and(DataDescriptor.FLAG_VDXF_KEY_PRESENT).gt(new BN(0));
   }
 
   hasSalt(): boolean {
@@ -279,6 +311,7 @@ export class DataDescriptor implements SerializableEntity {
 
   calcFlags(): BigNumber {
     return this.flags.and(DataDescriptor.FLAG_ENCRYPTED_DATA).add
+      (this.vdxfKey && this.vdxfKey !== NULL_ADDRESS ? DataDescriptor.FLAG_VDXF_KEY_PRESENT : new BN(0)).add
       (this.label ? DataDescriptor.FLAG_LABEL_PRESENT : new BN(0)).add
       (this.mimeType ? DataDescriptor.FLAG_MIME_TYPE_PRESENT : new BN(0)).add
       (this.salt ? DataDescriptor.FLAG_SALT_PRESENT : new BN(0)).add
@@ -292,15 +325,28 @@ export class DataDescriptor implements SerializableEntity {
   }
 
   isValid(): boolean {
-    return !!(this.version.gte(DataDescriptor.FIRST_VERSION) && this.version.lte(DataDescriptor.LAST_VERSION) && this.flags.and(DataDescriptor.FLAG_MASK.notn(DataDescriptor.FLAG_MASK.bitLength())));
+    if (!this.version.gte(DataDescriptor.FIRST_VERSION) || !this.version.lte(DataDescriptor.LAST_VERSION)) {
+      return false;
+    }
+
+    if (this.flags.isNeg() || !this.flags.and(DataDescriptor.FLAG_MASK).eq(this.flags)) {
+      return false;
+    }
+
+    return (!this.label || Buffer.byteLength(this.label, 'utf8') <= 64) &&
+      (!this.mimeType || Buffer.byteLength(this.mimeType, 'utf8') <= 128);
   }
 
   toJson(): DataDescriptorJson {
+
+    this.setFlags();
 
     const retval: DataDescriptorJson = {
       version: this.version.toNumber(),
       flags: this.flags.toNumber()
     };
+
+    if (this.hasVDXFKey()) retval['vdxfkey'] = this.vdxfKey;
 
     let isText = false;
     if (this.mimeType) {
@@ -358,8 +404,9 @@ export class VDXFDataDescriptor extends BufferDataVdxfObject {
 
     const retval = new VDXFDataDescriptor();
     retval.version = data.version;
-    retval.data = data.data;
-    retval.fromBuffer(Buffer.from(retval.data, 'hex'));
+    retval.vdxfkey = data.vdxfkey;
+    retval.dataDescriptor = new DataDescriptor();
+    retval.dataDescriptor.fromBuffer(data.toDataBuffer());
     delete retval.data;
     return retval;
 
@@ -384,7 +431,7 @@ export class VDXFDataDescriptor extends BufferDataVdxfObject {
     this.data = reader.readVarSlice().toString('hex');
 
     this.dataDescriptor = new DataDescriptor();
-    this.dataDescriptor.fromBuffer(Buffer.from(this.data, 'hex'), reader.offset);
+    this.dataDescriptor.fromBuffer(Buffer.from(this.data, 'hex'));
     delete this.data;
 
     return reader.offset;
@@ -433,4 +480,3 @@ export enum EHashTypes {
   HASH_SHA256 = HASH_TYPE_SHA256.toNumber(),
   HASH_LASTTYPE = HASH_TYPE_SHA256.toNumber()
 };
-

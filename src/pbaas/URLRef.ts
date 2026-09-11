@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -16,7 +17,7 @@ export interface URLRefJson {
   url: string;
 }
 
-export class URLRef implements SerializableEntity {
+export class URLRef extends SerializableEntityBase implements SerializableEntity {
 
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(2);
@@ -31,6 +32,7 @@ export class URLRef implements SerializableEntity {
   url: string;
 
   constructor(data?: { version?: BigNumber, url?: string, flags?: BigNumber, dataHash?: Buffer }) {
+    super();
 
     if (data != null) {
       if (Object.prototype.hasOwnProperty.call(data, 'data_hash')) {

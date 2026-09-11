@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { OrdinalVDXFObject, OrdinalVDXFObjectJson } from "../ordinals/OrdinalVDXFObject";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
@@ -25,7 +26,7 @@ export type GenericEnvelopeJson = {
     details: Array<OrdinalVDXFObjectJson>;
 };
 export type GenericRequestHandlerIdentifier = 0 | 1;
-export declare class GenericEnvelope implements SerializableEntity {
+export declare class GenericEnvelope extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     signature?: VerifiableSignatureData;

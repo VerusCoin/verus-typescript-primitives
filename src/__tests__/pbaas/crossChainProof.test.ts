@@ -4,6 +4,8 @@ import * as VDXF_Data from '../../vdxf/vdxfdatakeys';
 import { VdxfUniValue } from "../../pbaas/VdxfUniValue";
 import { DataDescriptor } from '../../pbaas';
 
+const canonicalEvidenceProofHex = `01000000010a00${chainobjectsjsonobj.chainobjects[0].value.hex}`;
+
 describe('CrossChainProof', () => {
 
   test('deserialize crosschainproof data', () => {
@@ -32,6 +34,24 @@ describe('CrossChainProof', () => {
     }
 
     testrun();
+  });
+
+  test('preserves canonical daemon bytes when reserializing evidence', () => {
+    const canonicalProof = Buffer.from(canonicalEvidenceProofHex, 'hex');
+    const crossChainProof = new CrossChainProof();
+
+    expect(crossChainProof.fromBuffer(canonicalProof)).toBe(canonicalProof.length);
+    expect(crossChainProof.isValid()).toBe(true);
+    expect(crossChainProof.toBuffer()).toEqual(canonicalProof);
+  });
+
+  test('parses its own serialized multipart evidence', () => {
+    const crossChainProof = CrossChainProof.fromJson(CrossChainProofjsonob);
+    const serializedProof = crossChainProof.toBuffer();
+    const reparsedProof = new CrossChainProof();
+
+    expect(crossChainProof.isValid()).toBe(true);
+    expect(() => reparsedProof.fromBuffer(serializedProof)).not.toThrow();
   });
 
 });

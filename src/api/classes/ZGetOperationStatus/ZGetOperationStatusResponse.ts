@@ -11,7 +11,7 @@ export type z_operation = {
     message: string
   },
   execution_secs?: number,
-  params: Array<{ [key: string]: any }>
+  params: { [key: string]: any } | Array<{ [key: string]: any }>
 }
 
 export class ZGetOperationStatusResponse extends ApiResponse {

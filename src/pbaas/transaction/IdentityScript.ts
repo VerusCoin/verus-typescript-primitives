@@ -92,9 +92,35 @@ export class IdentityScript extends SmartTransactionScript implements Serializab
     return new IdentityScript(master, params);
   }
 
+  fromBuffer(
+    buffer: Buffer,
+    offset?: number,
+    length?: number
+  ): number {
+    const newOffset = super.fromBuffer(buffer, offset, length);
+
+    if (!this.params.evalCode.eq(new BN(EVALS.EVAL_IDENTITY_PRIMARY))) {
+      throw new Error('identity script must use EVAL_IDENTITY_PRIMARY');
+    }
+    if (this.params.getParamObject() == null) {
+      throw new Error('identity script is missing its identity payload');
+    }
+
+    return newOffset;
+  }
+
   getIdentity(parseVdxfObjects: boolean = false): Identity {
+    if (this.params == null || !this.params.evalCode.eq(new BN(EVALS.EVAL_IDENTITY_PRIMARY))) {
+      throw new Error('identity script must use EVAL_IDENTITY_PRIMARY');
+    }
+
+    const paramObject = this.params.getParamObject();
+    if (paramObject == null) {
+      throw new Error('identity script is missing its identity payload');
+    }
+
     const identity = new Identity();
-    identity.fromBuffer(this.params.getParamObject()!, 0, parseVdxfObjects);
+    identity.fromBuffer(paramObject, 0, parseVdxfObjects);
 
     return identity;
   }

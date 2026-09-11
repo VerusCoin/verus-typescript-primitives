@@ -19,6 +19,7 @@
  */
 
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import varuint from '../../../utils/varuint';
 import bufferutils from '../../../utils/bufferutils';
@@ -48,7 +49,7 @@ export interface DataPacketRequestDetailsJson {
   requestid?: CompactAddressObjectJson;
 }
 
-export class DataPacketRequestDetails implements SerializableEntity {
+export class DataPacketRequestDetails extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -73,6 +74,7 @@ export class DataPacketRequestDetails implements SerializableEntity {
   requestID?: CompactIAddressObject;
 
   constructor(data?: DataPacketRequestDetailsInterface) {
+    super();
     this.version = data?.version || DataPacketRequestDetails.DEFAULT_VERSION;
     this.flags = data?.flags || new BN(0);
     this.signableObjects = data?.signableObjects || [];
@@ -242,7 +244,9 @@ export class DataPacketRequestDetails implements SerializableEntity {
     }
 
     if (this.hasSignature()) {
-      const signature = new VerifiableSignatureData();
+      const signature = new VerifiableSignatureData({
+        isTestnet: rootSystemName.toLowerCase() === 'vrsctest',
+      });
       reader.offset = signature.fromBuffer(reader.buffer, reader.offset);
       this.signature = signature;
     }

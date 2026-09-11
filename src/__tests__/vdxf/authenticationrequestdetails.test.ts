@@ -56,4 +56,30 @@ describe("AuthenticationRequestDetails", () => {
       expect(details.recipientConstraints).toBeNull();
     });
   }); 
+
+  describe("JSON serialization", () => {
+    test("preserves recipient constraints through JSON text and wire serialization", () => {
+      const details = new AuthenticationRequestDetails();
+      details.fromBuffer(SERIALIZED_AUTHENTICATION_REQUEST_DETAILS);
+
+      const json = JSON.parse(JSON.stringify(details.toJson()));
+      expect(json.recipientconstraints).toHaveLength(3);
+      expect(json).not.toHaveProperty("recipientConstraints");
+
+      const restored = AuthenticationRequestDetails.fromJson(json);
+      expect(restored.recipientConstraints.map(constraint => ({
+        type: constraint.type,
+        address: constraint.identity.toAddress(),
+      }))).toEqual([
+        { type: RecipientConstraint.REQUIRED_ID, address: TEST_IDENTITY_ID_1 },
+        { type: RecipientConstraint.REQUIRED_SYSTEM, address: TEST_IDENTITY_ID_2 },
+        { type: RecipientConstraint.REQUIRED_PARENT, address: TEST_IDENTITY_ID_3 },
+      ]);
+      expect(restored.requestID.toAddress()).toBe(TEST_CHALLENGE_ID);
+      expect(restored.flags.toString()).toBe("7");
+      expect(restored.expiryTime.toString()).toBe("2938475938457");
+      expect(restored.isValid()).toBe(true);
+      expect(restored.toBuffer()).toEqual(SERIALIZED_AUTHENTICATION_REQUEST_DETAILS);
+    });
+  });
 });

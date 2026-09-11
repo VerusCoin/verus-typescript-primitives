@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PubKey = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
-class PubKey {
+class PubKey extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(bytes = Buffer.alloc(0), compressed = true) {
+        super();
         this.bytes = bytes;
         this.compressed = compressed;
     }

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityUpdateRequestDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const address_1 = require("../../../utils/address");
@@ -14,8 +15,9 @@ const CompactAddressObject_1 = require("../CompactAddressObject");
 const KvMap_1 = require("../../../utils/KvMap");
 const VdxfUniValue_1 = require("../../../pbaas/VdxfUniValue");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class IdentityUpdateRequestDetails {
+class IdentityUpdateRequestDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = data && data.flags ? data.flags : new bn_js_1.BN("0", 10);
         if (data === null || data === void 0 ? void 0 : data.requestID) {
             if (!this.containsRequestID())
@@ -169,7 +171,7 @@ class IdentityUpdateRequestDetails {
         this.identity = new PartialIdentity_1.PartialIdentity();
         reader.offset = this.identity.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
         if (this.expires()) {
-            this.expiryHeight = new bn_js_1.BN(reader.readCompactSize());
+            this.expiryHeight = new bn_js_1.BN(reader.readCompactSize(false));
         }
         if (this.containsSystem()) {
             this.systemID = new pbaas_1.IdentityID();

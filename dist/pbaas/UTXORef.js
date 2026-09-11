@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UTXORef = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class UTXORef {
+class UTXORef extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.hash = (data === null || data === void 0 ? void 0 : data.hash) || Buffer.alloc(0);
         this.n = (data === null || data === void 0 ? void 0 : data.n) || new bn_js_1.BN(0);
     }

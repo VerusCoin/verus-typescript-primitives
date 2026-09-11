@@ -4,6 +4,7 @@ exports.ProvisioningRequest = void 0;
 const createHash = require("create-hash");
 const __1 = require("../../");
 const vdxf_1 = require("../../../constants/vdxf");
+const bufferutils_1 = require("../../../utils/bufferutils");
 const Request_1 = require("../Request");
 const ProvisioningChallenge_1 = require("./ProvisioningChallenge");
 class ProvisioningRequest extends Request_1.Request {
@@ -45,11 +46,17 @@ class ProvisioningRequest extends Request_1.Request {
         return buffer;
     }
     fromDataBuffer(buffer, offset) {
-        let _offset = this._fromDataBuffer(buffer, offset);
+        const frameReader = new bufferutils_1.default.BufferReader(buffer, offset);
+        frameReader.readVarSlice();
+        const bodyEnd = frameReader.offset;
+        const boundedBuffer = buffer.subarray(0, bodyEnd);
+        let _offset = this._fromDataBuffer(boundedBuffer, offset);
         this.challenge = new ProvisioningChallenge_1.ProvisioningChallenge();
-        _offset = this.challenge.fromBuffer(buffer, _offset);
+        _offset = this.challenge.fromBuffer(boundedBuffer, _offset);
         this.signing_address = this.signing_id;
         this.signing_id = null;
+        if (_offset !== bodyEnd)
+            throw new Error("Provisioning request body length mismatch");
         return _offset;
     }
     toWalletDeeplinkUri() {

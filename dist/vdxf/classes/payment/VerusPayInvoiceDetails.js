@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerusPayInvoiceDetails = exports.VERUSPAY_IS_BURN_CHANGE_PRICE = exports.VERUSPAY_IS_TAGGED = exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = exports.VERUSPAY_IS_PRECONVERT = exports.VERUSPAY_IS_TESTNET = exports.VERUSPAY_EXCLUDES_VERUS_BLOCKCHAIN = exports.VERUSPAY_ACCEPTS_ANY_AMOUNT = exports.VERUSPAY_ACCEPTS_ANY_DESTINATION = exports.VERUSPAY_EXPIRES = exports.VERUSPAY_ACCEPTS_NON_VERUS_SYSTEMS = exports.VERUSPAY_ACCEPTS_CONVERSION = exports.VERUSPAY_VALID = exports.VERUSPAY_INVALID = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const varint_1 = require("../../../utils/varint");
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -28,8 +29,9 @@ exports.VERUSPAY_IS_PRECONVERT = new bn_js_1.BN(256, 10);
 exports.VERUSPAY_DESTINATION_IS_SAPLING_PAYMENT_ADDRESS = new bn_js_1.BN(512, 10);
 exports.VERUSPAY_IS_TAGGED = new bn_js_1.BN(1024, 10);
 exports.VERUSPAY_IS_BURN_CHANGE_PRICE = new bn_js_1.BN(2048, 10);
-class VerusPayInvoiceDetails {
+class VerusPayInvoiceDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data, verusPayVersion = veruspay_1.VERUSPAY_VERSION_CURRENT) {
+        super();
         this.flags = exports.VERUSPAY_VALID;
         this.amount = null;
         this.destination = null;
@@ -155,7 +157,7 @@ class VerusPayInvoiceDetails {
     }
     readVarUInt(reader = new BufferReader(Buffer.alloc(0))) {
         if (this.isGTEV4()) {
-            return new bn_js_1.BN(reader.readCompactSize());
+            return new bn_js_1.BN(reader.readCompactSize(false));
         }
         else {
             return reader.readVarInt();
@@ -210,10 +212,11 @@ class VerusPayInvoiceDetails {
         }
         return writer.buffer;
     }
-    fromBuffer(buffer, offset = 0, verusPayVersion = veruspay_1.VERUSPAY_VERSION_CURRENT, rootSystemName = 'VRSC') {
+    fromBuffer(buffer, offset = 0, verusPayVersion = veruspay_1.VERUSPAY_VERSION_CURRENT, rootSystemName) {
         const reader = new BufferReader(buffer, offset);
         this.verusPayVersion = verusPayVersion;
         this.flags = this.readVarUInt(reader);
+        const _rootSystemName = rootSystemName ? rootSystemName : this.isTestnet() ? "VRSCTEST" : "VRSC";
         if (!this.acceptsAnyAmount())
             this.amount = this.readVarUInt(reader);
         if (!this.acceptsAnyDestination()) {
@@ -236,7 +239,7 @@ class VerusPayInvoiceDetails {
             this.acceptedsystems = acceptedSystemsBuffers.map(x => (0, address_1.toBase58Check)(x, vdxf_1.I_ADDR_VERSION));
         }
         if (this.isTagged()) {
-            this.tag = new CompactAddressObject_1.CompactXAddressObject({ type: CompactAddressObject_1.CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName });
+            this.tag = new CompactAddressObject_1.CompactXAddressObject({ type: CompactAddressObject_1.CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName: _rootSystemName });
             reader.offset = this.tag.fromBuffer(reader.buffer, reader.offset);
         }
         return reader.offset;

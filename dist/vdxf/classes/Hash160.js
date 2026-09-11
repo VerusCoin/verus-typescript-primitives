@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Hash160SerEnt = exports.Hash160 = void 0;
+const SerializableEntityBase_1 = require("../../utils/types/SerializableEntityBase");
 const vdxf_1 = require("../../constants/vdxf");
 const address_1 = require("../../utils/address");
 const bufferutils_1 = require("../../utils/bufferutils");
 const varuint_1 = require("../../utils/varuint");
-class Hash160 {
+class Hash160 extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(hash = Buffer.alloc(20), version = vdxf_1.I_ADDR_VERSION, varlength = false) {
+        super();
         this.hash = hash;
         this.version = version;
         this.varlength = varlength;

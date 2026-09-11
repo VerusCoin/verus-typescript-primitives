@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface URLRefJson {
@@ -6,7 +7,7 @@ export interface URLRefJson {
     datahash?: string;
     url: string;
 }
-export declare class URLRef implements SerializableEntity {
+export declare class URLRef extends SerializableEntityBase implements SerializableEntity {
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");
     static HASHDATA_VERSION: import("bn.js");

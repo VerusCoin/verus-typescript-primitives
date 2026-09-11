@@ -35,8 +35,21 @@ export class SmartTransactionScript extends VerusScript implements SerializableE
   ): number {
     const _offset = super.fromBuffer(buffer, offset, length);
 
-    this.master = OptCCParams.fromChunk(this.chunks[0] as Buffer);
-    this.params = OptCCParams.fromChunk(this.chunks[2] as Buffer);
+    if (
+      this.chunks.length !== 4 ||
+      !Buffer.isBuffer(this.chunks[0]) ||
+      this.chunks[1] !== OPS.OP_CHECKCRYPTOCONDITION ||
+      !Buffer.isBuffer(this.chunks[2]) ||
+      this.chunks[3] !== OPS.OP_DROP
+    ) {
+      throw new Error('invalid smart transaction script template');
+    }
+
+    const master = OptCCParams.fromChunk(this.chunks[0]);
+    const params = OptCCParams.fromChunk(this.chunks[2]);
+
+    this.master = master;
+    this.params = params;
 
     return _offset;
   }

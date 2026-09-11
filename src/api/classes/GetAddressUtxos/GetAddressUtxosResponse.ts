@@ -1,8 +1,8 @@
 import { ApiResponse } from "../../ApiResponse";
 
-export class GetAddressUtxosResponse extends ApiResponse {
-  result: Array<{
+type AddressUtxo = {
     address: string;
+    addresses?: Array<string>;
     txid: string;
     outputIndex: number;
     script: string;
@@ -14,7 +14,14 @@ export class GetAddressUtxosResponse extends ApiResponse {
     };
     satoshis: number;
     height: number;
-    isspendable: number;
-    blocktime: number;
-  }>;
+    isspendable: boolean;
+    blocktime?: number;
+};
+
+export class GetAddressUtxosResponse extends ApiResponse {
+  result: Array<AddressUtxo> | {
+    utxos: Array<AddressUtxo>;
+    hash: string;
+    height: number;
+  };
 }

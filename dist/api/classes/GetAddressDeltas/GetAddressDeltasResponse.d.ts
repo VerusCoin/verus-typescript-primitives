@@ -1,26 +1,41 @@
 import { ApiResponse } from "../../ApiResponse";
+type AddressDelta = {
+    satoshis: number;
+    txid: string;
+    index: number;
+    blockindex: number;
+    height: number;
+    spending: boolean;
+    address: string;
+    currencyvalues?: {
+        [key: string]: number;
+    };
+    blocktime?: number;
+    currencynames?: {
+        [key: string]: string;
+    };
+    sent?: {
+        outputfunctions?: Array<string>;
+        privateoutput?: number;
+        outputs: Array<{
+            addresses: string | Array<string>;
+            amounts: {
+                [key: string]: number;
+            };
+        }>;
+    };
+};
 export declare class GetAddressDeltasResponse extends ApiResponse {
-    result: Array<{
-        satoshis: number;
-        txid: string;
-        index: number;
-        blockindex: number;
-        height: number;
-        address: string;
-        currencyvalues?: {
-            [key: string]: number;
+    result: Array<AddressDelta> | {
+        deltas: Array<AddressDelta>;
+        start: {
+            hash: string;
+            height: number;
         };
-        blocktime?: number;
-        currencynames?: {
-            [key: string]: string;
+        end: {
+            hash: string;
+            height: number;
         };
-        sent?: {
-            outputs: Array<{
-                addresses: string | Array<string>;
-                amounts: {
-                    [key: string]: number;
-                };
-            }>;
-        };
-    }>;
+    };
 }
+export {};

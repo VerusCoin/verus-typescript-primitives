@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityMultimapRef = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const address_1 = require("../utils/address");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class IdentityMultimapRef {
+class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data) {
             const deprecated = ['id_ID', 'height_start', 'height_end', 'data_hash', 'system_id'].filter(k => k in data);
             if (deprecated.length > 0) {
@@ -94,9 +96,12 @@ class IdentityMultimapRef {
         return reader.offset;
     }
     isValid() {
+        const allowedFlags = IdentityMultimapRef.FLAG_NO_DELETION
+            .or(IdentityMultimapRef.FLAG_HAS_DATAHASH)
+            .or(IdentityMultimapRef.FLAG_HAS_SYSTEM);
         return this.version.gte(IdentityMultimapRef.FIRST_VERSION) &&
             this.version.lte(IdentityMultimapRef.LAST_VERSION) &&
-            this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)).eq(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)) &&
+            !this.flags.isNeg() && this.flags.and(allowedFlags).eq(this.flags) &&
             !(!this.idID || this.idID.length === 0) && !(!this.key || this.key.length === 0);
     }
     hasDataHash() {
@@ -123,14 +128,18 @@ class IdentityMultimapRef {
         return retval;
     }
     static fromJson(data) {
+        const flags = new bn_js_1.BN(data.flags);
+        if (flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new bn_js_1.BN(0)) && data.datahash == null) {
+            throw new Error("Missing datahash for IdentityMultimapRef with FLAG_HAS_DATAHASH set");
+        }
         return new IdentityMultimapRef({
             version: new bn_js_1.BN(data.version),
-            flags: new bn_js_1.BN(data.flags),
+            flags,
             key: data.vdxfkey,
             idID: data.identityid,
             heightStart: new bn_js_1.BN(data.startheight),
             heightEnd: new bn_js_1.BN(data.endheight),
-            dataHash: Buffer.from(data.datahash, 'hex').reverse(),
+            dataHash: data.datahash != null ? Buffer.from(data.datahash, 'hex').reverse() : Buffer.alloc(0),
             systemId: data.systemid
         });
     }

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -8,11 +9,12 @@ import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 const { BufferReader, BufferWriter } = bufferutils
 import { bnToDecimal, decimalToBn } from '../utils/numberConversion';
-export class CurrencyValueMap implements SerializableEntity {
+export class CurrencyValueMap extends SerializableEntityBase implements SerializableEntity {
   valueMap: Map<string, BigNumber>;
   multivalue: boolean;
 
   constructor(data: { valueMap?: Map<string, BigNumber>, multivalue?: boolean } = {}) {
+    super();
     if (data != null) {
       if (Object.prototype.hasOwnProperty.call(data, 'value_map')) {
         throw new Error("CurrencyValueMap: snake_case property names are no longer supported. Use 'valueMap' instead of 'value_map'.");

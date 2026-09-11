@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrossChainDataRef = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const PBaaSEvidenceRef_1 = require("./PBaaSEvidenceRef");
 const IdentityMultimapRef_1 = require("./IdentityMultimapRef");
 const URLRef_1 = require("./URLRef");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class CrossChainDataRef {
+class CrossChainDataRef extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.ref = data || null;
     }
     which() {

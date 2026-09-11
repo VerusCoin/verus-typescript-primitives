@@ -13,20 +13,23 @@ class SendCurrencyRequest extends ApiRequest_1.ApiRequest {
         this.returntxtemplate = returntxtemplate;
     }
     getParams() {
+        // The daemon parses a present fee slot as an amount and rejects null.
+        const feeamount = this.returntxtemplate != null && this.feeamount == null
+            ? 0
+            : this.feeamount;
         const params = [
             this.fromaddress,
             this.outputs,
             this.minconf,
-            this.feeamount,
-            this.returntxtemplate
+            feeamount,
+            this.returntxtemplate,
         ];
-        if (this.returntxtemplate)
-            return params;
-        else
-            return params.filter((x) => x != null);
+        return (0, ApiRequest_1.positionalParams)(params);
     }
     static fromJson(object) {
-        return new SendCurrencyRequest(object.chain, object.fromaddress, object.outputs != null ? object.utxos : undefined, object.minconf != null ? object.minconf : undefined, object.feeamount != null ? object.feeamount : undefined, object.returntxtemplate != null ? object.returntxtemplate : undefined);
+        return new SendCurrencyRequest(object.chain, object.fromaddress, object.outputs != null ? object.outputs : [], object.minconf != null ? object.minconf : undefined, object.feeamount != null ? object.feeamount : undefined, object.returntxtemplate != null
+            ? object.returntxtemplate
+            : undefined);
     }
     toJson() {
         return {

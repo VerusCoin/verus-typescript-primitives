@@ -1,5 +1,6 @@
 import {
   LOGIN_CONSENT_CHALLENGE_VDXF_KEY,
+  LOGIN_CONSENT_PROVISIONING_CHALLENGE_VDXF_KEY,
   ID_ADDRESS_VDXF_KEY,
   ID_PARENT_VDXF_KEY,
   ID_SYSTEMID_VDXF_KEY,
@@ -165,9 +166,20 @@ export class Challenge extends VDXFObject implements ChallengeInterface {
       ? new Context(challenge.context.kv)
       : challenge.context;
     this.skip = challenge.skip ? true : false;
+    this.validateSupportedFields();
+  }
+
+  protected validateSupportedFields(): void {
+    if (this.requested_access_audience && this.requested_access_audience.length > 0) {
+      throw new Error("Requested access audience currently unsupported");
+    }
+    if (this.alt_auth_factors && this.alt_auth_factors.length > 0) {
+      throw new Error("Alt auth factors currently unsupported");
+    }
   }
 
   dataByteLength(): number {
+    this.validateSupportedFields();
     let length = 0;
 
     const _challenge_id = Hash160.fromAddress(this.challenge_id, true);
@@ -295,8 +307,10 @@ export class Challenge extends VDXFObject implements ChallengeInterface {
   }
 
   fromDataBuffer(buffer: Buffer, offset?: number): number {
-    const reader = new bufferutils.BufferReader(buffer, offset);
-    const challengeLength = reader.readCompactSize();
+    const frameReader = new bufferutils.BufferReader(buffer, offset);
+    const challengeLength = frameReader.readCompactSize();
+    const bodyOffset = frameReader.offset;
+    const reader = new bufferutils.BufferReader(frameReader.readSlice(challengeLength));
 
     if (challengeLength == 0) {
       throw new Error("Cannot create challenge from empty buffer");
@@ -394,10 +408,15 @@ export class Challenge extends VDXFObject implements ChallengeInterface {
       this.context = _context;
     }
 
-    return reader.offset;
+    // ProvisioningChallenge consumes its extension after this shared prefix.
+    if (this.vdxfkey !== LOGIN_CONSENT_PROVISIONING_CHALLENGE_VDXF_KEY.vdxfid && reader.offset !== challengeLength) {
+      throw new Error("Challenge body length mismatch");
+    }
+    return bodyOffset + reader.offset;
   }
 
   toJson() {
+    this.validateSupportedFields();
     return {
       vdxfkey: this.vdxfkey,
       challenge_id: this.challenge_id,

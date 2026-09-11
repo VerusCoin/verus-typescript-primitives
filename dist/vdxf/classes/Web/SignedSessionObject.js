@@ -9,6 +9,9 @@ const vdxf_1 = require("../../../constants/vdxf");
 const address_1 = require("../../../utils/address");
 const createHash = require("create-hash");
 const SignedSessionObjectData_1 = require("./SignedSessionObjectData");
+/**
+ * @deprecated Disabled and scheduled for removal in a future release. Construction always throws.
+ */
 class SignedSessionObject extends __1.VDXFObject {
     constructor(request = {
         system_id: "",
@@ -16,12 +19,7 @@ class SignedSessionObject extends __1.VDXFObject {
         data: new SignedSessionObjectData_1.SignedSessionObjectData(),
     }) {
         super(keys_1.SIGNED_SESSION_OBJECT.vdxfid);
-        this.system_id = request.system_id;
-        this.signing_id = request.signing_id;
-        this.signature = request.signature
-            ? new __1.VerusIDSignature(request.signature, keys_1.IDENTITY_AUTH_SIG_VDXF_KEY)
-            : undefined;
-        this.data = new SignedSessionObjectData_1.SignedSessionObjectData(request.data);
+        throw new Error("SignedSessionObject is deprecated and disabled; it will be removed in a future release.");
     }
     getDataHash(signedBlockheight, signatureVersion = 2) {
         var heightBufferWriter = new bufferutils_1.default.BufferWriter(Buffer.allocUnsafe(4));

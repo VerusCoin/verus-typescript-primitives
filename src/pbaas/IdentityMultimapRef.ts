@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -19,7 +20,7 @@ export interface IdentityMultimapRefJson {
   datahash?: string;
   systemid?: string;
 }
-export class IdentityMultimapRef implements SerializableEntity {
+export class IdentityMultimapRef extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   idID: string;
@@ -37,6 +38,7 @@ export class IdentityMultimapRef implements SerializableEntity {
   static CURRENT_VERSION = new BN(1)
 
   constructor(data?) {
+    super();
 
     if (data) {
       const deprecated = ['id_ID', 'height_start', 'height_end', 'data_hash', 'system_id'].filter(k => k in data);
@@ -143,9 +145,12 @@ export class IdentityMultimapRef implements SerializableEntity {
   }
 
   isValid(): boolean {
+    const allowedFlags = IdentityMultimapRef.FLAG_NO_DELETION
+      .or(IdentityMultimapRef.FLAG_HAS_DATAHASH)
+      .or(IdentityMultimapRef.FLAG_HAS_SYSTEM);
     return this.version.gte(IdentityMultimapRef.FIRST_VERSION) &&
       this.version.lte(IdentityMultimapRef.LAST_VERSION) &&
-      this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)).eq(IdentityMultimapRef.FLAG_HAS_DATAHASH.add(IdentityMultimapRef.FLAG_HAS_SYSTEM)) &&
+      !this.flags.isNeg() && this.flags.and(allowedFlags).eq(this.flags) &&
       !(!this.idID || this.idID.length === 0) && !(!this.key || this.key.length === 0);
   }
 
@@ -180,14 +185,19 @@ export class IdentityMultimapRef implements SerializableEntity {
   }
 
   static fromJson(data: IdentityMultimapRefJson): IdentityMultimapRef {
+    const flags = new BN(data.flags);
+    if (flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0)) && data.datahash == null) {
+      throw new Error("Missing datahash for IdentityMultimapRef with FLAG_HAS_DATAHASH set");
+    }
+
     return new IdentityMultimapRef({
       version: new BN(data.version),
-      flags: new BN(data.flags),
+      flags,
       key: data.vdxfkey,
       idID: data.identityid,
       heightStart: new BN(data.startheight),
       heightEnd: new BN(data.endheight),
-      dataHash: Buffer.from(data.datahash, 'hex').reverse(),
+      dataHash: data.datahash != null ? Buffer.from(data.datahash, 'hex').reverse() : Buffer.alloc(0),
       systemId: data.systemid
     })
   }

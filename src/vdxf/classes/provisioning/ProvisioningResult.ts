@@ -256,6 +256,7 @@ export class ProvisioningResult extends VDXFObject {
       info_uri: this.info_uri,
       provisioning_txids: this.provisioning_txids,
       system_id: this.system_id,
+      parent: this.parent,
       fully_qualified_name: this.fully_qualified_name
     }
   }

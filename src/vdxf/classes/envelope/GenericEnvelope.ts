@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import bufferutils from "../../../utils/bufferutils";
 import base64url from "base64url";
 import { BN } from 'bn.js';
@@ -34,7 +35,7 @@ export type GenericEnvelopeJson = {
 
 export type GenericRequestHandlerIdentifier = 0 | 1;
 
-export class GenericEnvelope implements SerializableEntity {
+export class GenericEnvelope extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   signature?: VerifiableSignatureData;
@@ -64,6 +65,7 @@ export class GenericEnvelope implements SerializableEntity {
       flags: GenericEnvelope.BASE_FLAGS
     }
   ) {
+    super();
     this.signature = envelope?.signature;
     this.requestID = envelope?.requestID;
     this.details = envelope?.details;
@@ -387,7 +389,7 @@ export class GenericEnvelope implements SerializableEntity {
     }
 
     if (this.hasCreatedAt()) {
-      this.createdAt = new BN(reader.readCompactSize());
+      this.createdAt = new BN(reader.readCompactSize(false));
     }
 
     if (this.hasSalt()) {

@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils';
 import { decodeSaplingExtendedSpendingKey, encodeSaplingExtendedSpendingKey, SaplingExtendedSpendingKeyData } from '../utils/sapling';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 
 const { BufferReader, BufferWriter } = bufferutils;
 
-export class SaplingExtendedSpendingKey implements SerializableEntity, SaplingExtendedSpendingKeyData {
+export class SaplingExtendedSpendingKey extends SerializableEntityBase implements SerializableEntity, SaplingExtendedSpendingKeyData {
   depth: number;
   parentFVKTag: Buffer; // 4 bytes
   childIndex: Buffer; // 4 bytes
@@ -15,6 +16,7 @@ export class SaplingExtendedSpendingKey implements SerializableEntity, SaplingEx
   dk: Buffer; // 32 bytes
 
   constructor(data?: SaplingExtendedSpendingKeyData) {
+    super();
     if (data != null) {
       this.depth = data.depth ?? 0;
       this.parentFVKTag = data.parentFVKTag ?? Buffer.alloc(4);

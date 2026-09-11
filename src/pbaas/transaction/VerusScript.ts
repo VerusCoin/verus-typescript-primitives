@@ -1,11 +1,13 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import bufferutils from "../../utils/bufferutils";
 import { ScriptChunk, compile, decompile } from "../../utils/script";
 import { SerializableEntity } from "../../utils/types/SerializableEntity";
 
-export class VerusScript implements SerializableEntity {
+export class VerusScript extends SerializableEntityBase implements SerializableEntity {
   chunks: Array<ScriptChunk>;
 
   constructor(chunks: Array<ScriptChunk> = []) {
+    super();
     this.chunks = chunks;
   }
 
@@ -22,6 +24,9 @@ export class VerusScript implements SerializableEntity {
     const _length = length != null ? length : offset != null ? reader.buffer.length - offset : reader.buffer.length;
     
     this.chunks = decompile(reader.readSlice(_length));
+    if (_length > 0 && this.chunks.length === 0) {
+      throw new Error("Cannot deserialize a truncated script push");
+    }
 
     return reader.offset;
   }

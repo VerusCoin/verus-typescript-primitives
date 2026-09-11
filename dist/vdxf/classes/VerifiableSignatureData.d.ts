@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../utils/types/BigNumber';
 import { SerializableEntity } from '../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from './CompactAddressObject';
@@ -45,7 +46,7 @@ export interface CliSignatureData {
     vdxfkeynames?: Array<string>;
     boundhashes?: Array<string>;
 }
-export declare class VerifiableSignatureData implements SerializableEntity {
+export declare class VerifiableSignatureData extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     signatureVersion: BigNumber;

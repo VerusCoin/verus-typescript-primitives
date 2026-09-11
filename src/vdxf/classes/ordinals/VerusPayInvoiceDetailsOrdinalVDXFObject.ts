@@ -25,7 +25,10 @@ export class VerusPayInvoiceDetailsOrdinalVDXFObject extends SerializableEntityO
   fromDataBuffer(buffer: Buffer, rootSystemName?: string): void {
     this.data = new VerusPayInvoiceDetails();
     // VerusPayInvoiceDetails.fromBuffer has verusPayVersion as 3rd parameter, rootSystemName as 4th
-    this.data.fromBuffer(buffer, 0, VERUSPAY_VERSION_CURRENT, rootSystemName || 'VRSC');
+    const consumed = this.data.fromBuffer(buffer, 0, VERUSPAY_VERSION_CURRENT, rootSystemName || 'VRSC');
+    if (consumed !== buffer.length) {
+      throw new Error("Ordinal payload length mismatch");
+    }
   }
 
   static fromJson(details: OrdinalVDXFObjectJsonTemplate<VerusPayInvoiceDetailsJson>): VerusPayInvoiceDetailsOrdinalVDXFObject {

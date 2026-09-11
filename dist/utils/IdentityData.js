@@ -159,7 +159,7 @@ exports.IdentityVdxfidMap = {
     [keylist.ATTESTATION_PROVISION_TYPE.vdxfid]: { EN: "Attestation Type" },
     [keylist.ATTESTATION_PROVISION_URL.vdxfid]: { EN: "Attestation URL" },
     [keylist.ATTESTATION_VIEW_RESPONSE.vdxfid]: { EN: "Attestation View Response" },
-    [keylist.ATTESTATION_VIEW_REQUEST.vdxfid]: { EN: "Attestation View Response" },
+    [keylist.ATTESTATION_VIEW_REQUEST.vdxfid]: { EN: "Attestation View Request" },
     [keylist.PROFILE_DATA_VIEW_REQUEST.vdxfid]: { EN: "Profile Data View Request" },
     [keylist.IDENTITY_SIGNDATA_REQUEST.vdxfid]: { EN: "Identity Sign Data Request" }
 };

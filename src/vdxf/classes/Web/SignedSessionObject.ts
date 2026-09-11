@@ -18,6 +18,9 @@ export interface AuthorizedWebRequestInterface {
   data: SignedSessionObjectData;
 }
 
+/**
+ * @deprecated Disabled and scheduled for removal in a future release. Construction always throws.
+ */
 export class SignedSessionObject extends VDXFObject {
   system_id: string;
   signing_id: string;
@@ -33,15 +36,7 @@ export class SignedSessionObject extends VDXFObject {
   ) {
     super(SIGNED_SESSION_OBJECT.vdxfid);
 
-    this.system_id = request.system_id;
-    this.signing_id = request.signing_id;
-    this.signature = request.signature
-      ? new VerusIDSignature(
-          request.signature,
-          IDENTITY_AUTH_SIG_VDXF_KEY
-        )
-      : undefined;
-    this.data = new SignedSessionObjectData(request.data);
+    throw new Error("SignedSessionObject is deprecated and disabled; it will be removed in a future release.");
   }
 
   getDataHash(signedBlockheight: number, signatureVersion: number = 2) {

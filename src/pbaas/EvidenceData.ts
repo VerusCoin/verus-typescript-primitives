@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -29,12 +30,13 @@ export enum ETypes {
   TYPE_LAST_VALID = 2,
 };
 
-export class MultiPartDescriptor implements SerializableEntity {
+export class MultiPartDescriptor extends SerializableEntityBase implements SerializableEntity {
   index: BigNumber
   total_length: BigNumber;
   start: BigNumber;
 
   constructor(data?: { index, total_length, start }) {
+    super();
     this.index = data?.index || new BN(0, 10);
     this.total_length = data?.total_length || new BN(0, 10);
     this.start = data?.start || new BN(0, 10);
@@ -65,7 +67,7 @@ export class MultiPartDescriptor implements SerializableEntity {
   }
 }
 
-export class EvidenceData implements SerializableEntity {
+export class EvidenceData extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   type: BigNumber;
 
@@ -80,6 +82,7 @@ export class EvidenceData implements SerializableEntity {
   static VERSION_LAST = new BN(1);
 
   constructor(data?: { version, type, md, vdxfd, data_vec }) {
+    super();
     this.version = data?.version || new BN(1, 10);
     this.type = data?.type ||  new BN(ETypes.TYPE_DATA);                   // holding a transaction proof of export with finalization referencing finalization of root notarization
     this.md = data?.md;

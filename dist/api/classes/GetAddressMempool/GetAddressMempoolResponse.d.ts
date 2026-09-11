@@ -4,8 +4,10 @@ export declare class GetAddressMempoolResponse extends ApiResponse {
         satoshis: number;
         txid: string;
         index: number;
-        blockindex: number;
-        height: number;
+        spending: boolean;
+        timestamp: number;
+        prevtxid?: string;
+        prevout?: number;
         address: string;
         currencyvalues?: {
             [key: string]: number;
@@ -14,6 +16,8 @@ export declare class GetAddressMempoolResponse extends ApiResponse {
             [key: string]: string;
         };
         sent?: {
+            outputfunctions?: Array<string>;
+            privateoutput?: number;
             outputs: Array<{
                 addresses: string | Array<string>;
                 amounts: {

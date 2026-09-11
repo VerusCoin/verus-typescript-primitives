@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResponseURI = void 0;
+const SerializableEntityBase_1 = require("../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../../utils/varuint");
 const bufferutils_1 = require("../../utils/bufferutils");
-class ResponseURI {
+class ResponseURI extends SerializableEntityBase_1.SerializableEntityBase {
     // TODO: Add TYPE_Z_ADDR_REF where response is encrypted and sent to encoded sapling address, 
     // with optional amount specified
     constructor(data) {
+        super();
         if (data) {
             if (data.uri != null) {
                 this.uri = data.uri;

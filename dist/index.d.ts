@@ -14,6 +14,7 @@ export * from './utils/script';
 export * from './utils/cccustom';
 export * from './utils/tolower';
 export * from './utils/KvMap';
+export * from './utils/types/SerializableEntityBase';
 export * from './pbaas/index';
 export * from './pbaas/PartialIdentity';
 export * from './pbaas/PartialMMRData';

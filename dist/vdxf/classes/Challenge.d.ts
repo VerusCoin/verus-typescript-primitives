@@ -56,6 +56,7 @@ export declare class Challenge extends VDXFObject implements ChallengeInterface 
     salt?: string;
     context?: Context;
     constructor(challenge?: ChallengeInterface, vdxfkey?: string);
+    protected validateSupportedFields(): void;
     dataByteLength(): number;
     toDataBuffer(): Buffer;
     fromDataBuffer(buffer: Buffer, offset?: number): number;

@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UnknownID = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
-class UnknownID {
+class UnknownID extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(bytes = Buffer.alloc(0)) {
+        super();
         this.bytes = bytes;
     }
     getByteLength() {

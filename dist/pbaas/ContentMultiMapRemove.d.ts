@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface ContentMultiMapRemoveJson {
@@ -6,7 +7,7 @@ export interface ContentMultiMapRemoveJson {
     entrykey?: string;
     valuehash?: string;
 }
-export declare class ContentMultiMapRemove implements SerializableEntity {
+export declare class ContentMultiMapRemove extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     action: BigNumber;
     entryKey?: string;

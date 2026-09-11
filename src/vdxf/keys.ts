@@ -31,16 +31,6 @@ export const VERUSPAY_INVOICE_DETAILS_VDXF_KEY: VDXFKeyInterface = {
   "vdxfid": "iJNsPqAhjovi3iVR3hvLGqrQxcCkHq9n9H"
 }
 
-export const GENERIC_ENVELOPE_DEEPLINK_VDXF_KEY: VDXFKeyInterface = {
-  "hash160result": "bc05c4263031cc791296fa8bd15553ccef3de4ba",
-  "indexid": "xRLq15vpenCUGVpmZgqEtoygZW2b32oVgX",
-  "qualifiedname": {
-    "name": "vrsc::envelope.generic",
-    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
-  },
-  "vdxfid": "iLWiYHVjoTyoeKwji1B5vRT9Xr1aA9yyvX"
-}
-
 export const GENERIC_REQUEST_DEEPLINK_VDXF_KEY: VDXFKeyInterface = {
   "hash160result": "bc05c4263031cc791296fa8bd15553ccef3de4ba",
   "indexid": "xRLq15vpenCUGVpmZgqEtoygZW2b32oVgX",
@@ -457,12 +447,13 @@ export const ATTESTATION_PROVISION_OBJECT: VDXFKeyInterface = {
 
 
 export const ATTESTATION_VIEW_REQUEST: VDXFKeyInterface = {
-  "vdxfid": "i5R9p3V1sxZ9p1NDV7nPkz1wvmQTUvuByY",
-  "hash160result": "872923256c56f6bda8256c5bb6a4c98d85f44c15",
+  "hash160result": "fbad296be03aa9bed351c04ba9158fa89954a2b9",
+  "indexid": "xREBNHTwA2VmT9Hk6P1ssed8t67MvAdnuS",
   "qualifiedname": {
-    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-    "name": "vrsc::attestation.view.request"
-  }
+    "name": "vrsc::attestation.view.request",
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+  },
+  "vdxfid": "iLQ4uV2rJiH6pyQiEhMiuG6brS6M2FmPD9"
 };
 
 export const ATTESTATION_VIEW_RESPONSE: VDXFKeyInterface = {
@@ -802,7 +793,7 @@ export const WALLET_BACKUP: VDXFKeyInterface = {
 }
 
 export const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface = {
-  "hash160result": "ebc879cb15fd46ef0c5537eece38b0d00331bd2c",
+  "hash160result": "2cbd3103d0b038ceee37550cef46fd15cb79c8eb",
   "indexid": "xVoLrFs9gtS3EBFRUTQeyhzPfAdFX7xYs6",
   "qualifiedname": {
     "name": "vrsc::spendable.key.details",

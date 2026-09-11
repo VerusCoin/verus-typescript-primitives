@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
@@ -21,9 +22,14 @@ export const DEST_ETH = new BN(9, 10)
 export const DEST_ETHNFT = new BN(10, 10)                   // used when defining a mapped NFT to gateway that uses an ETH compatible model
 export const DEST_RAW = new BN(11, 10)
 export const LAST_VALID_TYPE_NO_FLAGS = DEST_RAW
+export const FLAG_RESERVED1 = new BN(16, 10)
+export const FLAG_RESERVED2 = new BN(32, 10)
 export const FLAG_DEST_AUX = new BN(64, 10)
 export const FLAG_DEST_GATEWAY = new BN(128, 10)
-export const FLAG_MASK = FLAG_DEST_AUX.add(FLAG_DEST_GATEWAY)
+export const FLAG_MASK = FLAG_DEST_AUX.add(FLAG_DEST_GATEWAY).add(FLAG_RESERVED1).add(FLAG_RESERVED2)
+
+const SCRIPT_ADDR_VERSION = 85
+const QUANTUM_ADDR_VERSION = 58
 
 
 export type TransferDestinationJson = {
@@ -35,7 +41,7 @@ export type TransferDestinationJson = {
   auxdests?: Array<TransferDestinationJson>
 }
 
-export class TransferDestination implements SerializableEntity {
+export class TransferDestination extends SerializableEntityBase implements SerializableEntity {
   type: BigNumber;
   destinationBytes: Buffer;
   gatewayID: string;
@@ -44,6 +50,7 @@ export class TransferDestination implements SerializableEntity {
   auxDests: Array<TransferDestination>;
 
   constructor (data?: { type?: BigNumber, destinationBytes?: Buffer, gatewayID?: string, gatewayCode?: string, fees?: BigNumber, auxDests?: Array<TransferDestination> }) {
+    super();
     this.type = DEST_INVALID;
     this.destinationBytes = Buffer.alloc(0);
     this.gatewayID = null;
@@ -205,15 +212,21 @@ export class TransferDestination implements SerializableEntity {
 
   static fromJson(data: TransferDestinationJson): TransferDestination {
 
-    const type = new BN(data.type);
+    let type = new BN(data.type);
     let destination = null;
 
     switch (type.and(FLAG_MASK.notn(FLAG_MASK.bitLength())).toString()) {
       case DEST_PKH.toString():
+        destination = decodeDestination(data.address, R_ADDR_VERSION);
+        break;
       case DEST_SH.toString():
+        destination = decodeDestination(data.address, SCRIPT_ADDR_VERSION);
+        break;
       case DEST_ID.toString():
+        destination = decodeDestination(data.address, I_ADDR_VERSION);
+        break;
       case DEST_QUANTUM.toString():
-        destination = decodeDestination(data.address);
+        destination = decodeDestination(data.address, QUANTUM_ADDR_VERSION);
         break;
       case DEST_ETH.toString():
         destination = decodeEthDestination(data.address);
@@ -224,17 +237,22 @@ export class TransferDestination implements SerializableEntity {
 
     let auxDests = [];
     let fees = null;
-    if (type.and(FLAG_DEST_AUX).gt(new BN(0)) && data.auxdests.length > 0) {
-      auxDests = data.auxdests.map(x => TransferDestination.fromJson(x));
+    if (type.and(FLAG_DEST_AUX).gt(new BN(0))) {
+      if (Array.isArray(data.auxdests) && data.auxdests.length > 0) {
+        auxDests = data.auxdests.map(x => TransferDestination.fromJson(x));
+      } else {
+        type = type.xor(FLAG_DEST_AUX);
+      }
     }
 
-    if (type.and(FLAG_DEST_GATEWAY).gt(new BN(0)) && data.fees) {
+    if (type.and(FLAG_DEST_GATEWAY).gt(new BN(0)) && data.fees != null) {
       fees = decimalToBn(data.fees);
     }
 
     return new TransferDestination({
       type: type,
       destinationBytes: destination,
+      gatewayID: data.gateway,
       gatewayCode: data.gatewaycode,
       fees: fees,
       auxDests: auxDests
@@ -265,6 +283,10 @@ export class TransferDestination implements SerializableEntity {
     }
     if (this.isGateway()) {
       destVal.gateway = this.gatewayID;
+      if (this.gatewayCode != null) {
+        destVal.gatewaycode = this.gatewayCode;
+      }
+      destVal.fees = bnToDecimal(this.fees);
     }
 
     return destVal
@@ -272,6 +294,16 @@ export class TransferDestination implements SerializableEntity {
 
   isValid(): boolean
   {
+      const typeNoFlags = this.typeNoFlags();
+      const isHash160Destination = typeNoFlags.eq(DEST_PKH) ||
+          typeNoFlags.eq(DEST_SH) ||
+          typeNoFlags.eq(DEST_ID) ||
+          typeNoFlags.eq(DEST_QUANTUM) ||
+          typeNoFlags.eq(DEST_ETH);
+      const destinationLengthIsValid = !isHash160Destination ||
+          (Buffer.isBuffer(this.destinationBytes) &&
+              this.destinationBytes.length === HASH160_BYTE_LENGTH);
+
       // verify aux dests
       let valid = (((this.type.and(FLAG_DEST_AUX).gt(new BN(0))) && this.auxDests.length > 0) || (!(this.type.and(FLAG_DEST_AUX).gt(new BN(0))) && !(this.auxDests.length > 0)));
       if (valid && this.auxDests && this.auxDests.length > 0)
@@ -286,8 +318,9 @@ export class TransferDestination implements SerializableEntity {
           }
       }
       return !!(valid &&
-             !this.typeNoFlags().eq(DEST_INVALID) &&
-             this.typeNoFlags().lte(LAST_VALID_TYPE_NO_FLAGS) &&
+             destinationLengthIsValid &&
+             !typeNoFlags.eq(DEST_INVALID) &&
+             typeNoFlags.lte(LAST_VALID_TYPE_NO_FLAGS) &&
              (((this.type.and(FLAG_DEST_GATEWAY).eq(new BN(0))) && (this.gatewayID == null)) || this.gatewayID != null));
   }
 

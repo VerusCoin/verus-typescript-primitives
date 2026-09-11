@@ -62,7 +62,7 @@ export class PartialIdentity extends Identity implements SerializableEntity {
     if (data?.flags) this.toggleContainsFlags();
     if (data?.minSigs) this.toggleContainsMinSigs();
     if (data?.version) this.toggleContainsVersion();
-    if (data?.primaryAddresses && data.primaryAddresses.length > 0) this.toggleContainsPrimaryAddresses();
+    if (data?.primaryAddresses) this.toggleContainsPrimaryAddresses();
   }
 
   containsFlags() {
@@ -119,6 +119,7 @@ export class PartialIdentity extends Identity implements SerializableEntity {
 
   clearContentMultiMap() {
     this.contentMultiMap = new FqnContentMultiMap({ kvContent: new KvContent() });
+    this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_CONTENT_MULTIMAP);
   }
 
   private toggleContainsParent() {
@@ -218,6 +219,37 @@ export class PartialIdentity extends Identity implements SerializableEntity {
       instance.contentMultiMap = FqnContentMultiMap.fromJson(json.contentmultimap as ContentMultiMapJson);
     }
     return instance;
+  }
+
+  setPrimaryAddresses(addresses: Array<string>) {
+    super.setPrimaryAddresses(addresses);
+    this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_PRIMARY_ADDRS);
+  }
+
+  setRevocation(iAddr: string) {
+    super.setRevocation(iAddr);
+    this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_REVOCATION);
+  }
+
+  setRecovery(iAddr: string) {
+    super.setRecovery(iAddr);
+    this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_RECOVERY);
+  }
+
+  setPrivateAddress(zAddr: string) {
+    super.setPrivateAddress(zAddr);
+    this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_PRIV_ADDRS);
+  }
+
+  upgradeVersion(version: BigNumber = Identity.VERSION_CURRENT) {
+    const previousVersion = this.version;
+    super.upgradeVersion(version);
+    if (!this.version.eq(previousVersion)) {
+      this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_VERSION);
+      if (previousVersion.lt(Identity.VERSION_VAULT)) {
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_SYSTEM_ID);
+      }
+    }
   }
 
   lock(unlockTime: BigNumber) {

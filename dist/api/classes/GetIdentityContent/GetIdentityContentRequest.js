@@ -20,12 +20,14 @@ class GetIdentityContentRequest extends ApiRequest_1.ApiRequest {
             this.heightend,
             this.txproof,
             this.txproofheight,
-            this.vdxfkey
+            this.vdxfkey,
         ];
-        return params.filter((x) => x != null);
+        return (0, ApiRequest_1.positionalParams)(params);
     }
     static fromJson(object) {
-        return new GetIdentityContentRequest(object.chain, object.nameOrAddress, object.heightstart != null ? object.heightstart : undefined, object.heightend != null ? object.heightend : undefined, object.txproof != null ? object.txproof : undefined, object.txproofheight != null ? object.txproofheight : undefined, object.vdxfkey != null ? object.vdxfkey : undefined);
+        return new GetIdentityContentRequest(object.chain, object.nameOrAddress, object.heightstart != null ? object.heightstart : undefined, object.heightend != null ? object.heightend : undefined, object.txproof != null ? object.txproof : undefined, object.txproofheight != null
+            ? object.txproofheight
+            : undefined, object.vdxfkey != null ? object.vdxfkey : undefined);
     }
     toJson() {
         return {
@@ -35,7 +37,7 @@ class GetIdentityContentRequest extends ApiRequest_1.ApiRequest {
             heightend: this.heightend,
             txproof: this.txproof,
             txproofheight: this.txproofheight,
-            vdxfkey: this.vdxfkey
+            vdxfkey: this.vdxfkey,
         };
     }
 }

@@ -320,19 +320,19 @@ export class Identity extends Principal implements SerializableEntity {
     if (this.containsContentMap()) {
       // contentmap
       if (this.version.lt(IDENTITY_VERSION_PBAAS)) {
-        const contentMapSize = reader.readVarInt();
+        const contentMapSize = reader.readCompactSize();
         this.contentMap = new Map();
 
-        for (var i = 0; i < contentMapSize.toNumber(); i++) {
+        for (var i = 0; i < contentMapSize; i++) {
           const contentMapKey = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
           this.contentMap.set(contentMapKey, reader.readSlice(32));
         }
       }
 
-      const contentMapSize = reader.readVarInt();
+      const contentMapSize = reader.readCompactSize();
       this.contentMap = new Map();
 
-      for (var i = 0; i < contentMapSize.toNumber(); i++) {
+      for (var i = 0; i < contentMapSize; i++) {
         const contentMapKey = toBase58Check(reader.readSlice(20), I_ADDR_VERSION)
         this.contentMap.set(contentMapKey, reader.readSlice(32));
       }
@@ -357,11 +357,11 @@ export class Identity extends Principal implements SerializableEntity {
     }
 
     if (this.containsPrivateAddresses()) {
-      const numPrivateAddresses = reader.readVarInt();
+      const numPrivateAddresses = reader.readCompactSize();
 
-      if (numPrivateAddresses.gt(new BN(0))) this.privateAddresses = [];
+      if (numPrivateAddresses > 0) this.privateAddresses = [];
 
-      for (var i = 0; i < numPrivateAddresses.toNumber(); i++) {
+      for (var i = 0; i < numPrivateAddresses; i++) {
         const saplingAddr = new SaplingPaymentAddress();
         reader.offset = saplingAddr.fromBuffer(
           reader.buffer,

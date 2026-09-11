@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
 import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
-import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
+import { HASH160_BYTE_LENGTH, HASH256_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { UTXORef } from './UTXORef';
 import { IdentityMultimapRef } from './IdentityMultimapRef';
@@ -18,28 +19,33 @@ export interface PBaaSEvidenceRefJson {
   objectnum: number;
   subobject: number;
   systemid: string;
+  datahash?: string;
 }
 
-export class PBaaSEvidenceRef implements SerializableEntity {
+export class PBaaSEvidenceRef extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   output: UTXORef;
   objectNum: BigNumber;
   subObject: BigNumber;
   systemId: string;
+  dataHash: Buffer;
 
   static FLAG_ISEVIDENCE = new BN(1)
   static FLAG_HAS_SYSTEM = new BN(2)
+  static FLAG_HAS_HASH = new BN(4)
   static FIRST_VERSION = new BN(1)
   static LAST_VERSION = new BN(1)
 
-  constructor(data?: { version?: BigNumber, flags?: BigNumber, output?: UTXORef, objectNum?: BigNumber, subObject?: BigNumber, systemId?: string }) {
+  constructor(data?: { version?: BigNumber, flags?: BigNumber, output?: UTXORef, objectNum?: BigNumber, subObject?: BigNumber, systemId?: string, dataHash?: Buffer }) {
+    super();
+    this.dataHash = Buffer.alloc(0);
 
     if (data) {
       const d = data as any;
-      const deprecated = ['object_num', 'sub_object', 'system_id'].filter(k => k in d);
+      const deprecated = ['object_num', 'sub_object', 'system_id', 'data_hash'].filter(k => k in d);
       if (deprecated.length > 0) {
-        const map: Record<string, string> = { object_num: 'objectNum', sub_object: 'subObject', system_id: 'systemId' };
+        const map: Record<string, string> = { object_num: 'objectNum', sub_object: 'subObject', system_id: 'systemId', data_hash: 'dataHash' };
         throw new Error(`PBaaSEvidenceRef: snake_case property names are no longer supported. Rename: ${deprecated.map(k => `'${k}' → '${map[k]}'`).join(', ')}.`);
       }
       this.version = data.version || new BN(1, 10);
@@ -48,6 +54,8 @@ export class PBaaSEvidenceRef implements SerializableEntity {
       this.objectNum = data.objectNum || new BN(0);
       this.subObject = data.subObject || new BN(0);
       this.systemId = data.systemId || "";
+      this.dataHash = data.dataHash || this.dataHash;
+      this.validateDataHashLength();
     }
   }
 
@@ -60,10 +68,32 @@ export class PBaaSEvidenceRef implements SerializableEntity {
   /** @deprecated Use systemId instead */
   get system_id(): string { return this.systemId; }
 
+  /** @deprecated Use dataHash instead */
+  get data_hash(): Buffer { return this.dataHash; }
+
+  private validateDataHashLength() {
+    if (this.dataHash && this.dataHash.length !== 0 && this.dataHash.length !== HASH256_BYTE_LENGTH) {
+      throw new Error(`PBaaSEvidenceRef dataHash must be exactly ${HASH256_BYTE_LENGTH} bytes`);
+    }
+  }
+
+  private hasNonNullDataHash() {
+    this.validateDataHashLength();
+    return !!this.dataHash && this.dataHash.length === HASH256_BYTE_LENGTH &&
+      !this.dataHash.equals(Buffer.alloc(HASH256_BYTE_LENGTH));
+  }
+
+  hasDataHash() {
+    return this.flags.and(PBaaSEvidenceRef.FLAG_HAS_HASH).gt(new BN(0));
+  }
+
   setFlags() {
     this.flags = this.flags.and(PBaaSEvidenceRef.FLAG_ISEVIDENCE);
     if (this.systemId && this.systemId.length > 0) {
       this.flags = this.flags.or(PBaaSEvidenceRef.FLAG_HAS_SYSTEM);
+    }
+    if (this.hasNonNullDataHash()) {
+      this.flags = this.flags.or(PBaaSEvidenceRef.FLAG_HAS_HASH);
     }
 
   }
@@ -81,6 +111,9 @@ export class PBaaSEvidenceRef implements SerializableEntity {
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
       byteLength += HASH160_BYTE_LENGTH;
     }
+    if (this.hasDataHash()) {
+      byteLength += HASH256_BYTE_LENGTH;
+    }
 
     return byteLength
   }
@@ -96,6 +129,9 @@ export class PBaaSEvidenceRef implements SerializableEntity {
 
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
       bufferWriter.writeSlice(fromBase58Check(this.systemId).hash);
+    }
+    if (this.hasDataHash()) {
+      bufferWriter.writeSlice(this.dataHash);
     }
 
     return bufferWriter.buffer
@@ -113,6 +149,14 @@ export class PBaaSEvidenceRef implements SerializableEntity {
 
     if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
       this.systemId = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+    } else {
+      this.systemId = "";
+    }
+
+    if (this.hasDataHash()) {
+      this.dataHash = reader.readSlice(HASH256_BYTE_LENGTH);
+    } else {
+      this.dataHash = Buffer.alloc(0);
     }
 
     return reader.offset;
@@ -125,6 +169,7 @@ export class PBaaSEvidenceRef implements SerializableEntity {
   }
 
   toJson(): PBaaSEvidenceRefJson {
+    this.setFlags();
 
     let retval: PBaaSEvidenceRefJson = {
       version: this.version.toNumber(),
@@ -135,17 +180,31 @@ export class PBaaSEvidenceRef implements SerializableEntity {
       systemid: this.systemId || ""
     }
 
+    if (this.hasDataHash()) {
+      retval.datahash = Buffer.from(this.dataHash).reverse().toString('hex');
+    }
+
     return retval;
   }
 
   static fromJson(json: PBaaSEvidenceRefJson): PBaaSEvidenceRef {
+    let dataHash = Buffer.alloc(0);
+
+    if (json.datahash != null && json.datahash.length > 0) {
+      if (!/^[0-9a-fA-F]{64}$/.test(json.datahash)) {
+        throw new Error(`PBaaSEvidenceRef datahash must be exactly ${HASH256_BYTE_LENGTH} bytes of hexadecimal data`);
+      }
+      dataHash = Buffer.from(json.datahash, 'hex').reverse();
+    }
+
     return new PBaaSEvidenceRef({
       version: new BN(json.version),
       flags: new BN(json.flags),
       output: UTXORef.fromJson(json.output),
       objectNum: new BN(json.objectnum),
       subObject: new BN(json.subobject),
-      systemId: json.systemid
+      systemId: json.systemid,
+      dataHash
     });
   }
 }

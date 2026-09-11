@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils';
 import { decodeSaplingAddress, encodeSaplingAddress } from '../utils/sapling';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export class SaplingPaymentAddress implements SerializableEntity {
+export class SaplingPaymentAddress extends SerializableEntityBase implements SerializableEntity {
   d: Buffer;
   pkD: Buffer
 
@@ -12,6 +13,7 @@ export class SaplingPaymentAddress implements SerializableEntity {
     d: Buffer,
     pkD: Buffer
   }) {
+    super();
     if (data != null) {
       if ('pk_d' in (data as any)) {
         throw new Error("SaplingPaymentAddress: snake_case property names are no longer supported. Use 'pkD' instead of 'pk_d'.");

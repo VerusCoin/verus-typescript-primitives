@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
 import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
-import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
+import { HASH160_BYTE_LENGTH, HASH256_BYTE_LENGTH, I_ADDR_VERSION } from '../constants/vdxf';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { EHashTypes } from './DataDescriptor';
 const { BufferReader, BufferWriter } = bufferutils
@@ -24,7 +25,7 @@ export interface SignatureJsonDataInterface {
   signature: string;
 }
 
-export class SignatureData implements SerializableEntity {
+export class SignatureData extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   systemID: string;
   hashType: BigNumber;
@@ -45,6 +46,7 @@ export class SignatureData implements SerializableEntity {
   constructor(data?: { version?: BigNumber, systemID?: string, hashType?: BigNumber, signatureHash?: Buffer,
     identityID?: string, sigType?: BigNumber, vdxfKeys?: Array<string>, vdxfKeyNames?: Array<string>,
     boundHashes?: Array<Buffer>, signatureAsVch?: Buffer }) {
+    super();
 
     if (data != null) {
       const d = data as any;
@@ -297,7 +299,48 @@ export class SignatureData implements SerializableEntity {
         .update(this.signatureHash)
         .digest();
     } else {
+      const vdxfKeyBuffers = (this.vdxfKeys || [])
+        .map(key => fromBase58Check(key).hash)
+        .sort(Buffer.compare);
+      const vdxfKeyNameBuffers = (this.vdxfKeyNames || [])
+        .map(name => Buffer.from(name, 'utf8'))
+        .sort(Buffer.compare);
+      const boundHashBuffers = [...(this.boundHashes || [])].sort(Buffer.compare);
+      let extraDataLength = 0;
+
+      if (vdxfKeyBuffers.length > 0) {
+        extraDataLength += varuint.encodingLength(vdxfKeyBuffers.length);
+        extraDataLength += vdxfKeyBuffers.length * HASH160_BYTE_LENGTH;
+      }
+
+      if (vdxfKeyNameBuffers.length > 0) {
+        extraDataLength += varuint.encodingLength(vdxfKeyNameBuffers.length);
+        for (const name of vdxfKeyNameBuffers) {
+          extraDataLength += varuint.encodingLength(name.length) + name.length;
+        }
+      }
+
+      if (boundHashBuffers.length > 0) {
+        extraDataLength += varuint.encodingLength(boundHashBuffers.length);
+        extraDataLength += boundHashBuffers.length * HASH256_BYTE_LENGTH;
+      }
+
+      const extraDataWriter = new BufferWriter(Buffer.alloc(extraDataLength));
+
+      if (vdxfKeyBuffers.length > 0) {
+        extraDataWriter.writeArray(vdxfKeyBuffers);
+      }
+
+      if (vdxfKeyNameBuffers.length > 0) {
+        extraDataWriter.writeVector(vdxfKeyNameBuffers);
+      }
+
+      if (boundHashBuffers.length > 0) {
+        extraDataWriter.writeArray(boundHashBuffers);
+      }
+
       return createHash("sha256")
+        .update(extraDataWriter.buffer)
         .update(fromBase58Check(this.systemID).hash)
         .update(heightBuffer)
         .update(fromBase58Check(this.identityID).hash)

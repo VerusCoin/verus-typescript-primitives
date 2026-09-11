@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TransferDestination = exports.FLAG_MASK = exports.FLAG_DEST_GATEWAY = exports.FLAG_DEST_AUX = exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW = exports.DEST_ETHNFT = exports.DEST_ETH = exports.DEST_NESTEDTRANSFER = exports.DEST_QUANTUM = exports.DEST_REGISTERCURRENCY = exports.DEST_FULLID = exports.DEST_ID = exports.DEST_SH = exports.DEST_PKH = exports.DEST_PK = exports.DEST_INVALID = void 0;
+exports.TransferDestination = exports.FLAG_MASK = exports.FLAG_DEST_GATEWAY = exports.FLAG_DEST_AUX = exports.FLAG_RESERVED2 = exports.FLAG_RESERVED1 = exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW = exports.DEST_ETHNFT = exports.DEST_ETH = exports.DEST_NESTEDTRANSFER = exports.DEST_QUANTUM = exports.DEST_REGISTERCURRENCY = exports.DEST_FULLID = exports.DEST_ID = exports.DEST_SH = exports.DEST_PKH = exports.DEST_PK = exports.DEST_INVALID = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../utils/varuint");
@@ -21,11 +22,16 @@ exports.DEST_ETH = new bn_js_1.BN(9, 10);
 exports.DEST_ETHNFT = new bn_js_1.BN(10, 10); // used when defining a mapped NFT to gateway that uses an ETH compatible model
 exports.DEST_RAW = new bn_js_1.BN(11, 10);
 exports.LAST_VALID_TYPE_NO_FLAGS = exports.DEST_RAW;
+exports.FLAG_RESERVED1 = new bn_js_1.BN(16, 10);
+exports.FLAG_RESERVED2 = new bn_js_1.BN(32, 10);
 exports.FLAG_DEST_AUX = new bn_js_1.BN(64, 10);
 exports.FLAG_DEST_GATEWAY = new bn_js_1.BN(128, 10);
-exports.FLAG_MASK = exports.FLAG_DEST_AUX.add(exports.FLAG_DEST_GATEWAY);
-class TransferDestination {
+exports.FLAG_MASK = exports.FLAG_DEST_AUX.add(exports.FLAG_DEST_GATEWAY).add(exports.FLAG_RESERVED1).add(exports.FLAG_RESERVED2);
+const SCRIPT_ADDR_VERSION = 85;
+const QUANTUM_ADDR_VERSION = 58;
+class TransferDestination extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.type = exports.DEST_INVALID;
         this.destinationBytes = Buffer.alloc(0);
         this.gatewayID = null;
@@ -168,14 +174,20 @@ class TransferDestination {
         return reader.offset;
     }
     static fromJson(data) {
-        const type = new bn_js_1.BN(data.type);
+        let type = new bn_js_1.BN(data.type);
         let destination = null;
         switch (type.and(exports.FLAG_MASK.notn(exports.FLAG_MASK.bitLength())).toString()) {
             case exports.DEST_PKH.toString():
+                destination = (0, address_1.decodeDestination)(data.address, vdxf_1.R_ADDR_VERSION);
+                break;
             case exports.DEST_SH.toString():
+                destination = (0, address_1.decodeDestination)(data.address, SCRIPT_ADDR_VERSION);
+                break;
             case exports.DEST_ID.toString():
+                destination = (0, address_1.decodeDestination)(data.address, vdxf_1.I_ADDR_VERSION);
+                break;
             case exports.DEST_QUANTUM.toString():
-                destination = (0, address_1.decodeDestination)(data.address);
+                destination = (0, address_1.decodeDestination)(data.address, QUANTUM_ADDR_VERSION);
                 break;
             case exports.DEST_ETH.toString():
                 destination = (0, address_1.decodeEthDestination)(data.address);
@@ -185,15 +197,21 @@ class TransferDestination {
         }
         let auxDests = [];
         let fees = null;
-        if (type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0)) && data.auxdests.length > 0) {
-            auxDests = data.auxdests.map(x => TransferDestination.fromJson(x));
+        if (type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) {
+            if (Array.isArray(data.auxdests) && data.auxdests.length > 0) {
+                auxDests = data.auxdests.map(x => TransferDestination.fromJson(x));
+            }
+            else {
+                type = type.xor(exports.FLAG_DEST_AUX);
+            }
         }
-        if (type.and(exports.FLAG_DEST_GATEWAY).gt(new bn_js_1.BN(0)) && data.fees) {
+        if (type.and(exports.FLAG_DEST_GATEWAY).gt(new bn_js_1.BN(0)) && data.fees != null) {
             fees = (0, numberConversion_1.decimalToBn)(data.fees);
         }
         return new TransferDestination({
             type: type,
             destinationBytes: destination,
+            gatewayID: data.gateway,
             gatewayCode: data.gatewaycode,
             fees: fees,
             auxDests: auxDests
@@ -220,10 +238,23 @@ class TransferDestination {
         }
         if (this.isGateway()) {
             destVal.gateway = this.gatewayID;
+            if (this.gatewayCode != null) {
+                destVal.gatewaycode = this.gatewayCode;
+            }
+            destVal.fees = (0, numberConversion_1.bnToDecimal)(this.fees);
         }
         return destVal;
     }
     isValid() {
+        const typeNoFlags = this.typeNoFlags();
+        const isHash160Destination = typeNoFlags.eq(exports.DEST_PKH) ||
+            typeNoFlags.eq(exports.DEST_SH) ||
+            typeNoFlags.eq(exports.DEST_ID) ||
+            typeNoFlags.eq(exports.DEST_QUANTUM) ||
+            typeNoFlags.eq(exports.DEST_ETH);
+        const destinationLengthIsValid = !isHash160Destination ||
+            (Buffer.isBuffer(this.destinationBytes) &&
+                this.destinationBytes.length === vdxf_1.HASH160_BYTE_LENGTH);
         // verify aux dests
         let valid = (((this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && this.auxDests.length > 0) || (!(this.type.and(exports.FLAG_DEST_AUX).gt(new bn_js_1.BN(0))) && !(this.auxDests.length > 0)));
         if (valid && this.auxDests && this.auxDests.length > 0) {
@@ -235,8 +266,9 @@ class TransferDestination {
             }
         }
         return !!(valid &&
-            !this.typeNoFlags().eq(exports.DEST_INVALID) &&
-            this.typeNoFlags().lte(exports.LAST_VALID_TYPE_NO_FLAGS) &&
+            destinationLengthIsValid &&
+            !typeNoFlags.eq(exports.DEST_INVALID) &&
+            typeNoFlags.lte(exports.LAST_VALID_TYPE_NO_FLAGS) &&
             (((this.type.and(exports.FLAG_DEST_GATEWAY).eq(new bn_js_1.BN(0))) && (this.gatewayID == null)) || this.gatewayID != null));
     }
     getAuxDest(destNum) {

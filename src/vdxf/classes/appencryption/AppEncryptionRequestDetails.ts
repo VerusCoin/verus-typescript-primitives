@@ -18,12 +18,14 @@
  */
 
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import bufferutils from '../../../utils/bufferutils';
 const { BufferReader, BufferWriter } = bufferutils;
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from '../CompactAddressObject';
 import varuint from '../../../utils/varuint';
+import varint from '../../../utils/varint';
 import { SaplingPaymentAddress } from '../../../pbaas';
 
 export interface AppEncryptionRequestDetailsInterface {
@@ -38,13 +40,13 @@ export interface AppEncryptionRequestDetailsInterface {
 export interface AppEncryptionRequestDetailsJson {
   version: number;
   flags: number;
-  encryptresponsetoaddress: string;
+  encryptresponsetoaddress?: string;
   derivationnumber: number;
   derivationid?: CompactAddressObjectJson;
   requestid?: CompactAddressObjectJson;
 }
 
-export class AppEncryptionRequestDetails implements SerializableEntity {
+export class AppEncryptionRequestDetails extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -63,6 +65,7 @@ export class AppEncryptionRequestDetails implements SerializableEntity {
   requestID?: CompactIAddressObject;                         // Unique identifier for the request
 
   constructor(data?: AppEncryptionRequestDetailsInterface) {
+    super();
     this.version = data?.version || AppEncryptionRequestDetails.DEFAULT_VERSION;
     this.flags = data?.flags || new BN(0);
     this.encryptResponseToAddress = data?.encryptResponseToAddress || null;
@@ -128,7 +131,7 @@ export class AppEncryptionRequestDetails implements SerializableEntity {
       length += this.encryptResponseToAddress.getByteLength();
     }
 
-    length += varuint.encodingLength(this.derivationNumber.toNumber());
+    length += varint.encodingLength(this.derivationNumber);
 
     if (this.hasDerivationID()) {
       length += this.derivationID.getByteLength();
@@ -200,7 +203,7 @@ export class AppEncryptionRequestDetails implements SerializableEntity {
     return {
       version: this.version.toNumber(),
       flags: this.flags.toNumber(),
-      encryptresponsetoaddress: this.encryptResponseToAddress.toAddressString(),
+      encryptresponsetoaddress: this.hasEncryptResponseToAddress() ? this.encryptResponseToAddress.toAddressString() : undefined,
       derivationnumber: this.derivationNumber.toNumber(),
       derivationid: this.derivationID?.toJson(),
       requestid: this.requestID?.toJson()

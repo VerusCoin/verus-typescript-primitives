@@ -92,8 +92,10 @@ class Request extends __1.VDXFObject {
         return this._toDataBuffer();
     }
     _fromDataBuffer(buffer, offset) {
-        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
-        const reqLength = reader.readCompactSize();
+        const frameReader = new bufferutils_1.default.BufferReader(buffer, offset);
+        const reqLength = frameReader.readCompactSize();
+        const bodyOffset = frameReader.offset;
+        const reader = new bufferutils_1.default.BufferReader(frameReader.readSlice(reqLength));
         if (reqLength == 0) {
             throw new Error("Cannot create request from empty buffer");
         }
@@ -113,7 +115,11 @@ class Request extends __1.VDXFObject {
                 this.challenge = _challenge;
             }
         }
-        return reader.offset;
+        // ProvisioningRequest consumes its challenge after this shared prefix.
+        if (this.vdxfkey !== __1.LOGIN_CONSENT_PROVISIONING_REQUEST_VDXF_KEY.vdxfid && reader.offset !== reqLength) {
+            throw new Error("Request body length mismatch");
+        }
+        return bodyOffset + reader.offset;
     }
     fromDataBuffer(buffer, offset) {
         return this._fromDataBuffer(buffer, offset);

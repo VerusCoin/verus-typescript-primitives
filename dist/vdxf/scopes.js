@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ATTESTATION_RECEIVE_REQUEST = exports.PROFILE_DATA_READ_REQUEST = exports.ATTESTATION_READ_REQUEST = exports.IDENTITY_AGREEMENT = exports.IDENTITY_VIEW = void 0;
+exports.ATTESTATION_RECEIVE_REQUEST = exports.PROFILE_DATA_READ_REQUEST = exports.IDENTITY_DATA_REQUEST = exports.IDENTITY_AGREEMENT = exports.IDENTITY_VIEW = void 0;
 exports.IDENTITY_VIEW = {
     vdxfid: "iLUrA89mDKnwxZcMiPadfNB9TLp58A2TKU",
     hash160result: "aeab47faa1b2bde2633a63b8284770a8e5c489ba",
@@ -17,7 +17,12 @@ exports.IDENTITY_AGREEMENT = {
         name: "vrsc::identity.authentication.permission.agree"
     }
 };
-exports.ATTESTATION_READ_REQUEST = {
+/**
+ * @deprecated Legacy scope retained for compatibility. Do not use for new requests.
+ * Its qualified name reflects a historical naming mistake and does not derive
+ * the stored vdxfid/hash160result. Preserve these legacy values unchanged.
+ */
+exports.IDENTITY_DATA_REQUEST = {
     vdxfid: "iNqLaiDJjcADGCvXcQZnPqwTqMXzQbDCFu",
     hash160result: "fbd8fe825062b19a9bd26dc51b6f768828115ad4",
     qualifiedname: {

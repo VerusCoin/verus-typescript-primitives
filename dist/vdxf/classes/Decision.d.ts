@@ -20,43 +20,17 @@ export declare class Decision extends VDXFObject {
     attestations: Array<any>;
     salt?: string;
     constructor(decision?: DecisionInterface, vdxfkey?: string);
+    protected validateSupportedFields(): void;
     dataByteLength(): number;
     toDataBuffer(): Buffer;
     fromDataBuffer(buffer: Buffer, offset?: number, readRequest?: boolean): number;
     toJson(): {
         vdxfkey: string;
         decision_id: string;
-        context: {
-            kv: {
-                [key: string]: string;
-            };
-            vdxfkey: string;
-        };
+        context: ReturnType<Context["toJson"]>;
         created_at: number;
-        request: {
-            vdxfkey: string;
-            system_id: string;
-            signing_id: string;
-            signature: import("..").VerusIDSignatureJson;
-            challenge: {
-                vdxfkey: string;
-                challenge_id: string;
-                requested_access: import("./Challenge").RequestedPermission[];
-                requested_access_audience: import("./Challenge").RequestedPermission[];
-                subject: import("./Challenge").Subject[];
-                provisioning_info: import("./Challenge").ProvisioningInfo[];
-                alt_auth_factors: import("./Challenge").AltAuthFactor[];
-                session_id: string;
-                attestations: Attestation[];
-                redirect_uris: {
-                    uri: string;
-                    vdxfkey: string;
-                }[];
-                created_at: number;
-                salt: string;
-                context: Context;
-                skip: boolean;
-            };
-        };
+        salt?: string;
+        skipped?: boolean;
+        request: ReturnType<Request["toJson"]>;
     };
 }

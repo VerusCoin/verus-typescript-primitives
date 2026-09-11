@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface RatingJson {
@@ -7,7 +8,7 @@ export interface RatingJson {
         [key: string]: string;
     };
 }
-export declare class Rating implements SerializableEntity {
+export declare class Rating extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static VERSION_FIRST: import("bn.js");
     static VERSION_LAST: import("bn.js");

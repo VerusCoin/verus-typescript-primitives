@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils'
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { PBaaSEvidenceRef, PBaaSEvidenceRefJson } from './PBaaSEvidenceRef';
@@ -11,7 +12,7 @@ export type CrossChainDataRefJson =
     | (IdentityMultimapRefJson & { type: number })
     | (URLRefJson & { type: number });
 
-export class CrossChainDataRef implements SerializableEntity {
+export class CrossChainDataRef extends SerializableEntityBase implements SerializableEntity {
   ref: PBaaSEvidenceRef | IdentityMultimapRef | URLRef;
 
   static TYPE_CROSSCHAIN_DATAREF = 0;
@@ -19,6 +20,7 @@ export class CrossChainDataRef implements SerializableEntity {
   static TYPE_URL_REF = 2;
 
   constructor(data?: PBaaSEvidenceRef | IdentityMultimapRef | URLRef | any) {
+    super();
     this.ref = data || null;
   }
 

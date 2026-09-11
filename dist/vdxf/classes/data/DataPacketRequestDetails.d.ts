@@ -18,6 +18,7 @@
 
  */
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { DataDescriptor, DataDescriptorJson } from '../../../pbaas';
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from '../VerifiableSignatureData';
@@ -42,7 +43,7 @@ export interface DataPacketRequestDetailsJson {
     signature?: VerifiableSignatureDataJson;
     requestid?: CompactAddressObjectJson;
 }
-export declare class DataPacketRequestDetails implements SerializableEntity {
+export declare class DataPacketRequestDetails extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");

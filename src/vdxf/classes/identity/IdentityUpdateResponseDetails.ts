@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import varint from '../../../utils/varint'
 import bufferutils from '../../../utils/bufferutils'
 import createHash = require('create-hash');
@@ -14,7 +15,7 @@ export type IdentityUpdateResponseDetailsJson = {
   txid?: string
 }
 
-export class IdentityUpdateResponseDetails implements SerializableEntity {
+export class IdentityUpdateResponseDetails extends SerializableEntityBase implements SerializableEntity {
   flags?: BigNumber;
   requestID?: CompactIAddressObject;              // ID of request, to be referenced in response
   txid?: Buffer;                      // 32 byte transaction ID of identity update tx posted to blockchain, on same system asked for in request
@@ -28,6 +29,7 @@ export class IdentityUpdateResponseDetails implements SerializableEntity {
     requestID?: CompactIAddressObject,
     txid?: Buffer
   }) {
+    super();
     this.flags = data && data.flags ? data.flags : new BN("0", 10);
 
     if (data?.requestID) {

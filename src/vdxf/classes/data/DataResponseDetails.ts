@@ -39,6 +39,7 @@
  */
 
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import varint from '../../../utils/varint';
 import bufferutils from '../../../utils/bufferutils';
@@ -60,7 +61,7 @@ export interface DataResponseDetailsJson {
   data: DataDescriptorJson;   
 }
 
-export class DataResponseDetails implements SerializableEntity {
+export class DataResponseDetails extends SerializableEntityBase implements SerializableEntity {
   flags?: BigNumber;
   requestID?: CompactIAddressObject;              // ID of request, to be referenced in response
   data: DataDescriptor;    
@@ -68,6 +69,7 @@ export class DataResponseDetails implements SerializableEntity {
   static FLAG_HAS_REQUEST_ID = new BN(1, 10);
 
   constructor (initialData?: DataResponseDetailsInterface) {
+    super();
     this.flags = initialData && initialData.flags ? initialData.flags : new BN("0", 10);
 
     if (initialData?.requestID) {

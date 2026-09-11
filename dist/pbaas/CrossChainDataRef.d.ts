@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { PBaaSEvidenceRef, PBaaSEvidenceRefJson } from './PBaaSEvidenceRef';
 import { IdentityMultimapRef, IdentityMultimapRefJson } from './IdentityMultimapRef';
@@ -9,7 +10,7 @@ export type CrossChainDataRefJson = (PBaaSEvidenceRefJson & {
 }) | (URLRefJson & {
     type: number;
 });
-export declare class CrossChainDataRef implements SerializableEntity {
+export declare class CrossChainDataRef extends SerializableEntityBase implements SerializableEntity {
     ref: PBaaSEvidenceRef | IdentityMultimapRef | URLRef;
     static TYPE_CROSSCHAIN_DATAREF: number;
     static TYPE_IDENTITY_DATAREF: number;
@@ -38,6 +39,7 @@ export declare class CrossChainDataRef implements SerializableEntity {
         objectnum: number;
         subobject: number;
         systemid: string;
+        datahash?: string;
     } | {
         type: number;
         version: number;

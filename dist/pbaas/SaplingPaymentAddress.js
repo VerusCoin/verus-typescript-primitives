@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SaplingPaymentAddress = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const sapling_1 = require("../utils/sapling");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class SaplingPaymentAddress {
+class SaplingPaymentAddress extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             if ('pk_d' in data) {
                 throw new Error("SaplingPaymentAddress: snake_case property names are no longer supported. Use 'pkD' instead of 'pk_d'.");

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FqnContentMultiMap = exports.ContentMultiMap = exports.KvContent = void 0;
 exports.isKvValueArrayItemVdxfUniValueJson = isKvValueArrayItemVdxfUniValueJson;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varuint_1 = require("../utils/varuint");
 const bufferutils_1 = require("../utils/bufferutils");
 const address_1 = require("../utils/address");
@@ -30,8 +31,9 @@ function isKvValueArrayItemVdxfUniValueJson(x) {
 class KvContent extends KvMap_1.KvMap {
 }
 exports.KvContent = KvContent;
-class ContentMultiMap {
+class ContentMultiMap extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data === null || data === void 0 ? void 0 : data.kvContent)
             this.kvContent = data.kvContent;
     }

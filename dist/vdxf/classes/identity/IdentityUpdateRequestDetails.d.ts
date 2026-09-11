@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { PartialIdentity } from '../../../pbaas/PartialIdentity';
 import { PartialSignData, PartialSignDataCLIJson, PartialSignDataJson } from '../../../pbaas/PartialSignData';
 import { BigNumber } from '../../../utils/types/BigNumber';
@@ -22,7 +23,7 @@ export type IdentityUpdateRequestDetailsJson = {
     };
     txid?: string;
 };
-export declare class IdentityUpdateRequestDetails implements SerializableEntity {
+export declare class IdentityUpdateRequestDetails extends SerializableEntityBase implements SerializableEntity {
     flags?: BigNumber;
     requestID?: CompactIAddressObject;
     identity?: PartialIdentity;

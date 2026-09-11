@@ -3,6 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetMMRProofIndex = void 0;
 const bn_js_1 = require("bn.js");
 const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
+    if (!Number.isSafeInteger(pos) ||
+        !Number.isSafeInteger(mmvSize) ||
+        !Number.isSafeInteger(extraHashes) ||
+        pos < 0 ||
+        mmvSize < 0 ||
+        extraHashes < 0) {
+        throw new RangeError("MMR proof index inputs must be non-negative safe integers");
+    }
     let index = new bn_js_1.BN(0);
     let layerSizes = [];
     let merkleSizes = [];
@@ -15,10 +23,10 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
     //create an array of all the sizes
     while (mmvSize) {
         layerSizes.push(mmvSize);
-        mmvSize = mmvSize >> 1;
+        mmvSize = Math.floor(mmvSize / 2);
     }
     for (let height = 0; height < layerSizes.length; height++) {
-        if (height == layerSizes.length - 1 || layerSizes[height] & 1) {
+        if (height == layerSizes.length - 1 || layerSizes[height] % 2) {
             peakIndexes.push(height);
         }
     }
@@ -26,8 +34,8 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
     peakIndexes.reverse();
     let layerNum = 0;
     let layerSize = peakIndexes.length;
-    for (let passThrough = (layerSize & 1); layerNum == 0 || layerSize > 1; passThrough = (layerSize & 1), layerNum++) {
-        layerSize = (layerSize >> 1) + passThrough;
+    for (let passThrough = (layerSize % 2); layerNum == 0 || layerSize > 1; passThrough = (layerSize % 2), layerNum++) {
+        layerSize = Math.floor(layerSize / 2) + passThrough;
         if (layerSize) {
             merkleSizes.push(layerSize);
         }
@@ -38,9 +46,9 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
     }
     let p = pos;
     for (let l = 0; l < layerSizes.length; l++) {
-        if (p & 1) {
+        if (p % 2) {
             index = index.or(new bn_js_1.BN(1).shln(bitPos++));
-            p >>= 1;
+            p = Math.floor(p / 2);
             for (let i = 0; i < extraHashes; i++) {
                 bitPos++;
             }
@@ -48,7 +56,7 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
         else {
             if (layerSizes[l] > (p + 1)) {
                 bitPos++;
-                p >>= 1;
+                p = Math.floor(p / 2);
                 for (let i = 0; i < extraHashes; i++) {
                     bitPos++;
                 }
@@ -60,8 +68,8 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
                     }
                 }
                 for (let layerNum = -1, layerSize = peakIndexes.length; layerNum == -1 || layerSize > 1; layerSize = merkleSizes[++layerNum]) {
-                    if (p < (layerSize - 1) || (p & 1)) {
-                        if (p & 1) {
+                    if (p < (layerSize - 1) || (p % 2)) {
+                        if (p % 2) {
                             // hash with the one before us
                             index = index.or(new bn_js_1.BN(1).shln(bitPos++));
                             for (let i = 0; i < extraHashes; i++) {
@@ -76,7 +84,7 @@ const GetMMRProofIndex = (pos, mmvSize, extraHashes) => {
                             }
                         }
                     }
-                    p >>= 1;
+                    p = Math.floor(p / 2);
                 }
                 break;
             }

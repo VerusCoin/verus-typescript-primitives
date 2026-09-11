@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { BN } from 'bn.js';
@@ -66,7 +67,7 @@ export type PartialMMRDataCLIJson = {
   priormmr?: Array<string>;
 };
 
-export class PartialMMRData implements SerializableEntity {
+export class PartialMMRData extends SerializableEntityBase implements SerializableEntity {
   flags: BigNumber;
   data: Array<PartialMMRDataUnit>;
   mmrhashtype?: BigNumber;
@@ -78,6 +79,7 @@ export class PartialMMRData implements SerializableEntity {
   static CONTAINS_PRIORMMR = new BN("2", 10);
   
   constructor(data?: PartialMMRDataInitData) {
+    super();
     this.flags = data && data.flags ? data.flags : new BN("0");
     this.data = data && data.data ? data.data : [];
     this.mmrhashtype = data && data.mmrhashtype ? data.mmrhashtype : DEFAULT_HASH_TYPE_MMR;

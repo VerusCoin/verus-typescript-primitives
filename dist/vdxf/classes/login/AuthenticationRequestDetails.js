@@ -16,12 +16,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticationRequestDetails = void 0;
 const bufferutils_1 = require("../../../utils/bufferutils");
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../../../utils/varuint");
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const RecipientConstraint_1 = require("./RecipientConstraint");
-class AuthenticationRequestDetails {
+class AuthenticationRequestDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(request) {
+        super();
         this.flags = (request === null || request === void 0 ? void 0 : request.flags) || new bn_js_1.BN(0, 10);
         this.requestID = (request === null || request === void 0 ? void 0 : request.requestID) || null;
         this.recipientConstraints = (request === null || request === void 0 ? void 0 : request.recipientConstraints) ? request.recipientConstraints.map(RecipientConstraint_1.RecipientConstraint.fromData) : null;
@@ -100,7 +102,7 @@ class AuthenticationRequestDetails {
             }
         }
         if (this.hasExpiryTime()) {
-            this.expiryTime = new bn_js_1.BN(reader.readCompactSize());
+            this.expiryTime = new bn_js_1.BN(reader.readCompactSize(false));
         }
         return reader.offset;
     }
@@ -108,7 +110,7 @@ class AuthenticationRequestDetails {
         const retval = {
             flags: this.flags.toNumber(),
             requestid: this.hasRequestID() ? this.requestID.toJson() : undefined,
-            recipientConstraints: this.recipientConstraints ? this.recipientConstraints.map(p => p.toJson()) : undefined,
+            recipientconstraints: this.recipientConstraints ? this.recipientConstraints.map(p => p.toJson()) : undefined,
             expirytime: this.expiryTime ? this.expiryTime.toNumber() : undefined
         };
         return retval;

@@ -1,9 +1,9 @@
 import { ApiRequest } from "../../ApiRequest";
 import { RequestParams, ApiPrimitiveJson } from "../../ApiPrimitive";
 type InitialVdxfData = {
-    vdxfkey: string;
-    uint256: string;
-    indexnum: string;
+    vdxfkey?: string;
+    uint256?: string;
+    indexnum?: string | number;
 };
 export declare class GetVdxfIdRequest extends ApiRequest {
     vdxfuri: string;

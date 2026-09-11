@@ -11,9 +11,10 @@ type SigHashType = "ALL" | "NONE" | "SINGLE" | "ALL|ANYONECANPAY" | "NONE|ANYONE
 export declare class SignRawTransactionRequest extends ApiRequest {
     hexstring: string;
     prevtxs?: Array<PrevTx>;
+    privatekeys?: Array<string>;
     sighashtype?: SigHashType;
     branchid?: string;
-    constructor(chain: string, hexstring: string, prevtxs?: Array<PrevTx>, sighashtype?: SigHashType, branchid?: string);
+    constructor(chain: string, hexstring: string, prevtxs?: Array<PrevTx>, sighashtype?: SigHashType, branchid?: string, privatekeys?: Array<string>);
     getParams(): RequestParams;
     static fromJson(object: ApiPrimitiveJson): SignRawTransactionRequest;
     toJson(): ApiPrimitiveJson;

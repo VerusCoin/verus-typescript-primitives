@@ -9,6 +9,8 @@ export declare const EVALS: {
     EVAL_CURRENCYSTATE: number;
     EVAL_RESERVE_TRANSFER: number;
     EVAL_RESERVE_OUTPUT: number;
+    EVAL_IDENTITY_ADVANCEDRESERVATION: number;
+    /** @deprecated Use EVAL_IDENTITY_ADVANCEDRESERVATION. */
     EVAL_RESERVE_UNUSED: number;
     EVAL_RESERVE_DEPOSIT: number;
     EVAL_CROSSCHAIN_EXPORT: number;

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { IdentityID } from './IdentityID';
@@ -5,7 +6,7 @@ import { KeyID } from './KeyID';
 import { SaplingPaymentAddress } from './SaplingPaymentAddress';
 import { PartialMMRData, PartialMMRDataJson, SingleKeyMMRData } from './PartialMMRData';
 import { AllowedHashes } from '../constants/pbaas';
-import { FqnVdxfUniValue, VdxfUniValueJson } from './VdxfUniValue';
+import { FqnVdxfUniValue, VdxfUniValueJson, VdxfUniValueJsonArray } from './VdxfUniValue';
 export type PartialSignDataInitData = {
     flags?: BigNumber;
     address?: IdentityID | KeyID;
@@ -32,7 +33,7 @@ export type PartialSignDataJson = {
     createmmr?: boolean;
     signature?: string;
     datatype?: string;
-    data?: string | PartialMMRDataJson | VdxfUniValueJson;
+    data?: string | PartialMMRDataJson | VdxfUniValueJson | VdxfUniValueJsonArray;
 };
 export type CLISignDataKey = "filename" | "message" | "messagehex" | "messagebase64" | "datahash" | "mmrdata" | "vdxfdata";
 type AtLeastOne<T, U = {
@@ -51,15 +52,15 @@ type SignDataKeys = {
 };
 type BaseFields = {
     address?: string;
-    prefixString?: string;
-    vdxfKeys?: Array<string>;
-    vdxfKeyNames?: Array<string>;
-    boundHashes?: Array<string>;
-    hashType?: string;
-    encryptToAddress?: string;
-    createMMR?: boolean;
+    prefixstring?: string;
+    vdxfkeys?: Array<string>;
+    vdxfkeynames?: Array<string>;
+    boundhashes?: Array<string>;
+    hashtype?: string;
+    encrypttoaddress?: string;
+    createmmr?: boolean;
     signature?: string;
-    dataType?: string;
+    datatype?: string;
     data?: string;
 };
 type MMRFields = {
@@ -68,7 +69,7 @@ type MMRFields = {
     priormmr?: Array<string>;
 };
 export type PartialSignDataCLIJson = ((AtLeastOne<Omit<SignDataKeys, 'mmrdata'>> & BaseFields) | (AtLeastOne<SignDataKeys> & MMRFields & BaseFields));
-export declare class PartialSignData implements SerializableEntity {
+export declare class PartialSignData extends SerializableEntityBase implements SerializableEntity {
     flags: BigNumber;
     address?: IdentityID | KeyID;
     prefixString?: Buffer;
@@ -108,6 +109,7 @@ export declare class PartialSignData implements SerializableEntity {
     private toggleContainsBoundHashes;
     isMMRData(): boolean;
     isVdxfData(): boolean;
+    private validateAddress;
     private getPartialSignDataByteLength;
     getByteLength(): number;
     fromBuffer(buffer: Buffer, offset?: number): number;

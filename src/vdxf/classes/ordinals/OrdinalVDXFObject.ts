@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import bufferutils from "../../../utils/bufferutils";
 import { BN } from 'bn.js';
 import { BigNumber } from "../../../utils/types/BigNumber";
@@ -56,7 +57,7 @@ export const getOrdinalVDXFObjectClassForType = (type: BigNumber): OrdinalVDXFOb
   else throw new Error("Unrecognized vdxf ordinal object type " + type.toNumber());
 }
 
-export class OrdinalVDXFObject implements SerializableEntity {
+export class OrdinalVDXFObject extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   type: BigNumber;
   key?: string;
@@ -72,6 +73,7 @@ export class OrdinalVDXFObject implements SerializableEntity {
       type: DATA_DESCRIPTOR_VDXF_ORDINAL
     }
   ) {
+    super();
     if (request.key) {
       this.type = request.type ? request.type : VDXF_OBJECT_RESERVED_BYTE_I_ADDR;
       this.key = request.key;
@@ -224,8 +226,8 @@ export class OrdinalVDXFObject implements SerializableEntity {
     let type = new BN(reader.readCompactSize());
     const rootSystemId = toIAddress(rootSystemName);
 
-    const Entity = getOrdinalVDXFObjectClassForType(type);
-    const ord = new Entity({ type });
+    let Entity = getOrdinalVDXFObjectClassForType(type);
+    let ord = new Entity({ type });
     
     let key: string;
 
@@ -247,6 +249,9 @@ export class OrdinalVDXFObject implements SerializableEntity {
 
       if (OrdinalVDXFObjectOrdinalMap.vdxfKeyHasOrdinal(vdxfKey)) {
         type = new BN(OrdinalVDXFObjectOrdinalMap.getOrdinalForVdxfKey(vdxfKey));
+
+        Entity = getOrdinalVDXFObjectClassForType(type);
+        ord = new Entity({ type });
       }
     }
 

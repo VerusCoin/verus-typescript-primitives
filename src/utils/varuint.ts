@@ -26,6 +26,9 @@
 // Number.MAX_SAFE_INTEGER
 const MAX_SAFE_INTEGER = 9007199254740991;
 
+// VerusCoin serialize.h: maximum CompactSize used as a length or count.
+export const MAX_COMPACT_SIZE = 0x02000000;
+
 const checkUInt53 = (n: number) => {
   if (n < 0 || n > MAX_SAFE_INTEGER || n % 1 !== 0)
     throw new RangeError("value out of range");
@@ -73,9 +76,11 @@ export const encode = (
   return { buffer, bytes };
 };
 
+// Set rangeCheck to false only when decoding a scalar, never a length or count.
 export const decode = (
   buffer: Buffer,
-  offset: number
+  offset: number,
+  rangeCheck: boolean = true
 ): { decoded: number; bytes: number } => {
   if (!Buffer.isBuffer(buffer))
     throw new TypeError("buffer must be a Buffer instance");
@@ -110,6 +115,11 @@ export const decode = (
 
     decoded = number;
   }
+
+  if (encodingLength(decoded) !== bytes)
+    throw new RangeError("Non-canonical CompactSize");
+  if (rangeCheck && decoded > MAX_COMPACT_SIZE)
+    throw new RangeError("CompactSize exceeds maximum size");
 
   return { decoded, bytes };
 };

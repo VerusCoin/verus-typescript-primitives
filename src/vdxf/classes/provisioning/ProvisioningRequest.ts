@@ -70,16 +70,21 @@ export class ProvisioningRequest extends Request {
   }
 
   fromDataBuffer(buffer: Buffer, offset?: number): number {
+    const frameReader = new bufferutils.BufferReader(buffer, offset);
+    frameReader.readVarSlice();
+    const bodyEnd = frameReader.offset;
+    const boundedBuffer = buffer.subarray(0, bodyEnd);
     let _offset = this._fromDataBuffer(
-      buffer,
+      boundedBuffer,
       offset
     );
 
     this.challenge = new ProvisioningChallenge();
-    _offset = this.challenge.fromBuffer(buffer, _offset);
+    _offset = this.challenge.fromBuffer(boundedBuffer, _offset);
     this.signing_address = this.signing_id;
     this.signing_id = null;
 
+    if (_offset !== bodyEnd) throw new Error("Provisioning request body length mismatch");
     return _offset;
   }
 

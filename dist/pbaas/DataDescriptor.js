@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EHashTypes = exports.VDXFDataDescriptor = exports.DataDescriptor = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
@@ -10,16 +11,23 @@ const VdxfUniValue_1 = require("./VdxfUniValue");
 const index_1 = require("../vdxf/index");
 const VDXF_Data = require("../vdxf/vdxfdatakeys");
 const pbaas_1 = require("../constants/pbaas");
-class DataDescriptor {
+const vdxf_1 = require("../constants/vdxf");
+const address_1 = require("../utils/address");
+const string_1 = require("../utils/string");
+class DataDescriptor extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = new bn_js_1.BN(0);
         this.version = DataDescriptor.DEFAULT_VERSION;
+        this.vdxfKey = "";
         this.objectdata = Buffer.from([]);
         if (data != null) {
             if (data.flags != null)
                 this.flags = data.flags;
             if (data.version != null)
                 this.version = data.version;
+            if (data.vdxfKey != null)
+                this.vdxfKey = data.vdxfKey;
             if (data.objectdata != null)
                 this.objectdata = data.objectdata;
             if (data.label != null)
@@ -50,6 +58,8 @@ class DataDescriptor {
                 newDataDescriptor.flags = new bn_js_1.BN(data.flags);
             if (data.version != null)
                 newDataDescriptor.version = new bn_js_1.BN(data.version);
+            if (data.vdxfkey != null)
+                newDataDescriptor.vdxfKey = data.vdxfkey;
             if (data.objectdata != null)
                 newDataDescriptor.objectdata = VdxfUniValue_1.VdxfUniValue.fromJson(data.objectdata).toBuffer();
             if (data.label != null)
@@ -81,32 +91,38 @@ class DataDescriptor {
         const hashes = [];
         if (vdxfData.vdxfkey == VDXF_Data.VectorUint256Key.vdxfid) {
             const reader = new BufferReader(Buffer.from(vdxfData.data, 'hex'));
-            const count = reader.readVarInt();
-            for (let i = 0; i < count.toNumber(); i++) {
+            const count = reader.readCompactSize();
+            for (let i = 0; i < count; i++) {
                 hashes.push(reader.readSlice(32));
             }
         }
         return hashes;
     }
     getByteLength() {
+        this.setFlags();
         let length = 0;
         length += varint_1.default.encodingLength(this.version);
         length += varint_1.default.encodingLength(this.flags);
+        if (this.hasVDXFKey()) {
+            length += vdxf_1.HASH160_BYTE_LENGTH;
+        }
         length += varuint_1.default.encodingLength(this.objectdata.length);
         length += this.objectdata.length;
         if (this.hasLabel()) {
-            if (this.label.length > 64) {
+            const labelLength = Buffer.byteLength(this.label, 'utf8');
+            if (labelLength > 64) {
                 throw new Error("Label too long");
             }
-            length += varuint_1.default.encodingLength(this.label.length);
-            length += this.label.length;
+            length += varuint_1.default.encodingLength(labelLength);
+            length += labelLength;
         }
         if (this.hasMIME()) {
-            if (this.mimeType.length > 128) {
+            const mimeLength = Buffer.byteLength(this.mimeType, 'utf8');
+            if (mimeLength > 128) {
                 throw new Error("MIME type too long");
             }
-            length += varuint_1.default.encodingLength(this.mimeType.length);
-            length += this.mimeType.length;
+            length += varuint_1.default.encodingLength(mimeLength);
+            length += mimeLength;
         }
         if (this.hasSalt()) {
             length += varuint_1.default.encodingLength(this.salt.length);
@@ -130,6 +146,9 @@ class DataDescriptor {
         const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
         writer.writeVarInt(this.version);
         writer.writeVarInt(this.flags);
+        if (this.hasVDXFKey()) {
+            writer.writeSlice((0, address_1.fromBase58Check)(this.vdxfKey).hash);
+        }
         writer.writeVarSlice(this.objectdata);
         if (this.hasLabel()) {
             writer.writeVarSlice(Buffer.from(this.label));
@@ -155,29 +174,50 @@ class DataDescriptor {
         const reader = new BufferReader(buffer, offset);
         this.version = reader.readVarInt();
         this.flags = reader.readVarInt();
+        if (this.hasVDXFKey()) {
+            this.vdxfKey = (0, address_1.toBase58Check)(reader.readSlice(vdxf_1.HASH160_BYTE_LENGTH), vdxf_1.I_ADDR_VERSION);
+        }
+        else {
+            this.vdxfKey = "";
+        }
         this.objectdata = reader.readVarSlice();
         if (this.hasLabel()) {
-            this.label = reader.readVarSlice().toString();
+            this.label = (0, string_1.readLimitedString)(reader, 64).toString('utf8');
         }
+        else
+            this.label = undefined;
         if (this.hasMIME()) {
-            this.mimeType = reader.readVarSlice().toString();
+            this.mimeType = (0, string_1.readLimitedString)(reader, 128).toString('utf8');
         }
+        else
+            this.mimeType = undefined;
         if (this.hasSalt()) {
             this.salt = reader.readVarSlice();
         }
+        else
+            this.salt = undefined;
         if (this.hasEPK()) {
             this.epk = reader.readVarSlice();
         }
+        else
+            this.epk = undefined;
         if (this.hasIVK()) {
             this.ivk = reader.readVarSlice();
         }
+        else
+            this.ivk = undefined;
         if (this.hasSSK()) {
             this.ssk = reader.readVarSlice();
         }
+        else
+            this.ssk = undefined;
         return reader.offset;
     }
     hasEncryptedData() {
         return this.flags.and(DataDescriptor.FLAG_ENCRYPTED_DATA).gt(new bn_js_1.BN(0));
+    }
+    hasVDXFKey() {
+        return this.flags.and(DataDescriptor.FLAG_VDXF_KEY_PRESENT).gt(new bn_js_1.BN(0));
     }
     hasSalt() {
         return this.flags.and(DataDescriptor.FLAG_SALT_PRESENT).gt(new bn_js_1.BN(0));
@@ -198,20 +238,30 @@ class DataDescriptor {
         return this.flags.and(DataDescriptor.FLAG_LABEL_PRESENT).gt(new bn_js_1.BN(0));
     }
     calcFlags() {
-        return this.flags.and(DataDescriptor.FLAG_ENCRYPTED_DATA).add(this.label ? DataDescriptor.FLAG_LABEL_PRESENT : new bn_js_1.BN(0)).add(this.mimeType ? DataDescriptor.FLAG_MIME_TYPE_PRESENT : new bn_js_1.BN(0)).add(this.salt ? DataDescriptor.FLAG_SALT_PRESENT : new bn_js_1.BN(0)).add(this.epk ? DataDescriptor.FLAG_ENCRYPTION_PUBLIC_KEY_PRESENT : new bn_js_1.BN(0)).add(this.ivk ? DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT : new bn_js_1.BN(0)).add(this.ssk ? DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT : new bn_js_1.BN(0));
+        return this.flags.and(DataDescriptor.FLAG_ENCRYPTED_DATA).add(this.vdxfKey && this.vdxfKey !== vdxf_1.NULL_ADDRESS ? DataDescriptor.FLAG_VDXF_KEY_PRESENT : new bn_js_1.BN(0)).add(this.label ? DataDescriptor.FLAG_LABEL_PRESENT : new bn_js_1.BN(0)).add(this.mimeType ? DataDescriptor.FLAG_MIME_TYPE_PRESENT : new bn_js_1.BN(0)).add(this.salt ? DataDescriptor.FLAG_SALT_PRESENT : new bn_js_1.BN(0)).add(this.epk ? DataDescriptor.FLAG_ENCRYPTION_PUBLIC_KEY_PRESENT : new bn_js_1.BN(0)).add(this.ivk ? DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT : new bn_js_1.BN(0)).add(this.ssk ? DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT : new bn_js_1.BN(0));
     }
     setFlags() {
         this.flags = this.calcFlags();
     }
     isValid() {
-        return !!(this.version.gte(DataDescriptor.FIRST_VERSION) && this.version.lte(DataDescriptor.LAST_VERSION) && this.flags.and(DataDescriptor.FLAG_MASK.notn(DataDescriptor.FLAG_MASK.bitLength())));
+        if (!this.version.gte(DataDescriptor.FIRST_VERSION) || !this.version.lte(DataDescriptor.LAST_VERSION)) {
+            return false;
+        }
+        if (this.flags.isNeg() || !this.flags.and(DataDescriptor.FLAG_MASK).eq(this.flags)) {
+            return false;
+        }
+        return (!this.label || Buffer.byteLength(this.label, 'utf8') <= 64) &&
+            (!this.mimeType || Buffer.byteLength(this.mimeType, 'utf8') <= 128);
     }
     toJson() {
         var _a;
+        this.setFlags();
         const retval = {
             version: this.version.toNumber(),
             flags: this.flags.toNumber()
         };
+        if (this.hasVDXFKey())
+            retval['vdxfkey'] = this.vdxfKey;
         let isText = false;
         if (this.mimeType) {
             retval['mimetype'] = this.mimeType;
@@ -261,7 +311,8 @@ DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT = new bn_js_1.BN(8);
 DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT = new bn_js_1.BN(0x10);
 DataDescriptor.FLAG_LABEL_PRESENT = new bn_js_1.BN(0x20);
 DataDescriptor.FLAG_MIME_TYPE_PRESENT = new bn_js_1.BN(0x40);
-DataDescriptor.FLAG_MASK = (DataDescriptor.FLAG_ENCRYPTED_DATA.add(DataDescriptor.FLAG_SALT_PRESENT).add(DataDescriptor.FLAG_ENCRYPTION_PUBLIC_KEY_PRESENT).add(DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT).add(DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT).add(DataDescriptor.FLAG_LABEL_PRESENT).add(DataDescriptor.FLAG_MIME_TYPE_PRESENT));
+DataDescriptor.FLAG_VDXF_KEY_PRESENT = new bn_js_1.BN(0x80);
+DataDescriptor.FLAG_MASK = (DataDescriptor.FLAG_ENCRYPTED_DATA.add(DataDescriptor.FLAG_SALT_PRESENT).add(DataDescriptor.FLAG_ENCRYPTION_PUBLIC_KEY_PRESENT).add(DataDescriptor.FLAG_INCOMING_VIEWING_KEY_PRESENT).add(DataDescriptor.FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT).add(DataDescriptor.FLAG_LABEL_PRESENT).add(DataDescriptor.FLAG_MIME_TYPE_PRESENT).add(DataDescriptor.FLAG_VDXF_KEY_PRESENT));
 ;
 class VDXFDataDescriptor extends index_1.BufferDataVdxfObject {
     constructor(dataDescriptor, vdxfkey = "", version = new bn_js_1.BN(1)) {
@@ -274,8 +325,9 @@ class VDXFDataDescriptor extends index_1.BufferDataVdxfObject {
     static fromDataVdxfObject(data) {
         const retval = new VDXFDataDescriptor();
         retval.version = data.version;
-        retval.data = data.data;
-        retval.fromBuffer(Buffer.from(retval.data, 'hex'));
+        retval.vdxfkey = data.vdxfkey;
+        retval.dataDescriptor = new DataDescriptor();
+        retval.dataDescriptor.fromBuffer(data.toDataBuffer());
         delete retval.data;
         return retval;
     }
@@ -291,7 +343,7 @@ class VDXFDataDescriptor extends index_1.BufferDataVdxfObject {
         const reader = new bufferutils_1.default.BufferReader(buffer, offset);
         this.data = reader.readVarSlice().toString('hex');
         this.dataDescriptor = new DataDescriptor();
-        this.dataDescriptor.fromBuffer(Buffer.from(this.data, 'hex'), reader.offset);
+        this.dataDescriptor.fromBuffer(Buffer.from(this.data, 'hex'));
         delete this.data;
         return reader.offset;
     }

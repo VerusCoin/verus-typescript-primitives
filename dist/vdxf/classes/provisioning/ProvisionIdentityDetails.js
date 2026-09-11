@@ -17,12 +17,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProvisionIdentityDetails = void 0;
 const bufferutils_1 = require("../../../utils/bufferutils");
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const varuint_1 = require("../../../utils/varuint");
 const RequestURI_1 = require("../RequestURI");
-class ProvisionIdentityDetails {
+class ProvisionIdentityDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || ProvisionIdentityDetails.DEFAULT_VERSION;
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0, 10);
         this.uri = data === null || data === void 0 ? void 0 : data.uri;

@@ -13,6 +13,7 @@
  * parent namespace, and the specific identity being created. This enables secure,
  * user-controlled identity provisioning with proper namespace management.
  */
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { CompactIAddressObject, CompactAddressObjectJson } from "../CompactAddressObject";
@@ -33,7 +34,7 @@ export interface ProvisionIdentityDetailsJson {
     parentid?: CompactAddressObjectJson;
     identityid?: CompactAddressObjectJson;
 }
-export declare class ProvisionIdentityDetails implements SerializableEntity {
+export declare class ProvisionIdentityDetails extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     uri?: RequestURI;

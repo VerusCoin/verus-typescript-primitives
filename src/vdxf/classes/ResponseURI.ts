@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import { BN } from "bn.js";
 import { BigNumber } from "../../utils/types/BigNumber";
 import { SerializableEntity } from "../../utils/types/SerializableEntity";
@@ -10,7 +11,7 @@ export type ResponseURIJson = {
   uri: string;
 }
 
-export class ResponseURI implements SerializableEntity {
+export class ResponseURI extends SerializableEntityBase implements SerializableEntity {
   uri: Buffer;      // utf8 uri string
   type: BigNumber;  // type of place to send response
 
@@ -24,6 +25,7 @@ export class ResponseURI implements SerializableEntity {
     uri?: Buffer,
     type?: BigNumber
   }) {
+    super();
     if (data) {
       if (data.uri != null) {
         this.uri = data.uri;

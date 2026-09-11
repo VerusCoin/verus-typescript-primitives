@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GenericEnvelope = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const base64url_1 = require("base64url");
 const bn_js_1 = require("bn.js");
@@ -10,11 +11,12 @@ const crypto_1 = require("crypto");
 const VerifiableSignatureData_1 = require("../VerifiableSignatureData");
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const DataDescriptorOrdinalVDXFObject_1 = require("../ordinals/DataDescriptorOrdinalVDXFObject");
-class GenericEnvelope {
+class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(envelope = {
         details: [],
         flags: GenericEnvelope.BASE_FLAGS
     }) {
+        super();
         this.signature = envelope === null || envelope === void 0 ? void 0 : envelope.signature;
         this.requestID = envelope === null || envelope === void 0 ? void 0 : envelope.requestID;
         this.details = envelope === null || envelope === void 0 ? void 0 : envelope.details;
@@ -266,7 +268,7 @@ class GenericEnvelope {
             reader.offset = this.requestID.fromBuffer(reader.buffer, reader.offset);
         }
         if (this.hasCreatedAt()) {
-            this.createdAt = new bn_js_1.BN(reader.readCompactSize());
+            this.createdAt = new bn_js_1.BN(reader.readCompactSize(false));
         }
         if (this.hasSalt()) {
             this.salt = reader.readVarSlice();

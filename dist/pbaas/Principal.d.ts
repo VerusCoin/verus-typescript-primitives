@@ -1,10 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { KeyID } from './KeyID';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export declare const PRINCIPAL_DEFAULT_FLAGS: import("bn.js");
 export declare const PRINCIPAL_VERSION_INVALID: import("bn.js");
 export declare const PRINCIPAL_VERSION_CURRENT: import("bn.js");
-export declare class Principal implements SerializableEntity {
+export declare class Principal extends SerializableEntityBase implements SerializableEntity {
     flags: BigNumber;
     version: BigNumber;
     minSigs?: BigNumber;

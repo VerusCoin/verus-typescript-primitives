@@ -31,6 +31,9 @@ export class SerializableEntityOrdinalVDXFObject extends OrdinalVDXFObject imple
   fromDataBuffer(buffer: Buffer, rootSystemName?: string): void {
     this.data = new this.entity();
     // Type cast needed because different Details classes have rootSystemName in different parameter positions
-    (this.data as any).fromBuffer(buffer, 0, rootSystemName);
+    const consumed = (this.data as any).fromBuffer(buffer, 0, rootSystemName);
+    if (consumed !== buffer.length) {
+      throw new Error("Ordinal payload length mismatch");
+    }
   }
 }

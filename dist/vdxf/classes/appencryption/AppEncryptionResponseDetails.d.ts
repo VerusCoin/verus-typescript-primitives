@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { SaplingPaymentAddress } from '../../../pbaas';
@@ -22,7 +23,7 @@ export interface AppEncryptionResponseDetailsJson {
     address: string;
     extendedspendingkey?: string;
 }
-export declare class AppEncryptionResponseDetails implements SerializableEntity {
+export declare class AppEncryptionResponseDetails extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     requestID?: CompactIAddressObject;

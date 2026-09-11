@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "fixtures:mmr": "node scripts/generate-mmr-fixtures.js",
     "format": "prettier --write \"src/**/*.(js|ts)\"",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "eslint src --fix --ext .js,.ts",

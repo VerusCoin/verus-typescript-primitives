@@ -18,14 +18,17 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppEncryptionRequestDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const varuint_1 = require("../../../utils/varuint");
+const varint_1 = require("../../../utils/varint");
 const pbaas_1 = require("../../../pbaas");
-class AppEncryptionRequestDetails {
+class AppEncryptionRequestDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || AppEncryptionRequestDetails.DEFAULT_VERSION;
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0);
         this.encryptResponseToAddress = (data === null || data === void 0 ? void 0 : data.encryptResponseToAddress) || null;
@@ -73,7 +76,7 @@ class AppEncryptionRequestDetails {
         if (this.hasEncryptResponseToAddress()) {
             length += this.encryptResponseToAddress.getByteLength();
         }
-        length += varuint_1.default.encodingLength(this.derivationNumber.toNumber());
+        length += varint_1.default.encodingLength(this.derivationNumber);
         if (this.hasDerivationID()) {
             length += this.derivationID.getByteLength();
         }
@@ -126,7 +129,7 @@ class AppEncryptionRequestDetails {
         return {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
-            encryptresponsetoaddress: this.encryptResponseToAddress.toAddressString(),
+            encryptresponsetoaddress: this.hasEncryptResponseToAddress() ? this.encryptResponseToAddress.toAddressString() : undefined,
             derivationnumber: this.derivationNumber.toNumber(),
             derivationid: (_a = this.derivationID) === null || _a === void 0 ? void 0 : _a.toJson(),
             requestid: (_b = this.requestID) === null || _b === void 0 ? void 0 : _b.toJson()

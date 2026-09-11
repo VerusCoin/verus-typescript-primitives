@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Credential = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
 const varuint_1 = require("../utils/varuint");
@@ -9,8 +10,14 @@ const varint_1 = require("../utils/varint");
 const string_1 = require("../utils/string");
 const address_1 = require("../utils/address");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class Credential {
+function hasValidTextLengths(data) {
+    return Buffer.byteLength(JSON.stringify(data.credential), 'utf8') <= Credential.MAX_JSON_STRING_LENGTH
+        && Buffer.byteLength(JSON.stringify(data.scopes), 'utf8') <= Credential.MAX_JSON_STRING_LENGTH
+        && Buffer.byteLength(data.label, 'utf8') <= Credential.MAX_JSON_STRING_LENGTH;
+}
+class Credential extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = Credential.VERSION_INVALID;
         this.flags = new bn_js_1.BN(0, 10);
         this.credentialKey = "";
@@ -30,30 +37,33 @@ class Credential {
                 this.scopes = data.scopes;
             if (data.label)
                 this.label = data.label;
-            if (JSON.stringify(this.credential).length > Credential.MAX_JSON_STRING_LENGTH ||
-                JSON.stringify(this.scopes).length > Credential.MAX_JSON_STRING_LENGTH) {
+            if (!hasValidTextLengths(this)) {
                 this.version = Credential.VERSION_INVALID;
             }
             this.setFlags();
         }
     }
     getByteLength() {
+        if (!hasValidTextLengths(this)) {
+            throw new Error('Credential text exceeds the 512-byte limit');
+        }
         let length = 0;
         length += varint_1.default.encodingLength(this.version);
         length += varint_1.default.encodingLength(this.flags);
         length += vdxf_1.HASH160_BYTE_LENGTH; // Credential key
         // Both the credential and scopes are serialized as JSON strings.
         const credStr = JSON.stringify(this.credential);
-        const credentialLength = credStr.length;
+        const credentialLength = Buffer.byteLength(credStr, 'utf8');
         length += varuint_1.default.encodingLength(credentialLength);
         length += credentialLength;
         const scopesStr = JSON.stringify(this.scopes);
-        const scopesLength = scopesStr.length;
+        const scopesLength = Buffer.byteLength(scopesStr, 'utf8');
         length += varuint_1.default.encodingLength(scopesLength);
         length += scopesLength;
         if (this.hasLabel()) {
-            length += varuint_1.default.encodingLength(this.label.length);
-            length += Buffer.from(this.label).length;
+            const labelLength = Buffer.byteLength(this.label, 'utf8');
+            length += varuint_1.default.encodingLength(labelLength);
+            length += labelLength;
         }
         return length;
     }
@@ -90,10 +100,10 @@ class Credential {
     setFlags() {
         this.flags = this.calcFlags();
     }
-    // The credentials is invalid if the version is not within the valid range or the key is null.
+    // The credential is invalid if its version, key, or serialized text lengths are invalid.
     isValid() {
         return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST)
-            && this.credentialKey !== vdxf_1.NULL_ADDRESS;
+            && this.credentialKey !== vdxf_1.NULL_ADDRESS && hasValidTextLengths(this);
     }
     toJson() {
         const ret = {

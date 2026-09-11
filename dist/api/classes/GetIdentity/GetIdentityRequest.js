@@ -16,12 +16,14 @@ class GetIdentityRequest extends ApiRequest_1.ApiRequest {
             this.nameOrAddress,
             this.height,
             this.txproof,
-            this.txproofheight
+            this.txproofheight,
         ];
-        return params.filter((x) => x != null);
+        return (0, ApiRequest_1.positionalParams)(params);
     }
     static fromJson(object) {
-        return new GetIdentityRequest(object.chain, object.nameOrAddress, object.height != null ? object.height : undefined, object.txproof != null ? object.txproof : undefined, object.txproofheight != null ? object.txproofheight : undefined);
+        return new GetIdentityRequest(object.chain, object.nameOrAddress, object.height != null ? object.height : undefined, object.txproof != null ? object.txproof : undefined, object.txproofheight != null
+            ? object.txproofheight
+            : undefined);
     }
     toJson() {
         return {
@@ -29,7 +31,7 @@ class GetIdentityRequest extends ApiRequest_1.ApiRequest {
             nameOrAddress: this.nameOrAddress,
             height: this.height,
             txproof: this.txproof,
-            txproofheight: this.txproofheight
+            txproofheight: this.txproofheight,
         };
     }
 }

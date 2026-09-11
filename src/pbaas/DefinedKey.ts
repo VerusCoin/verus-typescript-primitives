@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils'
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
@@ -10,7 +11,7 @@ import { IdentityID } from './IdentityID';
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export class DefinedKey implements SerializableEntity {
+export class DefinedKey extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   vdxfuri?: string;
@@ -37,6 +38,7 @@ export class DefinedKey implements SerializableEntity {
     combinedHash?: Buffer,
     indexNum?: BigNumber
   }) {
+    super();
     this.flags = DefinedKey.DEFINEDKEY_DEFAULT_FLAGS;
     this.version = DefinedKey.DEFINEDKEY_VERSION_INVALID;
 

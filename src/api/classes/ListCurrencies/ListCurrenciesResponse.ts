@@ -1,9 +1,11 @@
-import { CurrencyDefinition } from "../../../currency/CurrencyDefinition";
+import { CurrencyDefinition, RawCurrencyDefinition } from "../../../currency/CurrencyDefinition";
 import { ApiResponse } from "../../ApiResponse";
 
 export class ListCurrenciesResponse extends ApiResponse {
   result: Array<{
-    currencydefinition: CurrencyDefinition,
+    // listcurrencies puts chain state beside the definition, not inside it.
+    currencydefinition: RawCurrencyDefinition & Pick<CurrencyDefinition,
+      "currencyidhex" | "fullyqualifiedname" | "definitiontxid" | "definitiontxout">;
     bestheight?: number;
     besttxid?: string;
     besttxout?: number;

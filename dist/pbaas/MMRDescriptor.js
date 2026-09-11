@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MMRDescriptor = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
 const bufferutils_1 = require("../utils/bufferutils");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const DataDescriptor_1 = require("./DataDescriptor");
-class MMRDescriptor {
+class MMRDescriptor extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data) {
             if (data.version)
                 this.version = data.version;

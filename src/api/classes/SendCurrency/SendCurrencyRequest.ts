@@ -1,4 +1,4 @@
-import { ApiRequest } from "../../ApiRequest";
+import { ApiRequest, positionalParams } from "../../ApiRequest";
 import { ApiPrimitiveJson, RequestParams } from "../../ApiPrimitive";
 import { SEND_CURRENCY } from "../../../constants/cmds";
 
@@ -18,7 +18,7 @@ type output = {
   burn?: boolean;
   mintnew?: boolean;
   vdxftag?: string;
-}
+};
 
 export class SendCurrencyRequest extends ApiRequest {
   fromaddress: string;
@@ -27,7 +27,14 @@ export class SendCurrencyRequest extends ApiRequest {
   feeamount?: number;
   returntxtemplate?: boolean;
 
-  constructor(chain: string, fromaddress: string, outputs: Array<output>, minconf?: number, feeamount?: number, returntxtemplate?: boolean) {
+  constructor(
+    chain: string,
+    fromaddress: string,
+    outputs: Array<output>,
+    minconf?: number,
+    feeamount?: number,
+    returntxtemplate?: boolean
+  ) {
     super(chain, SEND_CURRENCY);
     this.fromaddress = fromaddress;
     this.outputs = outputs;
@@ -37,26 +44,32 @@ export class SendCurrencyRequest extends ApiRequest {
   }
 
   getParams(): RequestParams {
+    // The daemon parses a present fee slot as an amount and rejects null.
+    const feeamount =
+      this.returntxtemplate != null && this.feeamount == null
+        ? 0
+        : this.feeamount;
     const params = [
       this.fromaddress,
       this.outputs,
       this.minconf,
-      this.feeamount,
-      this.returntxtemplate
+      feeamount,
+      this.returntxtemplate,
     ];
 
-    if (this.returntxtemplate) return params
-    else return params.filter((x) => x != null);
+    return positionalParams(params);
   }
 
   static fromJson(object: ApiPrimitiveJson): SendCurrencyRequest {
     return new SendCurrencyRequest(
       object.chain as string,
       object.fromaddress as string,
-      object.outputs != null ? (object.utxos as Array<output>) : undefined,
+      object.outputs != null ? (object.outputs as Array<output>) : [],
       object.minconf != null ? (object.minconf as number) : undefined,
       object.feeamount != null ? (object.feeamount as number) : undefined,
-      object.returntxtemplate != null ? (object.returntxtemplate as boolean) : undefined,
+      object.returntxtemplate != null
+        ? (object.returntxtemplate as boolean)
+        : undefined
     );
   }
 

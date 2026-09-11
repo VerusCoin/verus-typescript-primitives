@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 export declare class MMRLayer<NODE_TYPE> {
     private vSize;
     private nodes;
@@ -31,7 +32,7 @@ export declare class MerkleMountainRange {
     height(): number;
     getNode(Height: any, Index: any): MMRNode;
 }
-export declare class MMRBranch {
+export declare class MMRBranch extends SerializableEntityBase {
     branchType?: number;
     nIndex?: number;
     nSize?: number;
@@ -43,7 +44,7 @@ export declare class MMRBranch {
     digest(input: any): any;
     safeCheck(hash: Buffer): Buffer<ArrayBufferLike>;
 }
-export declare class MMRProof {
+export declare class MMRProof extends SerializableEntityBase {
     proofSequence: Array<MMRBranch>;
     setProof(proof: MMRBranch): void;
     dataByteLength(): number;

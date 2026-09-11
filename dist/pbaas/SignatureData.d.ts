@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { EHashTypes } from './DataDescriptor';
@@ -13,7 +14,7 @@ export interface SignatureJsonDataInterface {
     boundhashes?: Array<string>;
     signature: string;
 }
-export declare class SignatureData implements SerializableEntity {
+export declare class SignatureData extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     systemID: string;
     hashType: BigNumber;

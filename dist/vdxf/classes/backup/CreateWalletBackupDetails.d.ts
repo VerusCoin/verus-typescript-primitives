@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 export interface CreateWalletBackupDetailsInterface {
@@ -6,7 +7,7 @@ export interface CreateWalletBackupDetailsInterface {
 export interface CreateWalletBackupDetailsJson {
     backuptype: number;
 }
-export declare class CreateWalletBackupDetails implements SerializableEntity {
+export declare class CreateWalletBackupDetails extends SerializableEntityBase implements SerializableEntity {
     backupType: BigNumber;
     static NFC_NDEF_BACKUP: import("bn.js");
     static DEFAULT_BACKUP_TYPE: import("bn.js");

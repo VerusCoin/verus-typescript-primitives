@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Principal = exports.PRINCIPAL_VERSION_CURRENT = exports.PRINCIPAL_VERSION_INVALID = exports.PRINCIPAL_DEFAULT_FLAGS = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../utils/varuint");
@@ -10,8 +11,9 @@ exports.PRINCIPAL_DEFAULT_FLAGS = new bn_js_1.BN(0, 10);
 exports.PRINCIPAL_VERSION_INVALID = new bn_js_1.BN(0, 10);
 exports.PRINCIPAL_VERSION_CURRENT = new bn_js_1.BN(1, 10);
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class Principal {
+class Principal extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = exports.PRINCIPAL_DEFAULT_FLAGS;
         this.version = exports.PRINCIPAL_VERSION_INVALID;
         if (data != null) {

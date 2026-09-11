@@ -8,6 +8,7 @@ export declare function bnToDecimal(value: BigNumber): string;
 /**
  * Converts a decimal number (string or number) to a BN instance representing the integer value (multiplied by 1e8)
  * Uses string manipulation to avoid floating point errors.
+ * Limits the scaled magnitude to 10^18 - 1, matching the daemon's ParseFixedPoint.
  * @param value number or string representing a number with up to 8 decimal places (e.g., "1000000000.11111111" or 1000000000.11111111)
  * @returns BN instance
  */

@@ -1,5 +1,6 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
-export declare class SaplingPaymentAddress implements SerializableEntity {
+export declare class SaplingPaymentAddress extends SerializableEntityBase implements SerializableEntity {
     d: Buffer;
     pkD: Buffer;
     constructor(data?: {

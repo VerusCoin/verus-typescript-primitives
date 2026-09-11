@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.URLRef = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class URLRef {
+class URLRef extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             if (Object.prototype.hasOwnProperty.call(data, 'data_hash')) {
                 throw new Error("URLRef: snake_case property names are no longer supported. Use 'dataHash' instead of 'data_hash'.");

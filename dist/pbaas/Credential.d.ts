@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from "../utils/types/BigNumber";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
 export type CredentialJson = {
@@ -8,7 +9,7 @@ export type CredentialJson = {
     scopes?: Object;
     label?: string;
 };
-export declare class Credential implements SerializableEntity {
+export declare class Credential extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static VERSION_FIRST: import("bn.js");
     static VERSION_LAST: import("bn.js");

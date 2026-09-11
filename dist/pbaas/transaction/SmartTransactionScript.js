@@ -23,8 +23,17 @@ class SmartTransactionScript extends VerusScript_1.VerusScript {
     }
     fromBuffer(buffer, offset, length) {
         const _offset = super.fromBuffer(buffer, offset, length);
-        this.master = OptCCParams_1.OptCCParams.fromChunk(this.chunks[0]);
-        this.params = OptCCParams_1.OptCCParams.fromChunk(this.chunks[2]);
+        if (this.chunks.length !== 4 ||
+            !Buffer.isBuffer(this.chunks[0]) ||
+            this.chunks[1] !== ops_1.OPS.OP_CHECKCRYPTOCONDITION ||
+            !Buffer.isBuffer(this.chunks[2]) ||
+            this.chunks[3] !== ops_1.OPS.OP_DROP) {
+            throw new Error('invalid smart transaction script template');
+        }
+        const master = OptCCParams_1.OptCCParams.fromChunk(this.chunks[0]);
+        const params = OptCCParams_1.OptCCParams.fromChunk(this.chunks[2]);
+        this.master = master;
+        this.params = params;
         return _offset;
     }
     toBuffer() {

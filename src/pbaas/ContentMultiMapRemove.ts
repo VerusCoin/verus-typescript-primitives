@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -15,7 +16,7 @@ export interface ContentMultiMapRemoveJson {
   valuehash?: string;
 }
 
-export class ContentMultiMapRemove implements SerializableEntity {
+export class ContentMultiMapRemove extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   action: BigNumber;
   entryKey?: string;
@@ -33,6 +34,7 @@ export class ContentMultiMapRemove implements SerializableEntity {
   static ACTION_LAST = new BN(4);
 
   constructor(data?: { version?: BigNumber, action?: BigNumber, entryKey?: string, valueHash?: Buffer }) {
+    super();
     this.version = data?.version || new BN(1, 10);
     this.action = data?.action || new BN(0, 10);
     this.entryKey = data?.entryKey || undefined;

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils'
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
@@ -13,7 +14,7 @@ export const PRINCIPAL_VERSION_CURRENT = new BN(1, 10)
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export class Principal implements SerializableEntity {
+export class Principal extends SerializableEntityBase implements SerializableEntity {
   flags: BigNumber;
   version: BigNumber;
   minSigs?: BigNumber;
@@ -25,6 +26,7 @@ export class Principal implements SerializableEntity {
     minSigs?: BigNumber,
     primaryAddresses?: Array<KeyID>;
   }) {
+    super();
     this.flags = PRINCIPAL_DEFAULT_FLAGS;
     this.version = PRINCIPAL_VERSION_INVALID;
 

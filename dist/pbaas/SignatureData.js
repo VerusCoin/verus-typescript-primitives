@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SignatureData = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
 const address_1 = require("../utils/address");
@@ -11,8 +12,9 @@ const DataDescriptor_1 = require("./DataDescriptor");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const createHash = require("create-hash");
 const vdxf_2 = require("../constants/vdxf");
-class SignatureData {
+class SignatureData extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             const d = data;
             const deprecated = ['system_ID', 'hash_type', 'signature_hash', 'identity_ID', 'sig_type', 'vdxf_keys', 'vdxf_key_names', 'bound_hashes', 'signature_as_vch'].filter(k => Object.prototype.hasOwnProperty.call(d, k));
@@ -227,7 +229,40 @@ class SignatureData {
                 .digest();
         }
         else {
+            const vdxfKeyBuffers = (this.vdxfKeys || [])
+                .map(key => (0, address_1.fromBase58Check)(key).hash)
+                .sort(Buffer.compare);
+            const vdxfKeyNameBuffers = (this.vdxfKeyNames || [])
+                .map(name => Buffer.from(name, 'utf8'))
+                .sort(Buffer.compare);
+            const boundHashBuffers = [...(this.boundHashes || [])].sort(Buffer.compare);
+            let extraDataLength = 0;
+            if (vdxfKeyBuffers.length > 0) {
+                extraDataLength += varuint_1.default.encodingLength(vdxfKeyBuffers.length);
+                extraDataLength += vdxfKeyBuffers.length * vdxf_1.HASH160_BYTE_LENGTH;
+            }
+            if (vdxfKeyNameBuffers.length > 0) {
+                extraDataLength += varuint_1.default.encodingLength(vdxfKeyNameBuffers.length);
+                for (const name of vdxfKeyNameBuffers) {
+                    extraDataLength += varuint_1.default.encodingLength(name.length) + name.length;
+                }
+            }
+            if (boundHashBuffers.length > 0) {
+                extraDataLength += varuint_1.default.encodingLength(boundHashBuffers.length);
+                extraDataLength += boundHashBuffers.length * vdxf_1.HASH256_BYTE_LENGTH;
+            }
+            const extraDataWriter = new BufferWriter(Buffer.alloc(extraDataLength));
+            if (vdxfKeyBuffers.length > 0) {
+                extraDataWriter.writeArray(vdxfKeyBuffers);
+            }
+            if (vdxfKeyNameBuffers.length > 0) {
+                extraDataWriter.writeVector(vdxfKeyNameBuffers);
+            }
+            if (boundHashBuffers.length > 0) {
+                extraDataWriter.writeArray(boundHashBuffers);
+            }
             return createHash("sha256")
+                .update(extraDataWriter.buffer)
                 .update((0, address_1.fromBase58Check)(this.systemID).hash)
                 .update(heightBuffer)
                 .update((0, address_1.fromBase58Check)(this.identityID).hash)

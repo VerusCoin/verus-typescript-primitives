@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateWalletBackupDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const varuint_1 = require("../../../utils/varuint");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class CreateWalletBackupDetails {
+class CreateWalletBackupDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.backupType = (data === null || data === void 0 ? void 0 : data.backupType) || CreateWalletBackupDetails.DEFAULT_BACKUP_TYPE;
     }
     isValid() {

@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentMultiMapRemove = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const address_1 = require("../utils/address");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class ContentMultiMapRemove {
+class ContentMultiMapRemove extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(1, 10);
         this.action = (data === null || data === void 0 ? void 0 : data.action) || new bn_js_1.BN(0, 10);
         this.entryKey = (data === null || data === void 0 ? void 0 : data.entryKey) || undefined;

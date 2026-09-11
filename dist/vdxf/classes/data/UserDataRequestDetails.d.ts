@@ -20,6 +20,7 @@
  * Flags are reserved for optional fields only (signer, requested keys, request ID).
  */
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from '../CompactAddressObject';
 export interface UserDataRequestInterface {
@@ -28,7 +29,7 @@ export interface UserDataRequestInterface {
     dataType: BigNumber;
     requestType: BigNumber;
     searchDataKeyHashType?: BigNumber;
-    searchDataKey: Array<{
+    searchDataKey?: Array<{
         [key: string]: Buffer;
     }>;
     signer?: CompactIAddressObject;
@@ -41,14 +42,14 @@ export interface UserDataRequestJson {
     datatype: number;
     requesttype: number;
     searchdatakeyhashtype?: number;
-    searchdatakey: Array<{
-        [key: string]: Buffer;
+    searchdatakey?: Array<{
+        [key: string]: string;
     }>;
     signer?: CompactAddressObjectJson;
     requestedkeys?: string[];
     requestid?: CompactAddressObjectJson;
 }
-export declare class UserDataRequestDetails implements SerializableEntity {
+export declare class UserDataRequestDetails extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");

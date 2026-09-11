@@ -1,7 +1,8 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { IdentityID } from './IdentityID';
-export declare class DefinedKey implements SerializableEntity {
+export declare class DefinedKey extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     vdxfuri?: string;

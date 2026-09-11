@@ -3,9 +3,9 @@ import { RequestParams, ApiPrimitiveJson } from "../../ApiPrimitive";
 import { GET_VDXF_ID } from "../../../constants/cmds";
 
 type InitialVdxfData = {
-  vdxfkey: string,
-  uint256: string,
-  indexnum: string
+  vdxfkey?: string,
+  uint256?: string,
+  indexnum?: string | number
 }
 
 export class GetVdxfIdRequest extends ApiRequest {

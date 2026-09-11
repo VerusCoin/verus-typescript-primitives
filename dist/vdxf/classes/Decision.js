@@ -4,7 +4,6 @@ exports.Decision = void 0;
 const __1 = require("..");
 const bufferutils_1 = require("../../utils/bufferutils");
 const varuint_1 = require("../../utils/varuint");
-const Challenge_1 = require("./Challenge");
 const Context_1 = require("./Context");
 const Hash160_1 = require("./Hash160");
 const Request_1 = require("./Request");
@@ -22,8 +21,15 @@ class Decision extends __1.VDXFObject {
         this.attestations = decision.attestations;
         this.salt = decision.salt;
         this.skipped = decision.skipped ? true : false;
+        this.validateSupportedFields();
+    }
+    validateSupportedFields() {
+        if (this.attestations && this.attestations.length > 0) {
+            throw new Error("Decision attestations currently unsupported");
+        }
     }
     dataByteLength() {
+        this.validateSupportedFields();
         let length = 0;
         const _challenge_id = Hash160_1.Hash160.fromAddress(this.decision_id, true);
         const _salt = this.salt
@@ -83,10 +89,8 @@ class Decision extends __1.VDXFObject {
                 this.skipped = reader.readUInt8() === 1 ? true : false;
                 this.attestations = [];
                 const attestationsLength = reader.readCompactSize();
-                for (let i = 0; i < attestationsLength; i++) {
-                    const _att = new Challenge_1.Attestation();
-                    reader.offset = _att.fromBuffer(reader.buffer, reader.offset);
-                    this.attestations.push(_att);
+                if (attestationsLength > 0) {
+                    throw new Error("Decision attestations currently unsupported");
                 }
             }
             const _context = new Context_1.Context();
@@ -101,11 +105,14 @@ class Decision extends __1.VDXFObject {
         return reader.offset;
     }
     toJson() {
+        this.validateSupportedFields();
         return {
             vdxfkey: this.vdxfkey,
             decision_id: this.decision_id,
             context: this.context.toJson(),
             created_at: this.created_at,
+            salt: this.salt,
+            skipped: this.skipped,
             request: this.request.toJson(),
         };
     }

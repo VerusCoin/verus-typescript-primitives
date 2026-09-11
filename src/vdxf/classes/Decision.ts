@@ -55,9 +55,17 @@ export class Decision extends VDXFObject {
     this.attestations = decision.attestations;
     this.salt = decision.salt;
     this.skipped = decision.skipped ? true : false;
+    this.validateSupportedFields();
+  }
+
+  protected validateSupportedFields(): void {
+    if (this.attestations && this.attestations.length > 0) {
+      throw new Error("Decision attestations currently unsupported");
+    }
   }
 
   dataByteLength(): number {
+    this.validateSupportedFields();
     let length = 0;
 
     const _challenge_id = Hash160.fromAddress(this.decision_id, true);
@@ -150,10 +158,8 @@ export class Decision extends VDXFObject {
         this.attestations = [];
         const attestationsLength = reader.readCompactSize();
   
-        for (let i = 0; i < attestationsLength; i++) {
-          const _att = new Attestation();
-          reader.offset = _att.fromBuffer(reader.buffer, reader.offset);
-          this.attestations.push(_att);
+        if (attestationsLength > 0) {
+          throw new Error("Decision attestations currently unsupported");
         }
       }
 
@@ -171,12 +177,23 @@ export class Decision extends VDXFObject {
     return reader.offset;
   }
 
-  toJson() {
+  toJson(): {
+    vdxfkey: string;
+    decision_id: string;
+    context: ReturnType<Context["toJson"]>;
+    created_at: number;
+    salt?: string;
+    skipped?: boolean;
+    request: ReturnType<Request["toJson"]>;
+  } {
+    this.validateSupportedFields();
     return {
       vdxfkey: this.vdxfkey,
       decision_id: this.decision_id,
       context: this.context.toJson(),
       created_at: this.created_at,
+      salt: this.salt,
+      skipped: this.skipped,
       request: this.request.toJson(),
     };
   }

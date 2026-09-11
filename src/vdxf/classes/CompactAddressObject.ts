@@ -8,6 +8,7 @@
  */
 
 import { BN } from 'bn.js';
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import bufferutils from '../../utils/bufferutils';
 import { BigNumber } from '../../utils/types/BigNumber';
 const { BufferReader, BufferWriter } = bufferutils;
@@ -43,7 +44,7 @@ export type CompactAddressVariantAllowedType<T extends CompactAddressVariantName
   T extends CompactAddressXVariant ? `${1 | 3}` :
   never;
 
-export class CompactAddressObject<V extends CompactAddressVariantName = CompactAddressIVariant> implements SerializableEntity {
+export class CompactAddressObject<V extends CompactAddressVariantName = CompactAddressIVariant> extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -60,6 +61,7 @@ export class CompactAddressObject<V extends CompactAddressVariantName = CompactA
   nameSpace: string;
 
   constructor(data?: CompactAddressObjectInterface) {
+    super();
     this.version = data?.version || new BN(CompactAddressObject.DEFAULT_VERSION);
     this.type = (data?.type.toString() as CompactAddressVariantAllowedType<V>) || ("1" as CompactAddressVariantAllowedType<V>);
     this.address = data?.address || '';

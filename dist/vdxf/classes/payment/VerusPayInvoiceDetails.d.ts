@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { TransferDestination, TransferDestinationJson } from '../../../pbaas/TransferDestination';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
@@ -26,7 +27,7 @@ export type VerusPayInvoiceDetailsJson = {
     acceptedsystems?: Array<string>;
     tag?: CompactAddressObjectJson;
 };
-export declare class VerusPayInvoiceDetails implements SerializableEntity {
+export declare class VerusPayInvoiceDetails extends SerializableEntityBase implements SerializableEntity {
     verusPayVersion: BigNumber;
     flags: BigNumber;
     amount: BigNumber;

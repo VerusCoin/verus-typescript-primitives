@@ -42,9 +42,13 @@ class ProvisioningChallenge extends Challenge_1.Challenge {
         return writer.buffer;
     }
     fromDataBuffer(buffer, offset) {
+        const frameReader = new bufferutils_1.default.BufferReader(buffer, offset);
+        frameReader.readVarSlice();
+        const bodyEnd = frameReader.offset;
+        const boundedBuffer = buffer.subarray(0, bodyEnd);
         const challenge = new Challenge_1.Challenge(undefined, keys_1.LOGIN_CONSENT_PROVISIONING_CHALLENGE_VDXF_KEY.vdxfid);
-        let _offset = challenge.fromDataBuffer(buffer, offset);
-        const reader = new bufferutils_1.default.BufferReader(buffer, _offset);
+        let _offset = challenge.fromDataBuffer(boundedBuffer, offset);
+        const reader = new bufferutils_1.default.BufferReader(boundedBuffer, _offset);
         this.name = reader.readVarSlice().toString('utf-8');
         const _system_id = new Hash160_1.Hash160();
         reader.offset = _system_id.fromBuffer(reader.buffer, true, reader.offset);
@@ -56,10 +60,13 @@ class ProvisioningChallenge extends Challenge_1.Challenge {
         this.created_at = challenge.created_at;
         this.salt = challenge.salt;
         this.context = challenge.context;
+        if (reader.offset !== bodyEnd)
+            throw new Error("Provisioning challenge body length mismatch");
         return reader.offset;
     }
     // toJson
     toJson() {
+        this.validateSupportedFields();
         return {
             vdxfkey: this.vdxfkey,
             challenge_id: this.challenge_id,

@@ -22,6 +22,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDataRequestDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -30,8 +31,9 @@ const CompactAddressObject_1 = require("../CompactAddressObject");
 const address_1 = require("../../../utils/address");
 const vdxf_1 = require("../../../constants/vdxf");
 const pbaas_1 = require("../../../constants/pbaas");
-class UserDataRequestDetails {
+class UserDataRequestDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || UserDataRequestDetails.DEFAULT_VERSION;
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0);
         this.dataType = (data === null || data === void 0 ? void 0 : data.dataType) || UserDataRequestDetails.FULL_DATA;
@@ -205,7 +207,13 @@ class UserDataRequestDetails {
             datatype: this.dataType.toNumber(),
             requesttype: this.requestType.toNumber(),
             searchdatakeyhashtype: this.searchDataKeyHashType.toNumber(),
-            searchdatakey: this.searchDataKey,
+            searchdatakey: this.searchDataKey ? this.searchDataKey.map(x => {
+                const obj = {};
+                for (const key in x) {
+                    obj[key] = x[key].toString('hex');
+                }
+                return obj;
+            }) : undefined,
             signer: (_a = this.signer) === null || _a === void 0 ? void 0 : _a.toJson(),
             requestedkeys: this.requestedKeys,
             requestid: (_b = this.requestID) === null || _b === void 0 ? void 0 : _b.toJson(),
@@ -218,7 +226,13 @@ class UserDataRequestDetails {
         requestData.dataType = new bn_js_1.BN(json.datatype);
         requestData.requestType = new bn_js_1.BN(json.requesttype);
         requestData.searchDataKeyHashType = json.searchdatakeyhashtype == null ? pbaas_1.DEFAULT_HASH_TYPE : new bn_js_1.BN(json.searchdatakeyhashtype);
-        requestData.searchDataKey = json.searchdatakey;
+        requestData.searchDataKey = json.searchdatakey ? json.searchdatakey.map(x => {
+            const obj = {};
+            for (const key in x) {
+                obj[key] = Buffer.from(x[key], 'hex');
+            }
+            return obj;
+        }) : [];
         requestData.signer = json.signer ? CompactAddressObject_1.CompactIAddressObject.fromCompactAddressObjectJson(json.signer) : undefined;
         requestData.requestedKeys = json.requestedkeys;
         requestData.requestID = json.requestid ? CompactAddressObject_1.CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;

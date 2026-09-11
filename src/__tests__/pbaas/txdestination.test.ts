@@ -49,6 +49,23 @@ describe('Serializes and deserializes TxDestination variants', () => {
     expect(keyFromBuf.toBuffer().toString('hex')).toBe(key.toBuffer().toString('hex'));
   });
 
+  test('decodes compressed public-key destinations without changing their bytes', () => {
+    const pubkey = Buffer.from('0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798', 'hex');
+    const wire = Buffer.concat([Buffer.from([33]), pubkey]);
+    const destination = new TxDestination();
+
+    expect(destination.fromBuffer(wire)).toBe(wire.length);
+    expect(destination.type.eq(TxDestination.TYPE_PK)).toBe(true);
+    expect(destination.data).toBeInstanceOf(PubKey);
+    expect(destination.data.toBuffer()).toEqual(pubkey);
+    expect(destination.toBuffer()).toEqual(wire);
+    expect(() => destination.toAddress()).toThrow("Can't get address for TxDestination type 1");
+
+    const fromChunk = TxDestination.fromChunk(pubkey);
+    expect(fromChunk.data).toBeInstanceOf(PubKey);
+    expect(fromChunk.toChunk()).toEqual(pubkey);
+  });
+
   test('(de)serialize a basic TxDestination class with type PKH', () => {
     const addr = "RQVsJRf98iq8YmRQdehzRcbLGHEx6YfjdH";
 

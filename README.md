@@ -36,6 +36,10 @@ npm install verus-typescript-primitives
 
 Below are some examples of how to use the library.
 
+Buffer parsing is single-use per instance: `fromBuffer`, `fromDataBuffer`, and `fromBufferOptionalType` share one attempt, including failed attempts. Create a fresh parser for each buffer. Superclass calls and internal payload parsing belong to the same attempt. The guard does not reset existing object state.
+
+Subclasses inherit `SerializableEntityBase` and may set `this.allowRepeatedFromBuffer = true` in their constructor if they handle repeated parsing safely. Implement parser overrides as prototype methods; assigning a replacement parser function on an instance replaces its guard.
+
 ### Creating a VerusPay Invoice
 
 You can easily create a VerusPay invoice, which can then be converted into a QR code string or a wallet deeplink.

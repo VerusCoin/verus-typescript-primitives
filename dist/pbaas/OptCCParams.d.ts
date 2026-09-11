@@ -1,8 +1,9 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { TxDestination } from './TxDestination';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { BigNumber } from '../utils/types/BigNumber';
 export type VData = Array<Buffer>;
-export declare class OptCCParams implements SerializableEntity {
+export declare class OptCCParams extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     evalCode: BigNumber;
     m: BigNumber;

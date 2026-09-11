@@ -5,6 +5,8 @@ exports.reverseBuffer = exports.writeUInt64LE = exports.readUInt64LE = void 0;
 const varuint_1 = require("./varuint");
 const varint_1 = require("./varint");
 const bn_js_1 = require("bn.js");
+const INT64_MIN = new bn_js_1.BN("-9223372036854775808", 10);
+const INT64_MAX = new bn_js_1.BN("9223372036854775807", 10);
 // https://github.com/feross/buffer/blob/master/index.js#L1127
 function verifuint(value, max) {
     if (typeof value !== "number")
@@ -69,7 +71,10 @@ class BufferWriter {
         this.offset = (0, exports.writeUInt64LE)(this.buffer, i, this.offset);
     }
     writeInt64(i) {
-        const slice = i.toBuffer('le', 8);
+        if (i.lt(INT64_MIN) || i.gt(INT64_MAX)) {
+            throw new RangeError("Value is outside the signed int64 range");
+        }
+        const slice = i.toTwos(64).toBuffer('le', 8);
         this.writeSlice(slice);
     }
     writeCompactSize(i) {
@@ -133,10 +138,11 @@ class BufferReader {
         return result;
     }
     readInt64() {
-        return new bn_js_1.BN(this.readSlice(8), 16, 'le');
+        return new bn_js_1.BN(this.readSlice(8), 16, 'le').fromTwos(64);
     }
-    readCompactSize() {
-        const vi = varuint_1.default.decode(this.buffer, this.offset);
+    // Only scalar fields may disable the size limit; lengths and counts must keep it.
+    readCompactSize(rangeCheck = true) {
+        const vi = varuint_1.default.decode(this.buffer, this.offset, rangeCheck);
         this.offset += vi.bytes;
         return vi.decoded;
     }

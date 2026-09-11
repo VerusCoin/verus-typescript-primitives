@@ -85,6 +85,7 @@ export class ProvisioningDecision
   }
 
   toJson() {
+    this.validateSupportedFields();
     return {
       vdxfkey: this.vdxfkey,
       decision_id: this.decision_id,

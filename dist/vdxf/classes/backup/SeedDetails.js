@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeedDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const varuint_1 = require("../../../utils/varuint");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class SeedDetails {
+class SeedDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0, 10);
         this.seedFormat = (data === null || data === void 0 ? void 0 : data.seedFormat) || SeedDetails.DEFAULT_SEED_FORMAT;
         this.encryptionFormat = (data === null || data === void 0 ? void 0 : data.encryptionFormat) || SeedDetails.DEFAULT_ENCRYPTION_FORMAT;
@@ -72,7 +74,7 @@ class SeedDetails {
         this.flags = new bn_js_1.BN(reader.readCompactSize(), 10);
         this.seedFormat = new bn_js_1.BN(reader.readCompactSize(), 10);
         this.encryptionFormat = new bn_js_1.BN(reader.readCompactSize(), 10);
-        this.KDFIters = this.containsKDFIters() ? new bn_js_1.BN(reader.readCompactSize(), 10) : new bn_js_1.BN(0, 10);
+        this.KDFIters = this.containsKDFIters() ? new bn_js_1.BN(reader.readCompactSize(false), 10) : new bn_js_1.BN(0, 10);
         this.data = reader.readVarSlice();
         return reader.offset;
     }

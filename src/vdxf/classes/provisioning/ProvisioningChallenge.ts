@@ -88,9 +88,13 @@ export class ProvisioningChallenge extends Challenge {
   }
 
   fromDataBuffer(buffer: Buffer, offset?: number): number {
+    const frameReader = new bufferutils.BufferReader(buffer, offset);
+    frameReader.readVarSlice();
+    const bodyEnd = frameReader.offset;
+    const boundedBuffer = buffer.subarray(0, bodyEnd);
     const challenge = new Challenge(undefined, LOGIN_CONSENT_PROVISIONING_CHALLENGE_VDXF_KEY.vdxfid)
-    let _offset = challenge.fromDataBuffer(buffer, offset);
-    const reader = new bufferutils.BufferReader(buffer, _offset)
+    let _offset = challenge.fromDataBuffer(boundedBuffer, offset);
+    const reader = new bufferutils.BufferReader(boundedBuffer, _offset)
 
     this.name = reader.readVarSlice().toString('utf-8')
 
@@ -115,11 +119,13 @@ export class ProvisioningChallenge extends Challenge {
     this.salt = challenge.salt
     this.context = challenge.context
 
+    if (reader.offset !== bodyEnd) throw new Error("Provisioning challenge body length mismatch");
     return reader.offset
   }
 
   // toJson
   toJson() {
+    this.validateSupportedFields();
     return {
       vdxfkey: this.vdxfkey,
       challenge_id: this.challenge_id,

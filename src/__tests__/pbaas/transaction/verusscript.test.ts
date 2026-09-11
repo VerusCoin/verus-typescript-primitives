@@ -19,3 +19,32 @@ describe('Serializes and deserializes VerusScripts', () => {
     expect(script.toBuffer().toString('hex')).toBe(scriptString);
   });
 });
+
+describe('VerusScript push boundaries', () => {
+  test.each([
+    ['direct push with a missing payload byte', '0201'],
+    ['PUSHDATA1 with a missing length', '4c'],
+    ['PUSHDATA1 with a missing payload byte', '4c0201'],
+    ['PUSHDATA2 with a truncated length', '4d01'],
+    ['PUSHDATA2 with a missing payload byte', '4d020001'],
+    ['PUSHDATA4 with a truncated length', '4e010000'],
+    ['PUSHDATA4 with a missing payload byte', '4e0200000001'],
+  ])('rejects %s instead of returning an empty script', (_name, hex) => {
+    expect(() => new VerusScript().fromBuffer(Buffer.from(hex, 'hex'))).toThrow();
+  });
+
+  test.each([
+    ['', ''],
+    ['51', '51'],
+    ['020102', '020102'],
+    ['4c0101', '51'],
+    ['4d010001', '51'],
+    ['4e0100000001', '51'],
+  ])('accepts complete script %s and serializes it as %s', (input, output) => {
+    const wire = Buffer.from(input, 'hex');
+    const script = new VerusScript();
+
+    expect(script.fromBuffer(wire)).toBe(wire.length);
+    expect(script.toBuffer().toString('hex')).toBe(output);
+  });
+});

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { DataDescriptor, DataDescriptorJson } from './DataDescriptor';
 import { EHashTypes } from './DataDescriptor';
@@ -10,7 +11,7 @@ export interface MMRDescriptorJson {
     mmrhashes?: DataDescriptorJson;
     datadescriptors?: DataDescriptorJson[];
 }
-export declare class MMRDescriptor implements SerializableEntity {
+export declare class MMRDescriptor extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { VDXFKeyInterface } from './keys';
 import { BigNumber } from "../utils/types/BigNumber";
 export * from './keys';
@@ -27,7 +28,7 @@ export type VerusIDSignatureJson = {
     vdxfkey: string;
     serializekey: boolean;
 };
-export declare class VDXFObject implements VDXFObjectInterface {
+export declare class VDXFObject extends SerializableEntityBase implements VDXFObjectInterface {
     vdxfkey: string;
     version: BigNumber;
     serializekey: boolean;

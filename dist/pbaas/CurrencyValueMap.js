@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CurrencyValueMap = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
 const address_1 = require("../utils/address");
@@ -9,8 +10,9 @@ const bn_js_1 = require("bn.js");
 const vdxf_1 = require("../constants/vdxf");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const numberConversion_1 = require("../utils/numberConversion");
-class CurrencyValueMap {
+class CurrencyValueMap extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data = {}) {
+        super();
         if (data != null) {
             if (Object.prototype.hasOwnProperty.call(data, 'value_map')) {
                 throw new Error("CurrencyValueMap: snake_case property names are no longer supported. Use 'valueMap' instead of 'value_map'.");

@@ -14,7 +14,8 @@ class GetRawTransactionRequest extends ApiRequest_1.ApiRequest {
         return params.filter((x) => x != null);
     }
     static fromJson(object) {
-        return new GetRawTransactionRequest(object.chain, object.txid, object.verbose != null ? object.verbose : undefined);
+        var _a, _b;
+        return new GetRawTransactionRequest(object.chain, object.txid, ((_b = (_a = object.verbosity) !== null && _a !== void 0 ? _a : object.verbose) !== null && _b !== void 0 ? _b : undefined));
     }
     toJson() {
         return {

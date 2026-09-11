@@ -1,3 +1,17 @@
+import { RawTransaction } from "../transaction/RawTransaction";
+
+// getblock verbosity 2 uses TxToJSON without raw hex or per-transaction block metadata.
+export type BlockTransaction = Pick<RawTransaction,
+  "txid" | "overwintered" | "version" | "locktime" | "vin" | "vout" | "vjoinsplit"> & {
+  versiongroupid?: string;
+  expiryheight?: number;
+  valueBalance?: number;
+  valueBalanceZat?: number;
+  vShieldedSpend?: RawTransaction["vShieldedSpend"];
+  vShieldedOutput?: RawTransaction["vShieldedOutput"];
+  bindingSig?: string;
+};
+
 export interface BlockInfo {
   hash: string;
   validationtype: string;
@@ -8,7 +22,7 @@ export interface BlockInfo {
   merkleroot: string;
   segid: number;
   finalsaplingroot: string;
-  tx: Array<string>;
+  tx: Array<string> | Array<BlockTransaction>;
   time: number;
   nonce: string;
   solution: string;
@@ -21,13 +35,13 @@ export interface BlockInfo {
   valuePools: Array<{
     id: string;
     monitored: boolean;
-    chainValue: number;
-    chainValueZat: number;
-    valueDelta: number;
-    valueDeltaZat: number;
+    chainValue?: number;
+    chainValueZat?: number;
+    valueDelta?: number;
+    valueDeltaZat?: number;
   }>;
-  previousblockhash: string;
-  nextblockhash: string;
+  previousblockhash?: string;
+  nextblockhash?: string;
   proofroot: {
     version: number;
     type: number;

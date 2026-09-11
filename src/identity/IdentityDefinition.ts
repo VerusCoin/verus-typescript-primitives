@@ -1,5 +1,6 @@
 export type IdentityDefinitionContentMultiMapPrimitive = number | string;
-export type IdentityDefinitionContentMultiMapValue = { [key: string]: IdentityDefinitionContentMultiMapPrimitive | IdentityDefinitionContentMultiMapValue };
+export type IdentityDefinitionContentMultiMapEntry = IdentityDefinitionContentMultiMapPrimitive | IdentityDefinitionContentMultiMapValue | Array<IdentityDefinitionContentMultiMapEntry>;
+export type IdentityDefinitionContentMultiMapValue = { [key: string]: IdentityDefinitionContentMultiMapEntry };
 
 export interface IdentityDefinition {
   version?: number;

@@ -4,7 +4,7 @@ export type DataDescriptorInfo = {
   flags?: number,
   objectdata?: string,
   label?: string,
-  mimeType?: string,
+  mimetype?: string,
   salt?: string,
   epk?: string,
   ivk?: string,

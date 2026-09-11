@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import * as bscript from '../utils/script';
 import { EVALS } from '../utils/evals';
 import varuint from '../utils/varuint';
@@ -6,10 +7,21 @@ import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
 import bufferutils from '../utils/bufferutils';
+import { OPS } from '../utils/ops';
 
 export type VData = Array<Buffer>;
 
-export class OptCCParams implements SerializableEntity {
+function chunkToData(chunk: bscript.ScriptChunk): Buffer {
+  if (Buffer.isBuffer(chunk)) return chunk;
+  if (chunk === OPS.OP_0) return Buffer.from([0]);
+  if (chunk >= OPS.OP_1 && chunk <= OPS.OP_16) {
+    return Buffer.from([chunk - OPS.OP_1 + 1]);
+  }
+
+  throw new Error('invalid opcode in optional parameters');
+}
+
+export class OptCCParams extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   evalCode: BigNumber;
   m: BigNumber;
@@ -25,6 +37,7 @@ export class OptCCParams implements SerializableEntity {
     destinations?: Array<TxDestination>;
     vData?: VData;
   }) {
+    super();
     if (data != null) {
       const d = data as any;
       if (Object.prototype.hasOwnProperty.call(d, 'eval_code')) {
@@ -172,6 +185,7 @@ export class OptCCParams implements SerializableEntity {
         this.version.gt(new BN(3)) ||
         this.evalCode.lt(new BN(0)) ||
         this.evalCode.gt(new BN(0x1a)) || // this is the last valid eval code as of version 3
+        this.m.gt(this.n) ||
         (this.version.lt(new BN(3)) && this.n.lt(new BN(1))) ||
         this.n.gt(new BN(4)) ||
         (this.version.lt(new BN(3)) && this.n.gte(new BN(chunks.length))) ||
@@ -183,24 +197,21 @@ export class OptCCParams implements SerializableEntity {
     // now, we have chunks left that are either destinations or data vectors
     const limit = this.n.eq(new BN(chunks.length)) ? this.n : this.n.add(new BN(1));
     this.destinations = [];
+    this.vData = [];
     let loop: number;
 
     for (loop = 1; this.version && loop < limit.toNumber(); loop++) {
-      const currChunk = chunks[loop]
-      if (Buffer.isBuffer(currChunk)) {
-        const oneDest = TxDestination.fromChunk(currChunk);
+      const currChunk = chunkToData(chunks[loop]);
+      const oneDest = TxDestination.fromChunk(currChunk);
 
-        this.destinations.push(oneDest);
-      }
+      this.destinations.push(oneDest);
     }
 
     for (; this.version && loop < chunks.length; loop++) {
-      const currChunk = chunks[loop];
-
-      if (Buffer.isBuffer(currChunk)) this.vData.push(currChunk);
+      this.vData.push(chunkToData(chunks[loop]));
     }
 
-    return offset;
+    return reader.offset;
   }
 
   internalGetByteLength(asChunk: boolean): number {

@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
 import { IdentityID } from './IdentityID';
@@ -18,7 +19,7 @@ export interface TxDestinationVariantInterface {
 // Add support for CNoDestination, CPubKey, CScriptID, CIndexID, CQuantumID
 export type TxDestinationVariant = IdentityID | KeyID | NoDestination | PubKey | UnknownID;
 
-export class TxDestination implements SerializableEntity {
+export class TxDestination extends SerializableEntityBase implements SerializableEntity {
   type: BigNumber;
   data: TxDestinationVariant;
 
@@ -32,6 +33,7 @@ export class TxDestination implements SerializableEntity {
   static TYPE_LAST = new BN(6, 10);
 
   constructor(data: TxDestinationVariant = new NoDestination(), type?: BigNumber) {
+    super();
     this.data = data;
 
     if (!type) {
@@ -78,7 +80,7 @@ export class TxDestination implements SerializableEntity {
       this.data = new KeyID(destBytes);
     } else if (destBytes.length === 33) {
       this.type = TxDestination.TYPE_PK;
-      this.data = new KeyID(destBytes);
+      this.data = new PubKey(destBytes);
     } else {
       const subReader = new BufferReader(destBytes, 0);
 

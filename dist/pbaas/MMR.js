@@ -4,12 +4,112 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MerkleMountainView = exports.MMRProof = exports.MMRBranch = exports.MerkleMountainRange = exports.MMRNode = exports.MMRLayer = void 0;
 var blake2b = require('blake2b');
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../utils/varuint");
+const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
 const mmr_1 = require("../utils/mmr");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
+const BRANCH_BTC = 1;
 const BRANCH_MMRBLAKE_NODE = 2;
+const BRANCH_MMRBLAKE_POWERNODE = 3;
+const BRANCH_ETH = 4;
+const BRANCH_MULTIPART = 5;
+const BRANCH_LAST = BRANCH_MULTIPART;
+const UINT32_MAX = 0xffffffff;
+const INT32_MAX = 0x7fffffff;
+const COMPACT_SIZE_MAX = 0x02000000;
+const UINT64_MAX = new bn_js_1.BN('ffffffffffffffff', 16);
+const rawSerializedBranches = new WeakMap();
+const assertBranchType = (value) => {
+    if (!Number.isInteger(value) || value < BRANCH_BTC || value > BRANCH_LAST) {
+        throw new Error(`Invalid MMR branch type ${value}`);
+    }
+    return value;
+};
+const assertUint32 = (value, label) => {
+    if (!Number.isInteger(value) || value < 0 || value > UINT32_MAX) {
+        throw new RangeError(`${label} must be an unsigned 32-bit integer`);
+    }
+    return value;
+};
+const normalizeViewSize = (size, maximum) => {
+    if (!Number.isSafeInteger(size) || size < 0) {
+        throw new RangeError('MMR view size must be a non-negative safe integer');
+    }
+    const clampedSize = Math.min(size, maximum);
+    // View/proof traversal still uses signed 32-bit shifts.
+    if (!Number.isInteger(clampedSize) || clampedSize < 0 || clampedSize > INT32_MAX) {
+        throw new RangeError('MMR view size exceeds the supported signed 32-bit range');
+    }
+    return clampedSize;
+};
+const readDaemonVarInt = (reader, maximum, label) => {
+    let value = new bn_js_1.BN(0);
+    while (true) {
+        const next = reader.readUInt8();
+        value = value.shln(7).or(new bn_js_1.BN(next & 0x7f));
+        if (next & 0x80) {
+            value = value.addn(1);
+        }
+        if (value.gt(maximum)) {
+            throw new RangeError(`${label} is out of range`);
+        }
+        if (!(next & 0x80)) {
+            return value;
+        }
+    }
+};
+const readUint32VarInt = (reader, label) => readDaemonVarInt(reader, new bn_js_1.BN(UINT32_MAX), label).toNumber();
+const readCanonicalCompactSize = (reader, label) => {
+    const first = reader.readUInt8();
+    let value;
+    if (first < 253) {
+        value = first;
+    }
+    else if (first === 253) {
+        value = reader.readUInt16();
+        if (value < 253)
+            throw new Error(`Non-canonical CompactSize ${label}`);
+    }
+    else if (first === 254) {
+        value = reader.readUInt32();
+        if (value < 0x10000)
+            throw new Error(`Non-canonical CompactSize ${label}`);
+    }
+    else {
+        value = reader.readUInt64();
+        if (value < 0x100000000)
+            throw new Error(`Non-canonical CompactSize ${label}`);
+    }
+    if (value > COMPACT_SIZE_MAX) {
+        throw new RangeError(`${label} exceeds the daemon CompactSize limit`);
+    }
+    return value;
+};
+const readByteVector = (reader, label) => {
+    const length = readCanonicalCompactSize(reader, `${label} length`);
+    return reader.readSlice(length);
+};
+const skipRlpProof = (reader, label) => {
+    const count = readDaemonVarInt(reader, new bn_js_1.BN(INT32_MAX), `${label} count`).toNumber();
+    if (count > reader.buffer.length - reader.offset) {
+        throw new Error(`${label} count exceeds the remaining input`);
+    }
+    for (let i = 0; i < count; i++) {
+        readByteVector(reader, `${label}[${i}]`);
+    }
+};
+const validatedBranchHashes = (branch) => {
+    const hashes = branch || [];
+    for (let i = 0; i < hashes.length; i++) {
+        if (!Buffer.isBuffer(hashes[i]) || hashes[i].length !== 32) {
+            throw new Error(`MMR branch hash ${i} must be exactly 32 bytes`);
+        }
+    }
+    return hashes;
+};
 class MMRLayer {
     constructor() { this.vSize = 0; }
     size() {
@@ -79,13 +179,13 @@ class MerkleMountainRange {
         this._leafLength = 0;
     }
     getbyteLength() {
-        return 1;
+        throw new Error('MerkleMountainRange serialization is not implemented');
     }
     toBuffer() {
-        return Buffer.from([]);
+        throw new Error('MerkleMountainRange serialization is not implemented');
     }
     fromBuffer(bufferIn) {
-        return new MerkleMountainRange();
+        throw new Error('MerkleMountainRange deserialization is not implemented');
     }
     add(leaf) {
         this.layer0.push_back(leaf);
@@ -137,42 +237,93 @@ class MerkleMountainRange {
     }
 }
 exports.MerkleMountainRange = MerkleMountainRange;
-class MMRBranch {
+class MMRBranch extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(branchType = BRANCH_MMRBLAKE_NODE, nIndex = 0, nSize = 0, branch = new Array()) {
+        super();
         this.branchType = branchType;
         this.nIndex = nIndex;
         this.nSize = nSize;
         this.branch = branch;
     }
     dataByteLength() {
-        let length = 0;
-        length += varuint_1.default.encodingLength(this.branchType);
-        length += varuint_1.default.encodingLength(this.nIndex);
-        length += varuint_1.default.encodingLength(this.nSize);
-        length += varuint_1.default.encodingLength(this.branch.length);
-        for (let i = 0; i < this.branch.length; i++) {
-            length += this.branch[i].length;
+        const type = assertBranchType(this.branchType);
+        if (type === BRANCH_ETH || type === BRANCH_MULTIPART) {
+            const rawSerializedBranch = rawSerializedBranches.get(this);
+            if (!rawSerializedBranch || rawSerializedBranch[0] !== type) {
+                throw new Error(`Branch type ${type} requires parsed daemon wire data`);
+            }
+            return rawSerializedBranch.length;
         }
-        return length;
+        const index = assertUint32(this.nIndex, 'MMR branch index');
+        const hashes = validatedBranchHashes(this.branch);
+        let length = 1 + varint_1.default.encodingLength(new bn_js_1.BN(index));
+        if (type === BRANCH_MMRBLAKE_NODE || type === BRANCH_MMRBLAKE_POWERNODE) {
+            const size = assertUint32(this.nSize, 'MMR branch size');
+            length += varint_1.default.encodingLength(new bn_js_1.BN(size));
+        }
+        return length + varuint_1.default.encodingLength(hashes.length) + hashes.length * 32;
     }
     toBuffer() {
+        const type = assertBranchType(this.branchType);
+        if (type === BRANCH_ETH || type === BRANCH_MULTIPART) {
+            const rawSerializedBranch = rawSerializedBranches.get(this);
+            if (!rawSerializedBranch || rawSerializedBranch[0] !== type) {
+                throw new Error(`Branch type ${type} requires parsed daemon wire data`);
+            }
+            return Buffer.from(rawSerializedBranch);
+        }
+        const index = assertUint32(this.nIndex, 'MMR branch index');
+        const hashes = validatedBranchHashes(this.branch);
         const bufferWriter = new BufferWriter(Buffer.alloc(this.dataByteLength()));
-        bufferWriter.writeCompactSize(this.branchType);
-        bufferWriter.writeCompactSize(this.nIndex);
-        bufferWriter.writeCompactSize(this.nSize);
-        bufferWriter.writeCompactSize(this.branch.length);
-        for (let i = 0; i < this.branch.length; i++) {
-            bufferWriter.writeSlice(this.branch[i]);
+        bufferWriter.writeUInt8(type);
+        bufferWriter.writeVarInt(new bn_js_1.BN(index));
+        if (type === BRANCH_MMRBLAKE_NODE || type === BRANCH_MMRBLAKE_POWERNODE) {
+            bufferWriter.writeVarInt(new bn_js_1.BN(assertUint32(this.nSize, 'MMR branch size')));
+        }
+        bufferWriter.writeCompactSize(hashes.length);
+        for (let i = 0; i < hashes.length; i++) {
+            bufferWriter.writeSlice(hashes[i]);
         }
         return bufferWriter.buffer;
     }
     fromBuffer(buffer, offset) {
         const reader = new bufferutils_1.default.BufferReader(buffer, offset);
-        this.branchType = reader.readCompactSize();
-        this.nIndex = reader.readCompactSize();
-        this.nSize = reader.readCompactSize();
-        let branchLength = reader.readCompactSize();
-        this.branch = new Array();
+        const startOffset = reader.offset;
+        const type = assertBranchType(reader.readUInt8());
+        this.branchType = type;
+        this.nIndex = 0;
+        this.nSize = 0;
+        this.branch = [];
+        rawSerializedBranches.delete(this);
+        if (type === BRANCH_BTC) {
+            this.nIndex = readUint32VarInt(reader, 'BTC branch index');
+        }
+        else if (type === BRANCH_MMRBLAKE_NODE ||
+            type === BRANCH_MMRBLAKE_POWERNODE) {
+            this.nIndex = readUint32VarInt(reader, 'MMR branch index');
+            this.nSize = readUint32VarInt(reader, 'MMR branch size');
+        }
+        else if (type === BRANCH_ETH) {
+            skipRlpProof(reader, 'ETH account proof');
+            reader.readSlice(20);
+            reader.readSlice(32);
+            reader.readSlice(32);
+            readDaemonVarInt(reader, UINT64_MAX, 'ETH nonce');
+            reader.readSlice(32);
+            reader.readSlice(32);
+            skipRlpProof(reader, 'ETH storage proof');
+            rawSerializedBranches.set(this, Buffer.from(buffer.slice(startOffset, reader.offset)));
+            return reader.offset;
+        }
+        else {
+            readByteVector(reader, 'multipart proof data');
+            rawSerializedBranches.set(this, Buffer.from(buffer.slice(startOffset, reader.offset)));
+            return reader.offset;
+        }
+        const branchLength = readCanonicalCompactSize(reader, 'branch hash count');
+        if (branchLength > Math.floor((buffer.length - reader.offset) / 32)) {
+            throw new Error('MMR branch hash count exceeds the remaining input');
+        }
         for (let i = 0; i < branchLength; i++) {
             this.branch.push(reader.readSlice(32));
         }
@@ -183,17 +334,26 @@ class MMRBranch {
         return blake2b(out.length, null, null, Buffer.from("VerusDefaultHash")).update(input).digest(out);
     }
     safeCheck(hash) {
-        let index = (0, mmr_1.GetMMRProofIndex)(this.nIndex, this.nSize, 0);
-        let joined = Buffer.allocUnsafe(64);
+        const type = assertBranchType(this.branchType);
+        if (type !== BRANCH_MMRBLAKE_NODE && type !== BRANCH_MMRBLAKE_POWERNODE) {
+            throw new Error(`safeCheck does not support MMR branch type ${type}`);
+        }
+        if (!Buffer.isBuffer(hash) || hash.length !== 32) {
+            throw new Error('MMR proof input hash must be exactly 32 bytes');
+        }
+        const hashes = validatedBranchHashes(this.branch);
+        let index = (0, mmr_1.GetMMRProofIndex)(assertUint32(this.nIndex, 'MMR branch index'), assertUint32(this.nSize, 'MMR branch size'), type === BRANCH_MMRBLAKE_POWERNODE ? 1 : 0);
         let hashInProgress = hash;
-        for (let i = 0; i < this.branch.length; i++) {
-            if (index.and(new bn_js_1.BN(1)).gt(new bn_js_1.BN(0))) {
-                if (this.branch[i] === hashInProgress)
+        for (let i = 0; i < hashes.length; i++) {
+            let joined;
+            if (index.isOdd()) {
+                if (hashes[i].equals(hashInProgress)) {
                     throw new Error("Value can be equal to node but never on the right");
-                joined = Buffer.concat([this.branch[i], hashInProgress]);
+                }
+                joined = Buffer.concat([hashes[i], hashInProgress]);
             }
             else {
-                joined = Buffer.concat([hashInProgress, this.branch[i]]);
+                joined = Buffer.concat([hashInProgress, hashes[i]]);
             }
             hashInProgress = this.digest(joined);
             index = index.shrn(1);
@@ -202,7 +362,11 @@ class MMRBranch {
     }
 }
 exports.MMRBranch = MMRBranch;
-class MMRProof {
+class MMRProof extends SerializableEntityBase_1.SerializableEntityBase {
+    constructor() {
+        super(...arguments);
+        this.proofSequence = new Array();
+    }
     setProof(proof) {
         if (!this.proofSequence) {
             this.proofSequence = new Array();
@@ -210,30 +374,57 @@ class MMRProof {
         this.proofSequence.push(proof);
     }
     dataByteLength() {
-        let length = 0;
-        length += varuint_1.default.encodingLength(this.proofSequence.length);
+        if (!Array.isArray(this.proofSequence) || this.proofSequence.length > INT32_MAX) {
+            throw new RangeError('MMR proof sequence length is out of int32 range');
+        }
+        let length = 4;
         for (let i = 0; i < this.proofSequence.length; i++) {
-            length += this.proofSequence[i].dataByteLength();
+            assertBranchType(this.proofSequence[i].branchType);
+            length += 1 + this.proofSequence[i].dataByteLength();
         }
         return length;
     }
     toBuffer() {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.dataByteLength()));
-        bufferWriter.writeCompactSize(this.proofSequence.length);
+        bufferWriter.writeInt32(this.proofSequence.length);
         for (let i = 0; i < this.proofSequence.length; i++) {
-            bufferWriter.writeSlice(this.proofSequence[i].toBuffer());
+            const type = assertBranchType(this.proofSequence[i].branchType);
+            const serializedBranch = this.proofSequence[i].toBuffer();
+            if (serializedBranch.length === 0 || serializedBranch[0] !== type) {
+                throw new Error(`MMR proof branch ${i} has mismatched type data`);
+            }
+            bufferWriter.writeUInt8(type);
+            bufferWriter.writeSlice(serializedBranch);
         }
         return bufferWriter.buffer;
     }
     fromDataBuffer(buffer, offset) {
         const reader = new bufferutils_1.default.BufferReader(buffer, offset);
-        let proofSequenceLength = reader.readCompactSize();
-        this.proofSequence = new Array();
-        for (let i = 0; i < proofSequenceLength; i++) {
-            let proof = new MMRBranch();
-            reader.offset = proof.fromBuffer(reader.buffer, reader.offset);
-            this.setProof(proof);
+        const proofSequenceLength = reader.readInt32();
+        this.proofSequence = [];
+        if (proofSequenceLength < 0) {
+            throw new Error('MMR proof sequence length cannot be negative');
         }
+        if (proofSequenceLength > Math.floor((buffer.length - reader.offset) / 3)) {
+            throw new Error('MMR proof sequence exceeds the remaining input');
+        }
+        const parsedProofs = [];
+        try {
+            for (let i = 0; i < proofSequenceLength; i++) {
+                const outerType = assertBranchType(reader.readUInt8());
+                const proof = new MMRBranch();
+                reader.offset = proof.fromBuffer(reader.buffer, reader.offset);
+                if (proof.branchType !== outerType) {
+                    throw new Error(`MMR proof branch ${i} has mismatched outer and inner types`);
+                }
+                parsedProofs.push(proof);
+            }
+        }
+        catch (error) {
+            this.proofSequence = [];
+            throw error;
+        }
+        this.proofSequence = parsedProofs;
         return reader.offset;
     }
 }
@@ -242,10 +433,8 @@ exports.MMRProof = MMRProof;
 class MerkleMountainView {
     constructor(mountainRange, viewSize = 0) {
         this.mmr = mountainRange;
-        let maxSize = this.mmr.size();
-        if (viewSize > maxSize || viewSize == 0) {
-            viewSize = maxSize;
-        }
+        const maxSize = this.mmr.size();
+        viewSize = normalizeViewSize(viewSize === 0 ? maxSize : viewSize, maxSize);
         this.sizes = new Array();
         this.sizes.push(viewSize);
         for (viewSize >>= 1; viewSize; viewSize >>= 1) {
@@ -267,21 +456,18 @@ class MerkleMountainView {
             this.peakMerkle = new Array;
             for (let ht = 0; ht < this.sizes.length; ht++) {
                 // if we're at the top or the layer above us is smaller than 1/2 the size of this layer, rounded up, we are a peak
-                if (ht == (this.sizes.length - 1) || this.sizes[ht + 1] < ((this.sizes[ht] + 1) >> 1)) {
+                if (ht == (this.sizes.length - 1) || this.sizes[ht + 1] < Math.ceil(this.sizes[ht] / 2)) {
                     this.peaks.splice(0, 0, this.mmr.getNode(ht, this.sizes[ht] - 1));
                 }
             }
         }
     }
     resize(newSize) {
+        newSize = normalizeViewSize(newSize, this.mmr.size());
         if (newSize != this.size()) {
             this.sizes = new Array;
             this.peaks = new Array;
             this.peakMerkle = new Array;
-            let maxSize = this.mmr.size();
-            if (newSize > maxSize) {
-                newSize = maxSize;
-            }
             this.sizes.push(newSize);
             newSize >>= 1;
             while (newSize) {
@@ -299,7 +485,7 @@ class MerkleMountainView {
         return this.peaks;
     }
     getRoot() {
-        let rootHash = Buffer.allocUnsafe(32);
+        let rootHash = Buffer.alloc(32);
         if (this.size() > 0 && this.peakMerkle.length == 0) {
             // get peaks and hash to a root
             this.calcPeaks();
@@ -338,8 +524,8 @@ class MerkleMountainView {
     }
     getRootNode() {
         // ensure merkle tree is calculated
-        let root = this.getRoot();
-        if (root.length > 0) {
+        this.getRoot();
+        if (this.size() > 0) {
             return this.peakMerkle[this.peakMerkle.length - 1][0];
         }
         else {
@@ -348,11 +534,11 @@ class MerkleMountainView {
     }
     // return hash of the element at "index"
     getHash(index) {
-        if (index < this.size()) {
-            return this.mmr.layer0[index].hash;
+        if (Number.isSafeInteger(index) && index >= 0 && index < this.size()) {
+            return this.mmr.layer0.getIndex(index).hash;
         }
         else {
-            return Buffer.allocUnsafe(32);
+            return Buffer.alloc(32);
         }
     }
     getBranchType() {
@@ -362,7 +548,7 @@ class MerkleMountainView {
     getProof(retProof, pos) {
         // find a path from the indicated position to the root in the current view
         let retBranch = new MMRBranch();
-        if (pos < this.size()) {
+        if (Number.isSafeInteger(pos) && pos >= 0 && pos < this.size()) {
             // just make sure the peakMerkle tree is calculated
             this.getRoot();
             // if we have leaf information, add it

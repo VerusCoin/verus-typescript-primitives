@@ -22,6 +22,7 @@
  */
 
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import varuint from '../../../utils/varuint';
 import bufferutils from '../../../utils/bufferutils';
@@ -38,7 +39,7 @@ export interface UserDataRequestInterface {
   dataType: BigNumber;
   requestType: BigNumber;
   searchDataKeyHashType?: BigNumber;
-  searchDataKey: Array<{[key: string]: Buffer}>;
+  searchDataKey?: Array<{[key: string]: Buffer}>;
   signer?: CompactIAddressObject;
   requestedKeys?: string[];
   requestID?: CompactIAddressObject;
@@ -50,13 +51,13 @@ export interface UserDataRequestJson {
   datatype: number;
   requesttype: number;
   searchdatakeyhashtype?: number;
-  searchdatakey: Array<{[key: string]: Buffer}>;   // ID object of the specific information requested
+  searchdatakey?: Array<{[key: string]: string}>;   // ID object of the specific information requested
   signer?: CompactAddressObjectJson;
   requestedkeys?: string[]; // Specific keys within the data object being requested
   requestid?: CompactAddressObjectJson;
 }
 
-export class UserDataRequestDetails implements SerializableEntity {
+export class UserDataRequestDetails extends SerializableEntityBase implements SerializableEntity {
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -87,6 +88,7 @@ export class UserDataRequestDetails implements SerializableEntity {
   requestID?: CompactIAddressObject;
 
   constructor(data?: UserDataRequestInterface) {
+    super();
     this.version = data?.version || UserDataRequestDetails.DEFAULT_VERSION;
     this.flags = data?.flags || new BN(0);
     this.dataType = data?.dataType || UserDataRequestDetails.FULL_DATA;
@@ -299,7 +301,15 @@ export class UserDataRequestDetails implements SerializableEntity {
       datatype: this.dataType.toNumber(),
       requesttype: this.requestType.toNumber(),
       searchdatakeyhashtype: this.searchDataKeyHashType.toNumber(),
-      searchdatakey: this.searchDataKey,
+      searchdatakey: this.searchDataKey ? this.searchDataKey.map(x => {
+        const obj: { [k: string]: string } = {};
+
+        for (const key in x) {
+          obj[key] = x[key].toString('hex');
+        }
+
+        return obj
+      }) : undefined,
       signer: this.signer?.toJson(),
       requestedkeys: this.requestedKeys,
       requestid: this.requestID?.toJson(),
@@ -313,7 +323,15 @@ export class UserDataRequestDetails implements SerializableEntity {
     requestData.dataType = new BN(json.datatype);
     requestData.requestType = new BN(json.requesttype);
     requestData.searchDataKeyHashType = json.searchdatakeyhashtype == null ? DEFAULT_HASH_TYPE : new BN(json.searchdatakeyhashtype);
-    requestData.searchDataKey = json.searchdatakey;
+    requestData.searchDataKey = json.searchdatakey ? json.searchdatakey.map(x => {
+      const obj: { [k: string]: Buffer } = {};
+
+      for (const key in x) {
+        obj[key] = Buffer.from(x[key], 'hex');
+      }
+
+      return obj
+    }) : [];
     requestData.signer = json.signer ? CompactIAddressObject.fromCompactAddressObjectJson(json.signer) : undefined;
     requestData.requestedKeys = json.requestedkeys;
     requestData.requestID = json.requestid ? CompactIAddressObject.fromCompactAddressObjectJson(json.requestid) : undefined;

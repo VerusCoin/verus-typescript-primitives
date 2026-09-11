@@ -1,5 +1,6 @@
 import {
   LOGIN_CONSENT_REQUEST_VDXF_KEY,
+  LOGIN_CONSENT_PROVISIONING_REQUEST_VDXF_KEY,
   WALLET_VDXF_KEY,
   VDXFObject,
   VerusIDSignature,
@@ -140,8 +141,10 @@ export class Request extends VDXFObject {
   }
 
   protected _fromDataBuffer(buffer: Buffer, offset?: number): number {
-    const reader = new bufferutils.BufferReader(buffer, offset);
-    const reqLength = reader.readCompactSize();
+    const frameReader = new bufferutils.BufferReader(buffer, offset);
+    const reqLength = frameReader.readCompactSize();
+    const bodyOffset = frameReader.offset;
+    const reader = new bufferutils.BufferReader(frameReader.readSlice(reqLength));
 
     if (reqLength == 0) {
       throw new Error("Cannot create request from empty buffer");
@@ -171,7 +174,11 @@ export class Request extends VDXFObject {
       }
     }
 
-    return reader.offset;
+    // ProvisioningRequest consumes its challenge after this shared prefix.
+    if (this.vdxfkey !== LOGIN_CONSENT_PROVISIONING_REQUEST_VDXF_KEY.vdxfid && reader.offset !== reqLength) {
+      throw new Error("Request body length mismatch");
+    }
+    return bodyOffset + reader.offset;
   }
 
   fromDataBuffer(buffer: Buffer, offset?: number): number {

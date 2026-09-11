@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { CurrencyValueMap } from './CurrencyValueMap';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
@@ -6,7 +7,7 @@ export declare const TOKEN_OUTPUT_VERSION_CURRENT: import("bn.js");
 export declare const TOKEN_OUTPUT_VERSION_FIRSTVALID: import("bn.js");
 export declare const TOKEN_OUTPUT_VERSION_LASTVALID: import("bn.js");
 export declare const TOKEN_OUTPUT_VERSION_MULTIVALUE: import("bn.js");
-export declare class TokenOutput implements SerializableEntity {
+export declare class TokenOutput extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     reserveValues: CurrencyValueMap;
     constructor(data?: {

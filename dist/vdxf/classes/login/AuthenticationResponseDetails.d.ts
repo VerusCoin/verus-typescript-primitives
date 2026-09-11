@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from '../CompactAddressObject';
@@ -5,7 +6,7 @@ export type AuthenticationResponseDetailsJson = {
     flags: string;
     requestid?: CompactAddressObjectJson;
 };
-export declare class AuthenticationResponseDetails implements SerializableEntity {
+export declare class AuthenticationResponseDetails extends SerializableEntityBase implements SerializableEntity {
     flags?: BigNumber;
     requestID?: CompactIAddressObject;
     static FLAG_HAS_REQUEST_ID: import("bn.js");

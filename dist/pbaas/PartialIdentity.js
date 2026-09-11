@@ -53,7 +53,7 @@ class PartialIdentity extends Identity_1.Identity {
             this.toggleContainsMinSigs();
         if (data === null || data === void 0 ? void 0 : data.version)
             this.toggleContainsVersion();
-        if ((data === null || data === void 0 ? void 0 : data.primaryAddresses) && data.primaryAddresses.length > 0)
+        if (data === null || data === void 0 ? void 0 : data.primaryAddresses)
             this.toggleContainsPrimaryAddresses();
     }
     containsFlags() {
@@ -97,6 +97,7 @@ class PartialIdentity extends Identity_1.Identity {
     }
     clearContentMultiMap() {
         this.contentMultiMap = new ContentMultiMap_1.FqnContentMultiMap({ kvContent: new ContentMultiMap_1.KvContent() });
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_CONTENT_MULTIMAP);
     }
     toggleContainsParent() {
         this.contains = this.contains.xor(PartialIdentity.PARTIAL_ID_CONTAINS_PARENT);
@@ -169,6 +170,32 @@ class PartialIdentity extends Identity_1.Identity {
             instance.contentMultiMap = ContentMultiMap_1.FqnContentMultiMap.fromJson(json.contentmultimap);
         }
         return instance;
+    }
+    setPrimaryAddresses(addresses) {
+        super.setPrimaryAddresses(addresses);
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_PRIMARY_ADDRS);
+    }
+    setRevocation(iAddr) {
+        super.setRevocation(iAddr);
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_REVOCATION);
+    }
+    setRecovery(iAddr) {
+        super.setRecovery(iAddr);
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_RECOVERY);
+    }
+    setPrivateAddress(zAddr) {
+        super.setPrivateAddress(zAddr);
+        this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_PRIV_ADDRS);
+    }
+    upgradeVersion(version = Identity_1.Identity.VERSION_CURRENT) {
+        const previousVersion = this.version;
+        super.upgradeVersion(version);
+        if (!this.version.eq(previousVersion)) {
+            this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_VERSION);
+            if (previousVersion.lt(Identity_1.Identity.VERSION_VAULT)) {
+                this.contains = this.contains.or(PartialIdentity.PARTIAL_ID_CONTAINS_SYSTEM_ID);
+            }
+        }
     }
     lock(unlockTime) {
         this.enableContainsFlags();

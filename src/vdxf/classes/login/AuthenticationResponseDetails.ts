@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import varint from '../../../utils/varint'
 import bufferutils from '../../../utils/bufferutils'
 import createHash = require('create-hash');
@@ -12,7 +13,7 @@ export type AuthenticationResponseDetailsJson = {
   requestid?: CompactAddressObjectJson
 }
 
-export class AuthenticationResponseDetails implements SerializableEntity {
+export class AuthenticationResponseDetails extends SerializableEntityBase implements SerializableEntity {
   flags?: BigNumber;
   requestID?: CompactIAddressObject;              // ID of request, to be referenced in response
   
@@ -22,6 +23,7 @@ export class AuthenticationResponseDetails implements SerializableEntity {
     flags?: BigNumber,
     requestID?: CompactIAddressObject
   }) {
+    super();
     this.flags = data && data.flags ? data.flags : new BN("0", 10);
     this.requestID = data?.requestID || null;
 

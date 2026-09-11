@@ -14,5 +14,5 @@ export declare function getDataKey(keyName: string, nameSpaceID?: string, verusC
     id: string;
     namespace: string;
 };
-export declare const decodeDestination: (destination: string) => Buffer;
+export declare const decodeDestination: (destination: string, expectedVersion?: number) => Buffer;
 export declare const decodeEthDestination: (destination: string) => Buffer;

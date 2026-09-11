@@ -1,6 +1,7 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
-export declare class CurrencyValueMap implements SerializableEntity {
+export declare class CurrencyValueMap extends SerializableEntityBase implements SerializableEntity {
     valueMap: Map<string, BigNumber>;
     multivalue: boolean;
     constructor(data?: {

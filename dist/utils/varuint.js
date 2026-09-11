@@ -1,7 +1,7 @@
 "use strict";
 // The MIT License (MIT)
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodingLength = exports.decode = exports.encode = void 0;
+exports.encodingLength = exports.decode = exports.encode = exports.MAX_COMPACT_SIZE = void 0;
 // Copyright (c) 2016 Kirill Fomichev
 // Parts of this software are based on https://github.com/mappum/bitcoin-protocol
 // Copyright (c) 2016 Matt Bell
@@ -22,6 +22,8 @@ exports.encodingLength = exports.decode = exports.encode = void 0;
 // THE SOFTWARE.
 // Number.MAX_SAFE_INTEGER
 const MAX_SAFE_INTEGER = 9007199254740991;
+// VerusCoin serialize.h: maximum CompactSize used as a length or count.
+exports.MAX_COMPACT_SIZE = 0x02000000;
 const checkUInt53 = (n) => {
     if (n < 0 || n > MAX_SAFE_INTEGER || n % 1 !== 0)
         throw new RangeError("value out of range");
@@ -62,7 +64,8 @@ const encode = (number, buffer, offset) => {
     return { buffer, bytes };
 };
 exports.encode = encode;
-const decode = (buffer, offset) => {
+// Set rangeCheck to false only when decoding a scalar, never a length or count.
+const decode = (buffer, offset, rangeCheck = true) => {
     if (!Buffer.isBuffer(buffer))
         throw new TypeError("buffer must be a Buffer instance");
     if (!offset)
@@ -94,6 +97,10 @@ const decode = (buffer, offset) => {
         checkUInt53(number);
         decoded = number;
     }
+    if ((0, exports.encodingLength)(decoded) !== bytes)
+        throw new RangeError("Non-canonical CompactSize");
+    if (rangeCheck && decoded > exports.MAX_COMPACT_SIZE)
+        throw new RangeError("CompactSize exceeds maximum size");
     return { decoded, bytes };
 };
 exports.decode = decode;

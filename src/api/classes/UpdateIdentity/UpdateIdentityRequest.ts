@@ -1,4 +1,4 @@
-import { ApiRequest } from "../../ApiRequest";
+import { ApiRequest, positionalParams } from "../../ApiRequest";
 import { ApiPrimitiveJson, RequestParams } from "../../ApiPrimitive";
 import { UPDATE_IDENTITY } from "../../../constants/cmds";
 import { VerusCLIVerusIDJsonWithData } from "../../../vdxf/classes";
@@ -11,11 +11,11 @@ export class UpdateIdentityRequest extends ApiRequest {
   sourceoffunds?: string;
 
   constructor(
-    chain: string, 
-    jsonidentity: VerusCLIVerusIDJsonWithData, 
-    returntx?: boolean, 
-    tokenupdate?: boolean, 
-    feeoffer?: number, 
+    chain: string,
+    jsonidentity: VerusCLIVerusIDJsonWithData,
+    returntx?: boolean,
+    tokenupdate?: boolean,
+    feeoffer?: number,
     sourceoffunds?: string
   ) {
     super(chain, UPDATE_IDENTITY);
@@ -27,16 +27,18 @@ export class UpdateIdentityRequest extends ApiRequest {
   }
 
   getParams(): RequestParams {
+    // The daemon parses a present fee slot as an amount and rejects null.
+    const feeoffer =
+      this.sourceoffunds != null && this.feeoffer == null ? 0 : this.feeoffer;
     const params = [
       this.jsonidentity,
       this.returntx,
       this.tokenupdate,
-      this.feeoffer,
-      this.sourceoffunds
+      feeoffer,
+      this.sourceoffunds,
     ];
 
-    if (this.sourceoffunds) return params
-    else return params.filter((x) => x != null);
+    return positionalParams(params);
   }
 
   static fromJson(object: ApiPrimitiveJson): UpdateIdentityRequest {
@@ -46,7 +48,9 @@ export class UpdateIdentityRequest extends ApiRequest {
       object.returntx != null ? (object.returntx as boolean) : undefined,
       object.tokenupdate != null ? (object.tokenupdate as boolean) : undefined,
       object.feeoffer != null ? (object.feeoffer as number) : undefined,
-      object.sourceoffunds != null ? (object.sourceoffunds as string) : undefined,
+      object.sourceoffunds != null
+        ? (object.sourceoffunds as string)
+        : undefined
     );
   }
 

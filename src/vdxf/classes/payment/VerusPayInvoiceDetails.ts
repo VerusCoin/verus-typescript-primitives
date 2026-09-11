@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import varint from '../../../utils/varint'
 import varuint from '../../../utils/varuint'
 import bufferutils from '../../../utils/bufferutils'
@@ -41,7 +42,7 @@ export type VerusPayInvoiceDetailsJson = {
   tag?: CompactAddressObjectJson
 }
 
-export class VerusPayInvoiceDetails implements SerializableEntity {
+export class VerusPayInvoiceDetails extends SerializableEntityBase implements SerializableEntity {
   verusPayVersion: BigNumber;
 
   flags: BigNumber;
@@ -63,6 +64,7 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
     acceptedsystems?: Array<string>,
     tag?: CompactXAddressObject
   }, verusPayVersion: BigNumber = VERUSPAY_VERSION_CURRENT) {
+    super();
     this.flags = VERUSPAY_VALID;
     this.amount = null;
     this.destination = null;
@@ -203,7 +205,7 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
 
   private readVarUInt(reader = new BufferReader(Buffer.alloc(0))): BigNumber {
     if (this.isGTEV4()) {
-      return new BN(reader.readCompactSize());
+      return new BN(reader.readCompactSize(false));
     } else {
       return reader.readVarInt();
     }
@@ -276,12 +278,14 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
     return writer.buffer;
   }
 
-  fromBuffer (buffer: Buffer, offset: number = 0, verusPayVersion: BigNumber = VERUSPAY_VERSION_CURRENT, rootSystemName: string = 'VRSC') {
+  fromBuffer (buffer: Buffer, offset: number = 0, verusPayVersion: BigNumber = VERUSPAY_VERSION_CURRENT, rootSystemName?: string) {
     const reader = new BufferReader(buffer, offset);
 
     this.verusPayVersion = verusPayVersion;
 
     this.flags = this.readVarUInt(reader);
+
+    const _rootSystemName = rootSystemName ? rootSystemName : this.isTestnet() ? "VRSCTEST" : "VRSC";
     
     if (!this.acceptsAnyAmount()) this.amount = this.readVarUInt(reader);
 
@@ -310,7 +314,7 @@ export class VerusPayInvoiceDetails implements SerializableEntity {
     }
 
     if (this.isTagged()) {
-      this.tag = new CompactXAddressObject({ type: CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName });
+      this.tag = new CompactXAddressObject({ type: CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName: _rootSystemName });
 
       reader.offset = this.tag.fromBuffer(reader.buffer, reader.offset);
     }

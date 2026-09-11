@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { EvidenceData, EvidenceDataInChainObjectJson } from './EvidenceData';
@@ -18,7 +19,7 @@ export declare enum CHAIN_OBJECT_TYPES {
     CHAINOBJ_NOTARYSIGNATURE = 9,// notary signature
     CHAINOBJ_EVIDENCEDATA = 10
 }
-export declare class CrossChainProof implements SerializableEntity {
+export declare class CrossChainProof extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     chainObjects: Array<EvidenceData>;
     static VERSION_INVALID: import("bn.js");

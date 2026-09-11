@@ -6,6 +6,7 @@
  * or as an identity address (iaddress) or as an x address (tag/index). The class includes methods for serialization, deserialization,
  * and validation of the compact id object.
  */
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import { BigNumber } from '../../utils/types/BigNumber';
 import { SerializableEntity } from '../../utils/types/SerializableEntity';
 export interface CompactAddressObjectJson {
@@ -26,7 +27,7 @@ export type CompactAddressIVariant = "COMPACT_ADDR_I_VARIANT";
 export type CompactAddressXVariant = "COMPACT_ADDR_X_VARIANT";
 export type CompactAddressVariantName = CompactAddressIVariant | CompactAddressXVariant;
 export type CompactAddressVariantAllowedType<T extends CompactAddressVariantName> = T extends CompactAddressIVariant ? `${1 | 2}` : T extends CompactAddressXVariant ? `${1 | 3}` : never;
-export declare class CompactAddressObject<V extends CompactAddressVariantName = CompactAddressIVariant> implements SerializableEntity {
+export declare class CompactAddressObject<V extends CompactAddressVariantName = CompactAddressIVariant> extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");

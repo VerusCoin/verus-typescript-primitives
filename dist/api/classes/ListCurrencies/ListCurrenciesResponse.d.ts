@@ -1,8 +1,8 @@
-import { CurrencyDefinition } from "../../../currency/CurrencyDefinition";
+import { CurrencyDefinition, RawCurrencyDefinition } from "../../../currency/CurrencyDefinition";
 import { ApiResponse } from "../../ApiResponse";
 export declare class ListCurrenciesResponse extends ApiResponse {
     result: Array<{
-        currencydefinition: CurrencyDefinition;
+        currencydefinition: RawCurrencyDefinition & Pick<CurrencyDefinition, "currencyidhex" | "fullyqualifiedname" | "definitiontxid" | "definitiontxout">;
         bestheight?: number;
         besttxid?: string;
         besttxout?: number;

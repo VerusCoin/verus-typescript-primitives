@@ -12,6 +12,7 @@
  * be redirected after successful authentication. This enables secure, user-controlled
  * authentication flows with granular permission management.
  */
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { CompactIAddressObject, CompactAddressObjectJson } from "../CompactAddressObject";
@@ -28,7 +29,7 @@ export interface AuthenticationRequestDetailsJson {
     recipientconstraints?: Array<RecipientConstraintJson>;
     expirytime?: number;
 }
-export declare class AuthenticationRequestDetails implements SerializableEntity {
+export declare class AuthenticationRequestDetails extends SerializableEntityBase implements SerializableEntity {
     flags?: BigNumber;
     requestID?: CompactIAddressObject;
     recipientConstraints?: Array<RecipientConstraint>;

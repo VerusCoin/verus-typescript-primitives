@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { AllowedHashes } from '../constants/pbaas';
@@ -38,7 +39,7 @@ export type PartialMMRDataCLIJson = {
     mmrhashtype?: AllowedHashes;
     priormmr?: Array<string>;
 };
-export declare class PartialMMRData implements SerializableEntity {
+export declare class PartialMMRData extends SerializableEntityBase implements SerializableEntity {
     flags: BigNumber;
     data: Array<PartialMMRDataUnit>;
     mmrhashtype?: BigNumber;

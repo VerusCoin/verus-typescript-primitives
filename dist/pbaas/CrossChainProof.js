@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CrossChainProof = exports.CHAIN_OBJECT_TYPES = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
 const bn_js_1 = require("bn.js");
@@ -22,8 +23,9 @@ var CHAIN_OBJECT_TYPES;
     CHAIN_OBJECT_TYPES[CHAIN_OBJECT_TYPES["CHAINOBJ_EVIDENCEDATA"] = 10] = "CHAINOBJ_EVIDENCEDATA"; // flexible evidence data
 })(CHAIN_OBJECT_TYPES || (exports.CHAIN_OBJECT_TYPES = CHAIN_OBJECT_TYPES = {}));
 ;
-class CrossChainProof {
+class CrossChainProof extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             if (Object.prototype.hasOwnProperty.call(data, 'chain_objects')) {
                 throw new Error("CrossChainProof: snake_case property names are no longer supported. Use 'chainObjects' instead of 'chain_objects'.");
@@ -54,7 +56,7 @@ class CrossChainProof {
         bufferWriter.writeUInt32(this.version.toNumber());
         bufferWriter.writeVarInt(new bn_js_1.BN(this.chainObjects.length));
         for (let i = 0; i < this.chainObjects.length; i++) {
-            bufferWriter.writeUInt16(this.chainObjects[i].type.toNumber());
+            bufferWriter.writeUInt16(CHAIN_OBJECT_TYPES.CHAINOBJ_EVIDENCEDATA);
             bufferWriter.writeSlice(this.chainObjects[i].toBuffer());
         }
         return bufferWriter.buffer;

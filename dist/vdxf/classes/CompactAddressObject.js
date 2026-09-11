@@ -10,14 +10,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompactIAddressObject = exports.CompactXAddressObject = exports.CompactAddressObject = void 0;
 const bn_js_1 = require("bn.js");
+const SerializableEntityBase_1 = require("../../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../../utils/bufferutils");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const varuint_1 = require("../../utils/varuint");
 const address_1 = require("../../utils/address");
 const vdxf_1 = require("../../constants/vdxf");
 const pbaas_1 = require("../../constants/pbaas");
-class CompactAddressObject {
+class CompactAddressObject extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(CompactAddressObject.DEFAULT_VERSION);
         this.type = (data === null || data === void 0 ? void 0 : data.type.toString()) || "1";
         this.address = (data === null || data === void 0 ? void 0 : data.address) || '';

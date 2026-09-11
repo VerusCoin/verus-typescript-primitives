@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../utils/address";
@@ -31,7 +32,7 @@ export enum CHAIN_OBJECT_TYPES
     CHAINOBJ_EVIDENCEDATA = 10      // flexible evidence data
 };
 
-export class CrossChainProof implements SerializableEntity {
+export class CrossChainProof extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   chainObjects: Array<EvidenceData>;
 
@@ -41,6 +42,7 @@ export class CrossChainProof implements SerializableEntity {
   static VERSION_LAST = new BN(1);
 
   constructor(data?: {version?: BigNumber, chainObjects?: Array<EvidenceData>}) {
+    super();
     if (data != null) {
       if (Object.prototype.hasOwnProperty.call(data, 'chain_objects')) {
         throw new Error("CrossChainProof: snake_case property names are no longer supported. Use 'chainObjects' instead of 'chain_objects'.");
@@ -79,7 +81,7 @@ export class CrossChainProof implements SerializableEntity {
     bufferWriter.writeVarInt(new BN(this.chainObjects.length));
 
     for (let i = 0; i < this.chainObjects.length; i++) {
-      bufferWriter.writeUInt16(this.chainObjects[i].type.toNumber());
+      bufferWriter.writeUInt16(CHAIN_OBJECT_TYPES.CHAINOBJ_EVIDENCEDATA);
       bufferWriter.writeSlice(this.chainObjects[i].toBuffer());
     }
 
@@ -155,4 +157,3 @@ export class CrossChainProof implements SerializableEntity {
 
 
 }
-

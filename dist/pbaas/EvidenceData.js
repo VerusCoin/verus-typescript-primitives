@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EvidenceData = exports.MultiPartDescriptor = exports.ETypes = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const varuint_1 = require("../utils/varuint");
 const address_1 = require("../utils/address");
@@ -17,8 +18,9 @@ var ETypes;
     ETypes[ETypes["TYPE_LAST_VALID"] = 2] = "TYPE_LAST_VALID";
 })(ETypes || (exports.ETypes = ETypes = {}));
 ;
-class MultiPartDescriptor {
+class MultiPartDescriptor extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.index = (data === null || data === void 0 ? void 0 : data.index) || new bn_js_1.BN(0, 10);
         this.total_length = (data === null || data === void 0 ? void 0 : data.total_length) || new bn_js_1.BN(0, 10);
         this.start = (data === null || data === void 0 ? void 0 : data.start) || new bn_js_1.BN(0, 10);
@@ -46,8 +48,9 @@ class MultiPartDescriptor {
     }
 }
 exports.MultiPartDescriptor = MultiPartDescriptor;
-class EvidenceData {
+class EvidenceData extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(1, 10);
         this.type = (data === null || data === void 0 ? void 0 : data.type) || new bn_js_1.BN(ETypes.TYPE_DATA); // holding a transaction proof of export with finalization referencing finalization of root notarization
         this.md = data === null || data === void 0 ? void 0 : data.md;

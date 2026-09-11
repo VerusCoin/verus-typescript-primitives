@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import { BigNumber } from "../utils/types/BigNumber";
 import { SerializableEntity } from "../utils/types/SerializableEntity";
@@ -19,7 +20,13 @@ export type CredentialJson = {
   label?: string,
 }
 
-export class Credential implements SerializableEntity {
+function hasValidTextLengths(data: Credential): boolean {
+  return Buffer.byteLength(JSON.stringify(data.credential), 'utf8') <= Credential.MAX_JSON_STRING_LENGTH
+    && Buffer.byteLength(JSON.stringify(data.scopes), 'utf8') <= Credential.MAX_JSON_STRING_LENGTH
+    && Buffer.byteLength(data.label, 'utf8') <= Credential.MAX_JSON_STRING_LENGTH;
+}
+
+export class Credential extends SerializableEntityBase implements SerializableEntity {
 
   // Credential enum types 
   static VERSION_INVALID = new BN(0, 10);
@@ -46,6 +53,7 @@ export class Credential implements SerializableEntity {
     scopes?: Object,
     label?: string,
   }) {
+    super();
     this.version = Credential.VERSION_INVALID;
     this.flags = new BN(0, 10);
     this.credentialKey = "";
@@ -61,9 +69,7 @@ export class Credential implements SerializableEntity {
       if (data.scopes) this.scopes = data.scopes;
       if (data.label) this.label = data.label;
 
-      if (JSON.stringify(this.credential).length > Credential.MAX_JSON_STRING_LENGTH || 
-        JSON.stringify(this.scopes).length > Credential.MAX_JSON_STRING_LENGTH
-      ) {
+      if (!hasValidTextLengths(this)) {
         this.version = Credential.VERSION_INVALID;
       }
 
@@ -72,6 +78,10 @@ export class Credential implements SerializableEntity {
   }
 
   getByteLength(): number {
+    if (!hasValidTextLengths(this)) {
+      throw new Error('Credential text exceeds the 512-byte limit');
+    }
+
     let length = 0;
 
     length += varint.encodingLength(this.version);
@@ -81,18 +91,19 @@ export class Credential implements SerializableEntity {
 
     // Both the credential and scopes are serialized as JSON strings.
     const credStr = JSON.stringify(this.credential);
-    const credentialLength = credStr.length;
+    const credentialLength = Buffer.byteLength(credStr, 'utf8');
     length += varuint.encodingLength(credentialLength);
     length += credentialLength;
 
     const scopesStr = JSON.stringify(this.scopes);
-    const scopesLength = scopesStr.length;
+    const scopesLength = Buffer.byteLength(scopesStr, 'utf8');
     length += varuint.encodingLength(scopesLength);
     length += scopesLength;
 
     if (this.hasLabel()) {
-      length += varuint.encodingLength(this.label.length);
-      length += Buffer.from(this.label).length;
+      const labelLength = Buffer.byteLength(this.label, 'utf8');
+      length += varuint.encodingLength(labelLength);
+      length += labelLength;
     } 
 
     return length;
@@ -151,10 +162,10 @@ export class Credential implements SerializableEntity {
     this.flags = this.calcFlags();
   }
 
-  // The credentials is invalid if the version is not within the valid range or the key is null.
+  // The credential is invalid if its version, key, or serialized text lengths are invalid.
   isValid(): boolean {
     return this.version.gte(Credential.VERSION_FIRST) && this.version.lte(Credential.VERSION_LAST)
-      && this.credentialKey !== NULL_ADDRESS;
+      && this.credentialKey !== NULL_ADDRESS && hasValidTextLengths(this);
   }
 
   toJson(): CredentialJson {

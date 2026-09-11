@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import varuint from '../../../utils/varuint'
 import bufferutils from '../../../utils/bufferutils'
 import { fromBase58Check, nameAndParentAddrToIAddr, toBase58Check } from '../../../utils/address';
@@ -30,7 +31,7 @@ export type IdentityUpdateRequestDetailsJson = {
   txid?: string;
 }
 
-export class IdentityUpdateRequestDetails implements SerializableEntity {
+export class IdentityUpdateRequestDetails extends SerializableEntityBase implements SerializableEntity {
   flags?: BigNumber;
   requestID?: CompactIAddressObject;                 // ID of request, to be referenced in response
   identity?: PartialIdentity;         // Parts of the identity to update
@@ -56,6 +57,7 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     txid?: Buffer,
     signDataMap?: SignDataMap
   }) {
+    super();
     this.flags = data && data.flags ? data.flags : new BN("0", 10);
 
     if (data?.requestID) {
@@ -243,7 +245,7 @@ export class IdentityUpdateRequestDetails implements SerializableEntity {
     reader.offset = this.identity.fromBuffer(reader.buffer, reader.offset, parseVdxfObjects);
     
     if (this.expires()) {
-      this.expiryHeight = new BN(reader.readCompactSize());
+      this.expiryHeight = new BN(reader.readCompactSize(false));
     }
 
     if (this.containsSystem()) {

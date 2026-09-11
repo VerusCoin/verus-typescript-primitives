@@ -35,7 +35,7 @@ declare class BufferReader {
     readUInt32(): number;
     readUInt64(): number;
     readInt64(): BigNumber;
-    readCompactSize(): number;
+    readCompactSize(rangeCheck?: boolean): number;
     readVarInt(): import("bn.js");
     readSlice(n: number): Buffer<ArrayBuffer>;
     readVarSlice(): Buffer<ArrayBuffer>;

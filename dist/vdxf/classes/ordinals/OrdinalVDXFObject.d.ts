@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BigNumber } from "../../../utils/types/BigNumber";
 import { SerializableDataEntity, SerializableEntity } from "../../../utils/types/SerializableEntity";
 import { OrdinalVDXFObjectReservedData, OrdinalVDXFObjectReservedDataJson } from "../../../constants/ordinals/types";
@@ -20,7 +21,7 @@ export type OrdinalVDXFObjectJson = OrdinalVDXFObjectJsonTemplate<StringOrOrdina
 export type OrdinalVDXFObjectDataClass = new (...args: any[]) => OrdinalVDXFObjectReservedData;
 export type OrdinalVDXFObjectClass = new (...args: any[]) => OrdinalVDXFObject;
 export declare const getOrdinalVDXFObjectClassForType: (type: BigNumber) => OrdinalVDXFObjectClass;
-export declare class OrdinalVDXFObject implements SerializableEntity {
+export declare class OrdinalVDXFObject extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     type: BigNumber;
     key?: string;

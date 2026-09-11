@@ -72,8 +72,10 @@ class Response extends __1.VDXFObject {
         return writer.buffer;
     }
     fromDataBuffer(buffer, offset) {
-        const reader = new bufferutils_1.default.BufferReader(buffer, offset);
-        const reqLength = reader.readCompactSize();
+        const frameReader = new bufferutils_1.default.BufferReader(buffer, offset);
+        const reqLength = frameReader.readCompactSize();
+        const bodyOffset = frameReader.offset;
+        const reader = new bufferutils_1.default.BufferReader(frameReader.readSlice(reqLength));
         if (reqLength == 0) {
             throw new Error("Cannot create request from empty buffer");
         }
@@ -89,7 +91,11 @@ class Response extends __1.VDXFObject {
                 this.decision = _decision;
             }
         }
-        return reader.offset;
+        // ProvisioningResponse consumes its decision after this shared prefix.
+        if (this.vdxfkey !== keys_1.LOGIN_CONSENT_PROVISIONING_RESPONSE_VDXF_KEY.vdxfid && reader.offset !== reqLength) {
+            throw new Error("Response body length mismatch");
+        }
+        return bodyOffset + reader.offset;
     }
     toJson() {
         return {

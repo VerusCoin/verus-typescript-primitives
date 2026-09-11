@@ -1,6 +1,7 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
-export declare class UTXORef implements SerializableEntity {
+export declare class UTXORef extends SerializableEntityBase implements SerializableEntity {
     hash: Buffer;
     n: BigNumber;
     constructor(data?: {

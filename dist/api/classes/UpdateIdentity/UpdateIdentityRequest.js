@@ -13,20 +13,21 @@ class UpdateIdentityRequest extends ApiRequest_1.ApiRequest {
         this.sourceoffunds = sourceoffunds;
     }
     getParams() {
+        // The daemon parses a present fee slot as an amount and rejects null.
+        const feeoffer = this.sourceoffunds != null && this.feeoffer == null ? 0 : this.feeoffer;
         const params = [
             this.jsonidentity,
             this.returntx,
             this.tokenupdate,
-            this.feeoffer,
-            this.sourceoffunds
+            feeoffer,
+            this.sourceoffunds,
         ];
-        if (this.sourceoffunds)
-            return params;
-        else
-            return params.filter((x) => x != null);
+        return (0, ApiRequest_1.positionalParams)(params);
     }
     static fromJson(object) {
-        return new UpdateIdentityRequest(object.chain, object.jsonidentity, object.returntx != null ? object.returntx : undefined, object.tokenupdate != null ? object.tokenupdate : undefined, object.feeoffer != null ? object.feeoffer : undefined, object.sourceoffunds != null ? object.sourceoffunds : undefined);
+        return new UpdateIdentityRequest(object.chain, object.jsonidentity, object.returntx != null ? object.returntx : undefined, object.tokenupdate != null ? object.tokenupdate : undefined, object.feeoffer != null ? object.feeoffer : undefined, object.sourceoffunds != null
+            ? object.sourceoffunds
+            : undefined);
     }
     toJson() {
         return {

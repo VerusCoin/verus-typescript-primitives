@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { BN } from 'bn.js';
@@ -31,7 +32,7 @@ export interface AppEncryptionResponseDetailsJson {
   extendedspendingkey?: string;
 }
 
-export class AppEncryptionResponseDetails implements SerializableEntity {
+export class AppEncryptionResponseDetails extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   requestID?: CompactIAddressObject;
@@ -44,6 +45,7 @@ export class AppEncryptionResponseDetails implements SerializableEntity {
   static FLAG_HAS_EXTENDED_SPENDING_KEY = new BN(2, 10);
 
   constructor(data?: AppEncryptionResponseDetailsInterface) {
+    super();
     this.version = data?.version ?? new BN(1);
     this.flags = data?.flags ?? new BN(0, 10);
     this.incomingViewingKey = data?.incomingViewingKey ?? Buffer.alloc(32);

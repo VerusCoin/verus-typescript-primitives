@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
@@ -6,11 +7,12 @@ import { SerializableEntity } from '../utils/types/SerializableEntity';
 
 const { BufferReader, BufferWriter } = bufferutils
 
-export class UTXORef implements SerializableEntity {
+export class UTXORef extends SerializableEntityBase implements SerializableEntity {
   hash: Buffer;
   n: BigNumber;
 
   constructor(data?: { hash?: Buffer, n?: BigNumber }) {
+    super();
     this.hash = data?.hash || Buffer.alloc(0);
     this.n = data?.n || new BN(0);
   }

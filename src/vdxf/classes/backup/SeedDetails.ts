@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
 import bufferutils from '../../../utils/bufferutils';
 import varuint from '../../../utils/varuint';
@@ -24,7 +25,7 @@ export interface SeedDetailsJson {
   data: string;
 }
 
-export class SeedDetails implements SerializableEntity {
+export class SeedDetails extends SerializableEntityBase implements SerializableEntity {
   flags: BigNumber;
   seedFormat: BigNumber;
   encryptionFormat: BigNumber;
@@ -42,6 +43,7 @@ export class SeedDetails implements SerializableEntity {
   static DEFAULT_ENCRYPTION_FORMAT = SeedDetails.ENCRYPTION_FORMAT_NONE;
 
   constructor(data?: SeedDetailsInterface) {
+    super();
     this.flags = data?.flags || new BN(0, 10);
     this.seedFormat = data?.seedFormat || SeedDetails.DEFAULT_SEED_FORMAT;
     this.encryptionFormat = data?.encryptionFormat || SeedDetails.DEFAULT_ENCRYPTION_FORMAT;
@@ -121,7 +123,7 @@ export class SeedDetails implements SerializableEntity {
     this.flags = new BN(reader.readCompactSize(), 10);
     this.seedFormat = new BN(reader.readCompactSize(), 10);
     this.encryptionFormat = new BN(reader.readCompactSize(), 10);
-    this.KDFIters = this.containsKDFIters() ? new BN(reader.readCompactSize(), 10) : new BN(0, 10);
+    this.KDFIters = this.containsKDFIters() ? new BN(reader.readCompactSize(false), 10) : new BN(0, 10);
     this.data = reader.readVarSlice();
 
     return reader.offset;

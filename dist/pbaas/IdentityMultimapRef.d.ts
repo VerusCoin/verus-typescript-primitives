@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface IdentityMultimapRefJson {
@@ -10,7 +11,7 @@ export interface IdentityMultimapRefJson {
     datahash?: string;
     systemid?: string;
 }
-export declare class IdentityMultimapRef implements SerializableEntity {
+export declare class IdentityMultimapRef extends SerializableEntityBase implements SerializableEntity {
     version: BigNumber;
     flags: BigNumber;
     idID: string;

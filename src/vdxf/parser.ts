@@ -5,6 +5,13 @@ import bufferutils from "../utils/bufferutils";
 import { HASH160_BYTE_LENGTH, I_ADDR_VERSION } from "../constants/vdxf";
 import { toBase58Check } from "../utils/address";
 
+/**
+ * Parses legacy LoginConsentRequest and VerusPayInvoice deeplinks or QR strings.
+ *
+ * @deprecated Use the corresponding class's URI or QR parser directly.
+ * Parse generic request URIs with GenericRequest.fromWalletDeeplinkUri()
+ * and generic request QR strings with GenericRequest.fromQrString().
+ */
 export function parseVdxfObjectString(str: string): LoginConsentRequest | VerusPayInvoice {
   const isDeeplinkUri = str.includes("x-callback-url");
 

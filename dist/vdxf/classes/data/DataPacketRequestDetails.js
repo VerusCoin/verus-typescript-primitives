@@ -20,6 +20,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataPacketRequestDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../../../utils/varuint");
 const bufferutils_1 = require("../../../utils/bufferutils");
@@ -27,8 +28,9 @@ const { BufferReader, BufferWriter } = bufferutils_1.default;
 const pbaas_1 = require("../../../pbaas");
 const VerifiableSignatureData_1 = require("../VerifiableSignatureData");
 const CompactAddressObject_1 = require("../CompactAddressObject");
-class DataPacketRequestDetails {
+class DataPacketRequestDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.version = (data === null || data === void 0 ? void 0 : data.version) || DataPacketRequestDetails.DEFAULT_VERSION;
         this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0);
         this.signableObjects = (data === null || data === void 0 ? void 0 : data.signableObjects) || [];
@@ -165,7 +167,9 @@ class DataPacketRequestDetails {
             }
         }
         if (this.hasSignature()) {
-            const signature = new VerifiableSignatureData_1.VerifiableSignatureData();
+            const signature = new VerifiableSignatureData_1.VerifiableSignatureData({
+                isTestnet: rootSystemName.toLowerCase() === 'vrsctest',
+            });
             reader.offset = signature.fromBuffer(reader.buffer, reader.offset);
             this.signature = signature;
         }

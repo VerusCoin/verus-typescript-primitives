@@ -1,14 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OptCCParams = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bscript = require("../utils/script");
 const evals_1 = require("../utils/evals");
 const varuint_1 = require("../utils/varuint");
 const TxDestination_1 = require("./TxDestination");
 const bn_js_1 = require("bn.js");
 const bufferutils_1 = require("../utils/bufferutils");
-class OptCCParams {
+const ops_1 = require("../utils/ops");
+function chunkToData(chunk) {
+    if (Buffer.isBuffer(chunk))
+        return chunk;
+    if (chunk === ops_1.OPS.OP_0)
+        return Buffer.from([0]);
+    if (chunk >= ops_1.OPS.OP_1 && chunk <= ops_1.OPS.OP_16) {
+        return Buffer.from([chunk - ops_1.OPS.OP_1 + 1]);
+    }
+    throw new Error('invalid opcode in optional parameters');
+}
+class OptCCParams extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             const d = data;
             if (Object.prototype.hasOwnProperty.call(d, 'eval_code')) {
@@ -144,6 +157,7 @@ class OptCCParams {
             this.version.gt(new bn_js_1.BN(3)) ||
             this.evalCode.lt(new bn_js_1.BN(0)) ||
             this.evalCode.gt(new bn_js_1.BN(0x1a)) || // this is the last valid eval code as of version 3
+            this.m.gt(this.n) ||
             (this.version.lt(new bn_js_1.BN(3)) && this.n.lt(new bn_js_1.BN(1))) ||
             this.n.gt(new bn_js_1.BN(4)) ||
             (this.version.lt(new bn_js_1.BN(3)) && this.n.gte(new bn_js_1.BN(chunks.length))) ||
@@ -154,20 +168,17 @@ class OptCCParams {
         // now, we have chunks left that are either destinations or data vectors
         const limit = this.n.eq(new bn_js_1.BN(chunks.length)) ? this.n : this.n.add(new bn_js_1.BN(1));
         this.destinations = [];
+        this.vData = [];
         let loop;
         for (loop = 1; this.version && loop < limit.toNumber(); loop++) {
-            const currChunk = chunks[loop];
-            if (Buffer.isBuffer(currChunk)) {
-                const oneDest = TxDestination_1.TxDestination.fromChunk(currChunk);
-                this.destinations.push(oneDest);
-            }
+            const currChunk = chunkToData(chunks[loop]);
+            const oneDest = TxDestination_1.TxDestination.fromChunk(currChunk);
+            this.destinations.push(oneDest);
         }
         for (; this.version && loop < chunks.length; loop++) {
-            const currChunk = chunks[loop];
-            if (Buffer.isBuffer(currChunk))
-                this.vData.push(currChunk);
+            this.vData.push(chunkToData(chunks[loop]));
         }
-        return offset;
+        return reader.offset;
     }
     internalGetByteLength(asChunk) {
         const chunks = [Buffer.alloc(4)];

@@ -1,4 +1,4 @@
-import { ApiRequest } from "../../ApiRequest";
+import { ApiRequest, positionalParams } from "../../ApiRequest";
 import { RequestParams, ApiPrimitiveJson } from "../../ApiPrimitive";
 import { GET_IDENTITY_CONTENT } from "../../../constants/cmds";
 
@@ -35,10 +35,10 @@ export class GetIdentityContentRequest extends ApiRequest {
       this.heightend,
       this.txproof,
       this.txproofheight,
-      this.vdxfkey
+      this.vdxfkey,
     ];
 
-    return params.filter((x) => x != null);
+    return positionalParams(params);
   }
 
   static fromJson(object: ApiPrimitiveJson): GetIdentityContentRequest {
@@ -48,7 +48,9 @@ export class GetIdentityContentRequest extends ApiRequest {
       object.heightstart != null ? (object.heightstart as number) : undefined,
       object.heightend != null ? (object.heightend as number) : undefined,
       object.txproof != null ? (object.txproof as boolean) : undefined,
-      object.txproofheight != null ? (object.txproofheight as number) : undefined,
+      object.txproofheight != null
+        ? (object.txproofheight as number)
+        : undefined,
       object.vdxfkey != null ? (object.vdxfkey as string) : undefined
     );
   }
@@ -61,7 +63,7 @@ export class GetIdentityContentRequest extends ApiRequest {
       heightend: this.heightend,
       txproof: this.txproof,
       txproofheight: this.txproofheight,
-      vdxfkey: this.vdxfkey
+      vdxfkey: this.vdxfkey,
     };
   }
 }

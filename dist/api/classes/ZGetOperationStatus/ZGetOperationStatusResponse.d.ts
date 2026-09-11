@@ -12,7 +12,9 @@ export type z_operation = {
         message: string;
     };
     execution_secs?: number;
-    params: Array<{
+    params: {
+        [key: string]: any;
+    } | Array<{
         [key: string]: any;
     }>;
 };

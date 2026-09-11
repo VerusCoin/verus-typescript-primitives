@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticationResponseDetails = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const varint_1 = require("../../../utils/varint");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const createHash = require("create-hash");
 const bn_js_1 = require("bn.js");
 const CompactAddressObject_1 = require("../CompactAddressObject");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
-class AuthenticationResponseDetails {
+class AuthenticationResponseDetails extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         this.flags = data && data.flags ? data.flags : new bn_js_1.BN("0", 10);
         this.requestID = (data === null || data === void 0 ? void 0 : data.requestID) || null;
         this.setFlags();

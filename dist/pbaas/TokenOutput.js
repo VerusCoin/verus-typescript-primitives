@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenOutput = exports.TOKEN_OUTPUT_VERSION_MULTIVALUE = exports.TOKEN_OUTPUT_VERSION_LASTVALID = exports.TOKEN_OUTPUT_VERSION_FIRSTVALID = exports.TOKEN_OUTPUT_VERSION_CURRENT = exports.TOKEN_OUTPUT_VERSION_INVALID = void 0;
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const CurrencyValueMap_1 = require("./CurrencyValueMap");
 const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
@@ -11,8 +12,23 @@ exports.TOKEN_OUTPUT_VERSION_CURRENT = new bn_js_1.BN(1, 10);
 exports.TOKEN_OUTPUT_VERSION_FIRSTVALID = new bn_js_1.BN(1, 10);
 exports.TOKEN_OUTPUT_VERSION_LASTVALID = new bn_js_1.BN(1, 10);
 exports.TOKEN_OUTPUT_VERSION_MULTIVALUE = new bn_js_1.BN('80000000', 16);
-class TokenOutput {
+function getSerializationData(version, reserveValues) {
+    const multivalue = reserveValues.valueMap.size !== 1;
+    const multivalueFlag = version.and(exports.TOKEN_OUTPUT_VERSION_MULTIVALUE);
+    const semanticVersion = version.xor(multivalueFlag);
+    return {
+        version: multivalue
+            ? semanticVersion.or(exports.TOKEN_OUTPUT_VERSION_MULTIVALUE)
+            : semanticVersion,
+        reserveValues: new CurrencyValueMap_1.CurrencyValueMap({
+            valueMap: reserveValues.valueMap,
+            multivalue
+        })
+    };
+}
+class TokenOutput extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
+        super();
         if (data != null) {
             if (Object.prototype.hasOwnProperty.call(data, 'reserve_values')) {
                 throw new Error("TokenOutput: snake_case property names are no longer supported. Use 'reserveValues' instead of 'reserve_values'.");
@@ -30,23 +46,23 @@ class TokenOutput {
     /** @deprecated Use reserveValues instead */
     get reserve_values() { return this.reserveValues; }
     getByteLength() {
-        return varint_1.default.encodingLength(this.version) + this.reserveValues.getByteLength();
+        const { version, reserveValues } = getSerializationData(this.version, this.reserveValues);
+        return varint_1.default.encodingLength(version) + reserveValues.getByteLength();
     }
     toBuffer() {
-        const multivalue = !!(this.version.and(exports.TOKEN_OUTPUT_VERSION_MULTIVALUE).toNumber());
-        if (multivalue) {
-            this.reserveValues.multivalue = true;
-        }
-        const serializedSize = this.getByteLength();
+        const { version, reserveValues } = getSerializationData(this.version, this.reserveValues);
+        const serializedSize = varint_1.default.encodingLength(version) + reserveValues.getByteLength();
         const writer = new BufferWriter(Buffer.alloc(serializedSize));
-        writer.writeVarInt(this.version);
-        writer.writeSlice(this.reserveValues.toBuffer());
+        writer.writeVarInt(version);
+        writer.writeSlice(reserveValues.toBuffer());
         return writer.buffer;
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
-        this.version = reader.readVarInt();
-        const multivalue = !!(this.version.and(exports.TOKEN_OUTPUT_VERSION_MULTIVALUE).toNumber());
+        const wireVersion = reader.readVarInt();
+        const multivalueFlag = wireVersion.and(exports.TOKEN_OUTPUT_VERSION_MULTIVALUE);
+        const multivalue = !multivalueFlag.isZero();
+        this.version = wireVersion.xor(multivalueFlag);
         this.reserveValues = new CurrencyValueMap_1.CurrencyValueMap({ multivalue });
         reader.offset = this.reserveValues.fromBuffer(reader.buffer, reader.offset);
         return reader.offset;

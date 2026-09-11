@@ -1,5 +1,5 @@
 import { DEFAULT_VERUS_CHAINID, DEFAULT_VERUS_CHAINNAME, KOMODO_ASSETCHAIN_MAXLEN, NULL_I_ADDR } from "../constants/pbaas";
-import { I_ADDR_VERSION, X_ADDR_VERSION } from "../constants/vdxf";
+import { HASH160_BYTE_LENGTH, I_ADDR_VERSION, X_ADDR_VERSION } from "../constants/vdxf";
 import { hash, hash160 } from "./hash";
 import { toLowerCaseCLocale } from "./tolower";
 
@@ -26,13 +26,17 @@ export const fromBase58Check = (
 };
 
 export const toBase58Check = (hash: Buffer, version: number): string => {
+  if (!Buffer.isBuffer(hash) || hash.length !== HASH160_BYTE_LENGTH) {
+    throw new TypeError("Expected a 20-byte hash Buffer");
+  }
+
   // Zcash adds an extra prefix resulting in a bigger (22 bytes) payload. We identify them Zcash by checking if the
   // version is multibyte (2 bytes instead of 1)
   var multibyte = version > 0xff;
   var size = multibyte ? 22 : 21;
   var offset = multibyte ? 2 : 1;
 
-  var payload = Buffer.allocUnsafe(size);
+  var payload = Buffer.alloc(size);
   multibyte
     ? payload.writeUInt16BE(version, 0)
     : payload.writeUInt8(version, 0);
@@ -59,14 +63,18 @@ export const nameAndParentAddrToIAddr = (name: string, parentIAddr?: string): st
   return nameAndParentAddrToAddr(name, parentIAddr, I_ADDR_VERSION)
 }
 
-export const fqnToAddress = (fullyqualifiedname: string, rootSystemName: string = "", version = I_ADDR_VERSION): string => {
-  const splitFqnAt = fullyqualifiedname.split("@").filter(x => x.length > 0);
+function splitFullyQualifiedName(fullyqualifiedname: string, rootSystemName: string): string[] {
+  const splitFqnAt = fullyqualifiedname.split("@");
 
-  if (splitFqnAt.length !== 1) throw new Error("Invalid name")
+  if (
+    splitFqnAt.length > 2 ||
+    splitFqnAt[0].length === 0 ||
+    (splitFqnAt.length === 2 && splitFqnAt[1].length !== 0)
+  ) {
+    throw new Error("Invalid name");
+  }
 
-  const cleanFqn = splitFqnAt[0];
-
-  const splitFqnDot = cleanFqn.split('.');
+  const splitFqnDot = splitFqnAt[0].split(".");
 
   if (
     toLowerCaseCLocale(splitFqnDot[splitFqnDot.length - 1]) !== toLowerCaseCLocale(rootSystemName) &&
@@ -74,6 +82,18 @@ export const fqnToAddress = (fullyqualifiedname: string, rootSystemName: string 
   ) {
     splitFqnDot.push(rootSystemName)
   }
+
+  return splitFqnDot.map((component, i) => {
+    if (i === splitFqnDot.length - 1 && component === "") return component;
+
+    const normalized = normalizeNameComponent(component);
+    if (normalized === null) throw new Error("Invalid name");
+    return normalized;
+  });
+}
+
+export const fqnToAddress = (fullyqualifiedname: string, rootSystemName: string = "", version = I_ADDR_VERSION): string => {
+  const splitFqnDot = splitFullyQualifiedName(fullyqualifiedname, rootSystemName);
 
   const name = splitFqnDot.shift();
 
@@ -109,17 +129,7 @@ export const fqnToAddress = (fullyqualifiedname: string, rootSystemName: string 
 }
 
 export const fqnToParentFqn = (fullyqualifiedname: string, rootSystemName: string = ""): string | null => {
-  const splitFqnAt = fullyqualifiedname.split("@").filter(x => x.length > 0);
-  if (splitFqnAt.length !== 1) throw new Error("Invalid name");
-
-  const splitFqnDot = splitFqnAt[0].split('.');
-
-  if (
-    toLowerCaseCLocale(splitFqnDot[splitFqnDot.length - 1]) !== toLowerCaseCLocale(rootSystemName) &&
-    splitFqnDot[splitFqnDot.length - 1] !== ""
-  ) {
-    splitFqnDot.push(rootSystemName);
-  }
+  const splitFqnDot = splitFullyQualifiedName(fullyqualifiedname, rootSystemName);
 
   splitFqnDot.shift();
 
@@ -154,7 +164,7 @@ function trimSpaces(
     "\u202F", "\u205F", "\u3000"
   ];
 
-  const isDual = (char: string) => dualSpaces.includes(char);
+  const isDual = (char: string) => removeDuals ? dualSpaces.includes(char) : char === " ";
   const chars = [...name];
   const toRemove: number[] = [];
   const allDuals: number[] = [];
@@ -207,6 +217,22 @@ function trimSpaces(
   }
 
   return chars.join("");
+}
+
+function normalizeNameComponent(name: string, removeDuals: boolean = false): string | null {
+  const nameBuffer = Buffer.from(name, "utf8");
+
+  if (nameBuffer.length > KOMODO_ASSETCHAIN_MAXLEN - 1) {
+    const truncatedBuffer = nameBuffer.subarray(0, KOMODO_ASSETCHAIN_MAXLEN - 1);
+    const truncatedName = truncatedBuffer.toString("utf8");
+
+    // The daemon rejects a name if byte truncation splits a UTF-8 character.
+    if (!Buffer.from(truncatedName, "utf8").equals(truncatedBuffer)) return null;
+
+    name = truncatedName;
+  }
+
+  return name.length === 0 || name !== trimSpaces(name, removeDuals) ? null : name;
 }
 
 function parseSubNames(
@@ -266,16 +292,9 @@ function parseSubNames(
   }
 
   for (let i = 0; i < retNames.length; i++) {
-    if (retNames[i].length > KOMODO_ASSETCHAIN_MAXLEN - 1) {
-      retNames[i] = retNames[i].slice(0, KOMODO_ASSETCHAIN_MAXLEN - 1);
-    }
-
-    if (
-      retNames[i].length === 0 ||
-      retNames[i] !== trimSpaces(retNames[i], removeDuals)
-    ) {
-      return { names: [], chain: "" };
-    }
+    const normalized = normalizeNameComponent(retNames[i], removeDuals);
+    if (normalized === null) return { names: [], chain: "" };
+    retNames[i] = normalized;
   }
 
   return { names: retNames, chain };
@@ -361,10 +380,19 @@ export function getDataKey(
   return { id: getID(keyCopy, parent, undefined, version), namespace: nameSpaceID };
 }
 
-export const decodeDestination = (destination: string): Buffer => {
+export const decodeDestination = (destination: string, expectedVersion?: number): Buffer => {
 
   try {
     const data = fromBase58Check(destination);
+
+    if (
+      expectedVersion != null &&
+      (data.version !== expectedVersion ||
+        toBase58Check(data.hash, expectedVersion) !== destination)
+    ) {
+      throw new Error("Destination address version mismatch");
+    }
+
     return data.hash;
   
   } catch (e) {
@@ -373,12 +401,14 @@ export const decodeDestination = (destination: string): Buffer => {
 }
  
 export const decodeEthDestination = (destination: string): Buffer => {
+  const originalDestination = destination;
+
   if (destination.startsWith("0x")) {
     destination = destination.slice(2);
   }
 
-  if (destination.length !== 40) {
-    throw new Error("Invalid Ethereum address: " + destination);
+  if (!/^[0-9a-fA-F]{40}$/.test(destination)) {
+    throw new Error("Invalid Ethereum address: " + originalDestination);
   }
 
   return Buffer.from(destination, "hex");

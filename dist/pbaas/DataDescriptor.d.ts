@@ -1,9 +1,11 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { BufferDataVdxfObject } from '../vdxf/index';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface DataDescriptorJson {
     version: number;
     flags?: number;
+    vdxfkey?: string;
     objectdata?: string | {
         ['message']: string;
     } | object;
@@ -14,7 +16,7 @@ export interface DataDescriptorJson {
     ivk?: string;
     ssk?: string;
 }
-export declare class DataDescriptor implements SerializableEntity {
+export declare class DataDescriptor extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static VERSION_FIRST: import("bn.js");
     static FIRST_VERSION: import("bn.js");
@@ -27,9 +29,11 @@ export declare class DataDescriptor implements SerializableEntity {
     static FLAG_SYMMETRIC_ENCRYPTION_KEY_PRESENT: import("bn.js");
     static FLAG_LABEL_PRESENT: import("bn.js");
     static FLAG_MIME_TYPE_PRESENT: import("bn.js");
+    static FLAG_VDXF_KEY_PRESENT: import("bn.js");
     static FLAG_MASK: import("bn.js");
     version: BigNumber;
     flags: BigNumber;
+    vdxfKey: string;
     objectdata: Buffer;
     label: string;
     mimeType: string;
@@ -40,6 +44,7 @@ export declare class DataDescriptor implements SerializableEntity {
     constructor(data?: {
         version?: BigNumber;
         flags?: BigNumber;
+        vdxfKey?: string;
         objectdata?: Buffer;
         label?: string;
         mimeType?: string;
@@ -54,6 +59,7 @@ export declare class DataDescriptor implements SerializableEntity {
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
     hasEncryptedData(): boolean;
+    hasVDXFKey(): boolean;
     hasSalt(): boolean;
     hasEPK(): boolean;
     hasMIME(): boolean;

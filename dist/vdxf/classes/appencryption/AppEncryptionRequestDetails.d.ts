@@ -16,6 +16,7 @@
  * The FLAG_RETURN_ESK flag can be set to signal that the Extended Spending Key should be returned.
  */
 import { BigNumber } from '../../../utils/types/BigNumber';
+import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
 import { SerializableEntity } from '../../../utils/types/SerializableEntity';
 import { CompactIAddressObject, CompactAddressObjectJson } from '../CompactAddressObject';
 import { SaplingPaymentAddress } from '../../../pbaas';
@@ -30,12 +31,12 @@ export interface AppEncryptionRequestDetailsInterface {
 export interface AppEncryptionRequestDetailsJson {
     version: number;
     flags: number;
-    encryptresponsetoaddress: string;
+    encryptresponsetoaddress?: string;
     derivationnumber: number;
     derivationid?: CompactAddressObjectJson;
     requestid?: CompactAddressObjectJson;
 }
-export declare class AppEncryptionRequestDetails implements SerializableEntity {
+export declare class AppEncryptionRequestDetails extends SerializableEntityBase implements SerializableEntity {
     static VERSION_INVALID: import("bn.js");
     static FIRST_VERSION: import("bn.js");
     static LAST_VERSION: import("bn.js");

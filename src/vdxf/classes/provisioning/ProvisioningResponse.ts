@@ -1,6 +1,7 @@
 import { LOGIN_CONSENT_PROVISIONING_RESPONSE_VDXF_KEY, VerusIDSignatureInterface } from "../../";
 import { ProvisioningDecision, ProvisioningDecisionInterface } from "./ProvisioningDecision";
 import { Response } from "../Response";
+import bufferutils from "../../../utils/bufferutils";
 
 export interface ProvisioningResponseInterface {
   system_id: string;
@@ -31,11 +32,16 @@ export class ProvisioningResponse extends Response {
   }
 
   fromDataBuffer(buffer: Buffer, offset?: number): number {
-    let _offset = super.fromDataBuffer(buffer, offset);
+    const frameReader = new bufferutils.BufferReader(buffer, offset);
+    frameReader.readVarSlice();
+    const bodyEnd = frameReader.offset;
+    const boundedBuffer = buffer.subarray(0, bodyEnd);
+    let _offset = super.fromDataBuffer(boundedBuffer, offset);
 
     this.decision = new ProvisioningDecision();
-    _offset = this.decision.fromBuffer(buffer, _offset);
+    _offset = this.decision.fromBuffer(boundedBuffer, _offset);
 
+    if (_offset !== bodyEnd) throw new Error("Provisioning response body length mismatch");
     return _offset;
   }
 }

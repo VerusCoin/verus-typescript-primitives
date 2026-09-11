@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { IdentityID } from './IdentityID';
 import { KeyID } from './KeyID';
@@ -9,7 +10,7 @@ export interface TxDestinationVariantInterface {
     new (hash?: Buffer): TxDestinationVariant;
 }
 export type TxDestinationVariant = IdentityID | KeyID | NoDestination | PubKey | UnknownID;
-export declare class TxDestination implements SerializableEntity {
+export declare class TxDestination extends SerializableEntityBase implements SerializableEntity {
     type: BigNumber;
     data: TxDestinationVariant;
     static TYPE_INVALID: import("bn.js");

@@ -1,5 +1,6 @@
 import { ApiCommunication } from "./ApiCommunication";
-import { ApiPrimitiveJson, RequestParams } from "./ApiPrimitive";
+import { ApiPrimitive, ApiPrimitiveJson, RequestParams } from "./ApiPrimitive";
+export declare function positionalParams(params: Array<ApiPrimitive | undefined>): RequestParams;
 export declare abstract class ApiRequest implements ApiCommunication {
     chain: string;
     cmd: string;

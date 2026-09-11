@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GeneralTypeOrdinalVDXFObject = exports.OrdinalVDXFObject = exports.getOrdinalVDXFObjectClassForType = void 0;
+const SerializableEntityBase_1 = require("../../../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const bn_js_1 = require("bn.js");
 const varuint_1 = require("../../../utils/varuint");
@@ -28,10 +29,11 @@ const getOrdinalVDXFObjectClassForType = (type) => {
         throw new Error("Unrecognized vdxf ordinal object type " + type.toNumber());
 };
 exports.getOrdinalVDXFObjectClassForType = getOrdinalVDXFObjectClassForType;
-class OrdinalVDXFObject {
+class OrdinalVDXFObject extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(request = {
         type: ordinals_1.DATA_DESCRIPTOR_VDXF_ORDINAL
     }) {
+        super();
         if (request.key) {
             this.type = request.type ? request.type : ordinals_1.VDXF_OBJECT_RESERVED_BYTE_I_ADDR;
             this.key = request.key;
@@ -160,8 +162,8 @@ class OrdinalVDXFObject {
         const reader = new bufferutils_1.default.BufferReader(buffer, offset);
         let type = new bn_js_1.BN(reader.readCompactSize());
         const rootSystemId = (0, address_1.toIAddress)(rootSystemName);
-        const Entity = (0, exports.getOrdinalVDXFObjectClassForType)(type);
-        const ord = new Entity({ type });
+        let Entity = (0, exports.getOrdinalVDXFObjectClassForType)(type);
+        let ord = new Entity({ type });
         let key;
         if (optimizeWithOrdinal) {
             let vdxfKey;
@@ -180,6 +182,8 @@ class OrdinalVDXFObject {
             }
             if (OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.vdxfKeyHasOrdinal(vdxfKey)) {
                 type = new bn_js_1.BN(OrdinalVDXFObjectOrdinalMap_1.OrdinalVDXFObjectOrdinalMap.getOrdinalForVdxfKey(vdxfKey));
+                Entity = (0, exports.getOrdinalVDXFObjectClassForType)(type);
+                ord = new Entity({ type });
             }
         }
         reader.offset = ord.fromBufferOptionalType(buffer, reader.offset, type, key, rootSystemName);

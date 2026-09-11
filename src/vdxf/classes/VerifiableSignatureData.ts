@@ -1,3 +1,4 @@
+import { SerializableEntityBase } from '../../utils/types/SerializableEntityBase';
 import varuint from '../../utils/varuint'
 import { fromBase58Check, toBase58Check } from "../../utils/address";
 import bufferutils from '../../utils/bufferutils'
@@ -60,7 +61,7 @@ export interface CliSignatureData {
   boundhashes?: Array<string>;
 }
 
-export class VerifiableSignatureData implements SerializableEntity {
+export class VerifiableSignatureData extends SerializableEntityBase implements SerializableEntity {
   version: BigNumber;
   flags: BigNumber;
   signatureVersion: BigNumber;
@@ -87,6 +88,7 @@ export class VerifiableSignatureData implements SerializableEntity {
   static FLAG_HAS_SYSTEM = new BN(16);
 
   constructor(data?: VerifiableSignatureDataInterface) {
+    super();
     this.version = data && data.version ? data.version : new BN(0);
     this.flags = data && data.flags ? data.flags : new BN(0);
     this.signatureVersion = data && data.signatureVersion ? data.signatureVersion : new BN(2, 10);
@@ -175,6 +177,7 @@ export class VerifiableSignatureData implements SerializableEntity {
     if (this.vdxfKeyNames) this.setHasVdxfKeyNames();
     if (this.boundHashes) this.setHasBoundHashes();
     if (this.statements) this.setHasStatements();
+    if (this.systemID) this.setHasSystem();
   }
 
   private getBufferEncodingLength(buf: Buffer) {
@@ -224,9 +227,9 @@ export class VerifiableSignatureData implements SerializableEntity {
     }
 
     if (this.vdxfKeyNames && this.vdxfKeyNames.length > 0) {
-      // Sort vdxfKeyNames before writing
-      const sortedNames = [...this.vdxfKeyNames].sort();
-      bufferWriter.writeVector(sortedNames.map(x => Buffer.from(x, 'utf8')));
+      // Match the daemon's std::string ordering by comparing UTF-8 bytes.
+      const sortedNames = this.vdxfKeyNames.map(x => Buffer.from(x, 'utf8')).sort(Buffer.compare);
+      bufferWriter.writeVector(sortedNames);
     }
 
     if (this.boundHashes && this.boundHashes.length > 0) {
@@ -359,12 +362,17 @@ export class VerifiableSignatureData implements SerializableEntity {
 
     this.hashType = new BN(bufferReader.readCompactSize());
 
+    const rootSystemName = this.isTestnet ? 'VRSCTEST' : 'VRSC';
+
     if (this.hasSystem()) {
-      this.systemID = new CompactIAddressObject();
+      this.systemID = new CompactIAddressObject({ type: CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
       bufferReader.offset = this.systemID.fromBuffer(bufferReader.buffer, bufferReader.offset);
+    } else {
+      const defaultChainId = this.isTestnet ? TESTNET_VERUS_CHAINID : DEFAULT_VERUS_CHAINID;
+      this.systemID = CompactIAddressObject.fromAddress(defaultChainId, rootSystemName);
     }
 
-    this.identityID = new CompactIAddressObject();
+    this.identityID = new CompactIAddressObject({ type: CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
     bufferReader.offset = this.identityID.fromBuffer(bufferReader.buffer, bufferReader.offset);
 
     if (this.hasVdxfKeys()) {
