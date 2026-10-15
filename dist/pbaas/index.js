@@ -15,6 +15,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Credential"), exports);
+__exportStar(require("./NameReservation"), exports);
+__exportStar(require("./AdvancedNameReservation"), exports);
+__exportStar(require("./CommitmentHash"), exports);
+__exportStar(require("./transaction/IdentityCommitmentScript"), exports);
+__exportStar(require("./transaction/IdentityReservationScript"), exports);
 __exportStar(require("./CurrencyValueMap"), exports);
 __exportStar(require("./Identity"), exports);
 __exportStar(require("./ReserveTransfer"), exports);

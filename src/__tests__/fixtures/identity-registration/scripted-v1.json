@@ -1,0 +1,2265 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "generator": "scripts/generate-identity-registration-script-fixtures.js",
+    "readOnlyRPCMethods": [
+      "getinfo",
+      "getvdxfid",
+      "decodescript"
+    ],
+    "chain": "VRSCTEST",
+    "chainID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    "daemonVersion": 2000753,
+    "protocolVersion": 170010,
+    "interpretation": "Independent synthetic bytes decoded by the daemon. Decoding does not establish consensus validity or registration eligibility."
+  },
+  "cases": [
+    {
+      "name": "legacy-one-byte",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "A",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "01413132333435363738393a3b3c3d3e3f40414243440100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504b4b313c037da5af61eb97f29629b83a9f9b93a5fcc4c5204031201011504b4b313c037da5af61eb97f29629b83a9f9b93a5f3601413132333435363738393a3b3c3d3e3f4041424344010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "A",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iKwyb72xPxe83q2FwM6r2GQMg2v1obzNN1"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iKwyb72xPxe83q2FwM6r2GQMg2v1obzNN1"
+        ],
+        "p2sh": "bPZxLo4EByKxPfHxSZ6TMpE8NrY3iEYczH"
+      }
+    },
+    {
+      "name": "legacy-mixed-case",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "ALIce",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "05414c49636500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b0403000101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cccc4c560403120101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc3a05414c4963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "ALIce",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        ],
+        "p2sh": "bUp7ncB5ToKfnrR5PFXA9fsgDboUviURWx"
+      }
+    },
+    {
+      "name": "legacy-lower-case",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "alice",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "05616c6963650000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b0403000101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cccc4c560403120101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc3a05616c6963650000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "alice",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        ],
+        "p2sh": "bUecqerwH8h7oyu9QpXeMmkABKQmwFT2f8"
+      }
+    },
+    {
+      "name": "legacy-ascii-64",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "40616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161613132333435363738393a3b3c3d3e3f4041424344ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b04030001011504ea4b7496ad48f2572d01102a35356f4e50fe5e96cc4c9204031201011504ea4b7496ad48f2572d01102a35356f4e50fe5e964c7540616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161613132333435363738393a3b3c3d3e3f4041424344ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iQqMwhYVZTBFJG19euxmvPx5rub9QJpGE9"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQqMwhYVZTBFJG19euxmvPx5rub9QJpGE9"
+        ],
+        "p2sh": "bY54Mt6H6psnuuZkFNicAac4ABuNUZg9PV"
+      }
+    },
+    {
+      "name": "legacy-utf8-two-byte-64",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "éééééééééééééééééééééééééééééééé",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "40c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a900000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b0403000101150442a138f427249ffcead083d01fac0b80cb2ed52ecc4c920403120101150442a138f427249ffcead083d01fac0b80cb2ed52e4c7540c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a90000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU"
+        ],
+        "p2sh": "bYKm3MBPt6kkXAfcDWEzBneaCzXJstiu6N"
+      }
+    },
+    {
+      "name": "legacy-utf8-four-byte-64",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "40f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b040300010115049c73bb2c83d60fe3983ad1ef48c6254844145893cc4c92040312010115049c73bb2c83d60fe3983ad1ef48c62548441458934c7540f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iHjmV9GhFvc9ippt781cGpJQi9nTxdm2Xr"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iHjmV9GhFvc9ippt781cGpJQi9nTxdm2Xr"
+        ],
+        "p2sh": "bUrFrCBYaFcun21QhQh2wCBBGkBXn2yXKc"
+      }
+    },
+    {
+      "name": "legacy-composed",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "é",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "02c3a93132333435363738393a3b3c3d3e3f4041424344000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b0403000101150438b7a11211a0899455e1d72c469e6a466e19d969cc4c530403120101150438b7a11211a0899455e1d72c469e6a466e19d9693702c3a93132333435363738393a3b3c3d3e3f4041424344000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "é",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "i8eRFbfXdV2dyLMp4kmz2cUiEypJ3DfDrT"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i8eRFbfXdV2dyLMp4kmz2cUiEypJ3DfDrT"
+        ],
+        "p2sh": "bRjzpaVW258WkcffRMM2DiUMRc5EGndVbo"
+      }
+    },
+    {
+      "name": "legacy-decomposed",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "é",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "0365cc810000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b04030001011504892f55d7254e6ee7354be25de84be0dab8b934d1cc4c5404031201011504892f55d7254e6ee7354be25de84be0dab8b934d1380365cc810000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "é",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iFytiGmuFg2v73sc11aGytUZYsfzoeTCFe"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iFytiGmuFg2v73sc11aGytUZYsfzoeTCFe"
+        ],
+        "p2sh": "bEWbAjaEL4dhFLcPcbCCx6EFyovzQFrf4a"
+      }
+    },
+    {
+      "name": "legacy-upper-accent",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "Éxample",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "08c38978616d706c6500000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504ed9624c98aff91c0d53e525d64c10328815d12decc4c5904031201011504ed9624c98aff91c0d53e525d64c10328815d12de3d08c38978616d706c650000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "Éxample",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD"
+        ],
+        "p2sh": "bZdQGZPjBgmSnmS42CLUTVKBX4ptnPKS4k"
+      }
+    },
+    {
+      "name": "legacy-lower-accent",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "éxample",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "08c3a978616d706c653132333435363738393a3b3c3d3e3f40414243440000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b040300010115041a68ef35f1f55633ca5b61917e0260401c4b883dcc4c59040312010115041a68ef35f1f55633ca5b61917e0260401c4b883d3d08c3a978616d706c653132333435363738393a3b3c3d3e3f4041424344000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "éxample",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR"
+        ],
+        "p2sh": "bJBjg8hyR7hkdFnxjMvaaCqzShjFVusWiF"
+      }
+    },
+    {
+      "name": "legacy-internal-space",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "Alice Smith",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "0b416c69636520536d6974680000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b040300010115048599e5b143892af2a7ba2687672b0283b5160a8acc4c5c040312010115048599e5b143892af2a7ba2687672b0283b5160a8a400b416c69636520536d6974680000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "Alice Smith",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iFewfZJ2jxG1QNhZNWubjECz7Sq16vh1ad"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iFewfZJ2jxG1QNhZNWubjECz7Sq16vh1ad"
+        ],
+        "p2sh": "bCwtwtX7VHpeEX3DMUq36fpuncZuCheTpB"
+      }
+    },
+    {
+      "name": "legacy-internal-nbsp",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "Alice Smith",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "0c416c696365c2a0536d6974680000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b0403000101150486cbe3c21361166ba25e71acbce165446ec16894cc4c5d0403120101150486cbe3c21361166ba25e71acbce165446ec16894410c416c696365c2a0536d6974680000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "Alice Smith",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iFmGEHW8unj6sZy9NP6XQoZC6mdmvxw5xz"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iFmGEHW8unj6sZy9NP6XQoZC6mdmvxw5xz"
+        ],
+        "p2sh": "bMiANECLJdUC9cRPWY97dMVyWm7DtedM1B"
+      }
+    },
+    {
+      "name": "legacy-mixed-unicode",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "⚡spark",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "08e29aa1737061726b3132333435363738393a3b3c3d3e3f40414243440100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504bad91763014bc4e3f99a393a37f8a9c0aa42624bcc4c5904031201011504bad91763014bc4e3f99a393a37f8a9c0aa42624b3d08e29aa1737061726b3132333435363738393a3b3c3d3e3f4041424344010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "⚡spark",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iLWVBXdbL2EqaHrGit8LMQTdrxJoUvyH9F"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iLWVBXdbL2EqaHrGit8LMQTdrxJoUvyH9F"
+        ],
+        "p2sh": "baz3upAseDmwzB4q9Lka5QoRKvyUYDyV9k"
+      }
+    },
+    {
+      "name": "advanced-one-byte",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "A",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "010000000141a6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f40414243440100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504b4b313c037da5af61eb97f29629b83a9f9b93a5fcc4c6b04030a01011504b4b313c037da5af61eb97f29629b83a9f9b93a5f4c4e010000000141a6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f4041424344010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "A",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "nameid": "iKwyb72xPxe83q2FwM6r2GQMg2v1obzNN1"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iKwyb72xPxe83q2FwM6r2GQMg2v1obzNN1"
+        ],
+        "p2sh": "bJpS7oc7MsnfGnFNh42w5iqrNosjWbRqTw"
+      }
+    },
+    {
+      "name": "advanced-mixed-case",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "ALIce",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "0100000005414c496365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b040300010115048190173a0a560fe16b1bd2e0082974253ccb3543cc4c6f04030a010115048190173a0a560fe16b1bd2e0082974253ccb35434c520100000005414c496365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "ALIce",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "",
+          "nameid": "iFHbDRShoAa69DJZc3bEHbfBcfFwbFQ8RN"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iFHbDRShoAa69DJZc3bEHbfBcfFwbFQ8RN"
+        ],
+        "p2sh": "bCz8ZTwQFyUyaUkErFCyPtjjoK4Y7Hn4VM"
+      }
+    },
+    {
+      "name": "advanced-lower-case",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "alice",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "0100000005616c696365a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b0403000101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cccc4c6f04030a0101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc4c520100000005616c696365a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "alice",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "",
+          "nameid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        ],
+        "p2sh": "bXDRd9p2ajTef4cwWKRuMeCoenihHac3Ci"
+      }
+    },
+    {
+      "name": "advanced-ascii-64",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "010000004061616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b43132333435363738393a3b3c3d3e3f4041424344ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b04030001011504eeb818c1ba9b4312bbcdd91e56f085846333d59bcc4caa04030a01011504eeb818c1ba9b4312bbcdd91e56f085846333d59b4c8d010000004061616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b43132333435363738393a3b3c3d3e3f4041424344ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "nameid": "iREknzhyvcSHcatgp12VYEvaz2nLq4z91q"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iREknzhyvcSHcatgp12VYEvaz2nLq4z91q"
+        ],
+        "p2sh": "bLF1ddyfRWeeaJS1SQNWVSmsRiXjj8EpmD"
+      }
+    },
+    {
+      "name": "advanced-utf8-two-byte-64",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "éééééééééééééééééééééééééééééééé",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000040c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b0403000101150442a138f427249ffcead083d01fac0b80cb2ed52ecc4caa04030a0101150442a138f427249ffcead083d01fac0b80cb2ed52e4c8d0100000040c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "éééééééééééééééééééééééééééééééé",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU"
+        ],
+        "p2sh": "bE7GBZNui8PPf24siDFd3Nb2sQpXQ2qyuo"
+      }
+    },
+    {
+      "name": "advanced-utf8-four-byte-64",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "0100000040f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b04030001011504ac4a9c27f84533c315654a58ddc6ca841bac9f71cc4caa04030a01011504ac4a9c27f84533c315654a58ddc6ca841bac9f714c8d0100000040f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90f09f8c90a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "",
+          "nameid": "iKBX34gDUYbp3HGXpbVaL1GSs6kLx3KsYg"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iKBX34gDUYbp3HGXpbVaL1GSs6kLx3KsYg"
+        ],
+        "p2sh": "bQKfFRASFdXxNZabyCMqFgBgHjQyN3BJYy"
+      }
+    },
+    {
+      "name": "advanced-composed",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "é",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "0100000002c3a9a6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f4041424344000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b0403000101150438b7a11211a0899455e1d72c469e6a466e19d969cc4c6c04030a0101150438b7a11211a0899455e1d72c469e6a466e19d9694c4f0100000002c3a9a6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f4041424344000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "é",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "nameid": "i8eRFbfXdV2dyLMp4kmz2cUiEypJ3DfDrT"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i8eRFbfXdV2dyLMp4kmz2cUiEypJ3DfDrT"
+        ],
+        "p2sh": "bavWjucSG8DQxcT5X8mTF6SCpyoHjmYsx2"
+      }
+    },
+    {
+      "name": "advanced-decomposed",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "é",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "010000000365cc81a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b04030001011504e9664d98913f673f99b5c73b341f1c6900a371adcc4c6d04030a01011504e9664d98913f673f99b5c73b341f1c6900a371ad4c50010000000365cc81a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "é",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "",
+          "nameid": "iQkdRvBxQ2SJgTGWT1NCFZEnKftoKjbatD"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQkdRvBxQ2SJgTGWT1NCFZEnKftoKjbatD"
+        ],
+        "p2sh": "bLNko9CJMt4Cn2EGSAw96a69Z2tDdZKcSa"
+      }
+    },
+    {
+      "name": "advanced-upper-accent",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "Éxample",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000008c38978616d706c65a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504ed9624c98aff91c0d53e525d64c10328815d12decc4c7204030a01011504ed9624c98aff91c0d53e525d64c10328815d12de4c550100000008c38978616d706c65a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "Éxample",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD"
+        ],
+        "p2sh": "bXgDeHBUdWJpqb7eNHbAt8zKjq7R5H8E3V"
+      }
+    },
+    {
+      "name": "advanced-lower-accent",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "éxample",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "payloadHex": "0100000008c3a978616d706c65a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b43132333435363738393a3b3c3d3e3f40414243440000000000000000000000000000000000000000000000000000000000000001",
+      "scriptHex": "1b0403000101150410550cd8f606a305a36e7809bae0463675a910b0cc4c7204030a0101150410550cd8f606a305a36e7809bae0463675a910b04c550100000008c3a978616d706c65a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b43132333435363738393a3b3c3d3e3f4041424344000000000000000000000000000000000000000000000000000000000000000175",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "éxample",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0100000000000000000000000000000000000000000000000000000000000000",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "nameid": "i4xt8Y55fQvaZ8ZMfMGQZkZi4jKDU1kRcG"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i4xt8Y55fQvaZ8ZMfMGQZkZi4jKDU1kRcG"
+        ],
+        "p2sh": "bHJ3hTJwT5foYcgtn5uaKQ8dVFccmfomgs"
+      }
+    },
+    {
+      "name": "advanced-internal-space",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "Alice Smith",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+      },
+      "payloadHex": "010000000b416c69636520536d697468a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "scriptHex": "1b040300010115048599e5b143892af2a7ba2687672b0283b5160a8acc4c7504030a010115048599e5b143892af2a7ba2687672b0283b5160a8a4c58010000000b416c69636520536d697468a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "Alice Smith",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+          "referral": "",
+          "nameid": "iFewfZJ2jxG1QNhZNWubjECz7Sq16vh1ad"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iFewfZJ2jxG1QNhZNWubjECz7Sq16vh1ad"
+        ],
+        "p2sh": "bYvaYceTWfQWURKdRAPk7tLUmzkuLPBHAH"
+      }
+    },
+    {
+      "name": "advanced-internal-nbsp",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "Alice Smith",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "payloadHex": "010000000c416c696365c2a0536d697468a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "scriptHex": "1b0403000101150463e377d7259d6868260ae9f0348fee26f702dc9ccc4c7604030a0101150463e377d7259d6868260ae9f0348fee26f702dc9c4c59010000000c416c696365c2a0536d697468a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "Alice Smith",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "referral": "",
+          "nameid": "iCagpq7vQo8CsuMmSaM4LsMJHFwbcARLFR"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iCagpq7vQo8CsuMmSaM4LsMJHFwbcARLFR"
+        ],
+        "p2sh": "bFg77t1EU4f81qKHR1mkZgxPokqkJup9Et"
+      }
+    },
+    {
+      "name": "advanced-mixed-unicode",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "⚡spark",
+        "parentHex": "a6ef9ea235635e328124ff3429db9f9e91b64e2d",
+        "referralHex": "3132333435363738393a3b3c3d3e3f4041424344",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000008e29aa1737061726ba6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f40414243440100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504bad91763014bc4e3f99a393a37f8a9c0aa42624bcc4c7204030a01011504bad91763014bc4e3f99a393a37f8a9c0aa42624b4c550100000008e29aa1737061726ba6ef9ea235635e328124ff3429db9f9e91b64e2d3132333435363738393a3b3c3d3e3f4041424344010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "⚡spark",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb",
+          "nameid": "iLWVBXdbL2EqaHrGit8LMQTdrxJoUvyH9F"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iLWVBXdbL2EqaHrGit8LMQTdrxJoUvyH9F"
+        ],
+        "p2sh": "bb7kSvjU615XHNUxNkNtpSfyWNHoVA9jZ6"
+      }
+    },
+    {
+      "name": "legacy-null-parent-root",
+      "kind": "reservation",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "VRSCTEST",
+        "parentHex": "0000000000000000000000000000000000000000",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "08565253435445535400000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a6ef9ea235635e328124ff3429db9f9e91b64e2dcc4c5904031201011504a6ef9ea235635e328124ff3429db9f9e91b64e2d3d0856525343544553540000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "name": "VRSCTEST",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        ],
+        "p2sh": "bMtwyaZnivGCq78cryhn29uJTKuGpbbRKZ"
+      },
+      "creationAllowed": true
+    },
+    {
+      "name": "advanced-null-parent-root",
+      "kind": "reservation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "VRSCTEST",
+        "parentHex": "0000000000000000000000000000000000000000",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "01000000085652534354455354000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a6ef9ea235635e328124ff3429db9f9e91b64e2dcc4c7204030a01011504a6ef9ea235635e328124ff3429db9f9e91b64e2d4c550100000008565253435445535400000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "VRSCTEST",
+          "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        ],
+        "p2sh": "bNuUdUEFpeochi3Hw8DSBCvYGbcw6Ph7uE"
+      },
+      "creationAllowed": false
+    },
+    {
+      "name": "commitment-key-single-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc3b0403110101146162636465666768696a6b6c6d6e6f70717273742062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bGgjQ6TG35bjND2Aj2y1fuRZHqiuPi55WB"
+      }
+    },
+    {
+      "name": "commitment-key-two-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": "3132333435363738393a3b3c3d3e3f4041424344"
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c510403110202146162636465666768696a6b6c6d6e6f707172737415043132333435363738393a3b3c3d3e3f40414243442062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z",
+          "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb"
+        ],
+        "p2sh": "bYDNn3tjhus6ACss685pjPg95r8ztTDwCB"
+      }
+    },
+    {
+      "name": "commitment-identity-single-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "identity",
+        "controllerHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "authorizationHex": null
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc3c04031101011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b42062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bQN8RaRhg7AYWZkwE4iHcDLYmjJmePo8DJ"
+      }
+    },
+    {
+      "name": "commitment-identity-two-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "identity",
+        "controllerHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "authorizationHex": "3132333435363738393a3b3c3d3e3f4041424344"
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c5204031102021504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b415043132333435363738393a3b3c3d3e3f40414243442062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb"
+        ],
+        "p2sh": "bLFBxKsLNbBP7SftTDMMjEBbzhLexKESv8"
+      }
+    },
+    {
+      "name": "commitment-public-key-single-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "public-key",
+        "controllerHex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "authorizationHex": null
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "270403000101210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798cc480403110101210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817982062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RKxTdfmtxtfLDKZBgx6SvNkBtNu9jRYnLh"
+        ],
+        "p2sh": "bLzdxR1Lp3sFiefPDFcLN4HQQfTMRT1Me5"
+      }
+    },
+    {
+      "name": "commitment-public-key-two-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "public-key",
+        "controllerHex": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "authorizationHex": "3132333435363738393a3b3c3d3e3f4041424344"
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "270403000101210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798cc4c5e0403110202210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179815043132333435363738393a3b3c3d3e3f40414243442062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RKxTdfmtxtfLDKZBgx6SvNkBtNu9jRYnLh",
+          "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb"
+        ],
+        "p2sh": "bG5vLz7i3h1hjEuerzyY2AdGFEcDtgGyoo"
+      }
+    },
+    {
+      "name": "commitment-public-key-odd-single-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "public-key",
+        "controllerHex": "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "authorizationHex": null
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "270403000101210379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798cc480403110101210379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817982062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RR8XHHNh8dmsbakVsopzxuB9jCAAkENFMW"
+        ],
+        "p2sh": "bbT7LFCay9QdAxpBmyrhtuABj1reiEkikx"
+      }
+    },
+    {
+      "name": "commitment-public-key-odd-two-party",
+      "kind": "commitment",
+      "input": {
+        "hashHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+        "controllerType": "public-key",
+        "controllerHex": "0379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "authorizationHex": "3132333435363738393a3b3c3d3e3f4041424344"
+      },
+      "payloadHex": "62dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba26",
+      "scriptHex": "270403000101210379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798cc4c5e0403110202210379be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179815043132333435363738393a3b3c3d3e3f40414243442062dd15ac56fdcedb6efe9c57adb850d5c11873517f77796a39f26719c8f4ba2675",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "26baf4c81967f2396a79777f517318c1d550b8ad579cfe6edbcefd56ac15dd62"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RR8XHHNh8dmsbakVsopzxuB9jCAAkENFMW",
+          "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb"
+        ],
+        "p2sh": "bY4hNdpd3WLhe8aoCjzygBC4DVGfhfzv84"
+      }
+    },
+    {
+      "name": "tagged-empty-map",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff0100",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc410403110101146162636465666768696a6b6c6d6e6f7071727374262767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff010075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bbpXbpi1MdyH52uvEHuPNp4mrEUi2QkTER"
+      },
+      "currencyValuesJSON": "{}",
+      "exactCurrencyValues": {}
+    },
+    {
+      "name": "tagged-single-0",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "0"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c510403110101146162636465666768696a6b6c6d6e6f7071727374362767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bZUWyvoPvWSxhTsHpP5Uvmbr2AgBXQu9qY"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000000}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000000"
+      }
+    },
+    {
+      "name": "tagged-single-1",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "1"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b401",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c510403110101146162636465666768696a6b6c6d6e6f7071727374362767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40175",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 1e-8
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 1e-8
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bPwL4yYjdrxnQqfYoDuruJqmE3uDE9Fw1J"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000001}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000001"
+      }
+    },
+    {
+      "name": "tagged-single-127",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "127"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b47f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c510403110101146162636465666768696a6b6c6d6e6f7071727374362767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b47f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00000127
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00000127
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bM18BY8KdJk37LA7bhpF6LMUk4vymx72Ws"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000127}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000127"
+      }
+    },
+    {
+      "name": "tagged-single-128",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "128"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b48000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c520403110101146162636465666768696a6b6c6d6e6f7071727374372767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4800075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00000128
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00000128
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bEHBCHAj7NBetVic8ceytgJvQGhqbgjN45"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000128}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000128"
+      }
+    },
+    {
+      "name": "tagged-single-255",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "255"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4807f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c520403110101146162636465666768696a6b6c6d6e6f7071727374372767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4807f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00000255
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00000255
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bHoxGu3UMyhGpP57BJ6VHNPntVvTXqFDXw"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000255}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000255"
+      }
+    },
+    {
+      "name": "tagged-single-16383",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "16383"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4fe7f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c520403110101146162636465666768696a6b6c6d6e6f7071727374372767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4fe7f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00016383
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00016383
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bZVrrPcRPgbxhmViT8AS5gq6VrZt1vqh88"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00016383}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00016383"
+      }
+    },
+    {
+      "name": "tagged-single-16384",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "16384"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ff00",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c520403110101146162636465666768696a6b6c6d6e6f7071727374372767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ff0075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00016384
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00016384
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bPTNX3riuMFsvuww88u2XC6Xvf8pGZ8xas"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00016384}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00016384"
+      }
+    },
+    {
+      "name": "tagged-single-16511",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "16511"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ff7f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c520403110101146162636465666768696a6b6c6d6e6f7071727374372767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ff7f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00016511
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00016511
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bL6jmigZevpVz7mM3DkYZqqWEL3VkVADch"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00016511}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00016511"
+      }
+    },
+    {
+      "name": "tagged-single-16512",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "16512"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4808000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c530403110101146162636465666768696a6b6c6d6e6f7071727374382767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b480800075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0.00016512
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00016512
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bUbfqhp4LmEX36iTcpb35w3fFPTcGo5Xhk"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00016512}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00016512"
+      }
+    },
+    {
+      "name": "tagged-single-100000000",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "100000000"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4aed6c100",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c540403110101146162636465666768696a6b6c6d6e6f7071727374392767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4aed6c10075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 1
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 1
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bV64WKdFMuYHCmRpPpux14kwpvegpx2Ewx"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":1.00000000}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "1.00000000"
+      }
+    },
+    {
+      "name": "tagged-single-123456789",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "123456789"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b9ee9915",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c540403110101146162636465666768696a6b6c6d6e6f7071727374392767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b9ee991575",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 1.23456789
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 1.23456789
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bMb6iDsLdfjxSw9w6Tub88Rk2MKZb6SDg4"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":1.23456789}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "1.23456789"
+      }
+    },
+    {
+      "name": "tagged-single-1000000000000",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "1000000000000"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b49c8ca4939f00",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c560403110101146162636465666768696a6b6c6d6e6f70717273743b2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b49c8ca4939f0075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 10000
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 10000
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bV5nuA674jybq553o1ywkAaZPz2zvyvik6"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":10000.00000000}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "10000.00000000"
+      }
+    },
+    {
+      "name": "tagged-single-9007199254740991",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "9007199254740991"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b48efefefefefefe7f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c580403110101146162636465666768696a6b6c6d6e6f70717273743d2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b48efefefefefefe7f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 90071992.5474099
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 90071992.5474099
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bbzkAnCZJAwY6N4GjTtdpvAmavsHPSJQQZ"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":90071992.54740991}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "90071992.54740991"
+      }
+    },
+    {
+      "name": "tagged-single-9007199254740992",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "9007199254740992"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b48efefefefefeff00",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c580403110101146162636465666768696a6b6c6d6e6f70717273743d2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b48efefefefefeff0075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 90071992.54740992
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 90071992.54740992
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "baHGkQ8GfTtzATVgNUzCkb7ikR7twbRd3h"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":90071992.54740992}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "90071992.54740992"
+      }
+    },
+    {
+      "name": "tagged-single-9223372036854775807",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "9223372036854775807"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4fefefefefefefefe7f",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c590403110101146162636465666768696a6b6c6d6e6f70717273743e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000001a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4fefefefefefefefe7f75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 92233720368.54776
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 92233720368.54776
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bU4kvcTfkMdamCDNEmqo9SAhegNEYcF53Q"
+      },
+      "currencyValuesJSON": "{\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":92233720368.54775807}",
+      "exactCurrencyValues": {
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "92233720368.54775807"
+      }
+    },
+    {
+      "name": "tagged-two-currency-unsorted",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "123456789"
+          },
+          {
+            "currencyHex": "3132333435363738393a3b3c3d3e3f4041424344",
+            "amount": "100000000"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f404142434400e1f50500000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b415cd5b0700000000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f404142434400e1f50500000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b415cd5b070000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": 1,
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 1.23456789
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 1.23456789
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bYMMQtokAYrAkqibBtzoTryFv483JKp5E6"
+      },
+      "currencyValuesJSON": "{\"i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb\":1.00000000,\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":1.23456789}",
+      "exactCurrencyValues": {
+        "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": "1.00000000",
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "1.23456789"
+      }
+    },
+    {
+      "name": "tagged-two-currency-zero",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "0"
+          },
+          {
+            "currencyHex": "3132333435363738393a3b3c3d3e3f4041424344",
+            "amount": "1"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f40414243440100000000000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f40414243440100000000000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": 1e-8,
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": 0
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bY3pmi48razrhBQqBbfbeLdoPTEPngX147"
+      },
+      "currencyValuesJSON": "{\"i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb\":0.00000001,\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":0.00000000}",
+      "exactCurrencyValues": {
+        "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": "0.00000001",
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "0.00000000"
+      }
+    },
+    {
+      "name": "tagged-two-currency-negative",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "-1"
+          },
+          {
+            "currencyHex": "3132333435363738393a3b3c3d3e3f4041424344",
+            "amount": "123456789"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f404142434415cd5b0700000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ffffffffffffffff",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f404142434415cd5b0700000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4ffffffffffffffff75",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": 1.23456789,
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": -1e-8
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": -1e-8
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bVdm7nphPqGheyT9m9aeqZkKQGUQ39L8HD"
+      },
+      "currencyValuesJSON": "{\"i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb\":1.23456789,\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":-0.00000001}",
+      "exactCurrencyValues": {
+        "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": "1.23456789",
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "-0.00000001"
+      }
+    },
+    {
+      "name": "tagged-signed-int64-extremes",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+            "amount": "-9223372036854775807"
+          },
+          {
+            "currencyHex": "3132333435363738393a3b3c3d3e3f4041424344",
+            "amount": "9223372036854775807"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f4041424344ffffffffffffff7fa1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40100000000000080",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f4041424344ffffffffffffff7fa1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4010000000000008075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": 92233720368.54776,
+            "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": -92233720368.54776
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": -92233720368.54776
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bCnnvZVRMmG7yGriogEaoUnxUm1ypksxrW"
+      },
+      "currencyValuesJSON": "{\"i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb\":92233720368.54775807,\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":-92233720368.54775807}",
+      "exactCurrencyValues": {
+        "i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb": "92233720368.54775807",
+        "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55": "-92233720368.54775807"
+      }
+    },
+    {
+      "name": "tagged-raw-byte-sort",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "01ff000000000000000000000000000000000000",
+            "amount": "2"
+          },
+          {
+            "currencyHex": "0200000000000000000000000000000000000000",
+            "amount": "3"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff010201ff000000000000000000000000000000000000020000000000000002000000000000000000000000000000000000000300000000000000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff010201ff00000000000000000000000000000000000002000000000000000200000000000000000000000000000000000000030000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i3f5aykCqC5CTjCdha4FoxGYF8dymjfTAG": 2e-8,
+            "i3f6nTf2FkjmUJQKdWQ8QPFv533HdiXRUP": 3e-8
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 3e-8
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bPCG9LnLbKTkjFnn9QAwrDTtTfowU8ccSz"
+      },
+      "currencyValuesJSON": "{\"i3f5aykCqC5CTjCdha4FoxGYF8dymjfTAG\":0.00000002,\"i3f6nTf2FkjmUJQKdWQ8QPFv533HdiXRUP\":0.00000003}",
+      "exactCurrencyValues": {
+        "i3f5aykCqC5CTjCdha4FoxGYF8dymjfTAG": "0.00000002",
+        "i3f6nTf2FkjmUJQKdWQ8QPFv533HdiXRUP": "0.00000003"
+      }
+    },
+    {
+      "name": "tagged-pushdata2-eight-currencies",
+      "kind": "tagged-commitment",
+      "input": {
+        "hashHex": "2767181a4f6abe2090a7dca2c689477d163900f6000000000000000000000000",
+        "entries": [
+          {
+            "currencyHex": "08ababababababababababababababababababab",
+            "amount": "128"
+          },
+          {
+            "currencyHex": "07ababababababababababababababababababab",
+            "amount": "129"
+          },
+          {
+            "currencyHex": "06ababababababababababababababababababab",
+            "amount": "130"
+          },
+          {
+            "currencyHex": "05ababababababababababababababababababab",
+            "amount": "131"
+          },
+          {
+            "currencyHex": "04ababababababababababababababababababab",
+            "amount": "132"
+          },
+          {
+            "currencyHex": "03ababababababababababababababababababab",
+            "amount": "133"
+          },
+          {
+            "currencyHex": "02ababababababababababababababababababab",
+            "amount": "134"
+          },
+          {
+            "currencyHex": "01ababababababababababababababababababab",
+            "amount": "135"
+          }
+        ],
+        "controllerType": "key",
+        "controllerHex": "6162636465666768696a6b6c6d6e6f7071727374",
+        "authorizationHex": null
+      },
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff010801ababababababababababababababababababab870000000000000002ababababababababababababababababababab860000000000000003ababababababababababababababababababab850000000000000004ababababababababababababababababababab840000000000000005ababababababababababababababababababab830000000000000006ababababababababababababababababababab820000000000000007ababababababababababababababababababab810000000000000008ababababababababababababababababababab8000000000000000",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4d23010403110101146162636465666768696a6b6c6d6e6f70717273744d06012767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff010801ababababababababababababababababababab870000000000000002ababababababababababababababababababab860000000000000003ababababababababababababababababababab850000000000000004ababababababababababababababababababab840000000000000005ababababababababababababababababababab830000000000000006ababababababababababababababababababab820000000000000007ababababababababababababababababababab810000000000000008ababababababababababababababababababab800000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "commitmenthash": {
+          "version": 1,
+          "currencyvalues": {
+            "i3dMm9fLkdxKA3uJQduWTg6R9fnXE4gmyJ": 0.00000135,
+            "i3ieSLnfApC1gbVYUVcpRyLkaxfZE8vtLb": 0.00000134,
+            "i3ow7XuyazRiD95nYML8QGb62FYbKJm4DX": 0.00000133,
+            "i3uDnj3J1AfQjgg2cD3SNZqRTYRdHAtcJj": 0.00000132,
+            "i3zWTvAcRLu7GEGGg4kkLs5ktqJfNG17GH": 0.00000131,
+            "i45o97HvqX8onmrWjvU4KAL6L8BhPvMmas": 0.0000013,
+            "i4B5pJRFFhNWKKSkonBNHTaRmR4jRQaL6F": 0.00000129,
+            "i4GNVVYZfscCqs2zsdtgFkpmChwmPVKM8D": 0.00000128
+          },
+          "hash": "000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727"
+        },
+        "spendableoutput": false,
+        "reserve_balance": {
+          "": 0.00000128
+        },
+        "reqSigs": 1,
+        "addresses": [
+          "RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z"
+        ],
+        "p2sh": "bEF9FAJcuJdvPyr1hgmrwZjhMLsnKPgUt1"
+      },
+      "currencyValuesJSON": "{\"i3dMm9fLkdxKA3uJQduWTg6R9fnXE4gmyJ\":0.00000135,\"i3ieSLnfApC1gbVYUVcpRyLkaxfZE8vtLb\":0.00000134,\"i3ow7XuyazRiD95nYML8QGb62FYbKJm4DX\":0.00000133,\"i3uDnj3J1AfQjgg2cD3SNZqRTYRdHAtcJj\":0.00000132,\"i3zWTvAcRLu7GEGGg4kkLs5ktqJfNG17GH\":0.00000131,\"i45o97HvqX8onmrWjvU4KAL6L8BhPvMmas\":0.00000130,\"i4B5pJRFFhNWKKSkonBNHTaRmR4jRQaL6F\":0.00000129,\"i4GNVVYZfscCqs2zsdtgFkpmChwmPVKM8D\":0.00000128}",
+      "exactCurrencyValues": {
+        "i3dMm9fLkdxKA3uJQduWTg6R9fnXE4gmyJ": "0.00000135",
+        "i3ieSLnfApC1gbVYUVcpRyLkaxfZE8vtLb": "0.00000134",
+        "i3ow7XuyazRiD95nYML8QGb62FYbKJm4DX": "0.00000133",
+        "i3uDnj3J1AfQjgg2cD3SNZqRTYRdHAtcJj": "0.00000132",
+        "i3zWTvAcRLu7GEGGg4kkLs5ktqJfNG17GH": "0.00000131",
+        "i45o97HvqX8onmrWjvU4KAL6L8BhPvMmas": "0.00000130",
+        "i4B5pJRFFhNWKKSkonBNHTaRmR4jRQaL6F": "0.00000129",
+        "i4GNVVYZfscCqs2zsdtgFkpmChwmPVKM8D": "0.00000128"
+      }
+    }
+  ],
+  "differentialCases": [
+    {
+      "name": "unknown-version",
+      "policy": "unsupported-version",
+      "input": {
+        "format": "advanced",
+        "version": 2,
+        "name": "Alice",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0200000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c6f04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c520200000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 2,
+          "name": "Alice",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "iFHbDRShoAa69DJZc3bEHbfBcfFwbFQ8RN"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bVuwcvru7EZMGihwqwoVxbkRFXxPZ8EqoA"
+      }
+    },
+    {
+      "name": "zero-version",
+      "policy": "unsupported-version",
+      "input": {
+        "format": "advanced",
+        "version": 0,
+        "name": "Alice",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0000000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c6f04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c520000000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 0,
+          "name": "Alice",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "iFHbDRShoAa69DJZc3bEHbfBcfFwbFQ8RN"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bG3EQ6dS9xd8qsKPnbTy2SciWH3NHPcnzG"
+      }
+    },
+    {
+      "name": "overlong-name",
+      "policy": "reject-truncation",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "01000000416161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4cab04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c8e01000000416161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "parent": "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "iREknzhyvcSHcatgp12VYEvaz2nLq4z91q"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bVqrwCKNwEDnneVnFj21sfS7B87nEV4t9D"
+      }
+    },
+    {
+      "name": "empty-name",
+      "policy": "invalid-name",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c6a04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c4d0100000000a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": "invalid",
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bJgLGfJbpuf8nanqHMd2ubP8XTHCF7zVu4"
+      }
+    },
+    {
+      "name": "zero-salt",
+      "policy": "invalid-salt",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "Alice",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c6f04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c520100000005416c696365a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": "invalid",
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bFjLUXn4S2CmS85v49TrcPFNj9FywfgyUw"
+      }
+    },
+    {
+      "name": "legacy-overlong-name",
+      "policy": "invalid-name",
+      "input": {
+        "format": "legacy",
+        "version": 1,
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "parentHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "41616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616100000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c9304031201011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c764161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161610000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": "invalid",
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bbmA2YM8DCVKtG4XUm6vLUpQLSgNSZmnK4"
+      }
+    },
+    {
+      "name": "null-parent-relative-leaf",
+      "policy": "contextual-null-parent",
+      "input": {
+        "format": "advanced",
+        "version": 1,
+        "name": "Alice",
+        "parentHex": "0000000000000000000000000000000000000000",
+        "referralHex": "0000000000000000000000000000000000000000",
+        "saltHex": "0100000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payloadHex": "0100000005416c696365000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
+      "scriptHex": "1b04030001011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4cc4c6f04030a01011504a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b44c520100000005416c69636500000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000075",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityreservation": {
+          "version": 1,
+          "name": "Alice",
+          "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "salt": "0000000000000000000000000000000000000000000000000000000000000001",
+          "referral": "",
+          "nameid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55"
+        ],
+        "p2sh": "bNpLRa9ky8TmgdiWzP7G3M4qkARe6eeXTj"
+      }
+    }
+  ],
+  "daemonLimitations": [
+    {
+      "name": "signed-int64-minimum-invalid-json",
+      "entries": [
+        {
+          "currencyHex": "a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4",
+          "amount": "-9223372036854775808"
+        },
+        {
+          "currencyHex": "3132333435363738393a3b3c3d3e3f4041424344",
+          "amount": "9223372036854775807"
+        }
+      ],
+      "payloadHex": "2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f4041424344ffffffffffffff7fa1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b40000000000000080",
+      "scriptHex": "1a0403000101146162636465666768696a6b6c6d6e6f7071727374cc4c7a0403110101146162636465666768696a6b6c6d6e6f70717273744c5e2767181a4f6abe2090a7dca2c689477d163900f600000000000000000000000086fefeff01023132333435363738393a3b3c3d3e3f4041424344ffffffffffffff7fa1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4000000000000008075",
+      "rawRPCJSON": "{\"result\":{\"type\":\"cryptocondition\",\"commitmenthash\":{\"version\":1,\"currencyvalues\":{\"i7xegSAPPYfvjWfsN9i9FXs82s2ZFLFGsb\":92233720368.54775807,\"iJDB4LHXQoW88r8PmyULZ7mKRwv9uKqo55\":--92233720368.-54775808},\"hash\":\"000000000000000000000000f60039167d4789c6a2dca79020be6a4f1a186727\"},\"spendableoutput\":false,\"reserve_balance\":{\"\":92233720368.54775807,\"\":--92233720368.-54775808},\"reqSigs\":1,\"addresses\":[\"RJA7VFyv9ei4zAajwbcqjEPbLiJUkaTm8z\"],\"p2sh\":\"bZEBo9BMGKvgBnKDefJbCwpV2iTqbiN2fC\"},\"error\":null,\"id\":\"registration-fixture\"}\n",
+      "explanation": "The daemon decodes signed INT64_MIN bytes but ValueFromAmount emits a double minus sign, so the RPC response is invalid JSON. This is not a TS wire-range restriction."
+    }
+  ]
+}

@@ -9,6 +9,12 @@
   "scripts": {
     "build": "tsc",
     "fixtures:mmr": "node scripts/generate-mmr-fixtures.js",
+    "fixtures:identity-registration": "node scripts/generate-all-identity-registration-fixtures.js",
+    "fixtures:identity-registration:mined": "node scripts/generate-identity-registration-fixtures.js",
+    "fixtures:identity-registration:names": "node scripts/generate-identity-registration-name-fixtures.js",
+    "fixtures:identity-registration:scripts": "node scripts/generate-identity-registration-script-fixtures.js",
+    "fixtures:identity-registration:identities": "node scripts/generate-identity-registration-identity-fixtures.js",
+    "fixtures:identity-registration:data": "node scripts/generate-identity-registration-data-fixtures.js",
     "format": "prettier --write \"src/**/*.(js|ts)\"",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "eslint src --fix --ext .js,.ts",

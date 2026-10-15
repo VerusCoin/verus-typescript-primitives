@@ -11,6 +11,7 @@ const IdentityID_1 = require("./IdentityID");
 const SaplingPaymentAddress_1 = require("./SaplingPaymentAddress");
 const ContentMultiMap_1 = require("./ContentMultiMap");
 const KeyID_1 = require("./KeyID");
+const identityRegistrationSerialization_1 = require("./identityRegistrationSerialization");
 exports.IDENTITY_VERSION_VAULT = new bn_js_1.BN(2, 10);
 exports.IDENTITY_VERSION_PBAAS = new bn_js_1.BN(3, 10);
 exports.IDENITTY_VERSION_INVALID = new bn_js_1.BN(0, 10);
@@ -169,17 +170,19 @@ class Identity extends Principal_1.Principal {
             writer.writeSlice(this.contentMultiMap.toBuffer());
         }
         if (this.containsContentMap()) {
+            // std::map<uint160, uint256> uses the raw uint160 byte ordering.
+            const entries = Array.from(this.contentMap.entries()).sort(([left], [right]) => (0, address_1.fromBase58Check)(left).hash.compare((0, address_1.fromBase58Check)(right).hash));
             //contentmap
             if (this.version.lt(exports.IDENTITY_VERSION_PBAAS)) {
                 writer.writeCompactSize(this.contentMap.size);
-                for (const [key, value] of this.contentMap.entries()) {
+                for (const [key, value] of entries) {
                     writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
                     writer.writeSlice(value);
                 }
             }
             //contentmap2
             writer.writeCompactSize(this.contentMap.size);
-            for (const [key, value] of this.contentMap.entries()) {
+            for (const [key, value] of entries) {
                 writer.writeSlice((0, address_1.fromBase58Check)(key).hash);
                 writer.writeSlice(value);
             }
@@ -206,7 +209,8 @@ class Identity extends Principal_1.Principal {
         }
         return writer.buffer;
     }
-    fromBuffer(buffer, offset = 0, parseVdxfObjects = false) {
+    /** Legacy null-parent identities need an explicit root to reconstruct their omitted system ID. */
+    fromBuffer(buffer, offset = 0, parseVdxfObjects = false, rootSystemName) {
         const reader = new BufferReader(buffer, offset);
         reader.offset = super.fromBuffer(reader.buffer, reader.offset);
         const _parent = new IdentityID_1.IdentityID();
@@ -273,11 +277,14 @@ class Identity extends Principal_1.Principal {
         }
         else {
             this.systemId = _parent;
+            if ((_parent === null || _parent === void 0 ? void 0 : _parent.hash.equals(Buffer.alloc(20))) && rootSystemName !== undefined) {
+                this.systemId = IdentityID_1.IdentityID.fromAddress(this.getIdentityAddress(rootSystemName));
+            }
             this.unlockAfter = new bn_js_1.BN(0);
         }
         return reader.offset;
     }
-    toJson() {
+    toJson(rootSystemName) {
         const contentmap = {};
         if (this.containsContentMap()) {
             for (const [key, value] of this.contentMap.entries()) {
@@ -285,9 +292,20 @@ class Identity extends Principal_1.Principal {
                 contentmap[(0, address_1.fromBase58Check)(key).hash.reverse().toString('hex')] = valueCopy.reverse().toString('hex');
             }
         }
+        // CIdentity::ToUniValue omits multimap data before version 3, and
+        // VDXFDataToUniValue omits zero-length values from its JSON arrays.
+        let contentMultiMap;
+        if (this.containsContentMultiMap() && this.version.gte(exports.IDENTITY_VERSION_PBAAS)) {
+            contentMultiMap = this.contentMultiMap.toJson();
+            for (const key of Object.keys(contentMultiMap)) {
+                const values = contentMultiMap[key];
+                if (Array.isArray(values))
+                    contentMultiMap[key] = values.filter(value => value !== '');
+            }
+        }
         const ret = {
             contentmap: this.containsContentMap() ? contentmap : undefined,
-            contentmultimap: this.containsContentMultiMap() ? this.contentMultiMap.toJson() : undefined,
+            contentmultimap: contentMultiMap,
             flags: this.containsFlags() ? this.flags.toNumber() : undefined,
             minimumsignatures: this.containsMinSigs() ? this.minSigs.toNumber() : undefined,
             name: this.name,
@@ -298,7 +316,7 @@ class Identity extends Principal_1.Principal {
             systemid: this.containsSystemId() ? this.systemId.toAddress() : undefined,
             timelock: this.containsUnlockAfter() ? this.unlockAfter.toNumber() : undefined,
             version: this.containsVersion() ? this.version.toNumber() : undefined,
-            identityaddress: this.containsParent() ? this.getIdentityAddress() : undefined
+            identityaddress: this.containsParent() ? this.getIdentityAddress(rootSystemName) : undefined
         };
         if (this.privateAddresses != null && this.privateAddresses.length > 0) {
             ret.privateaddress = this.privateAddresses[0].toAddressString();
@@ -309,8 +327,26 @@ class Identity extends Principal_1.Principal {
         }
         return ret;
     }
-    getIdentityAddress() {
-        return (0, address_1.nameAndParentAddrToIAddr)(this.name, this.parent.toAddress());
+    /** Null-parent identities require a root context unless their stored system ID identifies that root. */
+    getIdentityAddress(rootSystemName) {
+        if (!this.parent.hash.equals(Buffer.alloc(20))) {
+            return (0, address_1.nameAndParentAddrToIAddr)(this.name, this.parent.toAddress());
+        }
+        if (/[.@\0]/.test(this.name))
+            throw new Error('Null-parent identity address requires an unambiguous leaf name');
+        if (rootSystemName !== undefined) {
+            (0, identityRegistrationSerialization_1.assertNameBytes)(rootSystemName);
+            if (/[.@\u0000-\u001f\u007f]/.test(rootSystemName))
+                throw new Error('Root system context requires an unambiguous leaf name');
+            return (0, address_1.toIAddress)(this.name, rootSystemName);
+        }
+        // A genesis root records its own ID as systemID. Never hash twenty zero
+        // parent bytes, and do not assume every null-parent name is a global root.
+        const rootAddress = (0, address_1.nameAndParentAddrToIAddr)(this.name);
+        if (this.systemId && !this.systemId.hash.equals(Buffer.alloc(20)) && this.systemId.toAddress() === rootAddress) {
+            return rootAddress;
+        }
+        throw new Error('Null-parent identity requires explicit root system context');
     }
     isRevoked() {
         return !!(this.flags.and(exports.IDENTITY_FLAG_REVOKED).toNumber());

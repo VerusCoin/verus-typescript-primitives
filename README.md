@@ -126,6 +126,104 @@ const scriptBuffer = idScript.toBuffer();
 console.log('Identity Script Hex:', scriptBuffer.toString('hex'));
 ```
 
+### Preparing Identity Registration Outputs
+
+`NameReservation` (legacy) and `AdvancedNameReservation` (version 1) encode the
+commit/reveal payloads. `getCommitment()` hashes their exact serialized bytes with
+SHA256d. `IdentityCommitmentScript` and `IdentityReservationScript` build and parse
+the corresponding smart transaction outputs, including two-party commitments for
+permissioned namespaces.
+
+```typescript
+import {
+  AdvancedNameReservation, IdentityID, KeyID, TxDestination, IdentityScript,
+  IdentityCommitmentScript, IdentityReservationScript,
+  resolveIdentityRegistrationName, identityFromJSONForRegistration,
+  decodeDestination, R_ADDR_VERSION
+} from 'verus-typescript-primitives';
+
+// The wallet supplies and persists a cryptographically random, nonzero 32-byte
+// salt before broadcasting the commitment. Do not generate a new salt on retry.
+function prepareIdentityRegistration(salt: Buffer, controllerAddress: string) {
+  const resolved = resolveIdentityRegistrationName({
+    name: 'alice.VRSCTEST@',
+    rootSystemName: 'VRSCTEST',
+    systemID: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq'
+  });
+  const reservation = new AdvancedNameReservation({
+    name: resolved.name,
+    parent: IdentityID.fromAddress(resolved.parent),
+    salt
+  });
+  reservation.validateForCreation();
+  const controller = new TxDestination(
+    new KeyID(decodeDestination(controllerAddress, R_ADDR_VERSION))
+  );
+  const identity = identityFromJSONForRegistration({
+    version: 3, flags: 0, minimumsignatures: 1, timelock: 0,
+    name: resolved.name, parent: resolved.parent, systemid: resolved.systemID,
+    primaryaddresses: [controllerAddress],
+    revocationauthority: resolved.identityID,
+    recoveryauthority: resolved.identityID
+  }, resolved);
+  return {
+    reservation,
+    commitmentScript: IdentityCommitmentScript.fromCommitment(reservation.getCommitment(), controller),
+    identityScript: IdentityScript.fromIdentity(identity),
+    reservationScript: IdentityReservationScript.fromReservation(reservation)
+  };
+}
+```
+
+For sub-identities, resolve a qualified name such as `alice.namespace.VRSCTEST@`,
+or supply a leaf with both `parent` and `parentName`. Resolution derives IDs; the
+client must verify that the parent is an eligible registered currency and issues
+identities on the selected system. It must also resolve referral/issuer policy.
+For a required issuer or referral signature, pass its identity `TxDestination` as
+the third argument to `IdentityCommitmentScript.fromCommitment`. The script keeps
+the controller index separate from its two-of-two spend condition.
+
+Salt and commitment buffers use raw serialized uint256 byte order; JSON uses
+reversed display hex. Names retain their original case and UTF-8 bytes. Creation
+validation rejects ambiguous names and requires explicit network context. Legacy
+reservation address derivation and script construction require an explicit parent
+i-address, or `null` for a historical root. Legacy RPC `parent` metadata is not
+part of the commitment; `fromJSON(json, parent)` verifies `nameid` against the
+caller's context. Use `toJSONWithParent(parent)` to include that metadata in
+legacy reservation JSON; `toJSON()` emits only its payload fields. Advanced
+reservation payloads use ordinary commitment hashes;
+the separately supported tagged `CommitmentHash` token format is not a name
+registration commitment.
+
+Historical advanced reservations with a null parent require explicit chain context:
+use `getIdentityAddress(rootSystemName)`, `toJSONWithRootSystem(rootSystemName)`,
+and `fromJSON(json, rootSystemName)`. Their wire payload alone cannot identify the
+root namespace. `Identity.fromBuffer(bytes, offset, parseVdxfObjects, rootSystemName)`
+can also reconstruct the omitted system ID of a version 1 identity;
+`Identity.toJson(rootSystemName)` supplies the same context for JSON projection.
+
+Use `validateIdentityForRegistration(identity, resolved)` for an already constructed
+full `Identity`, or the stricter JSON entry point above to validate original
+address versions before parsing. These creation helpers currently support version
+3, zero flags/timelock, and R-address primary authorities; compressed public-key
+principals are unsupported by the existing `Principal` serializer. They reject
+`PartialIdentity`. Historical reservation parsing is separate from creation checks;
+unknown reservation versions are rejected rather than reinterpreted.
+
+`CurrencyIdentityRegistration` exposes currency-option predicates and integer
+registration/referral prices. Its constructor takes atomic amounts;
+`fromJSON()` takes RPC coin amounts. `currencyAmountToAtomic()` accepts exact
+decimal strings and rejects numbers that cannot preserve atomic precision.
+`GetIdentityHistoryRequest`, `GetCurrencyStateRequest`, and `GetTxOutRequest`
+provide the corresponding typed reads. Fees depending on currency state,
+fractional conversion, funding, transaction assembly/signing, commitment
+confirmation, and broadcasting remain responsibilities of the client.
+
+Offline daemon parity fixtures cover mined registrations, name derivation,
+independently encoded scripts and identities, historical proofs, currency policy
+and state, and UTXO reads. Coverage and regeneration instructions are in
+[`src/__tests__/fixtures/identity-registration`](src/__tests__/fixtures/identity-registration/README.md).
+
 ### Making an RPC API Request
 
 The library provides typed classes for RPC requests. You need to provide your own transport layer (e.g., using `axios` or `node-fetch`) to send the formatted request to the Verus daemon.

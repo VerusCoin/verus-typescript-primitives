@@ -8,6 +8,7 @@ export * from './vdxf/index'
 export * from './vdxf/parser'
 
 export * from './utils/address'
+export * from './utils/identityRegistration'
 export * from './utils/bufferutils'
 export * from './utils/varuint'
 export * from './utils/ops'
@@ -24,6 +25,7 @@ export * from './pbaas/PartialMMRData'
 export * from './pbaas/PartialSignData'
 
 export * from './constants/pbaas'
+export { R_ADDR_VERSION, I_ADDR_VERSION } from './constants/vdxf'
 export * from './constants/ordinals/register'
 export * from './constants/ordinals/ordinals'
 export * from './constants/ordinals/types'
@@ -32,6 +34,8 @@ export * from './constants/deeplink'
 
 export * from './identity/IdentityDefinition'
 export * from './currency/CurrencyDefinition'
+export * from './currency/CurrencyState'
+export * from './currency/CurrencyIdentityRegistration'
 
 export * from './vdxf/classes'
 

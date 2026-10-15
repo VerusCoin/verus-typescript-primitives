@@ -1,0 +1,974 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "generator": "scripts/generate-identity-registration-identity-fixtures.js",
+    "chain": "VRSCTEST",
+    "chainID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    "daemonVersion": 2000753,
+    "readOnlyRPCMethods": [
+      "getinfo",
+      "getvdxfid",
+      "decodescript"
+    ],
+    "note": "Synthetic decoding checks serialization and JSON only, not transaction or consensus acceptance."
+  },
+  "cases": [
+    {
+      "name": "current-basic",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4cd504030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84c8003000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bLTBpv3j47BmjFybhHCQjgrJbTFAEoo52n"
+      }
+    },
+    {
+      "name": "current-external-authorities",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "i7xdUQam4CdTQYcKJTzif7DhwBJ3QPS68A",
+        "recoveryAuthority": "i83wMMRW7KVbo2EHW57r1TievsDKhPFrBJ",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d0650617269747900003131313131313131313131313131313131313131323232323232323232323232323232323232323200a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504313131313131313131313131313131313131313115043232323232323232323232323232323232323232cc4cd504030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84c8003000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d0650617269747900003131313131313131313131313131313131313131323232323232323232323232323232323232323200a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f0101150431313131313131313131313131313131313131311b04031001011504323232323232323232323232323232323232323275",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "i7xdUQam4CdTQYcKJTzif7DhwBJ3QPS68A",
+          "recoveryauthority": "i83wMMRW7KVbo2EHW57r1TievsDKhPFrBJ",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "i7xdUQam4CdTQYcKJTzif7DhwBJ3QPS68A",
+          "i83wMMRW7KVbo2EHW57r1TievsDKhPFrBJ"
+        ],
+        "p2sh": "bGk1vzJWgAbXdBvZHhNn6YtBN2BVtcxcpy"
+      }
+    },
+    {
+      "name": "current-multisig",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "2222222222222222222222222222222222222222",
+          "1111111111111111111111111111111111111111",
+          "3333333333333333333333333333333333333333"
+        ],
+        "minimumSignatures": 2,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000314222222222222222222222222222222222222222214111111111111111111111111111111111111111114333333333333333333333333333333333333333302000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4cff04030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84caa03000000000000000314222222222222222222222222222222222222222214111111111111111111111111111111111111111114333333333333333333333333333333333333333302000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RCPfwfTXRrCVFCT9GmAS2YJSafhC2XqEbD",
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz",
+            "RDwusjk9LrtwqHzcg4FazYnZVNJzE7JWJg"
+          ],
+          "minimumsignatures": 2,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bKKDtrm6FD7SicpikY1Sa5ufgP2XdPmf2b"
+      }
+    },
+    {
+      "name": "current-max-keys-threshold",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "0101010101010101010101010101010101010101",
+          "0202020202020202020202020202020202020202",
+          "0303030303030303030303030303030303030303",
+          "0404040404040404040404040404040404040404",
+          "0505050505050505050505050505050505050505",
+          "0606060606060606060606060606060606060606",
+          "0707070707070707070707070707070707070707",
+          "0808080808080808080808080808080808080808",
+          "0909090909090909090909090909090909090909",
+          "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+          "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
+          "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+          "0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+          "0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e",
+          "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+          "1010101010101010101010101010101010101010",
+          "1111111111111111111111111111111111111111",
+          "1212121212121212121212121212121212121212",
+          "1313131313131313131313131313131313131313",
+          "1414141414141414141414141414141414141414",
+          "1515151515151515151515151515151515151515",
+          "1616161616161616161616161616161616161616",
+          "1717171717171717171717171717171717171717",
+          "1818181818181818181818181818181818181818",
+          "1919191919191919191919191919191919191919"
+        ],
+        "minimumSignatures": 13,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "030000000000000019140101010101010101010101010101010101010101140202020202020202020202020202020202020202140303030303030303030303030303030303030303140404040404040404040404040404040404040404140505050505050505050505050505050505050505140606060606060606060606060606060606060606140707070707070707070707070707070707070707140808080808080808080808080808080808080808140909090909090909090909090909090909090909140a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a140b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b140c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c140d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d140e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e140f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f1410101010101010101010101010101010101010101411111111111111111111111111111111111111111412121212121212121212121212121212121212121413131313131313131313131313131313131313131414141414141414141414141414141414141414141415151515151515151515151515151515151515151416161616161616161616161616161616161616161417171717171717171717171717171717171717171418181818181818181818181818181818181818181419191919191919191919191919191919191919190d000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4dce0204030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84d7802030000000000000019140101010101010101010101010101010101010101140202020202020202020202020202020202020202140303030303030303030303030303030303030303140404040404040404040404040404040404040404140505050505050505050505050505050505050505140606060606060606060606060606060606060606140707070707070707070707070707070707070707140808080808080808080808080808080808080808140909090909090909090909090909090909090909140a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a140b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b140c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c140d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d140e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e140f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f1410101010101010101010101010101010101010101411111111111111111111111111111111111111111412121212121212121212121212121212121212121413131313131313131313131313131313131313131414141414141414141414141414141414141414141415151515151515151515151515151515151515151416161616161616161616161616161616161616161417171717171717171717171717171717171717171418181818181818181818181818181818181818181419191919191919191919191919191919191919190d000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "R9NVxTj2ewfiTUzAfn7FSsq9kxNt6fjaaZ",
+            "R9ToqQZmi4Xrqxc8sPENoEL6keJAUrARpy",
+            "R9Z7iMQWmBQ1ESE74zMW9aq3kLDSoaTixz",
+            "R9eRbJFFpJG9cur5GbUdVwKzk28j8FG19V",
+            "R9jjUF5zsR8J1PU3UCbkrHpwji41Z6qDKH",
+            "R9q3MBvjvXzSPs61foitCeKtjPyHqre5Ke",
+            "R9vME8mUyeranLhysQr1Yzpqj5taHW4Ubu",
+            "RA1f75cE2mijApKx51y8uMKnimorbfx1UR",
+            "RA6xz2Sy5tasZHwvGd6GFhpjiTj9384hGX",
+            "RACGryHi91T1wmZtUEDPc4Kgi9eRLvxzVQ",
+            "RAHajv8TC8KALFBrfqLWxQpdhqZhhTGwRk",
+            "RANtcryCFFBJiiopsSTeJmKahXUz5DjLaM",
+            "RAUCVoowJN3T7CRo53amf7pXhDQGQaK4g9",
+            "RAZWNkegMUubVg3mGehu1UKUguKYkNTzjB",
+            "RAepFhVRQbmjt9fjUFq2MppRgbEq7D7q9R",
+            "RAk88eLATidtGdHhfrx9iBKNgHA7UQXx8i",
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz",
+            "RAvjtY1eZxNB3aXe55CQQtKGfezgDXXFuP",
+            "RB23mUrPd5EKS49cGgKXmEpDfLuxdTiMrd",
+            "RB7MeRh8gC6TpXmaUHSf7bKAf2qF2c688z",
+            "RBCfXNXsjJxcD1PYftZnTwp7eikXJ6iupM",
+            "RBHyQKNcnRpkbV1WsVgupJK4eQfokWKFf9",
+            "RBPHHGDMqYgtyxdV56p3Aep1e6b66biars",
+            "RBUbAD46tfZ3NSFTGhwAX1JxdnWNUwTj7e",
+            "RBZu39tqwnRBkusRUK4HsMoudURekCQDvB"
+          ],
+          "minimumsignatures": 13,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bUMu5MBVGWPQkeEoCZTJ2QLd16jYBoiiy2"
+      }
+    },
+    {
+      "name": "current-content-map",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [
+          [
+            "01000000000000000000000000000000000000ff",
+            "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+          ],
+          [
+            "ff00000000000000000000000000000000000001",
+            "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100"
+          ]
+        ],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d06506172697479000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d3d0104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84ce803000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d06506172697479000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {
+            "ff00000000000000000000000000000000000001": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+            "01000000000000000000000000000000000000ff": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          },
+          "contentmultimap": {},
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bbA9sb6ZMuCMxhKuLwgQZNdnM1bWnkAwWd"
+      }
+    },
+    {
+      "name": "current-content-multimap",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [
+          [
+            "01000000000000000000000000000000000000ff",
+            [
+              "00",
+              "ffff",
+              "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+              "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+            ]
+          ],
+          [
+            "ff00000000000000000000000000000000000001",
+            [
+              "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3"
+            ]
+          ]
+        ],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff04010002fffffca1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1fdfd00b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2ff0000000000000000000000000000000000000101fd0001c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c300e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d050404030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84daf0303000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff04010002fffffca1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1fdfd00b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2ff0000000000000000000000000000000000000101fd0001c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c300e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {
+            "i3Zp7GXhqaW4wkp5ZegpS61adkAkKFHTiZ": [
+              "00",
+              "ffff",
+              "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+              "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+            ],
+            "iSiqjzaMiQVYi6mgTMbWycnhPff8NqeWim": [
+              "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3"
+            ]
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "baBiYonDmqaEqhQEGvQZc8mHcwRjEmhH51"
+      }
+    },
+    {
+      "name": "current-reversed-content-input",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [
+          [
+            "ff00000000000000000000000000000000000001",
+            "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100"
+          ],
+          [
+            "01000000000000000000000000000000000000ff",
+            "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+          ]
+        ],
+        "multimap": [
+          [
+            "ff00000000000000000000000000000000000001",
+            [
+              "b2"
+            ]
+          ],
+          [
+            "01000000000000000000000000000000000000ff",
+            [
+              "a1"
+            ]
+          ]
+        ],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff0101a1ff000000000000000000000000000000000000010101b20201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d6c0104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84d160103000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff0101a1ff000000000000000000000000000000000000010101b20201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {
+            "ff00000000000000000000000000000000000001": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+            "01000000000000000000000000000000000000ff": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          },
+          "contentmultimap": {
+            "i3Zp7GXhqaW4wkp5ZegpS61adkAkKFHTiZ": [
+              "a1"
+            ],
+            "iSiqjzaMiQVYi6mgTMbWycnhPff8NqeWim": [
+              "b2"
+            ]
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bFt5j4mGbhv4chg2fFFQkvHDYA5TfunngU"
+      }
+    },
+    {
+      "name": "current-empty-multimap-data",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [
+          [
+            "01000000000000000000000000000000000000ff",
+            [
+              "",
+              "00"
+            ]
+          ]
+        ],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790101000000000000000000000000000000000000ff0200010000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4ced04030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84c9803000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790101000000000000000000000000000000000000ff0200010000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {
+            "i3Zp7GXhqaW4wkp5ZegpS61adkAkKFHTiZ": [
+              "00"
+            ]
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bXyP8pPxDeXHAqDwEWGXTymVnthomSKkGD"
+      }
+    },
+    {
+      "name": "current-private-address",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": [
+          "000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212"
+        ]
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c801000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d000104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84cab03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790000e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c801000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "privateaddress": "zs1qqqsyqcyq5rqwzqfpgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyuenxkw",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bXNTy7qEkrctw8MPiEgmUKUsSyFTRwgdWn"
+      }
+    },
+    {
+      "name": "current-combined-content",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [
+          [
+            "01000000000000000000000000000000000000ff",
+            "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+          ],
+          [
+            "ff00000000000000000000000000000000000001",
+            "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100"
+          ]
+        ],
+        "multimap": [
+          [
+            "01000000000000000000000000000000000000ff",
+            [
+              "abcd",
+              "ef"
+            ]
+          ]
+        ],
+        "privateAddresses": [
+          "000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212"
+        ]
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790101000000000000000000000000000000000000ff0202abcd01ef0201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c801000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d830104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84d2d0103000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790101000000000000000000000000000000000000ff0202abcd01ef0201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c801000102030405060708090a1212121212121212121212121212121212121212121212121212121212121212a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {
+            "ff00000000000000000000000000000000000001": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+            "01000000000000000000000000000000000000ff": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          },
+          "contentmultimap": {
+            "i3Zp7GXhqaW4wkp5ZegpS61adkAkKFHTiZ": [
+              "abcd",
+              "ef"
+            ]
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "privateaddress": "zs1qqqsyqcyq5rqwzqfpgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyuenxkw",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bNuZehVenfCbQkfTeGCbksTSWgv7bf8xv2"
+      }
+    },
+    {
+      "name": "historical-version-1",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 1,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [
+          [
+            "01000000000000000000000000000000000000ff",
+            "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+          ],
+          [
+            "ff00000000000000000000000000000000000001",
+            "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100"
+          ]
+        ],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "01000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa998877665544332211000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4d8e0104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84d380101000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa998877665544332211000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c8001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 1,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {
+            "ff00000000000000000000000000000000000001": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+            "01000000000000000000000000000000000000ff": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bHkNNzmhFQhAhfGGvVoW2xGM5MLFSHaWBB"
+      }
+    },
+    {
+      "name": "historical-version-2",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 2,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [
+          [
+            "01000000000000000000000000000000000000ff",
+            "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+          ],
+          [
+            "ff00000000000000000000000000000000000001",
+            "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100"
+          ]
+        ],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "02000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa998877665544332211000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4da60104030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84d500102000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa998877665544332211000201000000000000000000000000000000000000ff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1fff00000000000000000000000000000000000001ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 2,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Parity",
+          "identityaddress": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {
+            "ff00000000000000000000000000000000000001": "1f1e1d1c1b1a191817161514131211100f0e0d0c0b0a09080706050403020100",
+            "01000000000000000000000000000000000000ff": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+          },
+          "revocationauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "recoveryauthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bWuNVJqtMFqsedaqtKUcQS5Tapu4hZLJwD"
+      }
+    },
+    {
+      "name": "historical-version-1-null-root",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "VRSCTEST",
+        "version": 1,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "revocationAuthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "recoveryAuthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "0100000000000000011411111111111111111111111111111111111111110100000000000000000000000000000000000000000000000856525343544553540000a6ef9ea235635e328124ff3429db9f9e91b64e2da6ef9ea235635e328124ff3429db9f9e91b64e2d00",
+      "scriptHex": "4704030001031504a6ef9ea235635e328124ff3429db9f9e91b64e2d1504a6ef9ea235635e328124ff3429db9f9e91b64e2d1504a6ef9ea235635e328124ff3429db9f9e91b64e2dcc4cbf04030e01011504a6ef9ea235635e328124ff3429db9f9e91b64e2d4c6a0100000000000000011411111111111111111111111111111111111111110100000000000000000000000000000000000000000000000856525343544553540000a6ef9ea235635e328124ff3429db9f9e91b64e2da6ef9ea235635e328124ff3429db9f9e91b64e2d001b04030f01011504a6ef9ea235635e328124ff3429db9f9e91b64e2d1b04031001011504a6ef9ea235635e328124ff3429db9f9e91b64e2d75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 1,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "VRSCTEST",
+          "identityaddress": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "revocationauthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "recoveryauthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        ],
+        "p2sh": "bCx6wuDSfjWujTHgLYemjD5xwbrqz6mySj"
+      }
+    },
+    {
+      "name": "current-null-parent-explicit-root",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Alice",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "revocationAuthority": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "recoveryAuthority": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "timelock": 0,
+        "content": [],
+        "multimap": [],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000000000000000000000000000000000000000000005416c696365000017ef6bb6838b8c50c03a0fb77b780af5c40e14cc17ef6bb6838b8c50c03a0fb77b780af5c40e14cc00a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "470403000103150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc150417ef6bb6838b8c50c03a0fb77b780af5c40e14cccc4cd404030e0101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc4c7f03000000000000000114111111111111111111111111111111111111111101000000000000000000000000000000000000000000000005416c696365000017ef6bb6838b8c50c03a0fb77b780af5c40e14cc17ef6bb6838b8c50c03a0fb77b780af5c40e14cc00a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f0101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc1b0403100101150417ef6bb6838b8c50c03a0fb77b780af5c40e14cc75",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RAqS1bAuWqW2f6ufsU5H4XpKfy5Pqj2oHz"
+          ],
+          "minimumsignatures": 1,
+          "name": "Alice",
+          "identityaddress": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+          "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+          "recoveryauthority": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+          "timelock": 0
+        },
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+          "i5f5njYtso65186mo5WHMkRme9YG6hrZE2"
+        ],
+        "p2sh": "bKatnrKqL8756HfrHuzTthwbLyLLPRTeeK"
+      }
+    },
+    {
+      "name": "current-null-multimap-key",
+      "provenance": "independent-wire-daemon-decoded",
+      "input": {
+        "name": "Parity",
+        "version": 3,
+        "flags": 0,
+        "keys": [
+          "1111111111111111111111111111111111111111"
+        ],
+        "minimumSignatures": 1,
+        "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "identityID": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "revocationAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "recoveryAuthority": "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+        "timelock": 0,
+        "content": [],
+        "multimap": [
+          [
+            "0000000000000000000000000000000000000000",
+            [
+              "ab"
+            ]
+          ]
+        ],
+        "privateAddresses": []
+      },
+      "payloadHex": "03000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790100000000000000000000000000000000000000000101ab00e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000",
+      "scriptHex": "4704030001031504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c81504e58b3ea076baf4b77af46761c7738da92019e7c8cc4cec04030e01011504e58b3ea076baf4b77af46761c7738da92019e7c84c9703000000000000000114111111111111111111111111111111111111111101000000a6ef9ea235635e328124ff3429db9f9e91b64e2d065061726974790100000000000000000000000000000000000000000101ab00e58b3ea076baf4b77af46761c7738da92019e7c8e58b3ea076baf4b77af46761c7738da92019e7c800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504e58b3ea076baf4b77af46761c7738da92019e7c81b04031001011504e58b3ea076baf4b77af46761c7738da92019e7c875",
+      "decoded": {
+        "type": "cryptocondition",
+        "identityprimary": "invalid",
+        "spendableoutput": false,
+        "reqSigs": 1,
+        "addresses": [
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb",
+          "iQQEytjhfVWia7u933cDQWZpskEaasunJb"
+        ],
+        "p2sh": "bY36UG12hfgNaYBbEcmwoBaawF3M84jUK1"
+      }
+    }
+  ]
+}
