@@ -16,8 +16,8 @@
     "daemonVersion": 2000753,
     "protocolVersion": 170010,
     "captureTip": {
-      "height": 1273920,
-      "blockHash": "c2827572e2810965cbe1878b2eb88be1c3c52e34ad7190fd41b548ecf5b26219"
+      "height": 1276389,
+      "blockHash": "434d620c4ad4f550bae2a576e90d655650627df91c13e8dc9a2be68c7f7617d6"
     },
     "omittedCurrencyFields": [
       "bestheight",
@@ -211,11 +211,7 @@
             "nodeidentity": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk"
           },
           {
-            "networkaddress": "[2600:3c01::f03c:93ff:fe4d:1cc1]:18842",
-            "nodeidentity": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk"
-          },
-          {
-            "networkaddress": "135.181.186.8:18842",
+            "networkaddress": "[2400:8907::f03c:93ff:fe68:14e4]:18842",
             "nodeidentity": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk"
           }
         ]
@@ -915,6 +911,10 @@
             "preconvertedout": 0
           }
         }
+      ],
+      "proxyCompatibleParams": [
+        "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "975796"
       ]
     },
     {
@@ -1011,6 +1011,10 @@
             "preconvertedout": 0
           }
         }
+      ],
+      "proxyCompatibleParams": [
+        "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+        "21349"
       ]
     },
     {
@@ -1276,6 +1280,11 @@
             "preconvertedout": 0
           }
         }
+      ],
+      "proxyCompatibleParams": [
+        "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+        "975796,975798,1",
+        "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
       ]
     },
     {
@@ -1556,6 +1565,11 @@
         {
           "totalvolume": 3761.00047319
         }
+      ],
+      "proxyCompatibleParams": [
+        "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+        "1000000,1100000,100000",
+        "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
       ]
     },
     {
@@ -1619,6 +1633,10 @@
             "preconvertedout": 0
           }
         }
+      ],
+      "proxyCompatibleParams": [
+        "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "975796,975799,2"
       ]
     },
     {
@@ -1667,6 +1685,10 @@
             "preconvertedout": 0
           }
         }
+      ],
+      "proxyCompatibleParams": [
+        "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+        "978400"
       ]
     }
   ],
@@ -1756,8 +1778,8 @@
         ]
       },
       "result": {
-        "bestblock": "c2827572e2810965cbe1878b2eb88be1c3c52e34ad7190fd41b548ecf5b26219",
-        "confirmations": 1273686,
+        "bestblock": "434d620c4ad4f550bae2a576e90d655650627df91c13e8dc9a2be68c7f7617d6",
+        "confirmations": 1276155,
         "value": 0,
         "scriptPubKey": {
           "type": "cryptocondition",

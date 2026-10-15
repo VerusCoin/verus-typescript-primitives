@@ -17,7 +17,7 @@ const fixture: {
   blockAnchors: Array<{ height: number; blockHash: string }>;
   currencies: Array<Capture<HistoricalDefinition> & { definitionHeight: number; definitionBlockHash: string }>;
   histories: Array<Capture<GetIdentityHistoryResponse['result']>>;
-  states: Array<Capture<GetCurrencyStateResponse['result']>>;
+  states: Array<Capture<GetCurrencyStateResponse['result']> & { proxyCompatibleParams: string[] }>;
   spentOutputs: Array<Capture<GetTxOutResponse['result']>>;
   unspentOutputs: Array<Capture<GetTxOutResponse['result']>>;
 } = require('../fixtures/identity-registration/data-v1.json');
@@ -74,8 +74,8 @@ describe('daemon identity history, currency data, and UTXO parity', () => {
     test('matches daemon positional request and preserves optional reserve/volume data', () => {
       const [currencyID, height, volumeCurrency] = row.request.params;
       const request = new GetCurrencyStateRequest(CHAIN, currencyID, height, volumeCurrency);
-      expect(request.prepare()).toEqual([CHAIN, row.request.method, row.request.params]);
-      expect(GetCurrencyStateRequest.fromJSON(request.toJSON()).getParams()).toEqual(row.request.params);
+      expect(request.prepare()).toEqual([CHAIN, row.request.method, row.proxyCompatibleParams]);
+      expect(GetCurrencyStateRequest.fromJSON(request.toJSON()).getParams()).toEqual(row.proxyCompatibleParams);
       const response = new GetCurrencyStateResponse(row.result);
       expect(JSON.parse(JSON.stringify(response))).toEqual(row.result);
       for (const entry of response.result) {

@@ -29,14 +29,14 @@ describe("registration RPC reads", () => {
     ).toEqual(request.prepare());
     expect(
       new GetIdentityHistoryRequest(CHAIN, "alice@", undefined, 100).getParams()
-    ).toEqual(["alice@", null, 100]);
+    ).toEqual(["alice@", 0, 100]);
     expect(
       GetIdentityHistoryRequest.fromJSON({
         chain: CHAIN,
         nameOrAddress: "alice@",
         txproofheight: 100,
       }).getParams()
-    ).toEqual(["alice@", null, null, null, 100]);
+    ).toEqual(["alice@", 0, 0, false, 100]);
   });
 
   test("handles historical currency heights and inclusive ranges", () => {
@@ -56,11 +56,41 @@ describe("registration RPC reads", () => {
       GetCurrencyStateRequest.fromJSON(request.toJSON()).prepare()
     ).toEqual(request.prepare());
     expect(new GetCurrencyStateRequest(CHAIN, "basket", 0).getParams()).toEqual(
-      ["basket", 0]
+      ["basket", ""]
     );
     expect(
       new GetCurrencyStateRequest(CHAIN, "basket", undefined, CHAIN).getParams()
-    ).toEqual(["basket", null, CHAIN]);
+    ).toEqual(["basket", "", CHAIN]);
+  });
+
+  test.each([1, 975796, Number.MAX_SAFE_INTEGER])("sends numeric currency height %s as a string without changing saved request data", height => {
+    const request = new GetCurrencyStateRequest(CHAIN, "basket", height);
+    expect(request.getParams()).toEqual(["basket", String(height)]);
+    expect(request.toJSON().height).toBe(height);
+    expect(GetCurrencyStateRequest.fromJSON(request.toJSON()).prepare()).toEqual(request.prepare());
+    expect(request.height).toBe(height);
+  });
+
+  test.each([undefined, 0, -0, -1, -100])("preserves current-tip semantics for currency height %s", height => {
+    const request = new GetCurrencyStateRequest(CHAIN, "basket", height, CHAIN);
+    expect(request.getParams()).toEqual(["basket", "", CHAIN]);
+    expect(new GetCurrencyStateRequest(CHAIN, "basket", height).getParams()).toEqual(
+      height === undefined ? ["basket"] : ["basket", ""]
+    );
+    expect(GetCurrencyStateRequest.fromJSON(request.toJSON()).getParams()).toEqual(request.getParams());
+  });
+
+  test.each(["0", "", "975796", "100,200", "100,200,10"])("preserves explicit string height/range %s", height => {
+    expect(new GetCurrencyStateRequest(CHAIN, "basket", height, CHAIN).getParams()).toEqual(["basket", height, CHAIN]);
+  });
+
+  test.each([NaN, Infinity, -Infinity, 1.5, Number.MAX_SAFE_INTEGER + 1])("rejects numeric currency height %s that cannot be encoded faithfully", height => {
+    expect(() => new GetCurrencyStateRequest(CHAIN, "basket", height).prepare()).toThrow("safe integer");
+  });
+
+  test("uses a string tip selector when restoring an omitted currency height from JSON", () => {
+    const request = GetCurrencyStateRequest.fromJSON({chain: CHAIN, currencynameorid: "basket", height: null, conversiondatacurrency: CHAIN});
+    expect(request.getParams()).toEqual(["basket", "", CHAIN]);
   });
 
   test("preserves vout zero and opt-out of mempool filtering", () => {

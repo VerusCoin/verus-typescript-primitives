@@ -219,6 +219,15 @@ provide the corresponding typed reads. Fees depending on currency state,
 fractional conversion, funding, transaction assembly/signing, commitment
 confirmation, and broadcasting remain responsibilities of the client.
 
+These requests emit parameters compatible with the Rust RPC proxy once the
+methods are whitelisted. Currency-state numeric heights are sent as strings;
+omitted or nonpositive numeric heights use the current tip, while the explicit
+string `"0"` selects genesis. A missing height before a conversion currency is
+encoded as `""`, the daemon's string selector for the tip. Numeric heights must
+be safe integers. Identity-history requests fill skipped intermediate arguments
+with the daemon defaults (`0`, `0`, `false`) and omit unused trailing arguments.
+Request JSON retains the caller's original values.
+
 Offline daemon parity fixtures cover mined registrations, name derivation,
 independently encoded scripts and identities, historical proofs, currency policy
 and state, and UTXO reads. Coverage and regeneration instructions are in

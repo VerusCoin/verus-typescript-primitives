@@ -43,6 +43,10 @@ confirmations, current currency state and UTXO metadata may change on regenerati
 UTXO presence does not imply consensus spendability; reservation outputs are
 unspendable.
 
+Each currency-state capture also records `proxyCompatibleParams`. The generator
+queries the daemon with both the original parameters and the string heights
+required by the Rust proxy, and checks that their results are identical.
+
 ## Interpretation and limits
 
 - Decoding proves wire/JSON compatibility, not current consensus acceptance of a

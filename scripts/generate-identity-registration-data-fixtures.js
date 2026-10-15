@@ -91,8 +91,12 @@ async function main() {
   const states = [];
   for (const [name, params] of STATES) {
     const row = await capture('getcurrencystate', params);
+    // Independently verify the string heights required by the Rust proxy against
+    // the original daemon requests. All numeric fixture heights are positive.
+    const proxyCompatibleParams = params.map((value, index) => index === 1 && typeof value === 'number' ? String(value) : value);
+    assert.deepStrictEqual(await requestRPC('getcurrencystate', proxyCompatibleParams), row.result);
     for (const state of row.result) if (state.height != null) await anchor(state.height);
-    states.push({ name, ...row });
+    states.push({ name, ...row, proxyCompatibleParams });
   }
   const fixture = {
     schemaVersion: 1,

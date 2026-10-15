@@ -17,13 +17,21 @@ export class GetIdentityHistoryRequest extends ApiRequest {
   }
 
   getParams(): RequestParams {
-    return positionalParams([
+    const params = positionalParams([
       this.nameOrAddress,
       this.heightstart,
       this.heightend,
       this.txproofs,
       this.txproofheight,
     ]);
+
+    // Fill only intermediate omissions with the daemon's defaults. The proxy
+    // checks positional types and does not accept null placeholders.
+    if (params.length > 1 && params[1] == null) params[1] = 0;
+    if (params.length > 2 && params[2] == null) params[2] = 0;
+    if (params.length > 3 && params[3] == null) params[3] = false;
+
+    return params;
   }
 
   // Preserve the existing ApiRequest serialization contract.
