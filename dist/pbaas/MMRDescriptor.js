@@ -11,6 +11,7 @@ const DataDescriptor_1 = require("./DataDescriptor");
 class MMRDescriptor extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         super();
+        this.version = MMRDescriptor.DEFAULT_VERSION;
         if (data) {
             if (data.version)
                 this.version = data.version;
@@ -24,9 +25,6 @@ class MMRDescriptor extends SerializableEntityBase_1.SerializableEntityBase {
                 this.mmrHashes = data.mmrHashes;
             if (data.dataDescriptors)
                 this.dataDescriptors = data.dataDescriptors;
-        }
-        else {
-            this.version = MMRDescriptor.DEFAULT_VERSION;
         }
     }
     static fromJson(data) {

@@ -88,6 +88,67 @@ console.log('Amount:', invoice.details.amount.toString());
 console.log('Destination:', invoice.details.destination.getAddressString());
 ```
 
+### Local upload primitives
+
+`hashData(bytes, hashType?)` returns the daemon's serialized 32-byte digest.
+It supports `EHashTypes.HASH_SHA256` (default), `HASH_SHA256D`, and
+`HASH_BLAKE2BMMR` (Verus-personalized Blake2b). Unsupported algorithms throw.
+Hash ordinary upload leaves over `Buffer.concat([payload, salt])`, using an
+exactly 32-byte salt. `getMMRRoot(leafHashes, hashType?)` combines ordered hashes
+with the daemon's MMR algorithm, defaulting to personalized Blake2b. A single
+leaf is its own root; set the single-item descriptor's MMR hash type to its
+object hash type. These helpers use wire byte order, without display reversal.
+Existing MMR proof classes retain their original Blake2b behavior.
+
+Once a wallet has encrypted the tagged descriptors, package each upload group:
+
+```typescript
+import {
+  BigNumber, CrossChainProof, EvidenceData, ETypes, NotaryEvidence,
+  createNotaryEvidenceOutputs, DataDescriptorKey
+} from 'verus-typescript-primitives';
+
+function uploadOutputs(chainId: string, taggedEncryptedDescriptor: Buffer) {
+  const evidence = new NotaryEvidence({
+    systemId: chainId,
+    evidence: new CrossChainProof({
+      chainObjects: [new EvidenceData({
+        version: new BigNumber(1),
+        type: new BigNumber(ETypes.TYPE_DATA),
+        md: undefined,
+        vdxfd: DataDescriptorKey.vdxfid,
+        data_vec: taggedEncryptedDescriptor
+      })]
+    })
+  });
+  return createNotaryEvidenceOutputs(evidence);
+}
+```
+
+The payload is a tagged encrypted `DataDescriptor` for one leaf, or a tagged
+`MMRDescriptor` for multiple leaves; the outer evidence key remains
+`DataDescriptorKey` in both cases. The helper returns zero-value `{script,
+value}` outputs, splitting the complete serialized evidence into 5,724-byte
+chunks only when its condition would reach 6,000 bytes. Preserve output order,
+adjacency, and absolute positions when creating references and funding.
+`NotaryEvidence.reassemble(parts)` checks one multipart group's headers,
+indexes, offsets, and total length. Callers must reject adjacent multipart
+groups because of the daemon reader limitation.
+
+These are serialization and hashing primitives. Wallet encryption, public
+recipient creation, request validation, identity merging, reference construction,
+funding, and transaction-size limits remain responsibilities of the client.
+Data-signature production is not included.
+
+Offline tests use captured VRSCTEST 1.2.18 `signdata` and non-broadcast
+`updateidentity` results in `src/__tests__/fixtures/local-upload`. Regenerate
+them with `node scripts/generate-upload-hash-fixtures.js` and
+`node scripts/generate-upload-evidence-fixtures.js`, supplying
+`VRSCTEST_RPC_URL`, `VRSCTEST_RPC_USER`, and `VRSCTEST_RPC_PASSWORD`.
+The fixtures check commitments and exact evidence/script bytes, including the
+5,999/6,000-byte boundary. They do not establish native encryption
+interoperability or funded/broadcast transaction acceptance.
+
 ### Creating an Identity Update Script
 
 This example shows how to define a VerusID, modify it, and generate the corresponding transaction script.

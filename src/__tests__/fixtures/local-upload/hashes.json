@@ -1,0 +1,1247 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "kind": "daemon-rpc-captured",
+    "generator": "scripts/generate-upload-hash-fixtures.js",
+    "rpcMethods": [
+      "getinfo",
+      "help",
+      "signdata"
+    ],
+    "chain": "VRSCTEST",
+    "chainId": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    "daemonVersion": "1.2.18",
+    "version": 2000753,
+    "protocolVersion": 170010,
+    "height": 1283470,
+    "notes": [
+      "Requests are unsigned, unencrypted synthetic uploads with fixed salts.",
+      "Descriptor objectdata, salts, and decoded hash-vector entries contain wire-order bytes.",
+      "Hash-only RPC input is digest order for SHA256 and reversed display order for other modes."
+    ]
+  },
+  "cases": [
+    {
+      "name": "default-1-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 5,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d62"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c012101325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d62"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-2-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "7ef3e1e6c5a7838ee6184e23bc6c9813adb087838461a0b6f6ef407ef7f989ab"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c014102325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b581"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-3-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "5d667c4f4155a3cebac87a948454cbbc2e2996e4e954d51ffbaa9b49292293d7"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad6"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-5-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          },
+          {
+            "serializedhex": "000102feff"
+          },
+          {
+            "vdxfdata": {
+              "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+            }
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869",
+          "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e",
+          "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "132f4e3a04e42eb4f9a348ba9134b2a6e2d0b8f5952f0dce514761d07bf2b595"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c01a105325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad640640603c57ff43913a95b2f27fc72513280c460c5d8188f5d0d4ed6b5f7fc85552583b5c4dd9896ce1e0f55cf8d4e8ec094b68c0100cbfb151061f265933906"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102feff",
+              "salt": "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": {
+                "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+              },
+              "salt": "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-7-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          },
+          {
+            "serializedhex": "000102feff"
+          },
+          {
+            "vdxfdata": {
+              "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+            }
+          },
+          {
+            "message": "leaf 6"
+          },
+          {
+            "message": "leaf 7"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869",
+          "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e",
+          "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3",
+          "b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8",
+          "dedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "630d23baf175a9729b3fad80401c98783c6d4111b0689fff740a8c3629715f85"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c01e107325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad640640603c57ff43913a95b2f27fc72513280c460c5d8188f5d0d4ed6b5f7fc85552583b5c4dd9896ce1e0f55cf8d4e8ec094b68c0100cbfb151061f265933906478c63b44fcf8a7eef7de5798413cf1343b7669976577df586c16d0db192dbbf526eff426f3046785b4d32cdf0313f153a146e17fd49def80105c09b63e17a48"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102feff",
+              "salt": "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": {
+                "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+              },
+              "salt": "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662036",
+              "salt": "b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662037",
+              "salt": "dedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "default-13-leaves",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          },
+          {
+            "serializedhex": "000102feff"
+          },
+          {
+            "vdxfdata": {
+              "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+            }
+          },
+          {
+            "message": "leaf 6"
+          },
+          {
+            "message": "leaf 7"
+          },
+          {
+            "message": "leaf 8"
+          },
+          {
+            "message": "leaf 9"
+          },
+          {
+            "message": "leaf 10"
+          },
+          {
+            "message": "leaf 11"
+          },
+          {
+            "message": "leaf 12"
+          },
+          {
+            "message": "leaf 13"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869",
+          "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e",
+          "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3",
+          "b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8",
+          "dedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd",
+          "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+          "28292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344454647",
+          "4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c",
+          "72737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f9091",
+          "9798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6",
+          "bcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadb"
+        ]
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "2f973e0b703a646effa4a5082b3b03434bf795563967698121e793b245956def"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c01fda1010d325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad640640603c57ff43913a95b2f27fc72513280c460c5d8188f5d0d4ed6b5f7fc85552583b5c4dd9896ce1e0f55cf8d4e8ec094b68c0100cbfb151061f265933906478c63b44fcf8a7eef7de5798413cf1343b7669976577df586c16d0db192dbbf526eff426f3046785b4d32cdf0313f153a146e17fd49def80105c09b63e17a4818396f87283c8ced56f1534f80dbc1439bc103062e0b480c0a859a50805a277d3956ca81cdf8173d32d02b5458cab33790f3ed2c675e812831826c5039f28f40a1de2463bba598ec29a84a2412dc538f6b50b7a3b33dc1ba1e0f5fbefdb7673a30924061a37364f3b4df4ae3e01df309d07e19392b36238b51d0a1108d71720e4d6f37345dbecd5f0ac161ca6737b4b1725207f2c99e9162b160b944ec42178eb1a3266b83993abd6a5f05d8b2848d012583a8c515398c6f0fceabe013a78930"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102feff",
+              "salt": "6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": {
+                "iK7a5JNJnbeuYWVHCDRpJosj3irGJ5Qa8c": "VDXF upload"
+              },
+              "salt": "9495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662036",
+              "salt": "b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662037",
+              "salt": "dedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfd"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662038",
+              "salt": "030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6561662039",
+              "salt": "28292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344454647"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c656166203130",
+              "salt": "4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c656166203131",
+              "salt": "72737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f9091"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c656166203132",
+              "salt": "9798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c656166203133",
+              "salt": "bcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadb"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256-objects-sha256-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256",
+        "mmrhashtype": "sha256"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 5,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "dfb58a9ce7a6c69d1d5f9272115c6e7217b46d8db048323b8bf38d7ab61169a5"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad6"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256-objects-sha256D-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256",
+        "mmrhashtype": "sha256D"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 4,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "af504b2c3658e4371dcddeae415105c0723992913e1ec9c1690148155e2ea88b"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad6"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256-objects-blake2b-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256",
+        "mmrhashtype": "blake2b"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "5d667c4f4155a3cebac87a948454cbbc2e2996e4e954d51ffbaa9b49292293d7"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d622a414915ca83450ecf98bccfa4e0afcaffae53173ed41cb43c25338cebd9b58146638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad6"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256-with-hash-only-leaf",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "datahash": "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 5,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "49a56ab8db6d518c2d724971762e14f64566301193add8a2018e91e4be3543cd"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103325cd57f4a9593feb46ea369b389864887391c9c6355e23badde55edcae19d620102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f2046638ad909b7a7e1fed0161a2822cefb616e56795ae6055c0994cd38265daad6"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 0,
+              "objectdata": null
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256D-objects-sha256-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256D",
+        "mmrhashtype": "sha256"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 4,
+          "mmrhashtype": 5,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "3ea7cb083c169a5e4950b70009f63d7e09ae20c65b304a59b7f832d5f8e87cee"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103865cc87b788f344f24dcec181096de4b537e1bc6fb5e2d7be988df03cc3646654e36938995f2bbc73d56603a8f270a82be9134eedc9723956fdd214b3487e322ee43a75056ec6095baed9666a23be8cefa9e8bc3e098a616922a90fb8ade77ca"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256D-objects-sha256D-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256D",
+        "mmrhashtype": "sha256D"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 4,
+          "mmrhashtype": 4,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "75ca4ce34ac39756b079db6bcafe8b428efd0791d618c08ed30f47c3cbd0f884"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103865cc87b788f344f24dcec181096de4b537e1bc6fb5e2d7be988df03cc3646654e36938995f2bbc73d56603a8f270a82be9134eedc9723956fdd214b3487e322ee43a75056ec6095baed9666a23be8cefa9e8bc3e098a616922a90fb8ade77ca"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256D-objects-blake2b-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256D",
+        "mmrhashtype": "blake2b"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 4,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "0357d7a12e1a30655dcfe89ef4dae35c56d0df94fdd3eadb284ec831c5a6cd9f"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103865cc87b788f344f24dcec181096de4b537e1bc6fb5e2d7be988df03cc3646654e36938995f2bbc73d56603a8f270a82be9134eedc9723956fdd214b3487e322ee43a75056ec6095baed9666a23be8cefa9e8bc3e098a616922a90fb8ade77ca"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sha256D-with-hash-only-leaf",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "datahash": "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "sha256D"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 4,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "3e82281389447cc033854a15438ee687b9bf65dec96734a38a574a0926e047df"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103865cc87b788f344f24dcec181096de4b537e1bc6fb5e2d7be988df03cc364665201f1e1d1c1b1a191817161514131211100f0e0d0c0b0a090807060504030201ee43a75056ec6095baed9666a23be8cefa9e8bc3e098a616922a90fb8ade77ca"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 0,
+              "objectdata": null
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blake2b-objects-sha256-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "blake2b",
+        "mmrhashtype": "sha256"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 1,
+          "mmrhashtype": 5,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "77ae9913dec580c5890c698ffed1363e7932df1ec3ffe9160cb15d9790fd6bcd"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103c887447dae0a2c1c787ec4731e91dd633ea40ac257f92a0320946098ff141d9979082935e63e111b50cbf9c3824f2e5082632b342740eb9f5744d5d36f8df38ad3ca9da303c113e3b2d9fd634a7a219f01eca02487aeb154603d76a045360939"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blake2b-objects-sha256D-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "blake2b",
+        "mmrhashtype": "sha256D"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 1,
+          "mmrhashtype": 4,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "12dbf3f8cd1d01e08858c6e7b312472370521e47a06e3ea789b578af63490886"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103c887447dae0a2c1c787ec4731e91dd633ea40ac257f92a0320946098ff141d9979082935e63e111b50cbf9c3824f2e5082632b342740eb9f5744d5d36f8df38ad3ca9da303c113e3b2d9fd634a7a219f01eca02487aeb154603d76a045360939"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blake2b-objects-blake2b-mmr",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "serializedhex": "000102ff"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "blake2b",
+        "mmrhashtype": "blake2b"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 1,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "1e24269e5fea7f55b1101a29f27b61318c37d0ccdebb80f4cd19f712d8e72646"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103c887447dae0a2c1c787ec4731e91dd633ea40ac257f92a0320946098ff141d9979082935e63e111b50cbf9c3824f2e5082632b342740eb9f5744d5d36f8df38ad3ca9da303c113e3b2d9fd634a7a219f01eca02487aeb154603d76a045360939"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "000102ff",
+              "salt": "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blake2b-with-hash-only-leaf",
+      "request": {
+        "createmmr": true,
+        "mmrdata": [
+          {
+            "message": "local upload one"
+          },
+          {
+            "datahash": "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"
+          },
+          {
+            "message": "Unicode: café ☕"
+          }
+        ],
+        "mmrsalt": [
+          "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+          "25262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344",
+          "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+        ],
+        "hashtype": "blake2b"
+      },
+      "result": {
+        "mmrdescriptor": {
+          "version": 1,
+          "objecthashtype": 1,
+          "mmrhashtype": 1,
+          "mmrroot": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "6f5d53b1702e7193d01e6bdd212feefe8915c56ca2605a30e8bba4274c55026e"
+          },
+          "mmrhashes": {
+            "version": 1,
+            "flags": 0,
+            "objectdata": "41d826d3c6cbbc3a96992670d2f604e959fd1a8c016103c887447dae0a2c1c787ec4731e91dd633ea40ac257f92a0320946098ff141d99201f1e1d1c1b1a191817161514131211100f0e0d0c0b0a090807060504030201d3ca9da303c113e3b2d9fd634a7a219f01eca02487aeb154603d76a045360939"
+          },
+          "datadescriptors": [
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "6c6f63616c2075706c6f6164206f6e65",
+              "salt": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+            },
+            {
+              "version": 1,
+              "flags": 0,
+              "objectdata": null
+            },
+            {
+              "version": 1,
+              "flags": 2,
+              "objectdata": "556e69636f64653a20636166c3a920e29895",
+              "salt": "4a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566676869"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

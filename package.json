@@ -9,6 +9,8 @@
   "scripts": {
     "build": "tsc",
     "fixtures:mmr": "node scripts/generate-mmr-fixtures.js",
+    "fixtures:upload:hashes": "node scripts/generate-upload-hash-fixtures.js",
+    "fixtures:upload:evidence": "node scripts/generate-upload-evidence-fixtures.js",
     "fixtures:identity-registration": "node scripts/generate-all-identity-registration-fixtures.js",
     "fixtures:identity-registration:mined": "node scripts/generate-identity-registration-fixtures.js",
     "fixtures:identity-registration:names": "node scripts/generate-identity-registration-name-fixtures.js",

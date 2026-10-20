@@ -36,7 +36,8 @@ declare class BufferReader {
     readUInt64(): number;
     readInt64(): BigNumber;
     readCompactSize(rangeCheck?: boolean): number;
-    readVarInt(): import("bn.js");
+    /** Bound protocol fields during decoding; maxBits counts nonnegative value bits. */
+    readVarInt(maxBits?: number): import("bn.js");
     readSlice(n: number): Buffer<ArrayBuffer>;
     readVarSlice(): Buffer<ArrayBuffer>;
     readVector(): any[];

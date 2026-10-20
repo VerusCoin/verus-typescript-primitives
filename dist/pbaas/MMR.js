@@ -2,7 +2,7 @@
 // Licence MIT
 // Adapted to Verus Blake2b MMR. 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MerkleMountainView = exports.MMRProof = exports.MMRBranch = exports.MerkleMountainRange = exports.MMRNode = exports.MMRLayer = void 0;
+exports.MerkleMountainView = exports.MMRProof = exports.MMRBranch = exports.getMMRRoot = exports.MerkleMountainRange = exports.MMRNode = exports.MMRLayer = void 0;
 var blake2b = require('blake2b');
 const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const bn_js_1 = require("bn.js");
@@ -10,6 +10,8 @@ const varuint_1 = require("../utils/varuint");
 const varint_1 = require("../utils/varint");
 const bufferutils_1 = require("../utils/bufferutils");
 const mmr_1 = require("../utils/mmr");
+const hash_1 = require("../utils/hash");
+const pbaas_1 = require("../constants/pbaas");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
 const BRANCH_BTC = 1;
 const BRANCH_MMRBLAKE_NODE = 2;
@@ -237,6 +239,45 @@ class MerkleMountainRange {
     }
 }
 exports.MerkleMountainRange = MerkleMountainRange;
+/**
+ * Build a daemon-compatible MMR root from ordered, prehashed leaves.
+ * All input/output hashes are raw 32-byte uint256 wire bytes. One leaf is
+ * returned unchanged; an empty range has the all-zero root.
+ *
+ * This supports root construction only. The existing serialized MMR proofs
+ * identify Blake2b branches and do not encode the other hash modes.
+ */
+const getMMRRoot = (hashes, hashType = pbaas_1.HASH_TYPE_BLAKE2B.toNumber()) => {
+    if (hashType !== pbaas_1.HASH_TYPE_BLAKE2B.toNumber() &&
+        hashType !== pbaas_1.HASH_TYPE_SHA256.toNumber() &&
+        hashType !== pbaas_1.HASH_TYPE_SHA256D.toNumber()) {
+        throw new Error(`Unsupported MMR hash type ${hashType}`);
+    }
+    if (!Array.isArray(hashes)) {
+        throw new TypeError('MMR leaf hashes must be an array');
+    }
+    if (hashes.length > INT32_MAX) {
+        throw new RangeError('MMR leaf count exceeds the supported signed 32-bit range');
+    }
+    // Keep the selected hash algorithm on every parent, including the parents
+    // combining uneven peaks. The exported proof nodes retain their Blake2b rules.
+    class HashNode extends MMRNode {
+        createParentNode(right) {
+            return new HashNode((0, hash_1.hashData)(Buffer.concat([this.hash, right.hash]), hashType));
+        }
+    }
+    const range = new MerkleMountainRange();
+    for (let index = 0; index < hashes.length; index++) {
+        const leaf = hashes[index];
+        if (!Buffer.isBuffer(leaf) || leaf.length !== 32) {
+            throw new Error(`MMR leaf hash ${index} must be exactly 32 bytes`);
+        }
+        range.add(new HashNode(Buffer.from(leaf)));
+    }
+    // A single-leaf root can alias its node's buffer; always return an owned copy.
+    return Buffer.from(new MerkleMountainView(range).getRoot());
+};
+exports.getMMRRoot = getMMRRoot;
 class MMRBranch extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(branchType = BRANCH_MMRBLAKE_NODE, nIndex = 0, nSize = 0, branch = new Array()) {
         super();

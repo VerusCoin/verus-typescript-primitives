@@ -10,6 +10,9 @@ import varuint from '../utils/varuint'
 import varint from '../utils/varint'
 import bufferutils from '../utils/bufferutils'
 import { GetMMRProofIndex } from '../utils/mmr';
+import { hashData } from '../utils/hash';
+import type { EHashTypes } from './DataDescriptor';
+import { HASH_TYPE_BLAKE2B, HASH_TYPE_SHA256, HASH_TYPE_SHA256D } from '../constants/pbaas';
 
 const { BufferReader, BufferWriter } = bufferutils;
 const BRANCH_BTC = 1
@@ -283,6 +286,62 @@ export class MerkleMountainRange {
   }
 
 }
+
+/**
+ * Build a daemon-compatible MMR root from ordered, prehashed leaves.
+ * All input/output hashes are raw 32-byte uint256 wire bytes. One leaf is
+ * returned unchanged; an empty range has the all-zero root.
+ *
+ * This supports root construction only. The existing serialized MMR proofs
+ * identify Blake2b branches and do not encode the other hash modes.
+ */
+export const getMMRRoot = (
+  hashes: ReadonlyArray<Buffer>,
+  hashType: EHashTypes = HASH_TYPE_BLAKE2B.toNumber()
+): Buffer => {
+  if (
+    hashType !== HASH_TYPE_BLAKE2B.toNumber() &&
+    hashType !== HASH_TYPE_SHA256.toNumber() &&
+    hashType !== HASH_TYPE_SHA256D.toNumber()
+  ) {
+    throw new Error(`Unsupported MMR hash type ${hashType}`);
+  }
+
+  if (!Array.isArray(hashes)) {
+    throw new TypeError('MMR leaf hashes must be an array');
+  }
+
+  if (hashes.length > INT32_MAX) {
+    throw new RangeError(
+      'MMR leaf count exceeds the supported signed 32-bit range'
+    );
+  }
+
+  // Keep the selected hash algorithm on every parent, including the parents
+  // combining uneven peaks. The exported proof nodes retain their Blake2b rules.
+  class HashNode extends MMRNode {
+    createParentNode(right: MMRNode): MMRNode {
+      return new HashNode(
+        hashData(Buffer.concat([this.hash, right.hash]), hashType)
+      );
+    }
+  }
+
+  const range = new MerkleMountainRange();
+
+  for (let index = 0; index < hashes.length; index++) {
+    const leaf = hashes[index];
+
+    if (!Buffer.isBuffer(leaf) || leaf.length !== 32) {
+      throw new Error(`MMR leaf hash ${index} must be exactly 32 bytes`);
+    }
+
+    range.add(new HashNode(Buffer.from(leaf)));
+  }
+
+  // A single-leaf root can alias its node's buffer; always return an owned copy.
+  return Buffer.from(new MerkleMountainView(range).getRoot());
+};
 
 export class MMRBranch extends SerializableEntityBase {
   branchType?: number;

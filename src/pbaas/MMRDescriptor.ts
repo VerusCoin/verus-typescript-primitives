@@ -42,6 +42,7 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
     dataDescriptors?: DataDescriptor[]
   }) {
     super();
+    this.version = MMRDescriptor.DEFAULT_VERSION;
 
     if (data) {
       if (data.version) this.version = data.version;
@@ -51,8 +52,6 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
       if (data.mmrHashes) this.mmrHashes = data.mmrHashes;
       if (data.dataDescriptors) this.dataDescriptors = data.dataDescriptors;
 
-    } else {
-      this.version = MMRDescriptor.DEFAULT_VERSION;
     }
   }
 

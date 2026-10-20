@@ -1,4 +1,5 @@
 import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
+import type { EHashTypes } from './DataDescriptor';
 export declare class MMRLayer<NODE_TYPE> {
     private vSize;
     private nodes;
@@ -32,6 +33,15 @@ export declare class MerkleMountainRange {
     height(): number;
     getNode(Height: any, Index: any): MMRNode;
 }
+/**
+ * Build a daemon-compatible MMR root from ordered, prehashed leaves.
+ * All input/output hashes are raw 32-byte uint256 wire bytes. One leaf is
+ * returned unchanged; an empty range has the all-zero root.
+ *
+ * This supports root construction only. The existing serialized MMR proofs
+ * identify Blake2b branches and do not encode the other hash modes.
+ */
+export declare const getMMRRoot: (hashes: ReadonlyArray<Buffer>, hashType?: EHashTypes) => Buffer;
 export declare class MMRBranch extends SerializableEntityBase {
     branchType?: number;
     nIndex?: number;

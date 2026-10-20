@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BigNumber = exports.I_ADDR_VERSION = exports.R_ADDR_VERSION = void 0;
+exports.BigNumber = exports.I_ADDR_VERSION = exports.R_ADDR_VERSION = exports.hashData = void 0;
 __exportStar(require("./api/classes/index"), exports);
 __exportStar(require("./api/ApiRequest"), exports);
 __exportStar(require("./api/ApiResponse"), exports);
@@ -25,6 +25,8 @@ __exportStar(require("./vdxf/parser"), exports);
 __exportStar(require("./utils/address"), exports);
 __exportStar(require("./utils/identityRegistration"), exports);
 __exportStar(require("./utils/bufferutils"), exports);
+var hash_1 = require("./utils/hash");
+Object.defineProperty(exports, "hashData", { enumerable: true, get: function () { return hash_1.hashData; } });
 __exportStar(require("./utils/varuint"), exports);
 __exportStar(require("./utils/ops"), exports);
 __exportStar(require("./utils/evals"), exports);

@@ -9,7 +9,8 @@ const { BufferReader, BufferWriter } = bufferutils_1.default;
 class UTXORef extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         super();
-        this.hash = (data === null || data === void 0 ? void 0 : data.hash) || Buffer.alloc(0);
+        // A null transaction hash still occupies 32 bytes on the wire.
+        this.hash = (data === null || data === void 0 ? void 0 : data.hash) || Buffer.alloc(vdxf_1.HASH256_BYTE_LENGTH);
         this.n = (data === null || data === void 0 ? void 0 : data.n) || new bn_js_1.BN(0);
     }
     getByteLength() {
