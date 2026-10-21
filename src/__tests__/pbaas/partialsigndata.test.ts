@@ -183,7 +183,13 @@ describe('PartialSignData serialization/deserialization', () => {
   
         const reserialized = psdFromBuffer.toBuffer();
         expect(reserialized.toString('hex')).toBe(serialized.toString('hex'));
-        testCLIJsonSerialization(psd);
+
+        // Prior-MMR state is preserved locally, but the daemon does not apply it.
+        if (psd.data instanceof PartialMMRData && psd.data.priormmr) {
+          expect(() => psd.toCLIJson()).toThrow('Prior-MMR combination');
+        } else {
+          testCLIJsonSerialization(psd);
+        }
       } catch(e) {
         console.error("Error in finalTestData entry:");
         console.error(config);

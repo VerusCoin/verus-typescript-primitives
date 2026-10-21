@@ -529,6 +529,21 @@ describe("daemon-derived CBlockHeaderProof fixtures", () => {
 });
 
 describe("MMRBranch power-node proof semantics", () => {
+  test.each(fixture.live.headerProofs)(
+    "$name verifies both library branches against its captured trusted root",
+    proofFixture => {
+      let result = Buffer.from(proofFixture.proveBlockHash.wireHex, "hex");
+      for (const captured of proofFixture.headerProof.branches) {
+        const branch = new MMRBranch();
+        const wire = Buffer.from(captured.wireHex, "hex");
+        expect(branch.fromBuffer(wire)).toBe(wire.length);
+        result = branch.safeCheck(result);
+        expect(result.equals(Buffer.alloc(32))).toBe(false);
+      }
+      expect(result.toString("hex")).toBe(proofFixture.proofRoot.stateRoot.wireHex);
+    }
+  );
+
   test("safeCheck honors the type-3 extra power hash at the 128 index boundary", () => {
     const proofFixture = fixture.live.headerProofs.find(
       (entry) => entry.name === "index-128"

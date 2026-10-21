@@ -22,7 +22,7 @@ describe.each([
 
       expect(uni.getByteLength()).toBe(1);
       expect(uni.toBuffer()).toEqual(canonical);
-      expect(uni.toJson()).toEqual({ [jsonKey]: hex });
+      expect(uni.toJson()).toEqual({ [jsonKey]: value });
       expect(type.fromJson(JSON.parse(JSON.stringify(uni.toJson()))).toBuffer()).toEqual(canonical);
     });
 
@@ -33,13 +33,9 @@ describe.each([
       },
     );
 
-    test.each(['ff', '10'])('preserves hex-string input and output %s', hex => {
-      const uni = type.fromJson({ [key]: hex });
-      const canonical = Buffer.from(hex, 'hex');
-
-      expect(uni.toBuffer()).toEqual(canonical);
-      expect(uni.toJson()).toEqual({ [jsonKey]: hex });
-      expect(type.fromJson(JSON.parse(JSON.stringify(uni.toJson()))).toBuffer()).toEqual(canonical);
+    test.each(['ff', '10'])('rejects hexadecimal byte JSON %s', hex => {
+      expect(() => type.fromJson({ [key]: hex })).toThrow('must be a number');
     });
+
   });
 });

@@ -1,18 +1,17 @@
 import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BigNumber } from '../utils/types/BigNumber';
 import { BN } from 'bn.js';
-import varint from '../utils/varint'
-import varuint from '../utils/varuint'
-import bufferutils from '../utils/bufferutils'
-const { BufferReader, BufferWriter } = bufferutils
+import varint from '../utils/varint';
+import varuint from '../utils/varuint';
+import bufferutils from '../utils/bufferutils';
+const { BufferReader, BufferWriter } = bufferutils;
 import { DataDescriptor, DataDescriptorJson } from './DataDescriptor';
 import { EHashTypes } from './DataDescriptor';
-import { BufferDataVdxfObject } from '../vdxf/index';
-import * as VDXF_Data from '../vdxf/vdxfdatakeys';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
+import { descriptorInteger } from './descriptorValidation';
 
 export interface MMRDescriptorJson {
-  version: number;
+  version?: number;
   objecthashtype?: number;
   mmrhashtype?: number;
   mmrroot?: DataDescriptorJson;
@@ -20,7 +19,10 @@ export interface MMRDescriptorJson {
   datadescriptors?: DataDescriptorJson[];
 }
 
-export class MMRDescriptor extends SerializableEntityBase implements SerializableEntity {
+export class MMRDescriptor
+  extends SerializableEntityBase
+  implements SerializableEntity
+{
   static VERSION_INVALID = new BN(0);
   static FIRST_VERSION = new BN(1);
   static LAST_VERSION = new BN(1);
@@ -34,50 +36,78 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
   dataDescriptors: DataDescriptor[];
 
   constructor(data?: {
-    version?: BigNumber,
-    objectHashType?: EHashTypes,
-    mmrHashType?: EHashTypes,
-    mmrRoot?: DataDescriptor,
-    mmrHashes?: DataDescriptor,
-    dataDescriptors?: DataDescriptor[]
+    version?: BigNumber;
+    objectHashType?: EHashTypes;
+    mmrHashType?: EHashTypes;
+    mmrRoot?: DataDescriptor;
+    mmrHashes?: DataDescriptor;
+    dataDescriptors?: DataDescriptor[];
   }) {
     super();
-    this.version = MMRDescriptor.DEFAULT_VERSION;
+    this.version = new BN(MMRDescriptor.DEFAULT_VERSION);
+    this.objectHashType = EHashTypes.HASH_SHA256;
+    this.mmrHashType = EHashTypes.HASH_BLAKE2BMMR;
+    this.mmrRoot = new DataDescriptor();
+    this.mmrHashes = new DataDescriptor();
+    this.dataDescriptors = [];
 
     if (data) {
-      if (data.version) this.version = data.version;
-      if (data.objectHashType) this.objectHashType = data.objectHashType;
-      if (data.mmrHashType) this.mmrHashType = data.mmrHashType;
+      if (data.version != null)
+        this.version = descriptorInteger(data.version, 32, 'Version');
+      if (data.objectHashType != null)
+        this.objectHashType = descriptorInteger(
+          data.objectHashType,
+          31,
+          'Object hash type'
+        ).toNumber();
+      if (data.mmrHashType != null)
+        this.mmrHashType = descriptorInteger(
+          data.mmrHashType,
+          31,
+          'MMR hash type'
+        ).toNumber();
       if (data.mmrRoot) this.mmrRoot = data.mmrRoot;
       if (data.mmrHashes) this.mmrHashes = data.mmrHashes;
       if (data.dataDescriptors) this.dataDescriptors = data.dataDescriptors;
-
     }
   }
 
-  static fromJson(data: MMRDescriptorJson): MMRDescriptor {
+  /** Daemon JSON uses zero for absent numeric fields and invalid nested descriptors. */
+  static fromJson(data: MMRDescriptorJson | null = {}): MMRDescriptor {
+    const source = data ?? {};
+    return new MMRDescriptor({
+      version: descriptorInteger(source.version ?? 0, 32, 'Version'),
+      objectHashType: descriptorInteger(
+        source.objecthashtype ?? 0,
+        31,
+        'Object hash type'
+      ).toNumber(),
+      mmrHashType: descriptorInteger(
+        source.mmrhashtype ?? 0,
+        31,
+        'MMR hash type'
+      ).toNumber(),
+      mmrRoot: DataDescriptor.fromJson(source.mmrroot),
+      mmrHashes: DataDescriptor.fromJson(source.mmrhashes),
+      dataDescriptors: (source.datadescriptors ?? []).map((value) =>
+        DataDescriptor.fromJson(value)
+      ),
+    });
+  }
 
-    const newMMRDescriptor = new MMRDescriptor();
+  /** Explicit alias for the canonical daemon JSON representation. */
+  static fromDaemonJson(data: MMRDescriptorJson | null = {}): MMRDescriptor {
+    return MMRDescriptor.fromJson(data);
+  }
 
-    if (data) {
-      if (data.version) newMMRDescriptor.version = new BN(data.version);
-      if (data.objecthashtype) newMMRDescriptor.objectHashType = data.objecthashtype;
-      if (data.mmrhashtype) newMMRDescriptor.mmrHashType = data.mmrhashtype;
-      if (data.mmrroot) newMMRDescriptor.mmrRoot = DataDescriptor.fromJson(data.mmrroot);
-      if (data.mmrhashes) newMMRDescriptor.mmrHashes = DataDescriptor.fromJson(data.mmrhashes);
-      if (data.datadescriptors) {
-        newMMRDescriptor.dataDescriptors = [];
-
-        data.datadescriptors.forEach((data) => {
-          newMMRDescriptor.dataDescriptors.push(DataDescriptor.fromJson(data));
-        });
-
-      };
-    }
-    return newMMRDescriptor;
+  private validateIntegers(): void {
+    descriptorInteger(this.version, 32, 'Version');
+    descriptorInteger(this.objectHashType, 31, 'Object hash type');
+    descriptorInteger(this.mmrHashType, 31, 'MMR hash type');
   }
 
   getByteLength(): number {
+    this.validateIntegers();
     let length = 0;
 
     length += varint.encodingLength(this.version);
@@ -94,7 +124,6 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
   }
 
   toBuffer(): Buffer {
-
     const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
 
     writer.writeVarInt(this.version);
@@ -112,14 +141,21 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
 
   fromBuffer(buffer: Buffer, offset?: number): number {
     const reader = new BufferReader(buffer, offset);
-    this.version = reader.readVarInt();
-    this.objectHashType = reader.readVarInt().toNumber();
-    this.mmrHashType = reader.readVarInt().toNumber();
+    this.version = reader.readVarInt(32);
+    this.objectHashType = reader.readVarInt(31).toNumber();
+    this.mmrHashType = reader.readVarInt(31).toNumber();
     this.mmrRoot = new DataDescriptor();
     reader.offset = this.mmrRoot.fromBuffer(reader.buffer, reader.offset);
     this.mmrHashes = new DataDescriptor();
     reader.offset = this.mmrHashes.fromBuffer(reader.buffer, reader.offset);
     const dataDescriptorsLength = reader.readCompactSize();
+    // Even an empty descriptor needs version, flags and an object-data length.
+    if (
+      dataDescriptorsLength >
+      Math.floor((reader.buffer.length - reader.offset) / 3)
+    ) {
+      throw new Error('Truncated MMR data descriptors');
+    }
     this.dataDescriptors = [];
     for (let i = 0; i < dataDescriptorsLength; i++) {
       const dataDescriptor = new DataDescriptor();
@@ -130,25 +166,32 @@ export class MMRDescriptor extends SerializableEntityBase implements Serializabl
   }
 
   hasData(): boolean {
-    return !!(this.mmrHashes.objectdata && this.dataDescriptors);
+    return (
+      this.mmrHashes.objectdata.length > 0 && this.dataDescriptors.length > 0
+    );
   }
 
   isValid(): boolean {
-    return this.version >= MMRDescriptor.FIRST_VERSION && this.version <= MMRDescriptor.LAST_VERSION;
+    return (
+      this.version.gte(MMRDescriptor.FIRST_VERSION) &&
+      this.version.lte(MMRDescriptor.LAST_VERSION)
+    );
   }
 
-  toJson():MMRDescriptorJson {
-
-    const retval = {
+  toJson(): MMRDescriptorJson {
+    this.validateIntegers();
+    return {
       version: this.version.toNumber(),
-      objecthashtype: this.objectHashType.valueOf(),
+      objecthashtype: this.objectHashType,
       mmrhashtype: this.mmrHashType,
       mmrroot: this.mmrRoot.toJson(),
       mmrhashes: this.mmrHashes.toJson(),
-      datadescriptors: this.dataDescriptors.map((dataDescriptor) => dataDescriptor.toJson())
+      datadescriptors: this.dataDescriptors.map((value) => value.toJson()),
     };
-
-    return retval;
   }
-};
 
+  /** Explicit alias for the canonical daemon JSON representation. */
+  toDaemonJson(): MMRDescriptorJson {
+    return this.toJson();
+  }
+}

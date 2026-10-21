@@ -4,7 +4,7 @@ import { DataDescriptor, DataDescriptorJson } from './DataDescriptor';
 import { EHashTypes } from './DataDescriptor';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface MMRDescriptorJson {
-    version: number;
+    version?: number;
     objecthashtype?: number;
     mmrhashtype?: number;
     mmrroot?: DataDescriptorJson;
@@ -30,11 +30,17 @@ export declare class MMRDescriptor extends SerializableEntityBase implements Ser
         mmrHashes?: DataDescriptor;
         dataDescriptors?: DataDescriptor[];
     });
-    static fromJson(data: MMRDescriptorJson): MMRDescriptor;
+    /** Daemon JSON uses zero for absent numeric fields and invalid nested descriptors. */
+    static fromJson(data?: MMRDescriptorJson | null): MMRDescriptor;
+    /** Explicit alias for the canonical daemon JSON representation. */
+    static fromDaemonJson(data?: MMRDescriptorJson | null): MMRDescriptor;
+    private validateIntegers;
     getByteLength(): number;
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
     hasData(): boolean;
     isValid(): boolean;
     toJson(): MMRDescriptorJson;
+    /** Explicit alias for the canonical daemon JSON representation. */
+    toDaemonJson(): MMRDescriptorJson;
 }

@@ -43,8 +43,13 @@ export declare class VdxfUniValue extends SerializableEntityBase implements Seri
     getByteLength(): number;
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
+    /** Parse the supported lossless daemon JSON representation. */
     static fromJson(obj: any): VdxfUniValue;
+    /** Explicit RPC spelling of the same JSON contract. */
+    static fromDaemonJson(obj: any): VdxfUniValue;
     toJson(): VdxfUniValueJsonArray | VdxfUniValueJson;
+    /** Explicit RPC spelling of the same JSON contract. */
+    toDaemonJson(): VdxfUniValueJsonArray | VdxfUniValueJson;
 }
 /**
  * FqnVdxfUniValue is a VdxfUniValue variant used exclusively within FqnContentMultiMap.
@@ -78,6 +83,6 @@ export declare class FqnVdxfUniValue extends VdxfUniValue {
     getByteLength(): number;
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
-    static fromJson(obj: VdxfUniValueJson | VdxfUniValueJson[]): FqnVdxfUniValue;
+    static fromJson(obj: any): FqnVdxfUniValue;
     toJson(): VdxfUniValueJsonArray | VdxfUniValueJson;
 }

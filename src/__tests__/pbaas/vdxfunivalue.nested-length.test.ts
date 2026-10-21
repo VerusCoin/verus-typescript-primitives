@@ -23,7 +23,7 @@ describe.each([
     const decoded = new Parser();
 
     expect(decoded.fromBuffer(serialized)).toBe(serialized.length);
-    expect(decoded.toJson()).toEqual(original.toJson());
+    expect(decoded.values).toEqual(original.values);
     expect(decoded.toBuffer()).toEqual(serialized);
   });
 
@@ -72,7 +72,7 @@ describe.each([
     try {
       const decoded = new Parser();
       expect(decoded.fromBuffer(serialized)).toBe(serialized.length);
-      expect(decoded.toJson()).toEqual(original.toJson());
+      expect(decoded.values).toEqual(original.values);
       expect(nestedDecoder).toHaveBeenCalledTimes(1);
 
       const [childBuffer, childOffset = 0] = nestedDecoder.mock.calls[0];

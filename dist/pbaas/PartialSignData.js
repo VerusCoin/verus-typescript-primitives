@@ -396,7 +396,6 @@ class PartialSignData extends SerializableEntityBase_1.SerializableEntityBase {
                 ret['mmrdata'] = mmrCLIJson.mmrdata;
                 ret['mmrsalt'] = mmrCLIJson.mmrsalt;
                 ret['mmrhashtype'] = mmrCLIJson.mmrhashtype;
-                ret['priormmr'] = mmrCLIJson.priormmr;
             }
             else if (this.dataType.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
                 const uniJson = this.data.toJson();
@@ -447,6 +446,9 @@ class PartialSignData extends SerializableEntityBase_1.SerializableEntityBase {
     }
     static fromCLIJson(json) {
         let addr;
+        if ('priormmr' in json) {
+            throw new Error('Prior-MMR combination is not implemented by the daemon');
+        }
         if (json.address) {
             const { version, hash } = (0, address_1.fromBase58Check)(json.address);
             if (version === vdxf_1.I_ADDR_VERSION) {
@@ -472,8 +474,7 @@ class PartialSignData extends SerializableEntityBase_1.SerializableEntityBase {
             const pmd = PartialMMRData_1.PartialMMRData.fromCLIJson({
                 mmrdata: json.mmrdata,
                 mmrsalt: json.mmrsalt,
-                mmrhashtype: json.mmrhashtype,
-                priormmr: json.priormmr
+                mmrhashtype: json.mmrhashtype
             });
             config.data = pmd;
             config.dataType = pbaas_1.DATA_TYPE_MMRDATA;

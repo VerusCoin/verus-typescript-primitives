@@ -146,8 +146,73 @@ them with `node scripts/generate-upload-hash-fixtures.js` and
 `node scripts/generate-upload-evidence-fixtures.js`, supplying
 `VRSCTEST_RPC_URL`, `VRSCTEST_RPC_USER`, and `VRSCTEST_RPC_PASSWORD`.
 The fixtures check commitments and exact evidence/script bytes, including the
-5,999/6,000-byte boundary. They do not establish native encryption
-interoperability or funded/broadcast transaction acceptance.
+5,999/6,000-byte boundary. Additional MMR fixtures cover native encryption
+interoperability as described below; funded/broadcast acceptance is not covered.
+
+### MMR compatibility and limits
+
+`DataDescriptor`, `MMRDescriptor`, `VdxfUniValue` and `FqnVdxfUniValue` use one
+JSON contract: `fromJson` / `toJson` accept and emit the supported lossless daemon
+representation. The explicitly named `fromDaemonJson` / `toDaemonJson` methods
+are aliases with identical behavior. There is no historical TypeScript JSON mode.
+Use native constructors and binary serialization for fields RPC JSON cannot retain.
+FQN JSON requires unique named entries followed by at most one raw byte suffix;
+sequences that would be overwritten or reordered are rejected.
+
+A native empty descriptor has version 1, while JSON with no version has version 0.
+An empty native MMR has SHA-256 object hashes, Blake2b MMR hashes, two empty
+descriptors and an empty leaf array. JSON construction instead uses the daemon's
+zero defaults for absent versions and hash tags.
+
+JSON conversion accepts only metadata that the daemon preserves. It rejects
+whitespace normalization, oversized metadata, unpaired surrogates, nonhex bare
+object data, nonempty EPK/IVK/SSK vectors other than 32 bytes, and `vdxfkey` fields
+the daemon would drop. Native descriptors retain VDXF keys and general key vectors.
+Binary metadata must be valid UTF-8 and fit the 64-byte label / 128-byte MIME
+limits; writer and `isValid()` checks are deliberately stricter than the daemon's
+native writer and validity predicate. Versions and flags are uint32; MMR algorithm
+tags are nonnegative int32. Unknown representable algorithm tags survive
+serialization but do not establish hashing support.
+
+Tagged byte-vector output is rejected because the daemon emits only its inner
+payload, losing the committed wrapper; retain those values as binary. Tagged byte
+JSON uses numbers from 0 through 255. Raw text must use `{ message: text }`.
+URL reference JSON is limited to version 1 because the daemon's version-2 output
+rewrites flags. Native version-2 URL references remain available through binary
+serialization. Reference presence flags and JSON omit zero optional system IDs
+and identity-reference hashes, matching the daemon.
+
+`PartialMMRData` is a library request envelope, not a daemon wire format. Its
+CLI conversion requires one supported data key per item and rejects bare strings,
+unknown tags, malformed encodings, unrepresented metadata and `priormmr`.
+Supplied salts and hashes must contain exactly 32 bytes.
+Typed RAWSTRING and prior-MMR fields can still be stored internally; that does
+not make them executable RPC requests. Valid base64 currently encounters a daemon
+parsing defect, so the daemon-facing methods reject it; use `serializedhex`.
+`SignDataRequest` itself remains a raw RPC transport and does not apply these
+checks to arbitrary arguments supplied directly by a caller.
+
+| Surface | Supported domain / exception |
+| --- | --- |
+| Root construction | SHA-256, SHA-256D and Verus-personalized Blake2b; all nine object/MMR combinations tested. Empty roots are zero, singleton roots are unchanged, and hashes use raw wire byte order. |
+| Range ownership | Nodes, appended leaves, returned roots/nodes and generated proof hashes are copied. Range layers and view caches are private. Subclasses with private slots, bound methods, non-enumerable configuration or mutable state must override `clone()` to preserve their behavior and ownership. |
+| Proofs | Default Blake2b node proof construction; type-2/type-3 branch verification. Custom hash-node proofs and power-node construction are unsupported. |
+| Failure results | Missing positions and equal right siblings return a fresh zero hash. Equal left siblings follow the daemon. Invalid JS types, widths or hash lengths throw. |
+| Numeric limits | In-memory ranges are capped at INT32_MAX before append. Serialized branch indices/sizes retain uint32. Proof-index utility inputs must be safe integers; extra-hash counts must fit nonnegative int32, and undefined C++ shifts/counter overflow are rejected. Full uint64 utility inputs are unsupported. |
+| Hash vectors | `decodeHashVector()` permits trailing bytes like daemon `FromVector`; `decodeHashVector(true)` requires a correct tag and complete consumption. Nested stream readers retain their offset contract. |
+| Duplicate peaks | The named daemon proof-generation defect is excluded; TypeScript selects peaks structurally and preserves correct proofs. |
+| Descriptor hash tags | Actual encoded tags are preserved, including when the daemon's faulty deserializer reports default tags instead. |
+| Encryption | Captured native/daemon component decryption and full-wrapper bytes agree. Whole-MMR retrieval ignoring its decrypted copy is a daemon defect; this library does not provide wallet encryption. |
+| Not implemented | Keccak hashing, power-node construction, `getProofBits`, range rewind/truncation and proof-chain verification dispatch. Range serialization is explicitly unsupported: the inspected daemon has no corresponding wire format. |
+
+Always compare a proof result with an independently trusted **nonzero** root.
+A zero result is failure; a nonzero result alone does not prove validity. Like
+daemon `SafeCheck`, branch verification does not enforce exact proof length.
+
+The [MMR fixture notes](src/__tests__/fixtures/mmr/README.md) document reproducible
+RPC captures, compiled daemon-method checks, provenance and regeneration. Tests
+retain the previously captured type-2/type-3 header proofs and verify their
+trusted roots. No client dependency or resolution change is included here.
 
 ### Creating an Identity Update Script
 

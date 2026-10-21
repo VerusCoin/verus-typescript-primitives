@@ -38,7 +38,7 @@ export declare class CrossChainDataRef extends SerializableEntityBase implements
         output: any;
         objectnum: number;
         subobject: number;
-        systemid: string;
+        systemid?: string;
         datahash?: string;
     } | {
         type: number;

@@ -136,7 +136,11 @@ describe.each(wrappers)('$name nested string/vector length controls', ({ Parser,
 
       const decoded = new Parser();
       expect(decoded.fromBuffer(expected)).toBe(expected.length);
-      expect(decoded.toJson()).toEqual(json);
+      if (type === DataStringKey) {
+        expect(decoded.toJson()).toEqual(json);
+      } else {
+        expect(() => decoded.toJson()).toThrow('drops the byte-vector wrapper');
+      }
       expect(decoded.toBuffer()).toEqual(expected);
     }
   });
@@ -150,11 +154,18 @@ test.each([
   const empty = Buffer.from(hash + '010100', 'hex');
   const following = Buffer.from(stringHash + '0106056166746572', 'hex');
   const wire = Buffer.concat([empty, following]);
-  const expected = [{ [key]: '' }, { [DataStringKey.vdxfid]: 'after' }];
+  const expected = [
+    { [key]: key === DataByteVectorKey.vdxfid ? Buffer.alloc(0) : '' },
+    { [DataStringKey.vdxfid]: 'after' },
+  ];
   const decoded = new VdxfUniValue();
 
   expect(decoded.fromBuffer(wire)).toBe(wire.length);
   expect(decoded.values).toEqual(expected);
-  expect(decoded.toJson()).toEqual(expected);
+  if (key === DataByteVectorKey.vdxfid) {
+    expect(() => decoded.toJson()).toThrow('drops the byte-vector wrapper');
+  } else {
+    expect(decoded.toJson()).toEqual(expected);
+  }
   expect(decoded.toBuffer()).toEqual(wire);
 });
