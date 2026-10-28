@@ -8,7 +8,7 @@ export interface PBaaSEvidenceRefJson {
     output: any;
     objectnum: number;
     subobject: number;
-    systemid: string;
+    systemid?: string;
     datahash?: string;
 }
 export declare class PBaaSEvidenceRef extends SerializableEntityBase implements SerializableEntity {

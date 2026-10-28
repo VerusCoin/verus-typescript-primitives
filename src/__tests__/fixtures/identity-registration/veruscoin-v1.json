@@ -1,0 +1,531 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "generator": "scripts/generate-identity-registration-fixtures.js",
+    "readOnlyRPCMethods": [
+      "getinfo",
+      "getblockhash",
+      "getrawtransaction",
+      "getvdxfid",
+      "decodescript"
+    ],
+    "chain": "VRSCTEST",
+    "chainID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    "daemonVersion": 2000753,
+    "protocolVersion": 170010
+  },
+  "advancedCommitmentKey": {
+    "vdxfid": "i74sHfYTqdfd5ZSmQSLHug4GuX2XHKwA7Y",
+    "indexid": "xBtykTyYgwtHhjKoG7zSt4aowB3Y8ABZ1x",
+    "hash160result": "f60039167d4789c6a2dca79020be6a4f1a186727",
+    "qualifiedname": {
+      "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      "name": "vrsc::system.identity.advancedcommitmenthash"
+    }
+  },
+  "registrations": [
+    {
+      "name": "legacy-root",
+      "parentContext": null,
+      "commitment": {
+        "txid": "2edf9c38320efb48151428b2bece7b81439f17e52d8fceefcd5b0237511c41d8",
+        "height": 233,
+        "blockHash": "0000000f42658a1a840f31951cf55f1dbdd56ff7be4df1b39bd6fe48deabf216",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a040300010114f1d426ba2af16ddf0687fd92b8a99f158b9aa44bcc3b040311010114f1d426ba2af16ddf0687fd92b8a99f158b9aa44b20df17fa6d4bbe9ebb0e6ff36420bb11035f62cb4c66d5d24a036d9e2b694c87a975",
+        "destinations": [
+          "RXKs5Gz8kRqpA52M25AW5FzP3aCNq46yMh"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "df17fa6d4bbe9ebb0e6ff36420bb11035f62cb4c66d5d24a036d9e2b694c87a9"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "a9874c692b9e6d034ad2d5664ccb625f0311bb2064f36f0ebb9ebe4b6dfa17df"
+        }
+      },
+      "reservation": {
+        "txid": "f077b510957a4193a4790f19d4991bc9cb3dd37826691fe60c12e6a340a145b2",
+        "height": 235,
+        "blockHash": "00000005c299c485ea26bb314c6bc1ad5e0cb1f689e1ade463d33f73ccf0f1b2",
+        "vout": 1,
+        "valueSat": 0,
+        "scriptHex": "1b04030001011504a6ef9ea235635e328124ff3429db9f9e91b64e2dcc4c5904031201011504a6ef9ea235635e328124ff3429db9f9e91b64e2d3d085652534354455354000000000000000000000000000000000000000052396547ab5c7ae617ccaf764842475ea709a2a0a192d1b25417c240115cb1fb75",
+        "destinations": [
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 18,
+          "hex": "085652534354455354000000000000000000000000000000000000000052396547ab5c7ae617ccaf764842475ea709a2a0a192d1b25417c240115cb1fb"
+        },
+        "json": {
+          "name": "VRSCTEST",
+          "salt": "fbb15c1140c21754b2d192a1a0a209a75e47424876afcc17e67a5cab47653952",
+          "referral": "",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "nameid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      },
+      "identity": {
+        "txid": "f077b510957a4193a4790f19d4991bc9cb3dd37826691fe60c12e6a340a145b2",
+        "height": 235,
+        "blockHash": "00000005c299c485ea26bb314c6bc1ad5e0cb1f689e1ade463d33f73ccf0f1b2",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "4704030001031504a6ef9ea235635e328124ff3429db9f9e91b64e2d1504a6ef9ea235635e328124ff3429db9f9e91b64e2d1504a6ef9ea235635e328124ff3429db9f9e91b64e2dcc4cd704030e01011504a6ef9ea235635e328124ff3429db9f9e91b64e2d4c8203000000000000000114f1d426ba2af16ddf0687fd92b8a99f158b9aa44b0100000000000000000000000000000000000000000000000856525343544553540000a6ef9ea235635e328124ff3429db9f9e91b64e2da6ef9ea235635e328124ff3429db9f9e91b64e2d00a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504a6ef9ea235635e328124ff3429db9f9e91b64e2d1b04031001011504a6ef9ea235635e328124ff3429db9f9e91b64e2d75",
+        "destinations": [
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "03000000000000000114f1d426ba2af16ddf0687fd92b8a99f158b9aa44b0100000000000000000000000000000000000000000000000856525343544553540000a6ef9ea235635e328124ff3429db9f9e91b64e2da6ef9ea235635e328124ff3429db9f9e91b64e2d00a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RXKs5Gz8kRqpA52M25AW5FzP3aCNq46yMh"
+          ],
+          "minimumsignatures": 1,
+          "name": "VRSCTEST",
+          "identityaddress": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "recoveryauthority": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "timelock": 0
+        }
+      }
+    },
+    {
+      "name": "advanced-native",
+      "parentContext": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+      "commitment": {
+        "txid": "41a41c6da4680306f1397a51667b94159c6baf456d507dbdc069bbf41445b928",
+        "height": 16387,
+        "blockHash": "0000000227fabd8f1a9084d09509fb72fb097e15b8a1340a7a8c0535c964609b",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a040300010114397dbe2d918f1bd30c65e36687c10feac0bf4d3fcc3b040311010114397dbe2d918f1bd30c65e36687c10feac0bf4d3f204702a39fc7abe4605d952c4d39b1929a8b147e5153331b71324fdd59e3a24f2d75",
+        "destinations": [
+          "REXBEDfAz9eJMCxdexa5GnWQBAax8hwuiu"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "4702a39fc7abe4605d952c4d39b1929a8b147e5153331b71324fdd59e3a24f2d"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "2d4fa2e359dd4f32711b3353517e148b9a92b1394d2c955d60e4abc79fa30247"
+        }
+      },
+      "reservation": {
+        "txid": "a44b4821e87f5f3f6d3139f6964835b83470f0d08b422c6c3edc515c3700b8ad",
+        "height": 16398,
+        "blockHash": "000000000c9f451a282c09c756689123729ec4d0684e5fd3d8f17fa177f37c6c",
+        "vout": 1,
+        "valueSat": 0,
+        "scriptHex": "1b04030001011504f478f668655e60f6b49e2424053166ba2cf24139cc4c7104030a01011504f478f668655e60f6b49e2424053166ba2cf241394c5401000000076d6f6e6b696e73a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000554f3a60a864ed1354bf39f21b41f5f5320e444e837135ba7e3229bc799dec7c75",
+        "destinations": [
+          "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 10,
+          "hex": "01000000076d6f6e6b696e73a6ef9ea235635e328124ff3429db9f9e91b64e2d0000000000000000000000000000000000000000554f3a60a864ed1354bf39f21b41f5f5320e444e837135ba7e3229bc799dec7c"
+        },
+        "json": {
+          "version": 1,
+          "name": "monkins",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "7cec9d79bc29327eba3571834e440e32f5f5411bf239bf5413ed64a8603a4f55",
+          "referral": "",
+          "nameid": "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"
+        }
+      },
+      "identity": {
+        "txid": "a44b4821e87f5f3f6d3139f6964835b83470f0d08b422c6c3edc515c3700b8ad",
+        "height": 16398,
+        "blockHash": "000000000c9f451a282c09c756689123729ec4d0684e5fd3d8f17fa177f37c6c",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "4704030001031504f478f668655e60f6b49e2424053166ba2cf241391504f478f668655e60f6b49e2424053166ba2cf241391504f478f668655e60f6b49e2424053166ba2cf24139cc4cd604030e01011504f478f668655e60f6b49e2424053166ba2cf241394c810300000000000000011455f51a22c79018a00ced41e758560f5df7d4d35d01000000a6ef9ea235635e328124ff3429db9f9e91b64e2d076d6f6e6b696e730000f478f668655e60f6b49e2424053166ba2cf24139f478f668655e60f6b49e2424053166ba2cf2413900a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504f478f668655e60f6b49e2424053166ba2cf241391b04031001011504f478f668655e60f6b49e2424053166ba2cf2413975",
+        "destinations": [
+          "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w",
+          "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w",
+          "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "0300000000000000011455f51a22c79018a00ced41e758560f5df7d4d35d01000000a6ef9ea235635e328124ff3429db9f9e91b64e2d076d6f6e6b696e730000f478f668655e60f6b49e2424053166ba2cf24139f478f668655e60f6b49e2424053166ba2cf2413900a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RH7h8p9LN2Yb48SkxzNQ29c1Ltfju8Cd5i"
+          ],
+          "minimumsignatures": 1,
+          "name": "monkins",
+          "identityaddress": "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w",
+          "recoveryauthority": "iRmBDWNs2WahXDAvS2TEsJyJwwHXhwcs7w",
+          "timelock": 0
+        }
+      }
+    },
+    {
+      "name": "advanced-subidentity",
+      "parentContext": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+      "commitment": {
+        "txid": "f10a851e7ad232887a97e9cec8f7c916a6a0c4fc3941ee65ad5069642c3259a3",
+        "height": 21346,
+        "blockHash": "000000000f8158ca8b03992e946c7170ebb69b8204c1ed2eab27147532829fc3",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a0403000101144cafb6536134ed179cc135033926e2f534baf07acc3b0403110101144cafb6536134ed179cc135033926e2f534baf07a207f6315c7c6ffc23aec66d2ef84a4b359fc83aa00488db1d7e4ac640b92c8883275",
+        "destinations": [
+          "RGGfvnyjF1is1jGwPKVSNSDNov6V4aBDMF"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "7f6315c7c6ffc23aec66d2ef84a4b359fc83aa00488db1d7e4ac640b92c88832"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "3288c8920b64ace4d7b18d4800aa83fc59b3a484efd266ec3ac2ffc6c715637f"
+        }
+      },
+      "reservation": {
+        "txid": "753f67391aa0d1f7dc8d88b0187b3e8773dac540676d5382afc5d68637e089d9",
+        "height": 21349,
+        "blockHash": "000000000261e97d15c508d8675c07053617bd5847c1f6f259c9c74d077fd8fd",
+        "vout": 2,
+        "valueSat": 0,
+        "scriptHex": "1b040300010115047ab2574eeb2f1fba5267f85a6c1e3e990b057cd6cc4c7004030a010115047ab2574eeb2f1fba5267f85a6c1e3e990b057cd64c5301000000066d6f62696c65966eb493a5a57bfb4392c9c26a74721e00cb5c7200000000000000000000000000000000000000008a509a59aaed3b3a58553f81f448b03ee741574a0c9053c5605e755f6d4bb30b75",
+        "destinations": [
+          "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 10,
+          "hex": "01000000066d6f62696c65966eb493a5a57bfb4392c9c26a74721e00cb5c7200000000000000000000000000000000000000008a509a59aaed3b3a58553f81f448b03ee741574a0c9053c5605e755f6d4bb30b"
+        },
+        "json": {
+          "version": 1,
+          "name": "mobile",
+          "parent": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+          "salt": "0bb34b6d5f755e60c553900c4a5741e73eb048f4813f55583a3bedaa599a508a",
+          "referral": "",
+          "nameid": "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV"
+        }
+      },
+      "identity": {
+        "txid": "753f67391aa0d1f7dc8d88b0187b3e8773dac540676d5382afc5d68637e089d9",
+        "height": 21349,
+        "blockHash": "000000000261e97d15c508d8675c07053617bd5847c1f6f259c9c74d077fd8fd",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "47040300010315047ab2574eeb2f1fba5267f85a6c1e3e990b057cd615047ab2574eeb2f1fba5267f85a6c1e3e990b057cd615047ab2574eeb2f1fba5267f85a6c1e3e990b057cd6cc4cd504030e010115047ab2574eeb2f1fba5267f85a6c1e3e990b057cd64c80030000000000000001144cafb6536134ed179cc135033926e2f534baf07a01000000966eb493a5a57bfb4392c9c26a74721e00cb5c72066d6f62696c6500007ab2574eeb2f1fba5267f85a6c1e3e990b057cd67ab2574eeb2f1fba5267f85a6c1e3e990b057cd600a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f010115047ab2574eeb2f1fba5267f85a6c1e3e990b057cd61b040310010115047ab2574eeb2f1fba5267f85a6c1e3e990b057cd675",
+        "destinations": [
+          "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV",
+          "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV",
+          "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "030000000000000001144cafb6536134ed179cc135033926e2f534baf07a01000000966eb493a5a57bfb4392c9c26a74721e00cb5c72066d6f62696c6500007ab2574eeb2f1fba5267f85a6c1e3e990b057cd67ab2574eeb2f1fba5267f85a6c1e3e990b057cd600a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RGGfvnyjF1is1jGwPKVSNSDNov6V4aBDMF"
+          ],
+          "minimumsignatures": 1,
+          "name": "mobile",
+          "identityaddress": "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV",
+          "parent": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV",
+          "recoveryauthority": "iEfHWqHSyHtU6bJokaRhdLm9uFzy8HXTPV",
+          "timelock": 0
+        }
+      }
+    },
+    {
+      "name": "advanced-unicode-subidentity-referral",
+      "parentContext": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+      "commitment": {
+        "txid": "abc01a42ae2f252a0fa099935609b3172f568165b6b0f3ee6790853d63e0863e",
+        "height": 975777,
+        "blockHash": "0000000014cd707fe1059be190423360f7eb8481a239971f7972bf6c9a8a6e7b",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a0403000101144cafb6536134ed179cc135033926e2f534baf07acc3b0403110101144cafb6536134ed179cc135033926e2f534baf07a207d923f5e8305672ae75d553cd0a08e5f0d2be76e84a61f7dc6e1276d764b2f1575",
+        "destinations": [
+          "RGGfvnyjF1is1jGwPKVSNSDNov6V4aBDMF"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "7d923f5e8305672ae75d553cd0a08e5f0d2be76e84a61f7dc6e1276d764b2f15"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "152f4b766d27e1c67d1fa6846ee72b0d5f8ea0d03c555de72a6705835e3f927d"
+        }
+      },
+      "reservation": {
+        "txid": "0b238fa16ba28a9c8e4f7c64e6ee25e4ac1944e9341b10f7bfdaf52bba33085d",
+        "height": 975796,
+        "blockHash": "00000000216e3d682f8a6f42aaed371c50bc484c4e4fdadf8a156c9bafdb0510",
+        "vout": 4,
+        "valueSat": 0,
+        "scriptHex": "1b040300010115048c0bf74501a00c630b6617995ba19d79050660a8cc4c7204030a010115048c0bf74501a00c630b6617995ba19d79050660a84c550100000008e29aa1737061726b966eb493a5a57bfb4392c9c26a74721e00cb5c7227d51600bc9a624b1718d3f8bf5b3d863b4abddc061faf6e75e972c67ce2997dfff7764bd5c0dcb0a566a2ac5a1b8fdb17edb69c75",
+        "destinations": [
+          "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 10,
+          "hex": "0100000008e29aa1737061726b966eb493a5a57bfb4392c9c26a74721e00cb5c7227d51600bc9a624b1718d3f8bf5b3d863b4abddc061faf6e75e972c67ce2997dfff7764bd5c0dcb0a566a2ac5a1b8fdb17edb69c"
+        },
+        "json": {
+          "version": 1,
+          "name": "⚡spark",
+          "parent": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+          "salt": "9cb6ed17db8f1b5aaca266a5b0dcc0d54b76f7ff7d99e27cc672e9756eaf1f06",
+          "referral": "i77942f9GHcT9opvBTuULQYuNr76hsV8ep",
+          "nameid": "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg"
+        }
+      },
+      "identity": {
+        "txid": "0b238fa16ba28a9c8e4f7c64e6ee25e4ac1944e9341b10f7bfdaf52bba33085d",
+        "height": 975796,
+        "blockHash": "00000000216e3d682f8a6f42aaed371c50bc484c4e4fdadf8a156c9bafdb0510",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "47040300010315048c0bf74501a00c630b6617995ba19d79050660a815048c0bf74501a00c630b6617995ba19d79050660a815048c0bf74501a00c630b6617995ba19d79050660a8cc4cd704030e010115048c0bf74501a00c630b6617995ba19d79050660a84c82030000000000000001144cafb6536134ed179cc135033926e2f534baf07a01000000966eb493a5a57bfb4392c9c26a74721e00cb5c7208e29aa1737061726b00008c0bf74501a00c630b6617995ba19d79050660a88c0bf74501a00c630b6617995ba19d79050660a800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f010115048c0bf74501a00c630b6617995ba19d79050660a81b040310010115048c0bf74501a00c630b6617995ba19d79050660a875",
+        "destinations": [
+          "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+          "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+          "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "030000000000000001144cafb6536134ed179cc135033926e2f534baf07a01000000966eb493a5a57bfb4392c9c26a74721e00cb5c7208e29aa1737061726b00008c0bf74501a00c630b6617995ba19d79050660a88c0bf74501a00c630b6617995ba19d79050660a800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RGGfvnyjF1is1jGwPKVSNSDNov6V4aBDMF"
+          ],
+          "minimumsignatures": 1,
+          "name": "⚡spark",
+          "identityaddress": "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+          "parent": "iHBwQo7LUmb7QKKqbsd8Kw9BxdQvgTdK9f",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+          "recoveryauthority": "iGF2NLZXSqkUAspMH5sZzKLKxzxEQLuEpg",
+          "timelock": 0
+        }
+      }
+    },
+    {
+      "name": "advanced-mixed-case-referral",
+      "parentContext": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+      "commitment": {
+        "txid": "6f1a8fa38b0a2cb24e44902db2e4b665131cc556201fce370cbe457cc4296913",
+        "height": 958453,
+        "blockHash": "b54aadae1bfe4b83b2107ba120521eb0275d67e483347cd246fbc0f975fed5de",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a040300010114acb54e4ab7407d7283aa0863a8add64c6d508e78cc3b040311010114acb54e4ab7407d7283aa0863a8add64c6d508e7820b9eecbbebbe487658ddd56844749f31e0e02cc724bb6ca6037c637296d7ee02b75",
+        "destinations": [
+          "RR2PVrsSy7RT2fCshQ6mpTqp2fcgkGrBpm"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "b9eecbbebbe487658ddd56844749f31e0e02cc724bb6ca6037c637296d7ee02b"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "2be07e6d2937c63760cab64b72cc020e1ef349478456dd8d6587e4bbbecbeeb9"
+        }
+      },
+      "reservation": {
+        "txid": "ef0a0f9a716d47b48c577db5ae054ab302480398b240c57ef0b6d6deebd9049f",
+        "height": 958455,
+        "blockHash": "e9b462e439602d7e1afcd79233340b6fd8ef713649d007822ff35f31e9cb2da6",
+        "vout": 2,
+        "valueSat": 0,
+        "scriptHex": "1b04030001011504f8f0f1bdd4322de4dd32707de7cb3368ec859a6bcc4c7d04030a01011504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b4c60010000001347656e657369734e656f6e536f756c735f7632a6ef9ea235635e328124ff3429db9f9e91b64e2d22dcac3921f46595ce5c91145b7fafcd80b212a4356bfdbdda1bd7dca6cd79b16a78016ec95bc41fe83d7bccc1ee7fba1795088775",
+        "destinations": [
+          "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 10,
+          "hex": "010000001347656e657369734e656f6e536f756c735f7632a6ef9ea235635e328124ff3429db9f9e91b64e2d22dcac3921f46595ce5c91145b7fafcd80b212a4356bfdbdda1bd7dca6cd79b16a78016ec95bc41fe83d7bccc1ee7fba17950887"
+        },
+        "json": {
+          "version": 1,
+          "name": "GenesisNeonSouls_v2",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "87089517ba7feec1cc7b3de81fc45bc96e01786ab179cda6dcd71bdabdfd6b35",
+          "referral": "i6ermD9Qm16ZCp58RZhLjF5ZnSFRjYen3L",
+          "nameid": "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX"
+        }
+      },
+      "identity": {
+        "txid": "ef0a0f9a716d47b48c577db5ae054ab302480398b240c57ef0b6d6deebd9049f",
+        "height": 958455,
+        "blockHash": "e9b462e439602d7e1afcd79233340b6fd8ef713649d007822ff35f31e9cb2da6",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "4704030001031504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b1504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b1504f8f0f1bdd4322de4dd32707de7cb3368ec859a6bcc4ce204030e01011504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b4c8d03000000000000000114acb54e4ab7407d7283aa0863a8add64c6d508e7801000000a6ef9ea235635e328124ff3429db9f9e91b64e2d1347656e657369734e656f6e536f756c735f76320000f8f0f1bdd4322de4dd32707de7cb3368ec859a6bf8f0f1bdd4322de4dd32707de7cb3368ec859a6b00a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f01011504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b1b04031001011504f8f0f1bdd4322de4dd32707de7cb3368ec859a6b75",
+        "destinations": [
+          "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX",
+          "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX",
+          "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "03000000000000000114acb54e4ab7407d7283aa0863a8add64c6d508e7801000000a6ef9ea235635e328124ff3429db9f9e91b64e2d1347656e657369734e656f6e536f756c735f76320000f8f0f1bdd4322de4dd32707de7cb3368ec859a6bf8f0f1bdd4322de4dd32707de7cb3368ec859a6b00a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "RR2PVrsSy7RT2fCshQ6mpTqp2fcgkGrBpm"
+          ],
+          "minimumsignatures": 1,
+          "name": "GenesisNeonSouls_v2",
+          "identityaddress": "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX",
+          "recoveryauthority": "iSAoekhpErvyXFJz3VFiAwkfPYC1zUTGNX",
+          "timelock": 0
+        }
+      }
+    },
+    {
+      "name": "advanced-emoji-referral",
+      "parentContext": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+      "commitment": {
+        "txid": "e56ddea6ec57e529ca3f31c0248e6587d7e88b9c0acf410944e0b890af6157f9",
+        "height": 671079,
+        "blockHash": "7d08cc3b8a4de7f1b639b2ac3c3a72cbd1380f43586d11171a5070c1c5d481e2",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "1a040300010114013b83a4a66bb4a05b91c3d5e19949f9fd9d6410cc3b040311010114013b83a4a66bb4a05b91c3d5e19949f9fd9d64102028873627ead582d8c109680a3754ee87aa5e719353b36805a226babc7f5280f575",
+        "destinations": [
+          "R9Pi3q3ZUEUthCmam73XF15UgHLi9o3r5E"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 17,
+          "hex": "28873627ead582d8c109680a3754ee87aa5e719353b36805a226babc7f5280f5"
+        },
+        "json": {
+          "version": 1,
+          "currencyvalues": {},
+          "hash": "f580527fbcba26a20568b35393715eaa87ee54370a6809c1d882d5ea27368728"
+        }
+      },
+      "reservation": {
+        "txid": "b5914c82149df95f7743f7f8baa29f9ffa2b152c07e1431e5e99f4a2f9d40177",
+        "height": 671080,
+        "blockHash": "000000009eec4ce44512373180478c5883609d683bc05935952250940291a402",
+        "vout": 4,
+        "valueSat": 0,
+        "scriptHex": "1b040300010115045263f47e77cf45b84dc304bbf93c034ba6d0f758cc4c7d04030a010115045263f47e77cf45b84dc304bbf93c034ba6d0f7584c600100000013f09f9095416e696d616c4661726d34f09f9095a6ef9ea235635e328124ff3429db9f9e91b64e2d541e8a7e534db893449a799ad3b2dc7145ce2b5d1d97c34f835b01475e7c8f3975b4d1edb3713a7f8f658e88075292e7ea006e8875",
+        "destinations": [
+          "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 10,
+          "hex": "0100000013f09f9095416e696d616c4661726d34f09f9095a6ef9ea235635e328124ff3429db9f9e91b64e2d541e8a7e534db893449a799ad3b2dc7145ce2b5d1d97c34f835b01475e7c8f3975b4d1edb3713a7f8f658e88075292e7ea006e88"
+        },
+        "json": {
+          "version": 1,
+          "name": "🐕AnimalFarm4🐕",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "salt": "886e00eae7925207888e658f7f3a71b3edd1b475398f7c5e47015b834fc3971d",
+          "referral": "iB9JnDTofifkdNL3CKuhHJPUzNREDX4Xe9",
+          "nameid": "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e"
+        }
+      },
+      "identity": {
+        "txid": "b5914c82149df95f7743f7f8baa29f9ffa2b152c07e1431e5e99f4a2f9d40177",
+        "height": 671080,
+        "blockHash": "000000009eec4ce44512373180478c5883609d683bc05935952250940291a402",
+        "vout": 0,
+        "valueSat": 0,
+        "scriptHex": "47040300010315045263f47e77cf45b84dc304bbf93c034ba6d0f75815045263f47e77cf45b84dc304bbf93c034ba6d0f75815045263f47e77cf45b84dc304bbf93c034ba6d0f758cc4ce204030e010115045263f47e77cf45b84dc304bbf93c034ba6d0f7584c8d03000000000000000114013b83a4a66bb4a05b91c3d5e19949f9fd9d641001000000a6ef9ea235635e328124ff3429db9f9e91b64e2d13f09f9095416e696d616c4661726d34f09f909500005263f47e77cf45b84dc304bbf93c034ba6d0f7585263f47e77cf45b84dc304bbf93c034ba6d0f75800a6ef9ea235635e328124ff3429db9f9e91b64e2d000000001b04030f010115045263f47e77cf45b84dc304bbf93c034ba6d0f7581b040310010115045263f47e77cf45b84dc304bbf93c034ba6d0f75875",
+        "destinations": [
+          "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+          "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+          "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e"
+        ],
+        "requiredSignatures": 1,
+        "payload": {
+          "evalCode": 14,
+          "hex": "03000000000000000114013b83a4a66bb4a05b91c3d5e19949f9fd9d641001000000a6ef9ea235635e328124ff3429db9f9e91b64e2d13f09f9095416e696d616c4661726d34f09f909500005263f47e77cf45b84dc304bbf93c034ba6d0f7585263f47e77cf45b84dc304bbf93c034ba6d0f75800a6ef9ea235635e328124ff3429db9f9e91b64e2d00000000"
+        },
+        "json": {
+          "version": 3,
+          "flags": 0,
+          "primaryaddresses": [
+            "R9Pi3q3ZUEUthCmam73XF15UgHLi9o3r5E"
+          ],
+          "minimumsignatures": 1,
+          "name": "🐕AnimalFarm4🐕",
+          "identityaddress": "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "systemid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "contentmap": {},
+          "contentmultimap": {},
+          "revocationauthority": "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+          "recoveryauthority": "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+          "timelock": 0
+        }
+      }
+    }
+  ]
+}

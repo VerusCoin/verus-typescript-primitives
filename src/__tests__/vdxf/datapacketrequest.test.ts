@@ -14,7 +14,7 @@ describe("DataPacketRequestDetails", () => {
       const item = new DataPacketRequestDetails({
         version: new BN(DataPacketRequestDetails.DEFAULT_VERSION),
         flags: DataPacketRequestDetails.FLAG_HAS_STATEMENTS.or(DataPacketRequestDetails.FLAG_HAS_SIGNATURE).or(DataPacketRequestDetails.FLAG_HAS_REQUEST_ID),
-        signableObjects: [DataDescriptor.fromJson({ version: new BN(1), label: "123", objectdata: "0011223344aabbcc", flags: DataDescriptor.FLAG_LABEL_PRESENT })],
+        signableObjects: [DataDescriptor.fromJson({ version: 1, label: "123", objectdata: "0011223344aabbcc", flags: DataDescriptor.FLAG_LABEL_PRESENT.toNumber() })],
         statements: ["Statement 1", "Statement 2"],
         signature: new VerifiableSignatureData({
           version: new BN(1),
@@ -61,7 +61,7 @@ describe("DataPacketRequestDetails", () => {
     });
 
     test("round trips with mixed DataDescriptor and string signable objects", () => {
-      const dd = DataDescriptor.fromJson({ version: new BN(1), label: "test", objectdata: "aabb", flags: DataDescriptor.FLAG_LABEL_PRESENT });
+      const dd = DataDescriptor.fromJson({ version: 1, label: "test", objectdata: "aabb", flags: DataDescriptor.FLAG_LABEL_PRESENT.toNumber() });
       const item = new DataPacketRequestDetails({
         flags: new BN(0),
         signableObjects: [dd, "a string object", dd],
@@ -80,7 +80,7 @@ describe("DataPacketRequestDetails", () => {
     });
 
     test("toJson / fromJson round trips with mixed types", () => {
-      const dd = DataDescriptor.fromJson({ version: new BN(1), label: "lbl", objectdata: "ff", flags: DataDescriptor.FLAG_LABEL_PRESENT });
+      const dd = DataDescriptor.fromJson({ version: 1, label: "lbl", objectdata: "ff", flags: DataDescriptor.FLAG_LABEL_PRESENT.toNumber() });
       const item = new DataPacketRequestDetails({
         flags: new BN(0),
         signableObjects: [dd, "hello world"],

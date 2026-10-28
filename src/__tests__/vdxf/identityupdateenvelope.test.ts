@@ -48,7 +48,7 @@ describe("IdentityUpdate request/response details Serialization", () => {
     });
 
     testSerialization(requestDetails);
-    testCLIJsonSerialization(requestDetails);
+    expect(() => requestDetails.toCLIJson()).toThrow('Prior-MMR combination');
   });
 
   test("Serialize/Deserialize basic IdentityUpdateResponseDetails", () => {
@@ -72,7 +72,12 @@ describe("IdentityUpdate request/response details Serialization", () => {
       const newRequestDetails = new IdentityUpdateRequestDetails({ ...baseRequestDetailsConfig });
 
       testSerialization(newRequestDetails);
-      testCLIJsonSerialization(newRequestDetails as IdentityUpdateRequestDetails);
+
+      if (baseRequestDetailsConfig.signDataMap) {
+        expect(() => newRequestDetails.toCLIJson()).toThrow('Prior-MMR combination');
+      } else {
+        testCLIJsonSerialization(newRequestDetails);
+      }
 
       if (i < toRemove.length) {
         delete baseRequestDetailsConfig[toRemove[i]]
@@ -107,7 +112,7 @@ describe("IdentityUpdate request/response details Serialization", () => {
     });
 
     testJsonSerialization(requestDetails);
-    testCLIJsonSerialization(requestDetails);
+    expect(() => requestDetails.toCLIJson()).toThrow('Prior-MMR combination');
   });
 
   test("Serialize/Deserialize IdentityUpdateResponseDetails to/from JSON", () => {
@@ -130,7 +135,7 @@ describe("IdentityUpdate request/response details Serialization", () => {
     });
 
     testJsonSerialization(requestDetails);
-    testCLIJsonSerialization(requestDetails);
+    expect(() => requestDetails.toCLIJson()).toThrow('Prior-MMR combination');
   });
 
   test("Serialize/Deserialize IdentityUpdateResponseDetails to/from JSON", () => {
@@ -189,11 +194,29 @@ describe("IdentityUpdate request/response details Serialization", () => {
     expect(responseDetails.txid?.toString("hex")).toBe(Buffer.from(TEST_TXID, "hex").reverse().toString("hex"));
   });
 
-  test("Deserialize cli identity update details", () => {
-    const req = IdentityUpdateRequestDetails.fromCLIJson(TEST_CLI_ID_UPDATE_REQUEST_JSON);
+  test('rejects CLI request metadata that the partial MMR envelope cannot retain', () => {
+    const original = JSON.stringify(TEST_CLI_ID_UPDATE_REQUEST_JSON);
+
+    expect(() => IdentityUpdateRequestDetails.fromCLIJson(
+      TEST_CLI_ID_UPDATE_REQUEST_JSON
+    )).toThrow('exactly one supported data key');
+    expect(JSON.stringify(TEST_CLI_ID_UPDATE_REQUEST_JSON)).toBe(original);
+  });
+
+  test('round-trips supported MMR data through an identity update envelope', () => {
+    const req = IdentityUpdateRequestDetails.fromCLIJson({
+      name: 'data',
+      contentmultimap: {
+        i5CXAPoCLothTntExgvc5kK38u2wyHtFCg: {
+          data: { createmmr: true, mmrdata: [{ serializedhex: '616263' }] },
+        },
+      },
+    });
 
     testCLIJsonSerialization(req);
-  })
+    testJsonSerialization(req);
+    testSerialization(req);
+  });
 
   test("Deserialize cli identity update details", () => {
     const req = IdentityUpdateRequestDetails.fromCLIJson(

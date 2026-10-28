@@ -640,7 +640,7 @@ describe('OrdinalVDXFObject and subclasses round-trip serialization', () => {
     const details = new DataPacketRequestDetails({
       version: new BN(1),
       flags: DataPacketRequestDetails.FLAG_HAS_STATEMENTS.or(DataPacketRequestDetails.FLAG_HAS_SIGNATURE),
-      signableObjects: [DataDescriptor.fromJson({ version: new BN(1), label: "123", objectdata: "0011223344aabbcc", flags: DataDescriptor.FLAG_LABEL_PRESENT })],
+      signableObjects: [DataDescriptor.fromJson({ version: 1, label: "123", objectdata: "0011223344aabbcc", flags: DataDescriptor.FLAG_LABEL_PRESENT.toNumber() })],
       statements: ["Statement 1", "Statement 2"],
       signature: new VerifiableSignatureData({
         version: new BN(1),

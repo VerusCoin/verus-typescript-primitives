@@ -25,6 +25,7 @@ export declare class URLRef extends SerializableEntityBase implements Serializab
     });
     /** @deprecated Use dataHash instead */
     get data_hash(): Buffer;
+    private validateDataHashLength;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number): number;

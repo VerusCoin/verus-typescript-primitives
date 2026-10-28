@@ -88,6 +88,132 @@ console.log('Amount:', invoice.details.amount.toString());
 console.log('Destination:', invoice.details.destination.getAddressString());
 ```
 
+### Local upload primitives
+
+`hashData(bytes, hashType?)` returns the daemon's serialized 32-byte digest.
+It supports `EHashTypes.HASH_SHA256` (default), `HASH_SHA256D`, and
+`HASH_BLAKE2BMMR` (Verus-personalized Blake2b). Unsupported algorithms throw.
+Hash ordinary upload leaves over `Buffer.concat([payload, salt])`, using an
+exactly 32-byte salt. `getMMRRoot(leafHashes, hashType?)` combines ordered hashes
+with the daemon's MMR algorithm, defaulting to personalized Blake2b. A single
+leaf is its own root; set the single-item descriptor's MMR hash type to its
+object hash type. These helpers use wire byte order, without display reversal.
+Existing MMR proof classes retain their original Blake2b behavior.
+
+Once a wallet has encrypted the tagged descriptors, package each upload group:
+
+```typescript
+import {
+  BigNumber, CrossChainProof, EvidenceData, ETypes, NotaryEvidence,
+  createNotaryEvidenceOutputs, DataDescriptorKey
+} from 'verus-typescript-primitives';
+
+function uploadOutputs(chainId: string, taggedEncryptedDescriptor: Buffer) {
+  const evidence = new NotaryEvidence({
+    systemId: chainId,
+    evidence: new CrossChainProof({
+      chainObjects: [new EvidenceData({
+        version: new BigNumber(1),
+        type: new BigNumber(ETypes.TYPE_DATA),
+        md: undefined,
+        vdxfd: DataDescriptorKey.vdxfid,
+        data_vec: taggedEncryptedDescriptor
+      })]
+    })
+  });
+  return createNotaryEvidenceOutputs(evidence);
+}
+```
+
+The payload is a tagged encrypted `DataDescriptor` for one leaf, or a tagged
+`MMRDescriptor` for multiple leaves; the outer evidence key remains
+`DataDescriptorKey` in both cases. The helper returns zero-value `{script,
+value}` outputs, splitting the complete serialized evidence into 5,724-byte
+chunks only when its condition would reach 6,000 bytes. Preserve output order,
+adjacency, and absolute positions when creating references and funding.
+`NotaryEvidence.reassemble(parts)` checks one multipart group's headers,
+indexes, offsets, and total length. Callers must reject adjacent multipart
+groups because of the daemon reader limitation.
+
+These are serialization and hashing primitives. Wallet encryption, public
+recipient creation, request validation, identity merging, reference construction,
+funding, and transaction-size limits remain responsibilities of the client.
+Data-signature production is not included.
+
+Offline tests use captured VRSCTEST 1.2.18 `signdata` and non-broadcast
+`updateidentity` results in `src/__tests__/fixtures/local-upload`. Regenerate
+them with `node scripts/generate-upload-hash-fixtures.js` and
+`node scripts/generate-upload-evidence-fixtures.js`, supplying
+`VRSCTEST_RPC_URL`, `VRSCTEST_RPC_USER`, and `VRSCTEST_RPC_PASSWORD`.
+The fixtures check commitments and exact evidence/script bytes, including the
+5,999/6,000-byte boundary. Additional MMR fixtures cover native encryption
+interoperability as described below; funded/broadcast acceptance is not covered.
+
+### MMR compatibility and limits
+
+`DataDescriptor`, `MMRDescriptor`, `VdxfUniValue` and `FqnVdxfUniValue` use one
+JSON contract: `fromJson` / `toJson` accept and emit the supported lossless daemon
+representation. The explicitly named `fromDaemonJson` / `toDaemonJson` methods
+are aliases with identical behavior. There is no historical TypeScript JSON mode.
+Use native constructors and binary serialization for fields RPC JSON cannot retain.
+FQN JSON requires unique named entries followed by at most one raw byte suffix;
+sequences that would be overwritten or reordered are rejected.
+
+A native empty descriptor has version 1, while JSON with no version has version 0.
+An empty native MMR has SHA-256 object hashes, Blake2b MMR hashes, two empty
+descriptors and an empty leaf array. JSON construction instead uses the daemon's
+zero defaults for absent versions and hash tags.
+
+JSON conversion accepts only metadata that the daemon preserves. It rejects
+whitespace normalization, oversized metadata, unpaired surrogates, nonhex bare
+object data, nonempty EPK/IVK/SSK vectors other than 32 bytes, and `vdxfkey` fields
+the daemon would drop. Native descriptors retain VDXF keys and general key vectors.
+Binary metadata must be valid UTF-8 and fit the 64-byte label / 128-byte MIME
+limits; writer and `isValid()` checks are deliberately stricter than the daemon's
+native writer and validity predicate. Versions and flags are uint32; MMR algorithm
+tags are nonnegative int32. Unknown representable algorithm tags survive
+serialization but do not establish hashing support.
+
+Tagged byte-vector output is rejected because the daemon emits only its inner
+payload, losing the committed wrapper; retain those values as binary. Tagged byte
+JSON uses numbers from 0 through 255. Raw text must use `{ message: text }`.
+URL reference JSON is limited to version 1 because the daemon's version-2 output
+rewrites flags. Native version-2 URL references remain available through binary
+serialization. Reference presence flags and JSON omit zero optional system IDs
+and identity-reference hashes, matching the daemon.
+
+`PartialMMRData` is a library request envelope, not a daemon wire format. Its
+CLI conversion requires one supported data key per item and rejects bare strings,
+unknown tags, malformed encodings, unrepresented metadata and `priormmr`.
+Supplied salts and hashes must contain exactly 32 bytes.
+Typed RAWSTRING and prior-MMR fields can still be stored internally; that does
+not make them executable RPC requests. Valid base64 currently encounters a daemon
+parsing defect, so the daemon-facing methods reject it; use `serializedhex`.
+`SignDataRequest` itself remains a raw RPC transport and does not apply these
+checks to arbitrary arguments supplied directly by a caller.
+
+| Surface | Supported domain / exception |
+| --- | --- |
+| Root construction | SHA-256, SHA-256D and Verus-personalized Blake2b; all nine object/MMR combinations tested. Empty roots are zero, singleton roots are unchanged, and hashes use raw wire byte order. |
+| Range ownership | Nodes, appended leaves, returned roots/nodes and generated proof hashes are copied. Range layers and view caches are private. Subclasses with private slots, bound methods, non-enumerable configuration or mutable state must override `clone()` to preserve their behavior and ownership. |
+| Proofs | Default Blake2b node proof construction; type-2/type-3 branch verification. Custom hash-node proofs and power-node construction are unsupported. |
+| Failure results | Missing positions and equal right siblings return a fresh zero hash. Equal left siblings follow the daemon. Invalid JS types, widths or hash lengths throw. |
+| Numeric limits | In-memory ranges are capped at INT32_MAX before append. Serialized branch indices/sizes retain uint32. Proof-index utility inputs must be safe integers; extra-hash counts must fit nonnegative int32, and undefined C++ shifts/counter overflow are rejected. Full uint64 utility inputs are unsupported. |
+| Hash vectors | `decodeHashVector()` permits trailing bytes like daemon `FromVector`; `decodeHashVector(true)` requires a correct tag and complete consumption. Nested stream readers retain their offset contract. |
+| Duplicate peaks | The named daemon proof-generation defect is excluded; TypeScript selects peaks structurally and preserves correct proofs. |
+| Descriptor hash tags | Actual encoded tags are preserved, including when the daemon's faulty deserializer reports default tags instead. |
+| Encryption | Captured native/daemon component decryption and full-wrapper bytes agree. Whole-MMR retrieval ignoring its decrypted copy is a daemon defect; this library does not provide wallet encryption. |
+| Not implemented | Keccak hashing, power-node construction, `getProofBits`, range rewind/truncation and proof-chain verification dispatch. Range serialization is explicitly unsupported: the inspected daemon has no corresponding wire format. |
+
+Always compare a proof result with an independently trusted **nonzero** root.
+A zero result is failure; a nonzero result alone does not prove validity. Like
+daemon `SafeCheck`, branch verification does not enforce exact proof length.
+
+The [MMR fixture notes](src/__tests__/fixtures/mmr/README.md) document reproducible
+RPC captures, compiled daemon-method checks, provenance and regeneration. Tests
+retain the previously captured type-2/type-3 header proofs and verify their
+trusted roots. No client dependency or resolution change is included here.
+
 ### Creating an Identity Update Script
 
 This example shows how to define a VerusID, modify it, and generate the corresponding transaction script.
@@ -125,6 +251,113 @@ const scriptBuffer = idScript.toBuffer();
 
 console.log('Identity Script Hex:', scriptBuffer.toString('hex'));
 ```
+
+### Preparing Identity Registration Outputs
+
+`NameReservation` (legacy) and `AdvancedNameReservation` (version 1) encode the
+commit/reveal payloads. `getCommitment()` hashes their exact serialized bytes with
+SHA256d. `IdentityCommitmentScript` and `IdentityReservationScript` build and parse
+the corresponding smart transaction outputs, including two-party commitments for
+permissioned namespaces.
+
+```typescript
+import {
+  AdvancedNameReservation, IdentityID, KeyID, TxDestination, IdentityScript,
+  IdentityCommitmentScript, IdentityReservationScript,
+  resolveIdentityRegistrationName, identityFromJSONForRegistration,
+  decodeDestination, R_ADDR_VERSION
+} from 'verus-typescript-primitives';
+
+// The wallet supplies and persists a cryptographically random, nonzero 32-byte
+// salt before broadcasting the commitment. Do not generate a new salt on retry.
+function prepareIdentityRegistration(salt: Buffer, controllerAddress: string) {
+  const resolved = resolveIdentityRegistrationName({
+    name: 'alice.VRSCTEST@',
+    rootSystemName: 'VRSCTEST',
+    systemID: 'iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq'
+  });
+  const reservation = new AdvancedNameReservation({
+    name: resolved.name,
+    parent: IdentityID.fromAddress(resolved.parent),
+    salt
+  });
+  reservation.validateForCreation();
+  const controller = new TxDestination(
+    new KeyID(decodeDestination(controllerAddress, R_ADDR_VERSION))
+  );
+  const identity = identityFromJSONForRegistration({
+    version: 3, flags: 0, minimumsignatures: 1, timelock: 0,
+    name: resolved.name, parent: resolved.parent, systemid: resolved.systemID,
+    primaryaddresses: [controllerAddress],
+    revocationauthority: resolved.identityID,
+    recoveryauthority: resolved.identityID
+  }, resolved);
+  return {
+    reservation,
+    commitmentScript: IdentityCommitmentScript.fromCommitment(reservation.getCommitment(), controller),
+    identityScript: IdentityScript.fromIdentity(identity),
+    reservationScript: IdentityReservationScript.fromReservation(reservation)
+  };
+}
+```
+
+For sub-identities, resolve a qualified name such as `alice.namespace.VRSCTEST@`,
+or supply a leaf with both `parent` and `parentName`. Resolution derives IDs; the
+client must verify that the parent is an eligible registered currency and issues
+identities on the selected system. It must also resolve referral/issuer policy.
+For a required issuer or referral signature, pass its identity `TxDestination` as
+the third argument to `IdentityCommitmentScript.fromCommitment`. The script keeps
+the controller index separate from its two-of-two spend condition.
+
+Salt and commitment buffers use raw serialized uint256 byte order; JSON uses
+reversed display hex. Names retain their original case and UTF-8 bytes. Creation
+validation rejects ambiguous names and requires explicit network context. Legacy
+reservation address derivation and script construction require an explicit parent
+i-address, or `null` for a historical root. Legacy RPC `parent` metadata is not
+part of the commitment; `fromJSON(json, parent)` verifies `nameid` against the
+caller's context. Use `toJSONWithParent(parent)` to include that metadata in
+legacy reservation JSON; `toJSON()` emits only its payload fields. Advanced
+reservation payloads use ordinary commitment hashes;
+the separately supported tagged `CommitmentHash` token format is not a name
+registration commitment.
+
+Historical advanced reservations with a null parent require explicit chain context:
+use `getIdentityAddress(rootSystemName)`, `toJSONWithRootSystem(rootSystemName)`,
+and `fromJSON(json, rootSystemName)`. Their wire payload alone cannot identify the
+root namespace. `Identity.fromBuffer(bytes, offset, parseVdxfObjects, rootSystemName)`
+can also reconstruct the omitted system ID of a version 1 identity;
+`Identity.toJson(rootSystemName)` supplies the same context for JSON projection.
+
+Use `validateIdentityForRegistration(identity, resolved)` for an already constructed
+full `Identity`, or the stricter JSON entry point above to validate original
+address versions before parsing. These creation helpers currently support version
+3, zero flags/timelock, and R-address primary authorities; compressed public-key
+principals are unsupported by the existing `Principal` serializer. They reject
+`PartialIdentity`. Historical reservation parsing is separate from creation checks;
+unknown reservation versions are rejected rather than reinterpreted.
+
+`CurrencyIdentityRegistration` exposes currency-option predicates and integer
+registration/referral prices. Its constructor takes atomic amounts;
+`fromJSON()` takes RPC coin amounts. `currencyAmountToAtomic()` accepts exact
+decimal strings and rejects numbers that cannot preserve atomic precision.
+`GetIdentityHistoryRequest`, `GetCurrencyStateRequest`, and `GetTxOutRequest`
+provide the corresponding typed reads. Fees depending on currency state,
+fractional conversion, funding, transaction assembly/signing, commitment
+confirmation, and broadcasting remain responsibilities of the client.
+
+These requests emit parameters compatible with the Rust RPC proxy once the
+methods are whitelisted. Currency-state numeric heights are sent as strings;
+omitted or nonpositive numeric heights use the current tip, while the explicit
+string `"0"` selects genesis. A missing height before a conversion currency is
+encoded as `""`, the daemon's string selector for the tip. Numeric heights must
+be safe integers. Identity-history requests fill skipped intermediate arguments
+with the daemon defaults (`0`, `0`, `false`) and omit unused trailing arguments.
+Request JSON retains the caller's original values.
+
+Offline daemon parity fixtures cover mined registrations, name derivation,
+independently encoded scripts and identities, historical proofs, currency policy
+and state, and UTXO reads. Coverage and regeneration instructions are in
+[`src/__tests__/fixtures/identity-registration`](src/__tests__/fixtures/identity-registration/README.md).
 
 ### Making an RPC API Request
 

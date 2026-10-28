@@ -94,7 +94,8 @@ export class CrossChainProof extends SerializableEntityBase implements Serializa
     this.version = new BN(reader.readUInt32());
     this.chainObjects = [];
 
-    const chainObjectsLength = reader.readVarInt().toNumber();
+    // CCrossChainProof reads its object count into a nonnegative int32_t.
+    const chainObjectsLength = reader.readVarInt(31).toNumber();
 
     for (let i = 0; i < chainObjectsLength; i++) {
       const objType = reader.readUInt16();

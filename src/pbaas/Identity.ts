@@ -2,7 +2,7 @@ import varuint from '../utils/varuint'
 import bufferutils from '../utils/bufferutils'
 import { BigNumber } from '../utils/types/BigNumber';
 import { Principal } from './Principal';
-import { fromBase58Check, nameAndParentAddrToIAddr, toBase58Check } from '../utils/address';
+import { fromBase58Check, nameAndParentAddrToIAddr, toBase58Check, toIAddress } from '../utils/address';
 import { I_ADDR_VERSION, R_ADDR_VERSION, HASH160_BYTE_LENGTH, HASH256_BYTE_LENGTH } from '../constants/vdxf';
 import { BN } from 'bn.js';
 import { IdentityID } from './IdentityID';
@@ -10,6 +10,7 @@ import { SaplingPaymentAddress } from './SaplingPaymentAddress';
 import { ContentMultiMap, ContentMultiMapJson, KvContent, FqnContentMultiMap } from './ContentMultiMap';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { KeyID } from './KeyID';
+import { assertNameBytes } from './identityRegistrationSerialization';
 
 export const IDENTITY_VERSION_VAULT = new BN(2, 10);
 export const IDENTITY_VERSION_PBAAS = new BN(3, 10);
@@ -248,11 +249,14 @@ export class Identity extends Principal implements SerializableEntity {
     }
 
     if (this.containsContentMap()) {
+      // std::map<uint160, uint256> uses the raw uint160 byte ordering.
+      const entries = Array.from(this.contentMap.entries()).sort(([left], [right]) =>
+        fromBase58Check(left).hash.compare(fromBase58Check(right).hash));
       //contentmap
       if (this.version.lt(IDENTITY_VERSION_PBAAS)) {
         writer.writeCompactSize(this.contentMap.size);
 
-        for (const [key, value] of this.contentMap.entries()) {
+        for (const [key, value] of entries) {
           writer.writeSlice(fromBase58Check(key).hash);
           writer.writeSlice(value);
         }
@@ -261,7 +265,7 @@ export class Identity extends Principal implements SerializableEntity {
       //contentmap2
       writer.writeCompactSize(this.contentMap.size);
 
-      for (const [key, value] of this.contentMap.entries()) {
+      for (const [key, value] of entries) {
         writer.writeSlice(fromBase58Check(key).hash);
         writer.writeSlice(value);
       }
@@ -290,7 +294,8 @@ export class Identity extends Principal implements SerializableEntity {
     return writer.buffer
   }
 
-  fromBuffer(buffer: Buffer, offset: number = 0, parseVdxfObjects: boolean = false) {
+  /** Legacy null-parent identities need an explicit root to reconstruct their omitted system ID. */
+  fromBuffer(buffer: Buffer, offset: number = 0, parseVdxfObjects: boolean = false, rootSystemName?: string) {
     const reader = new BufferReader(buffer, offset);
 
     reader.offset = super.fromBuffer(reader.buffer, reader.offset);
@@ -386,13 +391,16 @@ export class Identity extends Principal implements SerializableEntity {
       }
     } else {
       this.systemId = _parent;
+      if (_parent?.hash.equals(Buffer.alloc(20)) && rootSystemName !== undefined) {
+        this.systemId = IdentityID.fromAddress(this.getIdentityAddress(rootSystemName));
+      }
       this.unlockAfter = new BN(0);
     }
 
     return reader.offset;
   }
 
-  toJson(): VerusCLIVerusIDJson {
+  toJson(rootSystemName?: string): VerusCLIVerusIDJson {
     const contentmap = {};
 
     if (this.containsContentMap()) {
@@ -402,9 +410,20 @@ export class Identity extends Principal implements SerializableEntity {
       }
     }
 
+    // CIdentity::ToUniValue omits multimap data before version 3, and
+    // VDXFDataToUniValue omits zero-length values from its JSON arrays.
+    let contentMultiMap: ContentMultiMapJson | undefined;
+    if (this.containsContentMultiMap() && this.version.gte(IDENTITY_VERSION_PBAAS)) {
+      contentMultiMap = this.contentMultiMap.toJson();
+      for (const key of Object.keys(contentMultiMap)) {
+        const values = contentMultiMap[key];
+        if (Array.isArray(values)) contentMultiMap[key] = values.filter(value => value !== '');
+      }
+    }
+
     const ret: VerusCLIVerusIDJson = {
       contentmap: this.containsContentMap() ? contentmap : undefined,
-      contentmultimap: this.containsContentMultiMap() ? this.contentMultiMap.toJson() : undefined,
+      contentmultimap: contentMultiMap,
       flags: this.containsFlags() ? this.flags.toNumber() : undefined,
       minimumsignatures: this.containsMinSigs() ? this.minSigs.toNumber() : undefined,
       name: this.name,
@@ -415,7 +434,7 @@ export class Identity extends Principal implements SerializableEntity {
       systemid: this.containsSystemId() ? this.systemId.toAddress() : undefined,
       timelock: this.containsUnlockAfter() ? this.unlockAfter.toNumber() : undefined,
       version: this.containsVersion() ? this.version.toNumber() : undefined,
-      identityaddress: this.containsParent() ? this.getIdentityAddress() : undefined
+      identityaddress: this.containsParent() ? this.getIdentityAddress(rootSystemName) : undefined
     };
 
     if (this.privateAddresses != null && this.privateAddresses.length > 0) {
@@ -429,8 +448,24 @@ export class Identity extends Principal implements SerializableEntity {
     return ret;
   }
 
-  getIdentityAddress() {
-    return nameAndParentAddrToIAddr(this.name, this.parent.toAddress());
+  /** Null-parent identities require a root context unless their stored system ID identifies that root. */
+  getIdentityAddress(rootSystemName?: string): string {
+    if (!this.parent.hash.equals(Buffer.alloc(20))) {
+      return nameAndParentAddrToIAddr(this.name, this.parent.toAddress());
+    }
+    if (/[.@\0]/.test(this.name)) throw new Error('Null-parent identity address requires an unambiguous leaf name');
+    if (rootSystemName !== undefined) {
+      assertNameBytes(rootSystemName);
+      if (/[.@\u0000-\u001f\u007f]/.test(rootSystemName)) throw new Error('Root system context requires an unambiguous leaf name');
+      return toIAddress(this.name, rootSystemName);
+    }
+    // A genesis root records its own ID as systemID. Never hash twenty zero
+    // parent bytes, and do not assume every null-parent name is a global root.
+    const rootAddress = nameAndParentAddrToIAddr(this.name);
+    if (this.systemId && !this.systemId.hash.equals(Buffer.alloc(20)) && this.systemId.toAddress() === rootAddress) {
+      return rootAddress;
+    }
+    throw new Error('Null-parent identity requires explicit root system context');
   }
 
   isRevoked(): boolean {

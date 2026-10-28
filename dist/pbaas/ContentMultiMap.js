@@ -68,7 +68,10 @@ class ContentMultiMap extends SerializableEntityBase_1.SerializableEntityBase {
     toBuffer() {
         const writer = new BufferWriter(Buffer.alloc(this.getByteLength()));
         writer.writeCompactSize(this.kvContent.size);
-        for (const [key, value] of this.kvContent.entries()) {
+        // CIdentity groups its std::multimap by sorted raw uint160 keys.
+        // Sort a copy so canonical serialization does not mutate caller data.
+        const entries = Array.from(this.kvContent.entries()).sort(([left], [right]) => (0, address_1.fromBase58Check)(left.toIAddress()).hash.compare((0, address_1.fromBase58Check)(right.toIAddress()).hash));
+        for (const [key, value] of entries) {
             writer.writeSlice((0, address_1.fromBase58Check)(key.toIAddress()).hash);
             if (Array.isArray(value)) {
                 writer.writeCompactSize(value.length);

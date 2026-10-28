@@ -9,7 +9,7 @@ import { KeyID } from './KeyID';
 import { SaplingPaymentAddress } from './SaplingPaymentAddress';
 import varuint from '../utils/varuint';
 import { HASH160_BYTE_LENGTH, I_ADDR_VERSION, R_ADDR_VERSION } from '../constants/vdxf';
-import { PartialMMRData, PartialMMRDataJson, SingleKeyMMRData } from './PartialMMRData';
+import { PartialMMRData, PartialMMRDataJson, PartialMMRDataCLIJson } from './PartialMMRData';
 import { AllowedHashes, DATA_TYPE_BASE64, DATA_TYPE_DATAHASH, DATA_TYPE_FILENAME, DATA_TYPE_HEX, DATA_TYPE_MESSAGE, DATA_TYPE_MMRDATA, DATA_TYPE_RAWSTRINGDATA, DATA_TYPE_VDXFDATA, DEFAULT_HASH_TYPE, HASH_TYPE_BLAKE2B, HASH_TYPE_BLAKE2B_NAME, HASH_TYPE_KECCAK256, HASH_TYPE_KECCAK256_NAME, HASH_TYPE_SHA256, HASH_TYPE_SHA256_NAME, HASH_TYPE_SHA256D, HASH_TYPE_SHA256D_NAME } from '../constants/pbaas';
 import { fromBase58Check } from '../utils/address';
 import { FqnVdxfUniValue, VdxfUniValue, VdxfUniValueJson, VdxfUniValueJsonArray } from './VdxfUniValue';
@@ -66,7 +66,7 @@ type SignDataKeys = {
   messagebase64?: string;
   datahash?: string;
   vdxfdata?: VdxfUniValueJson;
-  mmrdata?: Array<SingleKeyMMRData | string | { vdxfdata: VdxfUniValueJson }>;
+  mmrdata?: PartialMMRDataCLIJson['mmrdata'];
 };
 
 // Base fields (always optional)
@@ -88,7 +88,6 @@ type BaseFields = {
 type MMRFields = {
   mmrsalt?: Array<string>;
   mmrhashtype?: AllowedHashes;
-  priormmr?: Array<string>;
 };
 
 // Conditional combination:
@@ -588,7 +587,6 @@ export class PartialSignData extends SerializableEntityBase implements Serializa
         ret['mmrdata'] = mmrCLIJson.mmrdata;
         ret['mmrsalt'] = mmrCLIJson.mmrsalt;
         ret['mmrhashtype'] = mmrCLIJson.mmrhashtype;
-        ret['priormmr'] = mmrCLIJson.priormmr;
       } else if (this.dataType.eq(DATA_TYPE_VDXFDATA)) {
         const uniJson = (this.data as VdxfUniValue).toJson();
 
@@ -632,6 +630,10 @@ export class PartialSignData extends SerializableEntityBase implements Serializa
   static fromCLIJson(json: PartialSignDataCLIJson): PartialSignData {
     let addr: IdentityID | KeyID;
 
+    if ('priormmr' in json) {
+      throw new Error('Prior-MMR combination is not implemented by the daemon');
+    }
+
     if (json.address) {
       const { version, hash } = fromBase58Check(json.address);
 
@@ -657,8 +659,7 @@ export class PartialSignData extends SerializableEntityBase implements Serializa
       const pmd = PartialMMRData.fromCLIJson({
         mmrdata: json.mmrdata,
         mmrsalt: json.mmrsalt,
-        mmrhashtype: json.mmrhashtype,
-        priormmr: json.priormmr
+        mmrhashtype: json.mmrhashtype
       })
 
       config.data = pmd;

@@ -198,8 +198,9 @@ class BufferReader {
     return vi.decoded;
   }
 
-  readVarInt() {
-    const vi = varint.decode(this.buffer, this.offset);
+  /** Bound protocol fields during decoding; maxBits counts nonnegative value bits. */
+  readVarInt(maxBits?: number) {
+    const vi = varint.decode(this.buffer, this.offset, maxBits);
     this.offset += vi.bytes;
     return vi.decoded;
   }

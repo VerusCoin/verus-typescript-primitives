@@ -53,7 +53,8 @@ class PBaaSEvidenceRef extends SerializableEntityBase_1.SerializableEntityBase {
     }
     setFlags() {
         this.flags = this.flags.and(PBaaSEvidenceRef.FLAG_ISEVIDENCE);
-        if (this.systemId && this.systemId.length > 0) {
+        // Presence follows the uint160 value, not whether an address was supplied.
+        if (this.systemId && (0, address_1.fromBase58Check)(this.systemId).hash.some(byte => byte !== 0)) {
             this.flags = this.flags.or(PBaaSEvidenceRef.FLAG_HAS_SYSTEM);
         }
         if (this.hasNonNullDataHash()) {
@@ -125,9 +126,11 @@ class PBaaSEvidenceRef extends SerializableEntityBase_1.SerializableEntityBase {
             flags: this.flags.toNumber(),
             output: this.output.toJson(),
             objectnum: this.objectNum.toNumber(),
-            subobject: this.subObject.toNumber(),
-            systemid: this.systemId || ""
+            subobject: this.subObject.toNumber()
         };
+        if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new bn_js_1.BN(0))) {
+            retval.systemid = this.systemId;
+        }
         if (this.hasDataHash()) {
             retval.datahash = Buffer.from(this.dataHash).reverse().toString('hex');
         }

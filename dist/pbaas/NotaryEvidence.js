@@ -1,0 +1,281 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotaryEvidence = exports.NotaryEvidenceState = exports.NotaryEvidenceType = void 0;
+const bn_js_1 = require("bn.js");
+const vdxf_1 = require("../constants/vdxf");
+const address_1 = require("../utils/address");
+const bufferutils_1 = require("../utils/bufferutils");
+const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
+const CrossChainProof_1 = require("./CrossChainProof");
+const EvidenceData_1 = require("./EvidenceData");
+const UTXORef_1 = require("./UTXORef");
+var NotaryEvidenceType;
+(function (NotaryEvidenceType) {
+    NotaryEvidenceType[NotaryEvidenceType["NOTARY_EVIDENCE"] = 1] = "NOTARY_EVIDENCE";
+    NotaryEvidenceType[NotaryEvidenceType["MULTIPART_DATA"] = 2] = "MULTIPART_DATA";
+    NotaryEvidenceType[NotaryEvidenceType["IMPORT_PROOF"] = 3] = "IMPORT_PROOF";
+})(NotaryEvidenceType || (exports.NotaryEvidenceType = NotaryEvidenceType = {}));
+var NotaryEvidenceState;
+(function (NotaryEvidenceState) {
+    NotaryEvidenceState[NotaryEvidenceState["CONFIRMING"] = 1] = "CONFIRMING";
+    NotaryEvidenceState[NotaryEvidenceState["SUPPORTING"] = 2] = "SUPPORTING";
+    NotaryEvidenceState[NotaryEvidenceState["REJECTING"] = 3] = "REJECTING";
+    NotaryEvidenceState[NotaryEvidenceState["PROVINGFALSE"] = 4] = "PROVINGFALSE";
+    NotaryEvidenceState[NotaryEvidenceState["PROVINGTRUE"] = 5] = "PROVINGTRUE";
+    NotaryEvidenceState[NotaryEvidenceState["CONFIRMED"] = 6] = "CONFIRMED";
+    NotaryEvidenceState[NotaryEvidenceState["REJECTED"] = 7] = "REJECTED";
+})(NotaryEvidenceState || (exports.NotaryEvidenceState = NotaryEvidenceState = {}));
+/**
+ * CNotaryEvidence with the EvidenceData subset of CCrossChainProof.
+ *
+ * Defaults describe an unsigned upload: import proof, supporting, same-tx output 0.
+ * Supply a nonzero systemId before constructing an output. A default instance
+ * can still serialize the empty evidence used by the daemon for size estimates.
+ *
+ * This container does not create or verify notary signatures.
+ */
+class NotaryEvidence extends SerializableEntityBase_1.SerializableEntityBase {
+    constructor(data = {}) {
+        var _a, _b, _c, _d, _e, _f;
+        super();
+        this.version = (_a = data.version) !== null && _a !== void 0 ? _a : NotaryEvidence.VERSION_CURRENT;
+        this.type = (_b = data.type) !== null && _b !== void 0 ? _b : NotaryEvidenceType.IMPORT_PROOF;
+        this.systemId =
+            (_c = data.systemId) !== null && _c !== void 0 ? _c : (0, address_1.toBase58Check)(Buffer.alloc(20), vdxf_1.I_ADDR_VERSION);
+        this.output =
+            (_d = data.output) !== null && _d !== void 0 ? _d : new UTXORef_1.UTXORef({ hash: Buffer.alloc(32), n: new bn_js_1.BN(0) });
+        this.state = (_e = data.state) !== null && _e !== void 0 ? _e : NotaryEvidenceState.SUPPORTING;
+        this.evidence = (_f = data.evidence) !== null && _f !== void 0 ? _f : new CrossChainProof_1.CrossChainProof();
+    }
+    /** Validate the encodable fields; isValid additionally checks daemon validity. */
+    validate() {
+        if (this.version !== 1 ||
+            !Number.isInteger(this.type) ||
+            this.type < 1 ||
+            this.type > 3 ||
+            !Number.isInteger(this.state) ||
+            this.state < 1 ||
+            this.state > 7) {
+            throw new Error('Unsupported notary evidence version, type, or state');
+        }
+        const system = (0, address_1.fromBase58Check)(this.systemId);
+        if (system.version !== vdxf_1.I_ADDR_VERSION || system.hash.length !== 20) {
+            throw new Error('Notary evidence systemId must be an identity address');
+        }
+        if (!this.output ||
+            !Buffer.isBuffer(this.output.hash) ||
+            this.output.hash.length !== 32 ||
+            !bn_js_1.BN.isBN(this.output.n) ||
+            this.output.n.isNeg() ||
+            this.output.n.gt(new bn_js_1.BN('ffffffff', 16))) {
+            throw new Error('Notary evidence output must contain a 32-byte hash and uint32 index');
+        }
+        if (!this.evidence ||
+            !bn_js_1.BN.isBN(this.evidence.version) ||
+            !this.evidence.version.eqn(1)) {
+            throw new Error('Unsupported cross-chain proof version');
+        }
+        for (const item of this.evidence.chainObjects) {
+            if (!(item instanceof EvidenceData_1.EvidenceData) ||
+                !item.isValid() ||
+                !Buffer.isBuffer(item.data_vec)) {
+                throw new Error('Unsupported evidence data');
+            }
+            if (item.type.eqn(EvidenceData_1.ETypes.TYPE_MULTIPART_DATA)) {
+                const md = item.md;
+                // Multipart metadata uses a uint32 index and nonnegative int64 lengths.
+                if (!md ||
+                    !bn_js_1.BN.isBN(md.index) ||
+                    md.index.isNeg() ||
+                    md.index.bitLength() > 32 ||
+                    !bn_js_1.BN.isBN(md.total_length) ||
+                    md.total_length.isNeg() ||
+                    md.total_length.bitLength() > 63 ||
+                    !bn_js_1.BN.isBN(md.start) ||
+                    md.start.isNeg() ||
+                    md.start.bitLength() > 63) {
+                    throw new Error('Invalid multipart descriptor');
+                }
+            }
+            else {
+                const key = (0, address_1.fromBase58Check)(item.vdxfd);
+                if (key.version !== vdxf_1.I_ADDR_VERSION || key.hash.length !== 20) {
+                    throw new Error('Evidence data VDXF key must be an identity address');
+                }
+            }
+        }
+    }
+    isValid() {
+        try {
+            this.validate();
+            // Scratch evidence is serializable, but a zero system or null outpoint
+            // index is not valid evidence according to CNotaryEvidence::IsValid.
+            return (!(0, address_1.fromBase58Check)(this.systemId).hash.equals(Buffer.alloc(20)) &&
+                this.output.n.lt(new bn_js_1.BN('ffffffff', 16)));
+        }
+        catch (_) {
+            return false;
+        }
+    }
+    getByteLength() {
+        this.validate();
+        return NotaryEvidence.HEADER_BYTE_LENGTH + this.evidence.getByteLength();
+    }
+    toBuffer() {
+        const writer = new bufferutils_1.default.BufferWriter(Buffer.alloc(this.getByteLength()));
+        // This fixed header precedes CCrossChainProof without a vector length.
+        writer.writeUInt8(this.version);
+        writer.writeUInt8(this.type);
+        writer.writeSlice((0, address_1.fromBase58Check)(this.systemId).hash);
+        writer.writeSlice(this.output.toBuffer());
+        writer.writeUInt8(this.state);
+        writer.writeSlice(this.evidence.toBuffer());
+        return writer.buffer;
+    }
+    /**
+     * Parse one evidence object and return its absolute end offset.
+     * An explicit length bounds all nested reads and rejects trailing bytes;
+     * omitting it allows this object to be read from a larger serialized stream.
+     */
+    fromBuffer(buffer, offset = 0, length) {
+        if (!Buffer.isBuffer(buffer) ||
+            !Number.isSafeInteger(offset) ||
+            offset < 0 ||
+            offset > buffer.length ||
+            (length != null &&
+                (!Number.isSafeInteger(length) ||
+                    length < 0 ||
+                    length > buffer.length - offset))) {
+            throw new Error('Invalid notary evidence bounds');
+        }
+        // Keep offsets relative to the original buffer while bounding child parsers.
+        const reader = new bufferutils_1.default.BufferReader(length == null ? buffer : buffer.subarray(0, offset + length), offset);
+        const version = reader.readUInt8();
+        const type = reader.readUInt8();
+        const systemId = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+        const output = new UTXORef_1.UTXORef();
+        reader.offset = output.fromBuffer(reader.buffer, reader.offset);
+        const state = reader.readUInt8();
+        const evidence = new CrossChainProof_1.CrossChainProof();
+        reader.offset = evidence.fromBuffer(reader.buffer, reader.offset);
+        // Re-encoding catches noncanonical nested fields, including mismatched
+        // copies of the version that CEvidenceData writes twice on the wire.
+        const parsed = new NotaryEvidence({
+            version,
+            type,
+            systemId,
+            output,
+            state,
+            evidence,
+        });
+        if ((length != null && reader.offset !== offset + length) ||
+            !parsed.toBuffer().equals(reader.buffer.subarray(offset, reader.offset))) {
+            throw new Error('Noncanonical or trailing notary evidence data');
+        }
+        // Do not retain partially parsed state when validation fails.
+        this.version = version;
+        this.type = type;
+        this.systemId = systemId;
+        this.output = output;
+        this.state = state;
+        this.evidence = evidence;
+        return reader.offset;
+    }
+    /**
+     * Split the complete serialized object exactly as CNotaryEvidence::BreakApart.
+     * The caller chooses capacity from the enclosing script limit and decides
+     * whether splitting is necessary. Even a single returned chunk is multipart.
+     */
+    breakApart(maxChunkSize) {
+        if (!Number.isSafeInteger(maxChunkSize) || maxChunkSize <= 0) {
+            throw new Error('Multipart chunk size must be a positive safe integer');
+        }
+        // Offsets refer to the entire original encoding, including its header.
+        // Descriptor encryption and logical MMR construction have already happened.
+        const bytes = this.toBuffer();
+        const parts = [];
+        for (let start = 0; start < bytes.length; start += maxChunkSize) {
+            const chunk = new EvidenceData_1.EvidenceData({
+                version: new bn_js_1.BN(1),
+                type: new bn_js_1.BN(EvidenceData_1.ETypes.TYPE_MULTIPART_DATA),
+                md: new EvidenceData_1.MultiPartDescriptor({
+                    index: new bn_js_1.BN(parts.length),
+                    total_length: new bn_js_1.BN(bytes.length),
+                    start: new bn_js_1.BN(start),
+                }),
+                vdxfd: undefined,
+                data_vec: Buffer.from(bytes.subarray(start, start + maxChunkSize)),
+            });
+            parts.push(new NotaryEvidence({
+                type: NotaryEvidenceType.MULTIPART_DATA,
+                systemId: this.systemId,
+                output: new UTXORef_1.UTXORef({
+                    hash: Buffer.from(this.output.hash),
+                    n: this.output.n.clone(),
+                }),
+                state: this.state,
+                evidence: new CrossChainProof_1.CrossChainProof({ chainObjects: [chunk] }),
+            }));
+        }
+        return parts;
+    }
+    /** Reassemble one ordered group, rejecting missing, mixed, or corrupt parts. */
+    static reassemble(parts) {
+        if (!parts.length) {
+            throw new Error('Multipart evidence group is empty');
+        }
+        const first = parts[0];
+        const chunks = [];
+        let total;
+        let offset = 0;
+        parts.forEach((part, index) => {
+            part.validate();
+            const item = part.evidence.chainObjects[0];
+            // A part must belong to this group and begin exactly where the prior
+            // part ended. This rejects mixed uploads, gaps, duplicates, and reordering.
+            if (!part.isValid() ||
+                part.type !== NotaryEvidenceType.MULTIPART_DATA ||
+                part.evidence.chainObjects.length !== 1 ||
+                !item.type.eqn(EvidenceData_1.ETypes.TYPE_MULTIPART_DATA) ||
+                part.systemId !== first.systemId ||
+                part.state !== first.state ||
+                !part.output.toBuffer().equals(first.output.toBuffer()) ||
+                !item.md.index.eqn(index) ||
+                !item.md.start.eq(new bn_js_1.BN(offset)) ||
+                !item.data_vec.length) {
+                throw new Error('Invalid multipart evidence ordering or header');
+            }
+            if (total == null) {
+                total = item.md.total_length;
+            }
+            if (!item.md.total_length.eq(total)) {
+                throw new Error('Inconsistent multipart total length');
+            }
+            offset += item.data_vec.length;
+            if (new bn_js_1.BN(offset).gt(total)) {
+                throw new Error('Multipart evidence exceeds total length');
+            }
+            chunks.push(item.data_vec);
+        });
+        if (!total.eq(new bn_js_1.BN(offset))) {
+            throw new Error('Incomplete multipart evidence');
+        }
+        const bytes = Buffer.concat(chunks, offset);
+        const result = new NotaryEvidence();
+        result.fromBuffer(bytes, 0, bytes.length);
+        // The reconstructed header must agree with the physical part headers.
+        // Accept one complete evidence object, never another layer of fragments.
+        if (!result.isValid() ||
+            result.type === NotaryEvidenceType.MULTIPART_DATA ||
+            result.systemId !== first.systemId ||
+            result.state !== first.state ||
+            !result.output.toBuffer().equals(first.output.toBuffer())) {
+            throw new Error('Multipart evidence does not match its wrapper');
+        }
+        return result;
+    }
+}
+exports.NotaryEvidence = NotaryEvidence;
+NotaryEvidence.VERSION_CURRENT = 1;
+// version (1) + type (1) + system ID (20) + outpoint (36) + state (1).
+NotaryEvidence.HEADER_BYTE_LENGTH = 59;

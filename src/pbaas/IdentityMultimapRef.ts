@@ -54,6 +54,7 @@ export class IdentityMultimapRef extends SerializableEntityBase implements Seria
       this.heightEnd = data.heightEnd || new BN(0);
       this.dataHash = data.dataHash || Buffer.alloc(0);
       this.systemId = data.systemId || "";
+      this.validateDataHashLength();
     }
   }
 
@@ -72,12 +73,20 @@ export class IdentityMultimapRef extends SerializableEntityBase implements Seria
   /** @deprecated Use systemId instead */
   get system_id(): string { return this.systemId; }
 
+  private validateDataHashLength() {
+    if (this.dataHash && this.dataHash.length !== 0 && this.dataHash.length !== HASH256_BYTE_LENGTH) {
+      throw new Error(`IdentityMultimapRef dataHash must be exactly ${HASH256_BYTE_LENGTH} bytes`);
+    }
+  }
+
   setFlags() {
+    this.validateDataHashLength();
     this.flags = this.flags.and(IdentityMultimapRef.FLAG_NO_DELETION);
-    if (this.dataHash && this.dataHash.length > 0) {
+    // The daemon omits zero uint256/uint160 values, even when supplied in JSON.
+    if (this.dataHash && this.dataHash.some(byte => byte !== 0)) {
       this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_DATAHASH);
     }
-    if (this.systemId && this.systemId.length > 0) {
+    if (this.systemId && fromBase58Check(this.systemId).hash.some(byte => byte !== 0)) {
       this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_SYSTEM);
     }
   }
@@ -136,10 +145,14 @@ export class IdentityMultimapRef extends SerializableEntityBase implements Seria
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0))) {
       this.dataHash = reader.readSlice(32);
+    } else {
+      this.dataHash = Buffer.alloc(0);
     }
 
     if (this.flags.and(IdentityMultimapRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
       this.systemId = toBase58Check(reader.readSlice(20), I_ADDR_VERSION);
+    } else {
+      this.systemId = "";
     }
     return reader.offset;
   }
@@ -163,6 +176,7 @@ export class IdentityMultimapRef extends SerializableEntityBase implements Seria
   }
 
   toJson() {
+    this.setFlags();
 
     let retval: IdentityMultimapRefJson = {
 
@@ -185,20 +199,25 @@ export class IdentityMultimapRef extends SerializableEntityBase implements Seria
   }
 
   static fromJson(data: IdentityMultimapRefJson): IdentityMultimapRef {
-    const flags = new BN(data.flags);
-    if (flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new BN(0)) && data.datahash == null) {
-      throw new Error("Missing datahash for IdentityMultimapRef with FLAG_HAS_DATAHASH set");
+    let dataHash = Buffer.alloc(0);
+    if (data.datahash != null && data.datahash !== '') {
+      if (!/^[0-9a-fA-F]{64}$/.test(data.datahash)) {
+        throw new Error(`IdentityMultimapRef datahash must be exactly ${HASH256_BYTE_LENGTH} bytes of hexadecimal data`);
+      }
+      dataHash = Buffer.from(data.datahash, 'hex').reverse();
     }
 
-    return new IdentityMultimapRef({
+    const reference = new IdentityMultimapRef({
       version: new BN(data.version),
-      flags,
+      flags: new BN(data.flags),
       key: data.vdxfkey,
       idID: data.identityid,
       heightStart: new BN(data.startheight),
       heightEnd: new BN(data.endheight),
-      dataHash: data.datahash != null ? Buffer.from(data.datahash, 'hex').reverse() : Buffer.alloc(0),
+      dataHash,
       systemId: data.systemid
-    })
+    });
+    reference.setFlags();
+    return reference;
   }
 }

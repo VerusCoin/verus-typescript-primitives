@@ -1,4 +1,5 @@
 import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
+import type { EHashTypes } from './DataDescriptor';
 export declare class MMRLayer<NODE_TYPE> {
     private vSize;
     private nodes;
@@ -10,7 +11,9 @@ export declare class MMRLayer<NODE_TYPE> {
 }
 export declare class MMRNode {
     hash: Buffer;
-    constructor(Hash?: Buffer);
+    constructor(hash?: Buffer);
+    /** Copy the hash while preserving subclass methods and hash configuration. */
+    clone(): this;
     digest(input: any): any;
     hashObj(obj: Buffer, onbjR?: Buffer): Buffer;
     createParentNode(nRight: MMRNode): MMRNode;
@@ -19,10 +22,9 @@ export declare class MMRNode {
     getExtraHashCount(): number;
 }
 export declare class MerkleMountainRange {
-    layer0: MMRLayer<MMRNode>;
-    vSize: number;
-    upperNodes: Array<MMRLayer<MMRNode>>;
-    _leafLength: number;
+    private readonly layer0;
+    private readonly upperNodes;
+    private defaultNodesOnly;
     constructor();
     getbyteLength(): number;
     toBuffer(): Buffer;
@@ -30,8 +32,19 @@ export declare class MerkleMountainRange {
     add(leaf: MMRNode): number;
     size(): number;
     height(): number;
-    getNode(Height: any, Index: any): MMRNode;
+    /** Custom node algorithms may construct roots, but have no verified proof tag. */
+    supportsProofs(): boolean;
+    getNode(height: number, index: number): MMRNode;
 }
+/**
+ * Build a daemon-compatible MMR root from ordered, prehashed leaves.
+ * All input/output hashes are raw 32-byte uint256 wire bytes. One leaf is
+ * returned unchanged; an empty range has the all-zero root.
+ *
+ * This supports root construction only. The existing serialized MMR proofs
+ * identify Blake2b branches and do not encode the other hash modes.
+ */
+export declare const getMMRRoot: (hashes: ReadonlyArray<Buffer>, hashType?: EHashTypes) => Buffer;
 export declare class MMRBranch extends SerializableEntityBase {
     branchType?: number;
     nIndex?: number;
@@ -42,7 +55,11 @@ export declare class MMRBranch extends SerializableEntityBase {
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
     digest(input: any): any;
-    safeCheck(hash: Buffer): Buffer<ArrayBufferLike>;
+    /**
+     * Compute the daemon proof result. Zero is failure; a nonzero result is only
+     * valid when it equals an independently trusted, nonzero root.
+     */
+    safeCheck(hash: Buffer): Buffer<ArrayBuffer>;
 }
 export declare class MMRProof extends SerializableEntityBase {
     proofSequence: Array<MMRBranch>;
@@ -52,13 +69,13 @@ export declare class MMRProof extends SerializableEntityBase {
     fromDataBuffer(buffer: Buffer, offset?: number): number;
 }
 export declare class MerkleMountainView {
-    mmr: MerkleMountainRange;
-    sizes: Array<number>;
-    peaks: Array<MMRNode>;
-    peakMerkle: Array<Array<MMRNode>>;
+    private readonly mmr;
+    private sizes;
+    private peaks;
+    private peakMerkle;
     constructor(mountainRange: MerkleMountainRange, viewSize?: number);
     size(): number;
-    calcPeaks(force?: boolean): void;
+    private calcPeaks;
     resize(newSize: number): number;
     maxsize(): number;
     getPeaks(): Array<MMRNode>;

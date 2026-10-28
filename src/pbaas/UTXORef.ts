@@ -13,7 +13,8 @@ export class UTXORef extends SerializableEntityBase implements SerializableEntit
 
   constructor(data?: { hash?: Buffer, n?: BigNumber }) {
     super();
-    this.hash = data?.hash || Buffer.alloc(0);
+    // A null transaction hash still occupies 32 bytes on the wire.
+    this.hash = data?.hash || Buffer.alloc(HASH256_BYTE_LENGTH);
     this.n = data?.n || new BN(0);
   }
 

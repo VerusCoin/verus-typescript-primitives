@@ -13,6 +13,15 @@ import { GetBlockCountResponse } from './GetBlockCount/GetBlockCountResponse'
 import { GetVdxfIdRequest } from './GetVdxfId/GetVdxfIdRequest'
 import { GetVdxfIdResponse } from './GetVdxfId/GetVdxfIdResponse'
 import { GetIdentityRequest } from './GetIdentity/GetIdentityRequest'
+import { GetIdentityHistoryRequest } from './GetIdentityHistory/GetIdentityHistoryRequest'
+import { GetIdentityHistoryResponse } from './GetIdentityHistory/GetIdentityHistoryResponse'
+import { GetCurrencyStateRequest } from './GetCurrencyState/GetCurrencyStateRequest'
+import { GetCurrencyStateResponse } from './GetCurrencyState/GetCurrencyStateResponse'
+import { GetTxOutRequest } from './GetTxOut/GetTxOutRequest'
+import { GetTxOutResponse } from './GetTxOut/GetTxOutResponse'
+export { IdentityHistoryEntry } from './GetIdentityHistory/GetIdentityHistoryResponse'
+export { CurrencyStateResult, CurrencyStateVolume, CurrencyStateResponseEntry } from './GetCurrencyState/GetCurrencyStateResponse'
+export { UnspentTransactionOutput } from './GetTxOut/GetTxOutResponse'
 import { GetIdentityContentRequest } from './GetIdentityContent/GetIdentityContentRequest'
 import { GetIdentityResponse } from './GetIdentity/GetIdentityResponse'
 import { GetIdentitiesWithAddressRequest } from './GetIdentitiesWithAddress/GetIdentitiesWithAddressRequest'
@@ -55,6 +64,12 @@ import { ZGetOperationStatusRequest } from './ZGetOperationStatus/ZGetOperationS
 import { ZGetOperationStatusResponse } from './ZGetOperationStatus/ZGetOperationStatusResponse'
 
 export {
+  GetIdentityHistoryRequest,
+  GetIdentityHistoryResponse,
+  GetCurrencyStateRequest,
+  GetCurrencyStateResponse,
+  GetTxOutRequest,
+  GetTxOutResponse,
   GetAddressBalanceRequest,
   GetAddressBalanceResponse,
   GetAddressDeltasRequest,
@@ -113,6 +128,9 @@ export {
 }
 
 export type RpcRequest =
+  | typeof GetIdentityHistoryRequest
+  | typeof GetCurrencyStateRequest
+  | typeof GetTxOutRequest
   | typeof MakeOfferRequest
   | typeof GetOffersRequest
   | typeof GetAddressBalanceRequest
@@ -143,6 +161,9 @@ export type RpcRequest =
   | typeof SignRawTransactionRequest;
 
 export type RpcResponse =
+  | typeof GetIdentityHistoryResponse
+  | typeof GetCurrencyStateResponse
+  | typeof GetTxOutResponse
   | typeof MakeOfferResponse
   | typeof GetOffersResponse
   | typeof GetAddressBalanceResponse

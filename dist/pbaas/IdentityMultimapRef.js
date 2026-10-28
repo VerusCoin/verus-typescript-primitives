@@ -25,6 +25,7 @@ class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBas
             this.heightEnd = data.heightEnd || new bn_js_1.BN(0);
             this.dataHash = data.dataHash || Buffer.alloc(0);
             this.systemId = data.systemId || "";
+            this.validateDataHashLength();
         }
     }
     /** @deprecated Use idID instead */
@@ -37,12 +38,19 @@ class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBas
     get data_hash() { return this.dataHash; }
     /** @deprecated Use systemId instead */
     get system_id() { return this.systemId; }
+    validateDataHashLength() {
+        if (this.dataHash && this.dataHash.length !== 0 && this.dataHash.length !== vdxf_1.HASH256_BYTE_LENGTH) {
+            throw new Error(`IdentityMultimapRef dataHash must be exactly ${vdxf_1.HASH256_BYTE_LENGTH} bytes`);
+        }
+    }
     setFlags() {
+        this.validateDataHashLength();
         this.flags = this.flags.and(IdentityMultimapRef.FLAG_NO_DELETION);
-        if (this.dataHash && this.dataHash.length > 0) {
+        // The daemon omits zero uint256/uint160 values, even when supplied in JSON.
+        if (this.dataHash && this.dataHash.some(byte => byte !== 0)) {
             this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_DATAHASH);
         }
-        if (this.systemId && this.systemId.length > 0) {
+        if (this.systemId && (0, address_1.fromBase58Check)(this.systemId).hash.some(byte => byte !== 0)) {
             this.flags = this.flags.or(IdentityMultimapRef.FLAG_HAS_SYSTEM);
         }
     }
@@ -90,8 +98,14 @@ class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBas
         if (this.flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new bn_js_1.BN(0))) {
             this.dataHash = reader.readSlice(32);
         }
+        else {
+            this.dataHash = Buffer.alloc(0);
+        }
         if (this.flags.and(IdentityMultimapRef.FLAG_HAS_SYSTEM).gt(new bn_js_1.BN(0))) {
             this.systemId = (0, address_1.toBase58Check)(reader.readSlice(20), vdxf_1.I_ADDR_VERSION);
+        }
+        else {
+            this.systemId = "";
         }
         return reader.offset;
     }
@@ -111,6 +125,7 @@ class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBas
         return this.flags.and(IdentityMultimapRef.FLAG_HAS_SYSTEM).gt(new bn_js_1.BN(0));
     }
     toJson() {
+        this.setFlags();
         let retval = {
             version: this.version.toNumber(),
             flags: this.flags.toNumber(),
@@ -128,20 +143,25 @@ class IdentityMultimapRef extends SerializableEntityBase_1.SerializableEntityBas
         return retval;
     }
     static fromJson(data) {
-        const flags = new bn_js_1.BN(data.flags);
-        if (flags.and(IdentityMultimapRef.FLAG_HAS_DATAHASH).gt(new bn_js_1.BN(0)) && data.datahash == null) {
-            throw new Error("Missing datahash for IdentityMultimapRef with FLAG_HAS_DATAHASH set");
+        let dataHash = Buffer.alloc(0);
+        if (data.datahash != null && data.datahash !== '') {
+            if (!/^[0-9a-fA-F]{64}$/.test(data.datahash)) {
+                throw new Error(`IdentityMultimapRef datahash must be exactly ${vdxf_1.HASH256_BYTE_LENGTH} bytes of hexadecimal data`);
+            }
+            dataHash = Buffer.from(data.datahash, 'hex').reverse();
         }
-        return new IdentityMultimapRef({
+        const reference = new IdentityMultimapRef({
             version: new bn_js_1.BN(data.version),
-            flags,
+            flags: new bn_js_1.BN(data.flags),
             key: data.vdxfkey,
             idID: data.identityid,
             heightStart: new bn_js_1.BN(data.startheight),
             heightEnd: new bn_js_1.BN(data.endheight),
-            dataHash: data.datahash != null ? Buffer.from(data.datahash, 'hex').reverse() : Buffer.alloc(0),
+            dataHash,
             systemId: data.systemid
         });
+        reference.setFlags();
+        return reference;
     }
 }
 exports.IdentityMultimapRef = IdentityMultimapRef;
