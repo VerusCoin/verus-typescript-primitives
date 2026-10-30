@@ -8,15 +8,15 @@ describe('Eval name compatibility', () => {
     expect(EVALS.EVAL_RESERVE_UNUSED).toBe(10);
   });
 
-  test('correcting the name preserves raw parsing without adding helper support', () => {
+  test('recognizes advanced reservation payloads in helper dispatch', () => {
     const chunk = Buffer.from('04030a000002abcd', 'hex');
     const params = OptCCParams.fromChunk(chunk);
 
     expect(params.evalCode.toNumber()).toBe(EVALS.EVAL_IDENTITY_ADVANCEDRESERVATION);
     expect(params.vData).toEqual([Buffer.from('abcd', 'hex')]);
     expect(params.toChunk()).toEqual(chunk);
-    expect(params.isValid()).toBe(false);
-    expect(params.getParamObject()).toBeNull();
+    expect(params.isValid()).toBe(true);
+    expect(params.getParamObject()).toEqual(Buffer.from('abcd', 'hex'));
   });
 
   test.each(['0f', '10', '16', '17', '18', '19', '1a'])(

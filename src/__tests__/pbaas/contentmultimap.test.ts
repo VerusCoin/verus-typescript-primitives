@@ -64,10 +64,10 @@ describe('Serializes and deserializes ContentMultiMap', () => {
     testContentMultimapWithKvContent(kvcontent);
   });
 
-  test('test CMM from json', () => {
-    const cmm = ContentMultiMap.fromJson(manyContentMultimapData as unknown as { [key: string]: ContentMultiMapJsonValue });
-
-    expect(cmm.toJson()).toEqual(manyContentMultimapData);
+  test('rejects content JSON containing a lossy version-2 URL reference', () => {
+    expect(() => ContentMultiMap.fromJson(
+      manyContentMultimapData as unknown as { [key: string]: ContentMultiMapJsonValue }
+    )).toThrow('only version 1');
   });
 
   test('fromJson with FQN key (contains "::") creates TYPE_FQN entry', () => {

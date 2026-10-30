@@ -3,7 +3,7 @@ import { BigNumber } from '../utils/types/BigNumber';
 import { BufferDataVdxfObject } from '../vdxf/index';
 import { SerializableEntity } from '../utils/types/SerializableEntity';
 export interface DataDescriptorJson {
-    version: number;
+    version?: number;
     flags?: number;
     vdxfkey?: string;
     objectdata?: string | {
@@ -53,8 +53,12 @@ export declare class DataDescriptor extends SerializableEntityBase implements Se
         ivk?: Buffer;
         ssk?: Buffer;
     });
-    static fromJson(data: any): DataDescriptor;
-    decodeHashVector(): Array<Buffer>;
+    /** Lossless daemon JSON subset; invalid key sizes are rejected, not silently invalidated. */
+    static fromJson(data?: DataDescriptorJson | null): DataDescriptor;
+    /** Explicit alias for the canonical daemon JSON representation. */
+    static fromDaemonJson(data?: DataDescriptorJson | null): DataDescriptor;
+    /** Default matches FromVector's trailing-byte tolerance; strict requires one complete vector. */
+    decodeHashVector(strict?: boolean): Array<Buffer>;
     getByteLength(): number;
     toBuffer(): Buffer;
     fromBuffer(buffer: Buffer, offset?: number): number;
@@ -66,10 +70,15 @@ export declare class DataDescriptor extends SerializableEntityBase implements Se
     hasIVK(): boolean;
     hasSSK(): boolean;
     hasLabel(): boolean;
+    private hasNonzeroVDXFKey;
     calcFlags(): BigNumber;
     setFlags(): void;
     isValid(): boolean;
+    private validateJson;
+    /** Reject metadata or fields that the daemon JSON representation cannot retain. */
     toJson(): DataDescriptorJson;
+    /** Explicit alias for the canonical daemon JSON representation. */
+    toDaemonJson(): DataDescriptorJson;
 }
 export declare class VDXFDataDescriptor extends BufferDataVdxfObject {
     dataDescriptor: DataDescriptor;

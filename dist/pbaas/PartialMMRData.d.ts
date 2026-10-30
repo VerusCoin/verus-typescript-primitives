@@ -24,21 +24,24 @@ export type PartialMMRDataJson = {
     mmrhashtype?: string;
     priormmr?: Array<string>;
 };
-export type CLIMMRDataStringKey = "filename" | "serializedhex" | "serializedbase64" | "message" | "datahash";
-export type CLIMMRDataKey = CLIMMRDataStringKey | "vdxfdata";
+export type CLIMMRDataStringKey = 'filename' | 'serializedhex' | 'message' | 'datahash';
+export type CLIMMRDataKey = CLIMMRDataStringKey | 'vdxfdata';
 export type SingleKeyMMRData = {
     [K in CLIMMRDataStringKey]: {
         [P in K]: string;
     };
 }[CLIMMRDataStringKey];
 export type PartialMMRDataCLIJson = {
-    mmrdata: Array<SingleKeyMMRData | string | {
+    mmrdata: Array<SingleKeyMMRData | {
         ['vdxfdata']: VdxfUniValueJson;
     }>;
     mmrsalt?: Array<string>;
     mmrhashtype?: AllowedHashes;
-    priormmr?: Array<string>;
 };
+/**
+ * Request-envelope storage, not a daemon wire class. RAWSTRING and prior-MMR
+ * fields remain serializable locally, but cannot be converted to RPC requests.
+ */
 export declare class PartialMMRData extends SerializableEntityBase implements SerializableEntity {
     flags: BigNumber;
     data: Array<PartialMMRDataUnit>;

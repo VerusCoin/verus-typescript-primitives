@@ -5,11 +5,13 @@ var blake2b = require('blake2b')
 
 import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import { BN } from 'bn.js';
-import { VDXFObject } from "../vdxf";
 import varuint from '../utils/varuint'
 import varint from '../utils/varint'
 import bufferutils from '../utils/bufferutils'
 import { GetMMRProofIndex } from '../utils/mmr';
+import { hashData } from '../utils/hash';
+import type { EHashTypes } from './DataDescriptor';
+import { HASH_TYPE_BLAKE2B, HASH_TYPE_SHA256, HASH_TYPE_SHA256D } from '../constants/pbaas';
 
 const { BufferReader, BufferWriter } = bufferutils;
 const BRANCH_BTC = 1
@@ -136,6 +138,7 @@ export class MMRLayer<NODE_TYPE> {
     return this.vSize;
   }
 
+  // Borrowed internal node; callers must treat layer access as read-only.
   getIndex(idx: number): NODE_TYPE {
     if (idx < this.vSize) {
       return this.nodes[idx];
@@ -163,10 +166,22 @@ export class MMRLayer<NODE_TYPE> {
 export class MMRNode {
   hash: Buffer;
 
-  constructor(Hash?: Buffer) {
-    if (Hash) {
-      this.hash = Hash;
+  constructor(hash: Buffer = Buffer.alloc(32)) {
+    if (!Buffer.isBuffer(hash) || hash.length !== 32) {
+      throw new Error('MMR node hash must be exactly 32 bytes');
     }
+    this.hash = Buffer.from(hash);
+  }
+
+  /** Copy the hash while preserving subclass methods and hash configuration. */
+  clone(): this {
+    if (!Buffer.isBuffer(this.hash) || this.hash.length !== 32) {
+      throw new Error('MMR node hash must be exactly 32 bytes');
+    }
+    // Subclasses with private, bound, or mutable state must override clone.
+    return Object.assign(Object.create(Object.getPrototypeOf(this)), this, {
+      hash: Buffer.from(this.hash),
+    });
   }
 
   digest(input) {
@@ -185,7 +200,7 @@ export class MMRNode {
   }
 
   getProofHash(opposite: MMRNode): Array<Buffer> {
-    return [this.hash];
+    return [Buffer.from(this.hash)];
   }
 
   // leaf nodes that track additional data, such as block power, may need a hash added to the path
@@ -200,16 +215,14 @@ export class MMRNode {
 
 //template <typename NODE_TYPE=CDefaultMMRNode, typename LAYER_TYPE=CChunkedLayer<NODE_TYPE>, typename LAYER0_TYPE=LAYER_TYPE>
 export class MerkleMountainRange {
-  layer0: MMRLayer<MMRNode>;
-  vSize: number;
-  upperNodes: Array<MMRLayer<MMRNode>>;
-  _leafLength: number;
+  // Storage stays private so callers cannot invalidate cached views.
+  private readonly layer0: MMRLayer<MMRNode>;
+  private readonly upperNodes: Array<MMRLayer<MMRNode>>;
+  private defaultNodesOnly = true;
 
   constructor() {
     this.layer0 = new MMRLayer<MMRNode>();
-    this.vSize = 0;
     this.upperNodes = new Array<MMRLayer<MMRNode>>();
-    this._leafLength = 0;
   }
 
   getbyteLength(): number {
@@ -225,7 +238,18 @@ export class MerkleMountainRange {
   }
 
   add(leaf: MMRNode): number {
-    this.layer0.push_back(leaf);
+    const size = this.size();
+    if (!Number.isSafeInteger(size) || size < 0 || size >= INT32_MAX) {
+      throw new RangeError(
+        'MMR leaf count exceeds the supported signed 32-bit range'
+      );
+    }
+
+    // Check the limit and copy the leaf before mutating any layer.
+    const copiedLeaf = leaf.clone();
+    this.layer0.push_back(copiedLeaf);
+    this.defaultNodesOnly =
+      this.defaultNodesOnly && copiedLeaf.constructor === MMRNode;
 
     let height = 0;
     let layerSize: number;
@@ -265,24 +289,83 @@ export class MerkleMountainRange {
     return this.layer0.size() > 0 ? this.upperNodes.length + 1 : 0;
   }
 
-  getNode(Height, Index): MMRNode {
-    let layers = this.height();
-    if (Height < layers) {
-      if (Height) {
-        if (Index < this.upperNodes[Height - 1].size()) {
-          return this.upperNodes[Height - 1].getIndex(Index);
-        }
-      }
-      else {
-        if (Index < this.layer0.size()) {
-          return this.layer0.getIndex(Index);
-        }
-      }
+  /** Custom node algorithms may construct roots, but have no verified proof tag. */
+  supportsProofs(): boolean {
+    return this.defaultNodesOnly;
+  }
+
+  getNode(height: number, index: number): MMRNode {
+    if (
+      Number.isSafeInteger(height) &&
+      height >= 0 &&
+      Number.isSafeInteger(index) &&
+      index >= 0 &&
+      height < this.height()
+    ) {
+      const layer =
+        height === 0 ? this.layer0 : this.upperNodes[height - 1];
+      if (index < layer.size()) return layer.getIndex(index).clone();
     }
-    return null;
+    // The daemon returns a value-initialized node for missing coordinates.
+    return new MMRNode();
   }
 
 }
+
+/**
+ * Build a daemon-compatible MMR root from ordered, prehashed leaves.
+ * All input/output hashes are raw 32-byte uint256 wire bytes. One leaf is
+ * returned unchanged; an empty range has the all-zero root.
+ *
+ * This supports root construction only. The existing serialized MMR proofs
+ * identify Blake2b branches and do not encode the other hash modes.
+ */
+export const getMMRRoot = (
+  hashes: ReadonlyArray<Buffer>,
+  hashType: EHashTypes = HASH_TYPE_BLAKE2B.toNumber()
+): Buffer => {
+  if (
+    hashType !== HASH_TYPE_BLAKE2B.toNumber() &&
+    hashType !== HASH_TYPE_SHA256.toNumber() &&
+    hashType !== HASH_TYPE_SHA256D.toNumber()
+  ) {
+    throw new Error(`Unsupported MMR hash type ${hashType}`);
+  }
+
+  if (!Array.isArray(hashes)) {
+    throw new TypeError('MMR leaf hashes must be an array');
+  }
+
+  if (hashes.length > INT32_MAX) {
+    throw new RangeError(
+      'MMR leaf count exceeds the supported signed 32-bit range'
+    );
+  }
+
+  // Keep the selected hash algorithm on every parent, including the parents
+  // combining uneven peaks. The exported proof nodes retain their Blake2b rules.
+  class HashNode extends MMRNode {
+    createParentNode(right: MMRNode): MMRNode {
+      return new HashNode(
+        hashData(Buffer.concat([this.hash, right.hash]), hashType)
+      );
+    }
+  }
+
+  const range = new MerkleMountainRange();
+
+  for (let index = 0; index < hashes.length; index++) {
+    const leaf = hashes[index];
+
+    if (!Buffer.isBuffer(leaf) || leaf.length !== 32) {
+      throw new Error(`MMR leaf hash ${index} must be exactly 32 bytes`);
+    }
+
+    range.add(new HashNode(leaf));
+  }
+
+  return new MerkleMountainView(range).getRoot();
+};
 
 export class MMRBranch extends SerializableEntityBase {
   branchType?: number;
@@ -405,6 +488,10 @@ export class MMRBranch extends SerializableEntityBase {
     return blake2b(out.length, null, null, Buffer.from("VerusDefaultHash")).update(input).digest(out);
   }
 
+  /**
+   * Compute the daemon proof result. Zero is failure; a nonzero result is only
+   * valid when it equals an independently trusted, nonzero root.
+   */
   safeCheck(hash: Buffer) {
     const type = assertBranchType(this.branchType);
     if (type !== BRANCH_MMRBLAKE_NODE && type !== BRANCH_MMRBLAKE_POWERNODE) {
@@ -420,13 +507,18 @@ export class MMRBranch extends SerializableEntityBase {
       assertUint32(this.nSize, 'MMR branch size'),
       type === BRANCH_MMRBLAKE_POWERNODE ? 1 : 0
     );
-    let hashInProgress = hash;
+    if (index.eq(UINT64_MAX)) return Buffer.alloc(32);
+
+    let hashInProgress = Buffer.from(hash);
+    // CMMRBranch stores the uint64 result in int64 before shifting. Preserve
+    // its arithmetic right shift when the highest direction bit is set.
+    const negativeIndex = index.testn(63);
 
     for (let i = 0; i < hashes.length; i++) {
       let joined: Buffer;
       if (index.isOdd()) {
         if (hashes[i].equals(hashInProgress)) {
-          throw new Error("Value can be equal to node but never on the right");
+          return Buffer.alloc(32);
         }
         joined = Buffer.concat([hashes[i], hashInProgress]);
       } else {
@@ -434,6 +526,7 @@ export class MMRBranch extends SerializableEntityBase {
       }
       hashInProgress = this.digest(joined);
       index = index.shrn(1);
+      if (negativeIndex) index.setn(63, true);
     }
 
     return hashInProgress;
@@ -515,10 +608,11 @@ export class MMRProof extends SerializableEntityBase {
 
 //template <typename NODE_TYPE, typename LAYER_TYPE=CChunkedLayer<NODE_TYPE>, typename LAYER0_TYPE=LAYER_TYPE, typename HASHALGOWRITER=CBLAKE2bWriter>
 export class MerkleMountainView {
-  mmr: MerkleMountainRange; // the underlying mountain range, which provides the hash vectors
-  sizes: Array<number>;                    // sizes that we will use as proxies for the size of each vector at each height
-  peaks: Array<MMRNode>;      // peaks
-  peakMerkle: Array<Array<MMRNode>>;  // cached layers for the peak merkle if needed
+  private readonly mmr: MerkleMountainRange;
+  private sizes: Array<number>;
+  private peaks: Array<MMRNode>;
+  // Peak-tree layers are cached internally; public getters return owned copies.
+  private peakMerkle: Array<Array<MMRNode>>;
 
   constructor(mountainRange: MerkleMountainRange, viewSize: number = 0) {
     this.mmr = mountainRange;
@@ -542,12 +636,9 @@ export class MerkleMountainView {
     return this.sizes.length == 0 ? 0 : this.sizes[0];
   }
 
-  calcPeaks(force = false) {
-    // if we don't yet have calculated peaks, calculate them
-    if (force || (this.peaks.length == 0 && this.size() != 0)) {
-      // reset the peak merkle tree, in case this is forced
-      this.peaks = new Array<MMRNode>;
-      this.peakMerkle = new Array<Array<MMRNode>>;
+  private calcPeaks() {
+    // resize clears both caches; calculate peaks once for the current view.
+    if (this.peaks.length == 0 && this.size() != 0) {
       for (let ht = 0; ht < this.sizes.length; ht++) {
         // if we're at the top or the layer above us is smaller than 1/2 the size of this layer, rounded up, we are a peak
         if (ht == (this.sizes.length - 1) || this.sizes[ht + 1] < Math.ceil(this.sizes[ht] / 2)) {
@@ -582,7 +673,7 @@ export class MerkleMountainView {
 
   getPeaks(): Array<MMRNode> {
     this.calcPeaks();
-    return this.peaks;
+    return this.peaks.map(peak => peak.clone());
   }
 
   getRoot(): Buffer {
@@ -625,24 +716,19 @@ export class MerkleMountainView {
     else if (this.peakMerkle.length > 0) {
       rootHash = this.peakMerkle[this.peakMerkle.length - 1][0].hash;
     }
-    return rootHash;
+    return Buffer.from(rootHash);
   }
 
   getRootNode(): MMRNode {
-    // ensure merkle tree is calculated
-    this.getRoot();
-    if (this.size() > 0) {
-      return this.peakMerkle[this.peakMerkle.length - 1][0];
-    }
-    else {
-      return null;
-    }
+    // The daemon's const pointer is null whenever the computed root is zero.
+    if (this.getRoot().equals(Buffer.alloc(32))) return null;
+    return this.peakMerkle[this.peakMerkle.length - 1][0].clone();
   }
 
   // return hash of the element at "index"
   getHash(index: number): Buffer {
     if (Number.isSafeInteger(index) && index >= 0 && index < this.size()) {
-      return this.mmr.layer0.getIndex(index).hash;
+      return this.mmr.getNode(0, index).hash;
     }
     else {
       return Buffer.alloc(32);
@@ -650,7 +736,11 @@ export class MerkleMountainView {
   }
 
   getBranchType(): number {
-
+    if (!this.mmr.supportsProofs()) {
+      throw new Error(
+        'MMR proof construction for custom node classes is unsupported'
+      );
+    }
     return BRANCH_MMRBLAKE_NODE;
   }
 
@@ -660,52 +750,42 @@ export class MerkleMountainView {
     let retBranch = new MMRBranch();
 
     if (Number.isSafeInteger(pos) && pos >= 0 && pos < this.size()) {
+      // The current wire tag identifies Blake2b. Never label a custom hashing
+      // subclass with that tag; custom classes remain root-construction only.
+      retBranch.branchType = this.getBranchType();
+
       // just make sure the peakMerkle tree is calculated
       this.getRoot();
 
       // if we have leaf information, add it
-      let toAdd: Array<Buffer> = this.mmr.layer0.getIndex(pos).getLeafHash();
+      let toAdd: Array<Buffer> = this.mmr.getNode(0, pos).getLeafHash();
       if (toAdd.length > 0) {
-        retBranch.branch.splice(retBranch.branch.length, 0, toAdd[0]);
+        retBranch.branch.push(...toAdd.map(hash => Buffer.from(hash)));
       }
 
       let p = pos;
       for (let l = 0; l < this.sizes.length; l++) {
         if ((p & 1) === 1) {
           let proofHashes = this.mmr.getNode(l, p - 1).hash;
-          retBranch.branch = retBranch.branch.concat(proofHashes);
+          retBranch.branch.push(Buffer.from(proofHashes));
           p >>= 1;
         }
         else {
           // make sure there is one after us to hash with or we are a peak and should be hashed with the rest of the peaks
           if (this.sizes[l] > (p + 1)) {
             let proofHashes = this.mmr.getNode(l, p + 1).hash;
-            retBranch.branch = retBranch.branch.concat(proofHashes);
+            retBranch.branch.push(Buffer.from(proofHashes));
             p >>= 1;
           }
           else {
-            /* for (auto &oneNode : peaks)
-            {
-                printf("peaknode: ");
-                for (auto oneHash : oneNode.getProofHash(oneNode))
-                {
-                    printf("%s:", oneHash.GetHex().c_str());
-                }
-                printf("\n");
-            } */
-
-            // we are at a peak, the alternate peak to us, or the next thing we should be hashed with, if there is one, is next on our path
-            let peakHash = this.mmr.getNode(l, p).hash;
-
-            // linear search to find out which peak we are in the base of the peakMerkle
-            for (p = 0; p < this.peaks.length; p++) {
-              if (this.peaks[p].hash == peakHash) {
-                break;
+            // Locate this peak structurally. Hash identity breaks value
+            // semantics; hash equality confuses distinct, equal-valued peaks.
+            p = 0;
+            for (let height = this.sizes.length - 1; height > l; height--) {
+              if (height === this.sizes.length - 1 || this.sizes[height] % 2 !== 0) {
+                p++;
               }
             }
-
-            // p is the position in the merkle tree of peaks
-            if (p > this.peaks.length) throw new Error("peak not found");
 
             // move up to the top, which is always a peak of size 1
             let layerNum: number, layerSize: number;
@@ -718,22 +798,22 @@ export class MerkleMountainView {
                   // hash with the one before us
                   if (layerNum > 0) {
                     let proofHashes = this.peakMerkle[layerIndex][p - 1].hash;
-                    retBranch.branch = retBranch.branch.concat(proofHashes);
+                    retBranch.branch.push(Buffer.from(proofHashes));
                   }
                   else {
                     let proofHashes = this.peaks[p - 1].hash;
-                    retBranch.branch = retBranch.branch.concat(proofHashes);
+                    retBranch.branch.push(Buffer.from(proofHashes));
                   }
                 }
                 else {
                   // hash with the one in front of us
                   if (layerNum > 0) {
                     let proofHashes = this.peakMerkle[layerIndex][p + 1].hash;
-                    retBranch.branch = retBranch.branch.concat(proofHashes);
+                    retBranch.branch.push(Buffer.from(proofHashes));
                   }
                   else {
                     let proofHashes = this.peaks[p + 1].hash;
-                    retBranch.branch = retBranch.branch.concat(proofHashes);
+                    retBranch.branch.push(Buffer.from(proofHashes));
                   }
                 }
               }
@@ -745,7 +825,6 @@ export class MerkleMountainView {
           }
         }
       }
-      retBranch.branchType = this.getBranchType();
       retBranch.nSize = this.size();
       retBranch.nIndex = pos;
       retProof.setProof(retBranch);

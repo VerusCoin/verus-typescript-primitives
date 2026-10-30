@@ -16,21 +16,25 @@ class URLRef extends SerializableEntityBase_1.SerializableEntityBase {
                 throw new Error("URLRef: snake_case property names are no longer supported. Use 'dataHash' instead of 'data_hash'.");
             }
         }
-        if (data) {
-            this.version = data.version || new bn_js_1.BN(2, 10);
-            this.url = data.url || "";
-            this.flags = data.flags || new bn_js_1.BN(0);
-            this.dataHash = data.dataHash || Buffer.alloc(0);
-        }
+        this.version = (data === null || data === void 0 ? void 0 : data.version) || new bn_js_1.BN(2, 10);
+        this.url = (data === null || data === void 0 ? void 0 : data.url) || "";
+        this.flags = (data === null || data === void 0 ? void 0 : data.flags) || new bn_js_1.BN(0);
+        this.dataHash = (data === null || data === void 0 ? void 0 : data.dataHash) || Buffer.alloc(vdxf_1.HASH256_BYTE_LENGTH);
+        this.validateDataHashLength();
     }
     /** @deprecated Use dataHash instead */
     get data_hash() { return this.dataHash; }
+    validateDataHashLength() {
+        if (!Buffer.isBuffer(this.dataHash) || this.dataHash.length !== vdxf_1.HASH256_BYTE_LENGTH) {
+            throw new Error(`URLRef dataHash must be exactly ${vdxf_1.HASH256_BYTE_LENGTH} bytes`);
+        }
+    }
     getByteLength() {
+        this.validateDataHashLength();
         let byteLength = 0;
         byteLength += varint_1.default.encodingLength(this.version);
         if (this.version.gte(URLRef.HASHDATA_VERSION)) {
-            // If the version is at least HASHDATA_VERSION, we include the URL length
-            // as a varuint before the URL itself.
+            // Version 2 adds flags and an optional hash before the URL string.
             byteLength += varint_1.default.encodingLength(this.flags);
             if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
                 // If the FLAG_HAS_HASH is set, we include the data hash
@@ -47,8 +51,6 @@ class URLRef extends SerializableEntityBase_1.SerializableEntityBase {
         const bufferWriter = new BufferWriter(Buffer.alloc(this.getByteLength()));
         bufferWriter.writeVarInt(this.version);
         if (this.version.gte(URLRef.HASHDATA_VERSION)) {
-            // If the version is at least HASHDATA_VERSION, we include the URL length
-            // as a varuint before the URL itself.
             bufferWriter.writeVarInt(this.flags);
             if (this.flags.and(URLRef.FLAG_HAS_HASH).eq(URLRef.FLAG_HAS_HASH)) {
                 // If the FLAG_HAS_HASH is set, we include the data hash
@@ -60,6 +62,8 @@ class URLRef extends SerializableEntityBase_1.SerializableEntityBase {
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
+        this.flags = new bn_js_1.BN(0);
+        this.dataHash = Buffer.alloc(vdxf_1.HASH256_BYTE_LENGTH);
         this.version = reader.readVarInt();
         if (this.version.gte(URLRef.HASHDATA_VERSION)) {
             // If the version is at least HASHDATA_VERSION, we read the flags
@@ -78,18 +82,27 @@ class URLRef extends SerializableEntityBase_1.SerializableEntityBase {
             this.url.length > 0;
     }
     toJson() {
+        this.validateDataHashLength();
         return {
             version: this.version.toNumber(),
             flags: this.flags ? this.flags.toNumber() : 0,
-            datahash: this.dataHash ? this.dataHash.toString('hex') : "",
+            datahash: Buffer.from(this.dataHash).reverse().toString('hex'),
             url: this.url
         };
     }
     static fromJson(data) {
+        let dataHash = Buffer.alloc(vdxf_1.HASH256_BYTE_LENGTH);
+        if (data.datahash != null && data.datahash !== '') {
+            if (!/^[0-9a-fA-F]{64}$/.test(data.datahash)) {
+                throw new Error(`URLRef datahash must be exactly ${vdxf_1.HASH256_BYTE_LENGTH} bytes of hexadecimal data`);
+            }
+            // uint256 JSON is display order; the serialized value uses wire order.
+            dataHash = Buffer.from(data.datahash, 'hex').reverse();
+        }
         return new URLRef({
             version: new bn_js_1.BN(data.version, 10),
             flags: data.flags ? new bn_js_1.BN(data.flags, 10) : new bn_js_1.BN(0, 10),
-            dataHash: data.datahash ? Buffer.from(data.datahash, 'hex') : Buffer.alloc(0),
+            dataHash,
             url: data.url
         });
     }

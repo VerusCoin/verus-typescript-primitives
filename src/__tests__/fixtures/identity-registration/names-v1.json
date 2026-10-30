@@ -1,0 +1,5245 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "generator": "scripts/generate-identity-registration-name-fixtures.js",
+    "readOnlyRPCMethods": [
+      "getinfo",
+      "getvdxfid"
+    ],
+    "chain": "VRSCTEST",
+    "chainID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+    "daemonVersion": 2000753,
+    "protocolVersion": 170010,
+    "note": "Absolute identity names end in .@. getvdxfid can fall back to VDXF key derivation for invalid identity names; indexid/namespace results are not identity registration acceptance. VRSC vectors are explicit global names calculated by the VRSCTEST daemon, not mainnet RPC results."
+  },
+  "roots": {
+    "VRSCTEST": {
+      "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+      "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+      "qualifiedname": {
+        "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+        "name": "VRSCTEST"
+      }
+    },
+    "VRSC": {
+      "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+      "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+      "qualifiedname": {
+        "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+        "name": "VRSC"
+      }
+    }
+  },
+  "names": [
+    {
+      "label": "VRSCTEST/ascii-mixed",
+      "RPCInput": "Alice.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "hash160result": "cc140ec4f50a787bb70f3ac0508c8b83b66bef17",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Alice.VRSCTEST@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Alice.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/ascii-lower",
+      "RPCInput": "alice.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "hash160result": "cc140ec4f50a787bb70f3ac0508c8b83b66bef17",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "alice.VRSCTEST@",
+      "nameUTF8": "616c696365",
+      "requests": [
+        {
+          "name": "alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "alice@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "alice.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "alice.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "alice.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "alice.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/ascii-upper",
+      "RPCInput": "ALICE.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "hash160result": "cc140ec4f50a787bb70f3ac0508c8b83b66bef17",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "ALICE"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "ALICE.VRSCTEST@",
+      "nameUTF8": "414c494345",
+      "requests": [
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALICE@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALICE.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALICE.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALICE.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "ALICE.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/one-byte",
+      "RPCInput": "x.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iEv86Cyrxp6LR9pE65Kzda2L6gGJAnY26T",
+        "hash160result": "b9f482412ae069f137e39446c11a9e1596b6807d",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "x"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "x.VRSCTEST@",
+      "nameUTF8": "78",
+      "requests": [
+        {
+          "name": "x",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "x@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "x.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "x.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "x.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "x",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "x",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "x.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/digits",
+      "RPCInput": "0123456789.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iSanM1hwbYrRYpDb9ZCPYcAcsJ83bAdRgE",
+        "hash160result": "4063cc3a51f97f606d3690032d76517c58d679fd",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "0123456789"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "0123456789.VRSCTEST@",
+      "nameUTF8": "30313233343536373839",
+      "requests": [
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "0123456789@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "0123456789.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "0123456789.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "0123456789.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "0123456789.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/punctuation",
+      "RPCInput": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iQhn5DXG9myB4MeB9sxSd5Mw6yyicbZWiS",
+        "hash160result": "c8bdbeb6930510cce5c33728e8965bb52545dce8",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "ID-_=+[]{}();,!#$%&'`~^"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST@",
+      "nameUTF8": "49442d5f3d2b5b5d7b7d28293b2c212324252627607e5e",
+      "requests": [
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/ordinary-space",
+      "RPCInput": "Alice Smith.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iFewfZJ2jxG1QNhZNWubjECz7Sq16vh1ad",
+        "hash160result": "8a0a16b583022b678726baa7f22a8943b1e59985",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Alice Smith.VRSCTEST@",
+      "nameUTF8": "416c69636520536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/nonbreaking-space",
+      "RPCInput": "Alice Smith.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iFmGEHW8unj6sZy9NP6XQoZC6mdmvxw5xz",
+        "hash160result": "9468c16e4465e1bcac715ea26b166113c2e3cb86",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Alice Smith.VRSCTEST@",
+      "nameUTF8": "416c696365c2a0536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/thin-space",
+      "RPCInput": "Alice Smith.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iPJ1rwS21Nqav71Jv3jogCCbnKZRtLYR62",
+        "hash160result": "ed8b59c563c9adfa62f218bf0e2d0b7ed0ab65d9",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Alice Smith.VRSCTEST@",
+      "nameUTF8": "416c696365e28089536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Alice Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/ideographic-space",
+      "RPCInput": "Alice　Smith.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iKGjfXBWB33obT98Za6uhr5dX6Ecqa453R",
+        "hash160result": "30e7bb6980dc43925c4202f567e1339e493b47ad",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice　Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Alice　Smith.VRSCTEST@",
+      "nameUTF8": "416c696365e38080536d697468",
+      "requests": [
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice　Smith@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice　Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice　Smith.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice　Smith.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Alice　Smith.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/latin-composed",
+      "RPCInput": "é.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i8eRFbfXdV2dyLMp4kmz2cUiEypJ3DfDrT",
+        "hash160result": "69d9196e466a9e462cd7e1559489a01112a1b738",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "é"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "é.VRSCTEST@",
+      "nameUTF8": "c3a9",
+      "requests": [
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "é.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/latin-decomposed",
+      "RPCInput": "é.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iFytiGmuFg2v73sc11aGytUZYsfzoeTCFe",
+        "hash160result": "d134b9b8dae04be85de24b35e76e4e25d7552f89",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "é"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "é.VRSCTEST@",
+      "nameUTF8": "65cc81",
+      "requests": [
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "é.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/latin-uppercase",
+      "RPCInput": "É.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iAYeRWo9cAktyvg3LTNc2QBgeDcU5d79aF",
+        "hash160result": "3b2503d293f0269248f1f056e782ee0d2a61904d",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "É"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "É.VRSCTEST@",
+      "nameUTF8": "c389",
+      "requests": [
+        {
+          "name": "É",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "É@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "É.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "É.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "É.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "É",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "É",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "É.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/german-sharp-s",
+      "RPCInput": "ß.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i62uJyent23QyFfudaeQxs1Yd2AxYJ3t9G",
+        "hash160result": "c1961507b9e0e823ba58c341c639e81c29d30f1c",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "ß"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "ß.VRSCTEST@",
+      "nameUTF8": "c39f",
+      "requests": [
+        {
+          "name": "ß",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ß@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ß.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ß.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ß.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ß",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "ß",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "ß.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/german-capital-sharp-s",
+      "RPCInput": "ẞ.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iK8WSvKVF7ZPPZqYozBcVb97UPDs7ouB8M",
+        "hash160result": "7358c6b3035369de697c5e7e30e62333e5deb8ab",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "ẞ"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "ẞ.VRSCTEST@",
+      "nameUTF8": "e1ba9e",
+      "requests": [
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ẞ@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ẞ.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ẞ.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ẞ.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "ẞ.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/turkish-dotted-capital-i",
+      "RPCInput": "İ.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i6jB6zRLUd3v8y1mrzHGA2v6JwVkeKmtHX",
+        "hash160result": "22c89b3ee2a2b59031158d19c7c155039da5ad23",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "İ"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "İ.VRSCTEST@",
+      "nameUTF8": "c4b0",
+      "requests": [
+        {
+          "name": "İ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "İ@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "İ.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "İ.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "İ.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "İ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "İ",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "İ.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/turkish-dotless-i",
+      "RPCInput": "ı.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iLXDMbHcHJiphnJhKtTBit2D7wv9VkH8Xa",
+        "hash160result": "276d8b2b1036de7a1782f74e2718aff2c74bfcba",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "ı"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "ı.VRSCTEST@",
+      "nameUTF8": "c4b1",
+      "requests": [
+        {
+          "name": "ı",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ı@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ı.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ı.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ı.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ı",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "ı",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "ı.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/greek",
+      "RPCInput": "Δοκιμή.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iMkAzMKYarrqViNuGftBWfXn2Npg2ZSiCX",
+        "hash160result": "b67c142d2c31fc75f2fb479dfcf2d852a5da67c8",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Δοκιμή"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Δοκιμή.VRSCTEST@",
+      "nameUTF8": "ce94cebfcebaceb9cebcceae",
+      "requests": [
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Δοκιμή@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Δοκιμή.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Δοκιμή.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Δοκιμή.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Δοκιμή.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/cyrillic",
+      "RPCInput": "Привет.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iNECLezXahJ5mrwMX7VxSDwFFCU1LESuoY",
+        "hash160result": "8c9507c8896a5da251f5ea01483c7c00c5a0b4cd",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Привет"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "Привет.VRSCTEST@",
+      "nameUTF8": "d09fd180d0b8d0b2d0b5d182",
+      "requests": [
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Привет@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Привет.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Привет.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Привет.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "Привет.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/japanese",
+      "RPCInput": "東京.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iFToSx4gioprs421vjbLsEePA4DgR4Rvpo",
+        "hash160result": "0f6b8650996d42f637e9574c34fd4df04e767e83",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "東京"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "東京.VRSCTEST@",
+      "nameUTF8": "e69db1e4baac",
+      "requests": [
+        {
+          "name": "東京",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "東京@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "東京.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "東京.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "東京.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "東京",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "東京",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "東京.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/arabic",
+      "RPCInput": "هوية.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iH6p2txpCCRLDnCmyCMg6KYiJAbVSdKSVc",
+        "hash160result": "74082e26c67c6335838625e1238d9ac592777695",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "هوية"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "هوية.VRSCTEST@",
+      "nameUTF8": "d987d988d98ad8a9",
+      "requests": [
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "هوية@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "هوية.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "هوية.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "هوية.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "هوية.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/emoji",
+      "RPCInput": "🐕AnimalFarm4🐕.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iAzAaogvHU7VJRZBbFnDkwnfJT8HCbcB2e",
+        "hash160result": "58f7d0a64b033cf9bb04c34db845cf777ef46352",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "🐕AnimalFarm4🐕"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "🐕AnimalFarm4🐕.VRSCTEST@",
+      "nameUTF8": "f09f9095416e696d616c4661726d34f09f9095",
+      "requests": [
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/emoji-variation-selector",
+      "RPCInput": "⚡️spark.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iJ6U5U2gPhb3UgWmgjUhVFHwU9myjZvz5c",
+        "hash160result": "8ecd66708bde24aadb0165c8f6b4ca5c48ef5da0",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "⚡️spark"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "⚡️spark.VRSCTEST@",
+      "nameUTF8": "e29aa1efb88f737061726b",
+      "requests": [
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "⚡️spark@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "⚡️spark.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "⚡️spark.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "⚡️spark.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "⚡️spark.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/ascii-64-bytes",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iQqMwhYVZTBFJG19euxmvPx5rub9QJpGE9",
+        "hash160result": "965efe504e6f35352a10012d57f248ad96744bea",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST@",
+      "nameUTF8": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+      "requests": [
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/two-byte-64-bytes",
+      "RPCInput": "éééééééééééééééééééééééééééééééé.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU",
+        "hash160result": "2ed52ecb800bac1fd083d0eafc9f2427f438a142",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "éééééééééééééééééééééééééééééééé"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "éééééééééééééééééééééééééééééééé.VRSCTEST@",
+      "nameUTF8": "c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9",
+      "requests": [
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/four-byte-64-bytes",
+      "RPCInput": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+        "hash160result": "417af80ef76a0fccc240d3b82b467e87c1cb9d9c",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+      "nameUTF8": "f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880",
+      "requests": [
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/mixed-64-bytes",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iPawrULcyBLiSnwX8AyRPzXU6cwJoUsARB",
+        "hash160result": "de44294ee8b752ff58c0f9705de6ca1f916599dc",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+        "hash160result": "2d4eb6919e9fdb2934ff2481325e6335a29eefa6",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSCTEST"
+        }
+      },
+      "fullName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST@",
+      "nameUTF8": "616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161f09f9880",
+      "requests": [
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST.@"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parentName": "VRSCTEST"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/subidentity",
+      "RPCInput": "Alice.Example.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i4EvkuhJBieZ3DHpfH2vyeetasMhhqXus2",
+        "hash160result": "b19ce2bdbb6c70910940c04a54c61316d6c56508",
+        "qualifiedname": {
+          "parentid": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51",
+        "hash160result": "f2d26844ce2a142dff1d98d471cd3b1a3e9961cf",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Example"
+        }
+      },
+      "fullName": "Alice.Example.VRSCTEST@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice.Example",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Example@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Example.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Example.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Example.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51",
+          "parentName": "Example.VRSCTEST.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51",
+          "parentName": "Example"
+        },
+        {
+          "name": "Alice.Example.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/nested-subidentity",
+      "RPCInput": "Alice.Tokens.Example.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iSfRYKDj8YRzgMEYPY5azPyAYX5zngcBrV",
+        "hash160result": "960ad9c5ccc2a4e05e52ddcf261d5069c28c5afe",
+        "qualifiedname": {
+          "parentid": "i81GMHcLnXRxnUuF49acq3yFv1FWkm8KE2",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i81GMHcLnXRxnUuF49acq3yFv1FWkm8KE2",
+        "hash160result": "f09d8a99e525ab5f0306cb8187263907c2ceb031",
+        "qualifiedname": {
+          "parentid": "iNP4E4AzUw6MV6JE5SfVRb3JwWgvGLZm51",
+          "name": "Tokens"
+        }
+      },
+      "fullName": "Alice.Tokens.Example.VRSCTEST@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice.Tokens.Example",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Tokens.Example@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i81GMHcLnXRxnUuF49acq3yFv1FWkm8KE2",
+          "parentName": "Tokens.Example.VRSCTEST.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i81GMHcLnXRxnUuF49acq3yFv1FWkm8KE2",
+          "parentName": "Tokens.Example"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i81GMHcLnXRxnUuF49acq3yFv1FWkm8KE2"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/deep-subidentity",
+      "RPCInput": "Leaf.Four.Three.Two.One.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iSEmx7MzA75UjbZEnoqtDorhmE7N5adQin",
+        "hash160result": "886db28666bb3e491c40790815e32dfe3c30b1f9",
+        "qualifiedname": {
+          "parentid": "iQJR2PZvJXde31kPWAxve8K9kqJtp5kGK5",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iQJR2PZvJXde31kPWAxve8K9kqJtp5kGK5",
+        "hash160result": "057321e84750e4f196dceb83d72b52eae32171e4",
+        "qualifiedname": {
+          "parentid": "iGX9172nj7FJRtMqX4pv2cB8ebSTVeDV2A",
+          "name": "Four"
+        }
+      },
+      "fullName": "Leaf.Four.Three.Two.One.VRSCTEST@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.Four.Three.Two.One",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iQJR2PZvJXde31kPWAxve8K9kqJtp5kGK5",
+          "parentName": "Four.Three.Two.One.VRSCTEST.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iQJR2PZvJXde31kPWAxve8K9kqJtp5kGK5",
+          "parentName": "Four.Three.Two.One"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iQJR2PZvJXde31kPWAxve8K9kqJtp5kGK5"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/unicode-parent-uppercase",
+      "RPCInput": "ALIce.Éxample.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iSF4tJgjbYHumBBMJADwpBayt78n8eAdRk",
+        "hash160result": "0daab347a07b0dd97b18f7501d57761f1653bff9",
+        "qualifiedname": {
+          "parentid": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD",
+          "name": "ALIce"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD",
+        "hash160result": "de125d812803c1645d523ed5c091ff8ac92496ed",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Éxample"
+        }
+      },
+      "fullName": "ALIce.Éxample.VRSCTEST@",
+      "nameUTF8": "414c496365",
+      "requests": [
+        {
+          "name": "ALIce.Éxample",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.Éxample@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.Éxample.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.Éxample.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.Éxample.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD",
+          "parentName": "Éxample.VRSCTEST.@"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD",
+          "parentName": "Éxample"
+        },
+        {
+          "name": "ALIce.Éxample.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iR8mSi1434D7ZAtjxyduSfUjo6LViDBjQD"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/unicode-parent-lowercase",
+      "RPCInput": "ALIce.éxample.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iFWZAT7thqCGA2YjPD1DHoqVExrGcjhMFW",
+        "hash160result": "0a520a06d615149ce8341ecb2585335f34c90384",
+        "qualifiedname": {
+          "parentid": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR",
+          "name": "ALIce"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR",
+        "hash160result": "3d884b1c4060027e91615bca3356f5f135ef681a",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "éxample"
+        }
+      },
+      "fullName": "ALIce.éxample.VRSCTEST@",
+      "nameUTF8": "414c496365",
+      "requests": [
+        {
+          "name": "ALIce.éxample",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.éxample@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.éxample.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.éxample.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce.éxample.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR",
+          "parentName": "éxample.VRSCTEST.@"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR",
+          "parentName": "éxample"
+        },
+        {
+          "name": "ALIce.éxample.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5tAi31SS3G8Jxe55ZRUP5zSrNSxd33euR"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/parent-spaces",
+      "RPCInput": "Child Identity.Token Collection.Example Namespace.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i58faG9JujdUmqttKgxj2Tt11JUJMNJPoM",
+        "hash160result": "53085cbda6958634142ba27ebd1e90496bba2e12",
+        "qualifiedname": {
+          "parentid": "iHjUtHHwT6kbnGVjmhUQ2DmB8yPkguLjVo",
+          "name": "Child Identity"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iHjUtHHwT6kbnGVjmhUQ2DmB8yPkguLjVo",
+        "hash160result": "a38f68e1c35cc9b1b9d9356216d0d3228fdf659c",
+        "qualifiedname": {
+          "parentid": "i3xwq4UeadZvdWVk85YkKP883Fzqtn9PEa",
+          "name": "Token Collection"
+        }
+      },
+      "fullName": "Child Identity.Token Collection.Example Namespace.VRSCTEST@",
+      "nameUTF8": "4368696c64204964656e74697479",
+      "requests": [
+        {
+          "name": "Child Identity.Token Collection.Example Namespace",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Child Identity",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHjUtHHwT6kbnGVjmhUQ2DmB8yPkguLjVo",
+          "parentName": "Token Collection.Example Namespace.VRSCTEST.@"
+        },
+        {
+          "name": "Child Identity",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHjUtHHwT6kbnGVjmhUQ2DmB8yPkguLjVo",
+          "parentName": "Token Collection.Example Namespace"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHjUtHHwT6kbnGVjmhUQ2DmB8yPkguLjVo"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/parent-64-bytes",
+      "RPCInput": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST.@",
+      "result": {
+        "vdxfid": "iMEMseYZJAbAw9x3R4NoxPRgGCe4CMVo8x",
+        "hash160result": "157d91c1149276c9404df2f65b11de6b0a76c4c2",
+        "qualifiedname": {
+          "parentid": "iM2PQCt4EgZPyLG8xaVz7UheoCS7hHMcnA",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iM2PQCt4EgZPyLG8xaVz7UheoCS7hHMcnA",
+        "hash160result": "7ba14f5dd3c1ec476f30b67c9a7d95e37dbe80c0",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        }
+      },
+      "fullName": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iM2PQCt4EgZPyLG8xaVz7UheoCS7hHMcnA",
+          "parentName": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iM2PQCt4EgZPyLG8xaVz7UheoCS7hHMcnA",
+          "parentName": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iM2PQCt4EgZPyLG8xaVz7UheoCS7hHMcnA"
+        }
+      ]
+    },
+    {
+      "label": "VRSCTEST/unicode-parent-64-bytes",
+      "RPCInput": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@",
+      "result": {
+        "vdxfid": "i9f2YXwVpbycnjvWi681VUZuigNVRsEu8o",
+        "hash160result": "f5b4c598231b02b17032965f4e34bc011a37cd43",
+        "qualifiedname": {
+          "parentid": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+        "hash160result": "417af80ef76a0fccc240d3b82b467e87c1cb9d9c",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      },
+      "fullName": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+          "parentName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+          "parentName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST@",
+          "rootSystemName": "VRSCTEST",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ascii-mixed",
+      "RPCInput": "Alice.VRSC.@",
+      "result": {
+        "vdxfid": "i5ULg5wze6A1uWGiXSoLjc9KBF1Ea6ZuGd",
+        "hash160result": "237cc65dbb032174f0133e2f450f9afb5645e715",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Alice.VRSC@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Alice.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ascii-lower",
+      "RPCInput": "alice.VRSC.@",
+      "result": {
+        "vdxfid": "i5ULg5wze6A1uWGiXSoLjc9KBF1Ea6ZuGd",
+        "hash160result": "237cc65dbb032174f0133e2f450f9afb5645e715",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "alice.VRSC@",
+      "nameUTF8": "616c696365",
+      "requests": [
+        {
+          "name": "alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "alice@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "alice.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "alice.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "alice.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "alice.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ascii-upper",
+      "RPCInput": "ALICE.VRSC.@",
+      "result": {
+        "vdxfid": "i5ULg5wze6A1uWGiXSoLjc9KBF1Ea6ZuGd",
+        "hash160result": "237cc65dbb032174f0133e2f450f9afb5645e715",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "ALICE"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "ALICE.VRSC@",
+      "nameUTF8": "414c494345",
+      "requests": [
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALICE@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALICE.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALICE.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALICE.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "ALICE",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "ALICE.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/one-byte",
+      "RPCInput": "x.VRSC.@",
+      "result": {
+        "vdxfid": "iG3akKcxdFKZKpiHJmUoa2tyutmU2eu3WS",
+        "hash160result": "795c95655dad22abf70aad67731ccf30c500e289",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "x"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "x.VRSC@",
+      "nameUTF8": "78",
+      "requests": [
+        {
+          "name": "x",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "x@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "x.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "x.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "x.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "x",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "x",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "x.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/digits",
+      "RPCInput": "0123456789.VRSC.@",
+      "result": {
+        "vdxfid": "i724C8eWgVZcNvtLZfEXVHuStzyh22DzS6",
+        "hash160result": "3595dca99b317cfd9d54d3931e1aa109f0f2de26",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "0123456789"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "0123456789.VRSC@",
+      "nameUTF8": "30313233343536373839",
+      "requests": [
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "0123456789@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "0123456789.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "0123456789.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "0123456789.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "0123456789",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "0123456789.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/punctuation",
+      "RPCInput": "ID-_=+[]{}();,!#$%&'`~^.VRSC.@",
+      "result": {
+        "vdxfid": "iRRyMbXY7bYcvkWTWDqq6Wbsv57ee1Hj6L",
+        "hash160result": "43fd1020770adc094c4417b474c1a68d9828d7f0",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "ID-_=+[]{}();,!#$%&'`~^"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "ID-_=+[]{}();,!#$%&'`~^.VRSC@",
+      "nameUTF8": "49442d5f3d2b5b5d7b7d28293b2c212324252627607e5e",
+      "requests": [
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "ID-_=+[]{}();,!#$%&'`~^.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ordinary-space",
+      "RPCInput": "Alice Smith.VRSC.@",
+      "result": {
+        "vdxfid": "i9VPPsjF4VBbTU1aa6CzNoaWihehsKoiSR",
+        "hash160result": "9e2f66035ae7a0d38922b3be3c06a2c8fe75fa41",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Alice Smith.VRSC@",
+      "nameUTF8": "416c69636520536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/nonbreaking-space",
+      "RPCInput": "Alice Smith.VRSC.@",
+      "result": {
+        "vdxfid": "i9a9YoyLPeZxrFyUPF4jevseVp9MeiPZiA",
+        "hash160result": "301dd4228edca9610bd64e1026cee63e93fbe042",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Alice Smith.VRSC@",
+      "nameUTF8": "416c696365c2a0536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/thin-space",
+      "RPCInput": "Alice Smith.VRSC.@",
+      "result": {
+        "vdxfid": "i8SBjyh8maTaZ4zhhw3a5hxXARdHcEjQ8Y",
+        "hash160result": "e3597e6aa9a161337942a8115905a9fd065c6736",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Alice Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Alice Smith.VRSC@",
+      "nameUTF8": "416c696365e28089536d697468",
+      "requests": [
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Alice Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Alice Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ideographic-space",
+      "RPCInput": "Alice　Smith.VRSC.@",
+      "result": {
+        "vdxfid": "iFiMwTvgdV3vnhastxJoNdpSxsDgrAd34A",
+        "hash160result": "f8cc84d407a3785a60dc9859bb72bba183683f86",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Alice　Smith"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Alice　Smith.VRSC@",
+      "nameUTF8": "416c696365e38080536d697468",
+      "requests": [
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice　Smith@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice　Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice　Smith.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice　Smith.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Alice　Smith",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Alice　Smith.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/latin-composed",
+      "RPCInput": "é.VRSC.@",
+      "result": {
+        "vdxfid": "iEx1icNH3zdLVttrcxyTFQyPjZ8wAudoSC",
+        "hash160result": "265f58b42d993f82602ada258ade5058cc39dc7d",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "é"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "é.VRSC@",
+      "nameUTF8": "c3a9",
+      "requests": [
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "é.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/latin-decomposed",
+      "RPCInput": "é.VRSC.@",
+      "result": {
+        "vdxfid": "i8PSgbacUKaVKGhY3e4NZ7NfbgCHQrbzoA",
+        "hash160result": "881c536e11b77f348664f08bad3ab3c89495e235",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "é"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "é.VRSC@",
+      "nameUTF8": "65cc81",
+      "requests": [
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "é",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "é.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/latin-uppercase",
+      "RPCInput": "É.VRSC.@",
+      "result": {
+        "vdxfid": "i8AxzDZbnFyF7H8XYV7icaHpdCTQm2NZU6",
+        "hash160result": "c8c8986cd362e84101949b6dc400e1771f798633",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "É"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "É.VRSC@",
+      "nameUTF8": "c389",
+      "requests": [
+        {
+          "name": "É",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "É@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "É.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "É.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "É.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "É",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "É",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "É.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/german-sharp-s",
+      "RPCInput": "ß.VRSC.@",
+      "result": {
+        "vdxfid": "iEpvNoD2WRahdaJT1dMK2nn18VGoFPzh5u",
+        "hash160result": "52b2bd6eed306e8c01be1918f7c8a077e7da847c",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "ß"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "ß.VRSC@",
+      "nameUTF8": "c39f",
+      "requests": [
+        {
+          "name": "ß",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ß@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ß.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ß.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ß.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ß",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "ß",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "ß.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/german-capital-sharp-s",
+      "RPCInput": "ẞ.VRSC.@",
+      "result": {
+        "vdxfid": "iBFFo7MHU4BQs1SzJyB1b74nZdz55DDbU2",
+        "hash160result": "e3eace2782b32f5fc63d6358e67713e19c8b3e55",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "ẞ"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "ẞ.VRSC@",
+      "nameUTF8": "e1ba9e",
+      "requests": [
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ẞ@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ẞ.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ẞ.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ẞ.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "ẞ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "ẞ.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/turkish-dotted-capital-i",
+      "RPCInput": "İ.VRSC.@",
+      "result": {
+        "vdxfid": "iHpK7iLp6CWrvWg4HruicqBna6wKFVDmu8",
+        "hash160result": "9cebfdb0cd66e3d56b95402d108290ba7fcc4f9d",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "İ"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "İ.VRSC@",
+      "nameUTF8": "c4b0",
+      "requests": [
+        {
+          "name": "İ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "İ@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "İ.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "İ.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "İ.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "İ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "İ",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "İ.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/turkish-dotless-i",
+      "RPCInput": "ı.VRSC.@",
+      "result": {
+        "vdxfid": "iEQdRbKM1YS7T6b3jRB3oai8ggbgAQMSyX",
+        "hash160result": "62ff0409ecb5f6cdc004f706a24c9a8faab8ec77",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "ı"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "ı.VRSC@",
+      "nameUTF8": "c4b1",
+      "requests": [
+        {
+          "name": "ı",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ı@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ı.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ı.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ı.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ı",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "ı",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "ı.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/greek",
+      "RPCInput": "Δοκιμή.VRSC.@",
+      "result": {
+        "vdxfid": "i5EuD6ACnovrmKM6eRJRS3sWi4Gr63EHb9",
+        "hash160result": "75bf43a40ad83195b84f83070125aeea199b5c13",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Δοκιμή"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Δοκιμή.VRSC@",
+      "nameUTF8": "ce94cebfcebaceb9cebcceae",
+      "requests": [
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Δοκιμή@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Δοκιμή.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Δοκιμή.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Δοκιμή.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Δοκιμή",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Δοκιμή.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/cyrillic",
+      "RPCInput": "Привет.VRSC.@",
+      "result": {
+        "vdxfid": "i7o3TfwfFGo635WScX4T9g1BNPeBncaSGz",
+        "hash160result": "c2394645e03137accf4df9314b2545cc5f0e612f",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Привет"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "Привет.VRSC@",
+      "nameUTF8": "d09fd180d0b8d0b2d0b5d182",
+      "requests": [
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Привет@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Привет.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Привет.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Привет.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "Привет",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "Привет.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/japanese",
+      "RPCInput": "東京.VRSC.@",
+      "result": {
+        "vdxfid": "iP34B3ZKQ4KpP9kGHoN2fduuSCpQqQ46hr",
+        "hash160result": "bd5944b5fc0a20845ea60c246f3e595fa05c91d6",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "東京"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "東京.VRSC@",
+      "nameUTF8": "e69db1e4baac",
+      "requests": [
+        {
+          "name": "東京",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "東京@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "東京.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "東京.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "東京.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "東京",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "東京",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "東京.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/arabic",
+      "RPCInput": "هوية.VRSC.@",
+      "result": {
+        "vdxfid": "iCbjSgwY1F7YfqsKBqwndcQHgTsZP7xh2V",
+        "hash160result": "dd644d35b9e0213997de4a42b0d466e2d7111664",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "هوية"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "هوية.VRSC@",
+      "nameUTF8": "d987d988d98ad8a9",
+      "requests": [
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "هوية@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "هوية.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "هوية.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "هوية.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "هوية",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "هوية.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/emoji",
+      "RPCInput": "🐕AnimalFarm4🐕.VRSC.@",
+      "result": {
+        "vdxfid": "iLrWRxjBKRe3amd6vWgnUCN3fNPrLL82dx",
+        "hash160result": "d6e36e22f319864694cce10ba4c39454fc73a2be",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "🐕AnimalFarm4🐕"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "🐕AnimalFarm4🐕.VRSC@",
+      "nameUTF8": "f09f9095416e696d616c4661726d34f09f9095",
+      "requests": [
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "🐕AnimalFarm4🐕.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/emoji-variation-selector",
+      "RPCInput": "⚡️spark.VRSC.@",
+      "result": {
+        "vdxfid": "iKRsjd84ZdpAXToThoA2v3YujLL2mu2gPZ",
+        "hash160result": "3bffc955ad89939b1299775caf148bee5cb601af",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "⚡️spark"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "⚡️spark.VRSC@",
+      "nameUTF8": "e29aa1efb88f737061726b",
+      "requests": [
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "⚡️spark@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "⚡️spark.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "⚡️spark.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "⚡️spark.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "⚡️spark",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "⚡️spark.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/ascii-64-bytes",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC.@",
+      "result": {
+        "vdxfid": "iEgK4oJkD1b9sY5dqCZa7nkzHS5Ui13qvp",
+        "hash160result": "c645518c9a72b62cd76803686363d2ee440de47a",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC@",
+      "nameUTF8": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+      "requests": [
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/two-byte-64-bytes",
+      "RPCInput": "éééééééééééééééééééééééééééééééé.VRSC.@",
+      "result": {
+        "vdxfid": "iE3jKbkeJ2FdQVbRS2hvxEpc1KJUsjD4Uj",
+        "hash160result": "2bd2515eb767da04e3eb368880087c9e90e8f873",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "éééééééééééééééééééééééééééééééé"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "éééééééééééééééééééééééééééééééé.VRSC@",
+      "nameUTF8": "c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9c3a9",
+      "requests": [
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "éééééééééééééééééééééééééééééééé.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/four-byte-64-bytes",
+      "RPCInput": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.@",
+      "result": {
+        "vdxfid": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb",
+        "hash160result": "ecf9c152bdd5afa7921426e74ae26a97909a347a",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+      "nameUTF8": "f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880f09f9880",
+      "requests": [
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/mixed-64-bytes",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC.@",
+      "result": {
+        "vdxfid": "i4qhrhtzfks4A7J74kB31y629LKF1iAnaC",
+        "hash160result": "c832dea67e6b4e53a42b079e5d2d37f92290f90e",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "hash160result": "4c6c9b5a9f7f31d8ea604cb49ad3645c01b8f51a",
+        "qualifiedname": {
+          "parentid": "i3UXS5QPRQGNRDDqVnyWTnmFCTHDbzmsYk",
+          "name": "VRSC"
+        }
+      },
+      "fullName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC@",
+      "nameUTF8": "616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161f09f9880",
+      "requests": [
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC.@"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parentName": "VRSC"
+        },
+        {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/subidentity",
+      "RPCInput": "Alice.Example.VRSC.@",
+      "result": {
+        "vdxfid": "iKaPB1G8FDT2ZnzXbQUUgHVzYyLd65c7hb",
+        "hash160result": "49ca8e12999137a8f0f5f044adf5f572039d9db0",
+        "qualifiedname": {
+          "parentid": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN",
+        "hash160result": "c3267c5aef12422727a7008c35a27b1fecddfb28",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Example"
+        }
+      },
+      "fullName": "Alice.Example.VRSC@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice.Example",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Example@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Example.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Example.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Example.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN",
+          "parentName": "Example.VRSC.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN",
+          "parentName": "Example"
+        },
+        {
+          "name": "Alice.Example.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/nested-subidentity",
+      "RPCInput": "Alice.Tokens.Example.VRSC.@",
+      "result": {
+        "vdxfid": "iDGqA7Fxd8xkqLLfErw4h5MQMQXNJZaKPn",
+        "hash160result": "ab2deb15eb1be50a3925e891e8b1be36e70f7b6b",
+        "qualifiedname": {
+          "parentid": "iQ4SBYf6LHTxH7b5d7ramtrkjSUyxrdrf8",
+          "name": "Alice"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iQ4SBYf6LHTxH7b5d7ramtrkjSUyxrdrf8",
+        "hash160result": "31cb47259ca9fd054d63d5e871c038ca8446cce1",
+        "qualifiedname": {
+          "parentid": "i7DEBmVLb4YmuCn3VyMC3ydy54JXC9YnNN",
+          "name": "Tokens"
+        }
+      },
+      "fullName": "Alice.Tokens.Example.VRSC@",
+      "nameUTF8": "416c696365",
+      "requests": [
+        {
+          "name": "Alice.Tokens.Example",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Tokens.Example@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iQ4SBYf6LHTxH7b5d7ramtrkjSUyxrdrf8",
+          "parentName": "Tokens.Example.VRSC.@"
+        },
+        {
+          "name": "Alice",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iQ4SBYf6LHTxH7b5d7ramtrkjSUyxrdrf8",
+          "parentName": "Tokens.Example"
+        },
+        {
+          "name": "Alice.Tokens.Example.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iQ4SBYf6LHTxH7b5d7ramtrkjSUyxrdrf8"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/deep-subidentity",
+      "RPCInput": "Leaf.Four.Three.Two.One.VRSC.@",
+      "result": {
+        "vdxfid": "iQHu2i95QgUMRiUfeUzyyqoT7C7dNr7pue",
+        "hash160result": "48a093b301b3b427d698d51b7aea6100211858e4",
+        "qualifiedname": {
+          "parentid": "i7vgBwy4TFKNERzKwXvkV5nWV8pQ8tDVzW",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i7vgBwy4TFKNERzKwXvkV5nWV8pQ8tDVzW",
+        "hash160result": "bac52af4cbc586009cd3844794c7c801aca0d230",
+        "qualifiedname": {
+          "parentid": "iMPp9F9h19UUhV95hVuGTMsHFdbaUcq5Jh",
+          "name": "Four"
+        }
+      },
+      "fullName": "Leaf.Four.Three.Two.One.VRSC@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.Four.Three.Two.One",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i7vgBwy4TFKNERzKwXvkV5nWV8pQ8tDVzW",
+          "parentName": "Four.Three.Two.One.VRSC.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i7vgBwy4TFKNERzKwXvkV5nWV8pQ8tDVzW",
+          "parentName": "Four.Three.Two.One"
+        },
+        {
+          "name": "Leaf.Four.Three.Two.One.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i7vgBwy4TFKNERzKwXvkV5nWV8pQ8tDVzW"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/unicode-parent-uppercase",
+      "RPCInput": "ALIce.Éxample.VRSC.@",
+      "result": {
+        "vdxfid": "i3gF1ETeUCPEZXk4pMdTUTtmvdAxgbf9yN",
+        "hash160result": "3d711c29520eb6ac5b7df6b383bdab4c21473702",
+        "qualifiedname": {
+          "parentid": "iApMvV7pewxEUGpJddC8bSwev6ybXn6DKG",
+          "name": "ALIce"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iApMvV7pewxEUGpJddC8bSwev6ybXn6DKG",
+        "hash160result": "32c01c110c8c2a4ba15a4ca312820bcdd1428950",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "Éxample"
+        }
+      },
+      "fullName": "ALIce.Éxample.VRSC@",
+      "nameUTF8": "414c496365",
+      "requests": [
+        {
+          "name": "ALIce.Éxample",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.Éxample@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.Éxample.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.Éxample.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.Éxample.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iApMvV7pewxEUGpJddC8bSwev6ybXn6DKG",
+          "parentName": "Éxample.VRSC.@"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iApMvV7pewxEUGpJddC8bSwev6ybXn6DKG",
+          "parentName": "Éxample"
+        },
+        {
+          "name": "ALIce.Éxample.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iApMvV7pewxEUGpJddC8bSwev6ybXn6DKG"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/unicode-parent-lowercase",
+      "RPCInput": "ALIce.éxample.VRSC.@",
+      "result": {
+        "vdxfid": "iSCnAavqPDw3o9Hue19pEnzfQVE3EScg7T",
+        "hash160result": "4f7a411168be269e172e01e577f7abf83a8950f9",
+        "qualifiedname": {
+          "parentid": "i5b9ZF49rFMX3snTJd1ZyZv6rU36VcSNqY",
+          "name": "ALIce"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "i5b9ZF49rFMX3snTJd1ZyZv6rU36VcSNqY",
+        "hash160result": "6d2a31298f661c3560ab4a2d09d6702adae63017",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "éxample"
+        }
+      },
+      "fullName": "ALIce.éxample.VRSC@",
+      "nameUTF8": "414c496365",
+      "requests": [
+        {
+          "name": "ALIce.éxample",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.éxample@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.éxample.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.éxample.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce.éxample.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5b9ZF49rFMX3snTJd1ZyZv6rU36VcSNqY",
+          "parentName": "éxample.VRSC.@"
+        },
+        {
+          "name": "ALIce",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "i5b9ZF49rFMX3snTJd1ZyZv6rU36VcSNqY",
+          "parentName": "éxample"
+        },
+        {
+          "name": "ALIce.éxample.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "i5b9ZF49rFMX3snTJd1ZyZv6rU36VcSNqY"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/parent-spaces",
+      "RPCInput": "Child Identity.Token Collection.Example Namespace.VRSC.@",
+      "result": {
+        "vdxfid": "iE2Qnk1fBYPsbyvSDrykcCuB9UbhWXBtgG",
+        "hash160result": "ea93890f37bdcfb339390bd8a5970a1cd205b973",
+        "qualifiedname": {
+          "parentid": "iG3GXNWgdEU666YGy21SCN1sd5mEvyEtfD",
+          "name": "Child Identity"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iG3GXNWgdEU666YGy21SCN1sd5mEvyEtfD",
+        "hash160result": "73b0c167602fddcb0f48683c11e7d8cf7dcad289",
+        "qualifiedname": {
+          "parentid": "iS8gMvZagUZQ9YgkyA4FiEwPn1634dpFXA",
+          "name": "Token Collection"
+        }
+      },
+      "fullName": "Child Identity.Token Collection.Example Namespace.VRSC@",
+      "nameUTF8": "4368696c64204964656e74697479",
+      "requests": [
+        {
+          "name": "Child Identity.Token Collection.Example Namespace",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Child Identity",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iG3GXNWgdEU666YGy21SCN1sd5mEvyEtfD",
+          "parentName": "Token Collection.Example Namespace.VRSC.@"
+        },
+        {
+          "name": "Child Identity",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iG3GXNWgdEU666YGy21SCN1sd5mEvyEtfD",
+          "parentName": "Token Collection.Example Namespace"
+        },
+        {
+          "name": "Child Identity.Token Collection.Example Namespace.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iG3GXNWgdEU666YGy21SCN1sd5mEvyEtfD"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/parent-64-bytes",
+      "RPCInput": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC.@",
+      "result": {
+        "vdxfid": "iCw9g4RNRxJg1H9K8n67EEfcoYcUBnSkdo",
+        "hash160result": "4baacba8e12b96e4217e9fd49f23c0c11833c267",
+        "qualifiedname": {
+          "parentid": "iBNWdTZzmahb7kY9W4ph4yNek1f1zdFfdW",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iBNWdTZzmahb7kY9W4ph4yNek1f1zdFfdW",
+        "hash160result": "1221b601962ab18b3519a2644c689045edd69d56",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        }
+      },
+      "fullName": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iBNWdTZzmahb7kY9W4ph4yNek1f1zdFfdW",
+          "parentName": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iBNWdTZzmahb7kY9W4ph4yNek1f1zdFfdW",
+          "parentName": "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+        },
+        {
+          "name": "Leaf.PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iBNWdTZzmahb7kY9W4ph4yNek1f1zdFfdW"
+        }
+      ]
+    },
+    {
+      "label": "VRSC/unicode-parent-64-bytes",
+      "RPCInput": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.@",
+      "result": {
+        "vdxfid": "i9VNqJ9wvAdFEnF4cT3Jmc3TAmY8279aei",
+        "hash160result": "3d4647a5437e59b079059f7b58bf8bc8f5fdf941",
+        "qualifiedname": {
+          "parentid": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb",
+          "name": "Leaf"
+        }
+      },
+      "parentResult": {
+        "vdxfid": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb",
+        "hash160result": "ecf9c152bdd5afa7921426e74ae26a97909a347a",
+        "qualifiedname": {
+          "parentid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      },
+      "fullName": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+      "nameUTF8": "4c656166",
+      "requests": [
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.@",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb",
+          "parentName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC.@"
+        },
+        {
+          "name": "Leaf",
+          "rootSystemName": "VRSC",
+          "systemID": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+          "parent": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb",
+          "parentName": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        },
+        {
+          "name": "Leaf.😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSC@",
+          "rootSystemName": "VRSC",
+          "systemID": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "parent": "iEcgtTHS1o5MSUxvihRgKXCx3b2Ab8jQXb"
+        }
+      ]
+    }
+  ],
+  "rejectedNames": [
+    {
+      "label": "empty",
+      "name": "",
+      "reason": "empty leaf",
+      "RPCInput": ".VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "ascii-65-bytes",
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reason": "lookup truncates to 64 bytes; creation must reject",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "iQqMwhYVZTBFJG19euxmvPx5rub9QJpGE9",
+        "hash160result": "965efe504e6f35352a10012d57f248ad96744bea",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    {
+      "label": "two-byte-66-bytes",
+      "name": "ééééééééééééééééééééééééééééééééé",
+      "reason": "lookup truncates to 64 bytes; creation must reject",
+      "RPCInput": "ééééééééééééééééééééééééééééééééé.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "i9YqAfuFVr2i3wP3R34tssgjgNqK5KrgbU",
+        "hash160result": "2ed52ecb800bac1fd083d0eafc9f2427f438a142",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "éééééééééééééééééééééééééééééééé"
+        }
+      }
+    },
+    {
+      "label": "four-byte-68-bytes",
+      "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "reason": "lookup truncates to 64 bytes; creation must reject",
+      "RPCInput": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "iHkdsrYvVjDbu99Zqhjq5ybVr8PEgLYSxZ",
+        "hash160result": "417af80ef76a0fccc240d3b82b467e87c1cb9d9c",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      }
+    },
+    {
+      "label": "truncated-multibyte",
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé",
+      "reason": "byte truncation splits a UTF-8 character",
+      "RPCInput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "leading-space",
+      "name": " Alice",
+      "reason": "leading space",
+      "RPCInput": " Alice.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "trailing-space",
+      "name": "Alice ",
+      "reason": "trailing space",
+      "RPCInput": "Alice .VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "repeated-space",
+      "name": "Alice  Smith",
+      "reason": "repeated space",
+      "RPCInput": "Alice  Smith.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "i8LphHPgEMPA5Hgfe4XQA4yoEVm2c3Sk85",
+        "indexid": "xDAwA5pm5fbphTZhVkBZ8TWLG9n3VZGd23",
+        "hash160result": "ca0f8be8deb368605df656c209ae4e2602b66335",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice  Smith.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "leading-nonbreaking-space",
+      "name": " Alice",
+      "reason": "leading Unicode space",
+      "RPCInput": " Alice.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "iBoCbLBTU2ycMcwiZbKJP4CvwXST8qkPVS",
+        "indexid": "xGdK48cYKMCGynpkRGyTMSjTyBTU48TeS1",
+        "hash160result": "07b07457b16eafb2dec97c2377f5a0e9ad2e495b",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": " Alice.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "trailing-zero-width-joiner",
+      "name": "Alice‍",
+      "reason": "trailing Unicode space",
+      "RPCInput": "Alice‍.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "iJKX1eSMkqgrzrPtLoEhhBZk4p6wcisgRE",
+        "indexid": "xP9dUSsSc9uXd2GvCUtrfa6H6U7xXxxsBE",
+        "hash160result": "d0fadcc8646bf296ab8406dcebbd18fa9ecad5a2",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice‍.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "adjacent-unicode-spaces",
+      "name": "Alice  Smith",
+      "reason": "adjacent Unicode spaces",
+      "RPCInput": "Alice  Smith.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "iHF4G7TPf2dRERtW2JGf8yBUV4JqJfrd6F",
+        "indexid": "xN5AiutUWLr5rbmXsyvp7Mi1WiKrDYbGSj",
+        "hash160result": "331a617b884c07206253e32e9996a952edab0597",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice  Smith.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "backslash",
+      "name": "Alice\\Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice\\Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "slash",
+      "name": "Alice/Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice/Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "colon",
+      "name": "Alice:Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice:Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "asterisk",
+      "name": "Alice*Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice*Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "question-mark",
+      "name": "Alice?Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice?Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "quote",
+      "name": "Alice\"Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice\"Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "less-than",
+      "name": "Alice<Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice<Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "greater-than",
+      "name": "Alice>Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice>Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "pipe",
+      "name": "Alice|Suffix",
+      "reason": "forbidden character",
+      "RPCInput": "Alice|Suffix.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "nul",
+      "name": "Alice\u0000Suffix",
+      "reason": "creation rejects C-string hashing ambiguity",
+      "RPCInput": "Alice\u0000Suffix.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "i5f5njYtso65186mo5WHMkRme9YG6hrZE2",
+        "hash160result": "cc140ec4f50a787bb70f3ac0508c8b83b66bef17",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice\u0000Suffix"
+        }
+      }
+    },
+    {
+      "label": "tab",
+      "name": "Alice\tSuffix",
+      "reason": "creation rejects all C0 controls; getvdxfid may fall back to a VDXF key",
+      "RPCInput": "Alice\tSuffix.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "i6FhrLhSsYyVgyDrJYGD3KL5HvvVGC5t3M",
+        "indexid": "xB5pK98XisCAK96tADvN1hrcKawWAjStKk",
+        "hash160result": "89ff6af534bde32c431c602d817e23eaa8aa7b1e",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice\tSuffix.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "newline",
+      "name": "Alice\nSuffix",
+      "reason": "creation rejects all C0 controls",
+      "RPCInput": "Alice\nSuffix.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "iFrQo4RdygN72hf5fWoGnZ6ifu7EJAjqEw",
+        "indexid": "xLgXFrripzamesY7XCTRkwdFhZ8F85usjF",
+        "hash160result": "b0687fd123c70ca4b2490d1030d2b591871ec587",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice\nSuffix.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "escape",
+      "name": "Alice\u001bSuffix",
+      "reason": "creation rejects all C0 controls",
+      "RPCInput": "Alice\u001bSuffix.VRSCTEST.@",
+      "outcome": "VDXF-key",
+      "result": {
+        "vdxfid": "iMAqJZfMTiy2avcFqtSPjmF3vHRbemKC3s",
+        "indexid": "xRzwmN6SK3BhD6VHha6Yi9mawwScYTRyRc",
+        "hash160result": "fe2d1536495814d22993b37a14e1eb70beb119c2",
+        "qualifiedname": {
+          "namespace": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "Alice\u001bSuffix.VRSCTEST.@"
+        }
+      }
+    },
+    {
+      "label": "del",
+      "name": "AliceSuffix",
+      "reason": "creation policy rejects DEL even if daemon lookup accepts",
+      "RPCInput": "AliceSuffix.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "iFMUJfjqSZW5eCMrW7gQm3VhowUYzPDsBW",
+        "hash160result": "562dc5d44c042dcf7910b9723116659d9dfc4b82",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "AliceSuffix"
+        }
+      }
+    },
+    {
+      "label": "double-dot",
+      "name": "Alice..Example",
+      "reason": "empty namespace component",
+      "RPCInput": "Alice..Example.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "leading-dot",
+      "name": ".Alice",
+      "reason": "empty leaf",
+      "RPCInput": ".Alice.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "internal-at",
+      "name": "Alice@Other",
+      "reason": "unsupported chain suffix",
+      "RPCInput": "Alice@Other.VRSCTEST.@",
+      "outcome": "error",
+      "error": {
+        "code": -8,
+        "message": "Invalid ID or URI format"
+      }
+    },
+    {
+      "label": "identity-address-leaf",
+      "name": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+      "reason": "creation rejects Base58Check address names",
+      "RPCInput": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq.VRSCTEST.@",
+      "outcome": "identity",
+      "result": {
+        "vdxfid": "iJHMWMmFpq5317ReLb5VmmFhSx3QxwYL9m",
+        "hash160result": "ca0474949bcbdfad20e22c69071d033e75066da2",
+        "qualifiedname": {
+          "parentid": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq",
+          "name": "iJhCezBExJHvtyH3fGhNnt2NhU4Ztkf2yq"
+        }
+      }
+    }
+  ]
+}

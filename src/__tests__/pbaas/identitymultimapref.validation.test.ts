@@ -17,10 +17,12 @@ describe('IdentityMultimapRef flag validation', () => {
       // CIdentityMultimapRef::SerializationOp and IsValid. These are constructed
       // wire fixtures, independent of the TypeScript serializer.
       const wire = Buffer.from(
-        `01${flags.toString(16).padStart(2, '0')}${identityHash}${keyHash}0000` +
+        `01${flags
+          .toString(16)
+          .padStart(2, '0')}${identityHash}${keyHash}0000` +
           ((flags & 2) !== 0 ? dataHash : '') +
           ((flags & 4) !== 0 ? systemHash : ''),
-        'hex',
+        'hex'
       );
       const ref = new IdentityMultimapRef();
 
@@ -35,18 +37,23 @@ describe('IdentityMultimapRef flag validation', () => {
       expect(restored.toJson()).toEqual(json);
       expect(restored.toBuffer()).toEqual(wire);
       expect(ref.toBuffer()).toEqual(wire);
-    },
+    }
   );
 
-  test('rejects JSON that requires a data hash but omits it', () => {
-    expect(() => IdentityMultimapRef.fromJson({
+  test('derives JSON presence flags from supplied values', () => {
+    const reference = IdentityMultimapRef.fromJson({
       version: 1,
       flags: IdentityMultimapRef.FLAG_HAS_DATAHASH.toNumber(),
       vdxfkey: toBase58Check(Buffer.from(keyHash, 'hex'), I_ADDR_VERSION),
-      identityid: toBase58Check(Buffer.from(identityHash, 'hex'), I_ADDR_VERSION),
+      identityid: toBase58Check(
+        Buffer.from(identityHash, 'hex'),
+        I_ADDR_VERSION
+      ),
       startheight: 0,
       endheight: 0,
-    })).toThrow();
+    });
+    expect(reference.hasDataHash()).toBe(false);
+    expect(reference.toJson()).not.toHaveProperty('datahash');
   });
 
   test.each([

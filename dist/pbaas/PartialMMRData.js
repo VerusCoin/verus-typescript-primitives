@@ -9,12 +9,59 @@ const varuint_1 = require("../utils/varuint");
 const pbaas_1 = require("../constants/pbaas");
 const VdxfUniValue_1 = require("./VdxfUniValue");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
+// Recognize base64 solely to reject it with an actionable error.
+const CLI_DATA_KEYS = [
+    'filename',
+    'serializedhex',
+    'serializedbase64',
+    'message',
+    'datahash',
+    'vdxfdata',
+];
+// Buffer.from accepts truncated hex. Requests must not silently commit
+// different bytes, so these entry points require exact encodings.
+function decodeHex(value) {
+    if (typeof value !== 'string' || !/^(?:[0-9a-fA-F]{2})*$/.test(value)) {
+        throw new Error('Expected complete hexadecimal bytes');
+    }
+    return Buffer.from(value, 'hex');
+}
+// Supplied salts and hashes use the fixed uint256 width.
+// Enforce the fixed width at both CLI boundaries, including direct construction.
+function requireUint256(value, field) {
+    if (!Buffer.isBuffer(value) || value.length !== 32) {
+        throw new Error(`${field} must contain exactly 32 bytes`);
+    }
+    return value;
+}
+function encodeText(value) {
+    if (typeof value !== 'string')
+        throw new Error('Expected string data');
+    const buffer = Buffer.from(value, 'utf8');
+    if (buffer.toString('utf8') !== value) {
+        throw new Error('Text contains an unpaired UTF-16 surrogate');
+    }
+    return buffer;
+}
+function decodeText(value) {
+    const text = value.toString('utf8');
+    if (!Buffer.from(text, 'utf8').equals(value)) {
+        throw new Error('Text data must contain valid UTF-8');
+    }
+    return text;
+}
+/**
+ * Request-envelope storage, not a daemon wire class. RAWSTRING and prior-MMR
+ * fields remain serializable locally, but cannot be converted to RPC requests.
+ */
 class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
     constructor(data) {
         super();
-        this.flags = data && data.flags ? data.flags : new bn_js_1.BN("0");
+        this.allowRepeatedFromBuffer = true;
+        this.flags = data && data.flags ? data.flags : new bn_js_1.BN('0');
         this.data = data && data.data ? data.data : [];
-        this.mmrhashtype = data && data.mmrhashtype ? data.mmrhashtype : pbaas_1.DEFAULT_HASH_TYPE_MMR;
+        this.mmrhashtype =
+            data && data.mmrhashtype ? data.mmrhashtype : pbaas_1.DEFAULT_HASH_TYPE_MMR;
         if (data === null || data === void 0 ? void 0 : data.salt) {
             if (!this.containsSalt())
                 this.toggleContainsSalt();
@@ -27,10 +74,10 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
         }
     }
     containsSalt() {
-        return !!(this.flags.and(PartialMMRData.CONTAINS_SALT).toNumber());
+        return !!this.flags.and(PartialMMRData.CONTAINS_SALT).toNumber();
     }
     containsPriorMMR() {
-        return !!(this.flags.and(PartialMMRData.CONTAINS_PRIORMMR).toNumber());
+        return !!this.flags.and(PartialMMRData.CONTAINS_PRIORMMR).toNumber();
     }
     toggleContainsSalt() {
         this.flags = this.flags.xor(PartialMMRData.CONTAINS_SALT);
@@ -80,32 +127,41 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
-        this.flags = reader.readVarInt();
+        // Decode replacement state first, so a failed reuse preserves the request.
+        const flags = reader.readVarInt();
+        const entries = [];
         const numData = reader.readCompactSize();
         for (let i = 0; i < numData; i++) {
             const type = reader.readVarInt();
             let data;
+            const payload = reader.readVarSlice();
             if (type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
                 const vdxfData = new VdxfUniValue_1.VdxfUniValue();
-                const vdxfDataBuf = reader.readVarSlice();
-                vdxfData.fromBuffer(vdxfDataBuf);
+                if (vdxfData.fromBuffer(payload) !== payload.length) {
+                    throw new Error('Partial MMR VDXF payload length mismatch');
+                }
+                if (!vdxfData.toBuffer().equals(payload)) {
+                    throw new Error('Partial MMR VDXF decoding would change the payload bytes');
+                }
                 data = vdxfData;
             }
             else {
-                data = reader.readVarSlice();
+                data = payload;
             }
-            this.data.push({
-                type,
-                data
-            });
+            entries.push({ type, data });
         }
-        this.mmrhashtype = reader.readVarInt();
-        if (this.containsSalt()) {
-            this.salt = reader.readVector();
-        }
-        if (this.containsPriorMMR()) {
-            this.priormmr = reader.readVector();
-        }
+        const mmrhashtype = reader.readVarInt();
+        const salt = flags.and(PartialMMRData.CONTAINS_SALT).isZero()
+            ? undefined
+            : reader.readVector();
+        const priormmr = flags.and(PartialMMRData.CONTAINS_PRIORMMR).isZero()
+            ? undefined
+            : reader.readVector();
+        this.flags = flags;
+        this.data = entries;
+        this.mmrhashtype = mmrhashtype;
+        this.salt = salt;
+        this.priormmr = priormmr;
         return reader.offset;
     }
     toBuffer() {
@@ -135,105 +191,112 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
     toJson() {
         return {
             flags: this.flags ? this.flags.toString(10) : undefined,
-            data: this.data ? this.data.map(x => {
-                if (x.type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
-                    const uni = x.data.toJson();
-                    if (Array.isArray(uni)) {
-                        throw new Error("VDXF univalue arrays not supported in partialmmrdata vdxfdata");
+            data: this.data
+                ? this.data.map((x) => {
+                    if (x.type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
+                        const uni = x.data.toJson();
+                        if (Array.isArray(uni)) {
+                            throw new Error('VDXF univalue arrays not supported in partialmmrdata vdxfdata');
+                        }
+                        else {
+                            return {
+                                type: x.type.toString(10),
+                                data: uni,
+                            };
+                        }
                     }
                     else {
                         return {
                             type: x.type.toString(10),
-                            data: uni
+                            data: x.data.toString('hex'),
                         };
                     }
-                }
-                else {
-                    return {
-                        type: x.type.toString(10),
-                        data: x.data.toString('hex')
-                    };
-                }
-            }) : undefined,
-            salt: this.salt ? this.salt.map(x => x.toString('hex')) : undefined,
+                })
+                : undefined,
+            salt: this.salt ? this.salt.map((x) => x.toString('hex')) : undefined,
             mmrhashtype: this.mmrhashtype ? this.mmrhashtype.toString(10) : undefined,
-            priormmr: this.priormmr ? this.priormmr.map(x => x.toString('hex')) : undefined
+            priormmr: this.priormmr
+                ? this.priormmr.map((x) => x.toString('hex'))
+                : undefined,
         };
     }
     static fromJson(json) {
         return new PartialMMRData({
             flags: json.flags ? new bn_js_1.BN(json.flags, 10) : undefined,
-            data: json.data ? json.data.map(x => {
-                const type = new bn_js_1.BN(x.type, 10);
-                if (type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
-                    return {
-                        type: new bn_js_1.BN(x.type, 10),
-                        data: VdxfUniValue_1.VdxfUniValue.fromJson(x.data)
-                    };
-                }
-                else {
-                    return {
-                        type: new bn_js_1.BN(x.type, 10),
-                        data: Buffer.from(x.data, 'hex')
-                    };
-                }
-            }) : undefined,
-            salt: json.salt ? json.salt.map(x => Buffer.from(x, 'hex')) : undefined,
+            data: json.data
+                ? json.data.map((x) => {
+                    const type = new bn_js_1.BN(x.type, 10);
+                    if (type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
+                        return {
+                            type: new bn_js_1.BN(x.type, 10),
+                            data: VdxfUniValue_1.VdxfUniValue.fromJson(x.data),
+                        };
+                    }
+                    else {
+                        return {
+                            type: new bn_js_1.BN(x.type, 10),
+                            data: decodeHex(x.data),
+                        };
+                    }
+                })
+                : undefined,
+            salt: json.salt ? json.salt.map(decodeHex) : undefined,
             mmrhashtype: json.mmrhashtype ? new bn_js_1.BN(json.mmrhashtype, 10) : undefined,
-            priormmr: json.priormmr ? json.priormmr.map(x => Buffer.from(x, 'hex')) : undefined,
+            priormmr: json.priormmr ? json.priormmr.map(decodeHex) : undefined,
         });
     }
     toCLIJson() {
+        // The daemon accepts this field but never combines its hashes into the MMR.
+        if (this.containsPriorMMR() || this.priormmr !== undefined) {
+            throw new Error('Prior-MMR combination is not implemented by the daemon');
+        }
         const mmrdata = [];
         let mmrsalt;
-        let priormmr;
         let mmrhashtype;
         for (const unit of this.data) {
             if (unit.type.eq(pbaas_1.DATA_TYPE_RAWSTRINGDATA)) {
-                mmrdata.push(unit.data.toString('hex'));
+                throw new Error('RAWSTRING data is not RPC-compatible; use serializedhex');
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_FILENAME)) {
                 mmrdata.push({
-                    "filename": unit.data.toString('utf-8')
+                    filename: decodeText(unit.data),
                 });
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_MESSAGE)) {
                 mmrdata.push({
-                    "message": unit.data.toString('utf-8')
+                    message: decodeText(unit.data),
                 });
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_VDXFDATA)) {
-                const uni = unit.data.toJson();
+                const uni = unit.data.toDaemonJson();
                 if (Array.isArray(uni)) {
-                    throw new Error("VDXF univalue arrays not supported in partialmmrdata vdxfdata");
+                    throw new Error('VDXF univalue arrays not supported in partialmmrdata vdxfdata');
                 }
                 else {
                     mmrdata.push({
-                        "vdxfdata": uni
+                        vdxfdata: uni,
                     });
                 }
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_HEX)) {
                 mmrdata.push({
-                    "serializedhex": unit.data.toString('hex')
+                    serializedhex: unit.data.toString('hex'),
                 });
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_BASE64)) {
-                mmrdata.push({
-                    "serializedbase64": unit.data.toString('base64')
-                });
+                throw new Error('Daemon serializedbase64 decoding is defective; use serializedhex');
             }
             else if (unit.type.eq(pbaas_1.DATA_TYPE_DATAHASH)) {
                 mmrdata.push({
-                    "datahash": unit.data.toString('hex')
+                    datahash: requireUint256(unit.data, 'datahash').toString('hex'),
                 });
+            }
+            else {
+                throw new Error('Unsupported partial MMR item tag: ' + unit.type.toString(10));
             }
         }
         if (this.containsSalt()) {
-            mmrsalt = this.salt.map(x => x.toString('hex'));
-        }
-        if (this.containsPriorMMR()) {
-            priormmr = this.priormmr.map(x => x.toString('hex'));
+            mmrsalt = this.salt.map((value) => requireUint256(value, 'mmrsalt').toString('hex'));
         }
         if (this.mmrhashtype.eq(pbaas_1.HASH_TYPE_SHA256)) {
             mmrhashtype = pbaas_1.HASH_TYPE_SHA256_NAME;
@@ -248,12 +311,11 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
             mmrhashtype = pbaas_1.HASH_TYPE_KECCAK256_NAME;
         }
         else
-            throw new Error("Unrecognized hash type");
+            throw new Error('Unrecognized hash type');
         const ret = {
             mmrdata,
             mmrsalt,
-            priormmr,
-            mmrhashtype
+            mmrhashtype,
         };
         for (const key in ret) {
             if (ret[key] === undefined)
@@ -264,45 +326,57 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
     static fromCLIJson(json) {
         const data = [];
         let salt;
-        let priormmr;
         let mmrhashtype;
+        if ('priormmr' in json) {
+            throw new Error('Prior-MMR combination is not implemented by the daemon');
+        }
+        if (!Array.isArray(json.mmrdata)) {
+            throw new Error('mmrdata must be an array');
+        }
         for (const unit of json.mmrdata) {
             if (typeof unit === 'string') {
-                data.push({ type: pbaas_1.DATA_TYPE_RAWSTRINGDATA, data: Buffer.from(unit, 'hex') });
+                throw new Error('Bare MMR strings are not RPC-compatible; use serializedhex');
             }
-            else {
-                const unitMmrData = unit["vdxfdata"] ? unit : unit;
-                const dataKey = Object.keys(unitMmrData)[0];
-                const dataValue = unitMmrData[dataKey];
-                switch (dataKey) {
-                    case "filename":
-                        data.push({ type: pbaas_1.DATA_TYPE_FILENAME, data: Buffer.from(dataValue, 'utf-8') });
-                        break;
-                    case "message":
-                        data.push({ type: pbaas_1.DATA_TYPE_MESSAGE, data: Buffer.from(dataValue, 'utf-8') });
-                        break;
-                    case "vdxfdata":
-                        data.push({ type: pbaas_1.DATA_TYPE_VDXFDATA, data: VdxfUniValue_1.VdxfUniValue.fromJson(dataValue) });
-                        break;
-                    case "serializedhex":
-                        data.push({ type: pbaas_1.DATA_TYPE_HEX, data: Buffer.from(dataValue, 'hex') });
-                        break;
-                    case "serializedbase64":
-                        data.push({ type: pbaas_1.DATA_TYPE_BASE64, data: Buffer.from(dataValue, 'base64') });
-                        break;
-                    case "datahash":
-                        data.push({ type: pbaas_1.DATA_TYPE_DATAHASH, data: Buffer.from(dataValue, 'hex') });
-                        break;
-                    default:
-                        throw new Error("Unrecognized data key type");
-                }
+            if (!unit || typeof unit !== 'object' || Array.isArray(unit)) {
+                throw new Error('MMR data items must be objects');
+            }
+            // GetDataMessage uses fixed precedence. A single-key contract avoids
+            // choosing different data based on JavaScript object insertion order.
+            const keys = Object.keys(unit);
+            const dataKeys = CLI_DATA_KEYS.filter((key) => keys.includes(key));
+            if (dataKeys.length !== 1 || keys.length !== 1) {
+                throw new Error('MMR data items must contain exactly one supported data key');
+            }
+            const dataKey = dataKeys[0];
+            const dataValue = unit[dataKey];
+            switch (dataKey) {
+                case 'filename':
+                    data.push({ type: pbaas_1.DATA_TYPE_FILENAME, data: encodeText(dataValue) });
+                    break;
+                case 'message':
+                    data.push({ type: pbaas_1.DATA_TYPE_MESSAGE, data: encodeText(dataValue) });
+                    break;
+                case 'vdxfdata':
+                    data.push({
+                        type: pbaas_1.DATA_TYPE_VDXFDATA,
+                        data: VdxfUniValue_1.VdxfUniValue.fromDaemonJson(dataValue),
+                    });
+                    break;
+                case 'serializedhex':
+                    data.push({ type: pbaas_1.DATA_TYPE_HEX, data: decodeHex(dataValue) });
+                    break;
+                case 'serializedbase64':
+                    throw new Error('Daemon serializedbase64 decoding is defective; use serializedhex');
+                case 'datahash':
+                    data.push({
+                        type: pbaas_1.DATA_TYPE_DATAHASH,
+                        data: requireUint256(decodeHex(dataValue), 'datahash'),
+                    });
+                    break;
             }
         }
         if (json.mmrsalt) {
-            salt = json.mmrsalt.map(x => Buffer.from(x, 'hex'));
-        }
-        if (json.priormmr) {
-            priormmr = json.priormmr.map(x => Buffer.from(x, 'hex'));
+            salt = json.mmrsalt.map((value) => requireUint256(decodeHex(value), 'mmrsalt'));
         }
         if (json.mmrhashtype) {
             switch (json.mmrhashtype) {
@@ -319,17 +393,16 @@ class PartialMMRData extends SerializableEntityBase_1.SerializableEntityBase {
                     mmrhashtype = pbaas_1.HASH_TYPE_KECCAK256;
                     break;
                 default:
-                    throw new Error("Unrecognized hash type");
+                    throw new Error('Unrecognized hash type');
             }
         }
         return new PartialMMRData({
             data,
             salt,
-            priormmr,
-            mmrhashtype
+            mmrhashtype,
         });
     }
 }
 exports.PartialMMRData = PartialMMRData;
-PartialMMRData.CONTAINS_SALT = new bn_js_1.BN("1", 10);
-PartialMMRData.CONTAINS_PRIORMMR = new bn_js_1.BN("2", 10);
+PartialMMRData.CONTAINS_SALT = new bn_js_1.BN('1', 10);
+PartialMMRData.CONTAINS_PRIORMMR = new bn_js_1.BN('2', 10);

@@ -73,6 +73,7 @@ class OptCCParams extends SerializableEntityBase_1.SerializableEntityBase {
             case evals_1.EVALS.EVAL_IDENTITY_PRIMARY:
             case evals_1.EVALS.EVAL_IDENTITY_COMMITMENT:
             case evals_1.EVALS.EVAL_IDENTITY_RESERVATION:
+            case evals_1.EVALS.EVAL_IDENTITY_ADVANCEDRESERVATION:
             case evals_1.EVALS.EVAL_FINALIZE_EXPORT:
             case evals_1.EVALS.EVAL_FEE_POOL:
             case evals_1.EVALS.EVAL_NOTARY_SIGNATURE:
@@ -113,6 +114,7 @@ class OptCCParams extends SerializableEntityBase_1.SerializableEntityBase {
             case evals_1.EVALS.EVAL_IDENTITY_PRIMARY:
             case evals_1.EVALS.EVAL_IDENTITY_COMMITMENT:
             case evals_1.EVALS.EVAL_IDENTITY_RESERVATION:
+            case evals_1.EVALS.EVAL_IDENTITY_ADVANCEDRESERVATION:
             case evals_1.EVALS.EVAL_FINALIZE_EXPORT:
             case evals_1.EVALS.EVAL_FEE_POOL:
             case evals_1.EVALS.EVAL_NOTARY_SIGNATURE:

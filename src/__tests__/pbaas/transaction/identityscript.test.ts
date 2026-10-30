@@ -41,9 +41,9 @@ describe('Serializes and deserializes SmartTransactionScripts', () => {
     script.fromBuffer(Buffer.from(scriptString, 'hex'));
 
     expect(script.toBuffer().toString('hex')).toBe(scriptString);
+    // CIdentity::ToUniValue only emits contentmultimap for version 3 or later.
     expect(script.getIdentity().toJson()).toStrictEqual({
       contentmap: {},
-      contentmultimap: {},
       flags: 0,
       minimumsignatures: 1,
       name: 'a',

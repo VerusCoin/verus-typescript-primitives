@@ -95,9 +95,11 @@ export declare class Identity extends Principal implements SerializableEntity {
     protected createContentMultiMap(): ContentMultiMap;
     clearContentMultiMap(): void;
     toBuffer(): Buffer<ArrayBufferLike>;
-    fromBuffer(buffer: Buffer, offset?: number, parseVdxfObjects?: boolean): number;
-    toJson(): VerusCLIVerusIDJson;
-    getIdentityAddress(): string;
+    /** Legacy null-parent identities need an explicit root to reconstruct their omitted system ID. */
+    fromBuffer(buffer: Buffer, offset?: number, parseVdxfObjects?: boolean, rootSystemName?: string): number;
+    toJson(rootSystemName?: string): VerusCLIVerusIDJson;
+    /** Null-parent identities require a root context unless their stored system ID identifies that root. */
+    getIdentityAddress(rootSystemName?: string): string;
     isRevoked(): boolean;
     isLocked(): boolean;
     hasActiveCurrency(): boolean;

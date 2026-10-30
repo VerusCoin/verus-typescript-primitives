@@ -41,9 +41,10 @@ class MultiPartDescriptor extends SerializableEntityBase_1.SerializableEntityBas
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
-        this.index = reader.readVarInt();
-        this.total_length = reader.readVarInt();
-        this.start = reader.readVarInt();
+        // CMultiPartDescriptor stores a uint32 index and nonnegative int64 lengths.
+        this.index = reader.readVarInt(32);
+        this.total_length = reader.readVarInt(63);
+        this.start = reader.readVarInt(63);
         return reader.offset;
     }
 }
@@ -90,10 +91,11 @@ class EvidenceData extends SerializableEntityBase_1.SerializableEntityBase {
     }
     fromBuffer(buffer, offset = 0) {
         const reader = new BufferReader(buffer, offset);
-        //yes read twice
-        this.version = reader.readVarInt();
-        this.version = reader.readVarInt();
-        this.type = reader.readVarInt();
+        // CEvidenceData writes version twice. Both copies and type are uint32_t;
+        // bound the first copy too, even though the second overwrites its value.
+        this.version = reader.readVarInt(32);
+        this.version = reader.readVarInt(32);
+        this.type = reader.readVarInt(32);
         if (this.type.eq(new bn_js_1.BN(ETypes.TYPE_MULTIPART_DATA))) {
             this.md = new MultiPartDescriptor();
             reader.offset = this.md.fromBuffer(buffer, reader.offset);

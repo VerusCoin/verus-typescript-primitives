@@ -80,7 +80,11 @@ export class ContentMultiMap extends SerializableEntityBase implements Serializa
 
     writer.writeCompactSize(this.kvContent.size);
 
-    for (const [key, value] of this.kvContent.entries()) {
+    // CIdentity groups its std::multimap by sorted raw uint160 keys.
+    // Sort a copy so canonical serialization does not mutate caller data.
+    const entries = Array.from(this.kvContent.entries()).sort(([left], [right]) =>
+      fromBase58Check(left.toIAddress()).hash.compare(fromBase58Check(right.toIAddress()).hash));
+    for (const [key, value] of entries) {
       writer.writeSlice(fromBase58Check(key.toIAddress()).hash);
 
       if (Array.isArray(value)) {

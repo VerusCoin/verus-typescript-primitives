@@ -37,6 +37,7 @@ export declare class IdentityMultimapRef extends SerializableEntityBase implemen
     get data_hash(): Buffer;
     /** @deprecated Use systemId instead */
     get system_id(): string;
+    private validateDataHashLength;
     setFlags(): void;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;

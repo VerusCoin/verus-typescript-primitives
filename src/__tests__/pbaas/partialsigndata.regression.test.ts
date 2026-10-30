@@ -6,7 +6,7 @@ import { PartialMMRData } from '../../pbaas/PartialMMRData';
 import { PartialSignData } from '../../pbaas/PartialSignData';
 import { FqnVdxfUniValue } from '../../pbaas/VdxfUniValue';
 import { Hash160SerEnt } from '../../vdxf/classes/Hash160';
-import { DataByteVectorKey, DataStringKey } from '../../vdxf/vdxfdatakeys';
+import { DataByteVectorKey, DataStringKey, DataUint32Key } from '../../vdxf/vdxfdatakeys';
 
 const addressHash = Buffer.alloc(20, 0x31);
 const identityAddress = new IdentityID(addressHash).toAddress();
@@ -69,7 +69,7 @@ describe('PartialSignData typed JSON preservation', () => {
     ['namespaced FQN key', { [DataStringKey.qualifiedname.name]: 'Typed signing data' }],
     ['multiple typed values', [
       { [DataStringKey.qualifiedname.name]: 'Typed signing data' },
-      { [DataByteVectorKey.vdxfid]: '010203' },
+      { [DataUint32Key.vdxfid]: 123 },
     ]],
   ])('preserves FQN data with %s through JSON text', (_name, json) => {
     const data = FqnVdxfUniValue.fromJson(json);
@@ -82,6 +82,20 @@ describe('PartialSignData typed JSON preservation', () => {
     expect(restored.data).toBeInstanceOf(FqnVdxfUniValue);
     expect((restored.data as FqnVdxfUniValue).toJson()).toEqual(data.toJson());
     expect(restored.toBuffer()).toEqual(wire);
+  });
+
+  test('preserves byte-vector wrappers through binary without lossy JSON', () => {
+    const original = new PartialSignData({
+      dataType: DATA_TYPE_VDXFDATA,
+      data: FqnVdxfUniValue.fromJson({ [DataByteVectorKey.vdxfid]: '010203' }),
+    });
+    const wire = original.toBuffer();
+    const restored = new PartialSignData();
+
+    expect(restored.fromBuffer(wire)).toBe(wire.length);
+    expect(restored.toBuffer()).toEqual(wire);
+    expect(() => original.toJson()).toThrow('byte-vector wrapper');
+    expect(() => original.toCLIJson()).toThrow('byte-vector wrapper');
   });
 
   test.each(['deadbeef', ''])('preserves opaque FQN hex %j through JSON text', hex => {

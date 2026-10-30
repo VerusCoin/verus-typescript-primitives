@@ -232,7 +232,9 @@ describe('Encodes and decodes VdxfUniValue', () => {
     const byteVectorData = 'ae377010192abb2513f705519f62066046e63acc0111103cc8db378593b7a6d32883a3948bb1d0'
     const vectorObject = new VdxfUniValue();
     vectorObject.fromBuffer(Buffer.from(byteVectorData, 'hex'));
-    expect(vectorObject.values[0]).toStrictEqual(jsonData.find(item => item[VDXF_Data.DataByteVectorKey.vdxfid] != undefined));
+    expect(vectorObject.values[0][VDXF_Data.DataByteVectorKey.vdxfid]).toEqual(
+      Buffer.from('3cc8db378593b7a6d32883a3948bb1d0', 'hex')
+    );
     expect(vectorObject.toBuffer().toString('hex')).toBe(byteVectorData);
     expect(byteVectorData).toBe(VdxfUniValue.fromJson({ "iKMhRLX1JHQihVZx2t2pAWW2uzmK6AzwW3": "3cc8db378593b7a6d32883a3948bb1d0" }).toBuffer().toString('hex'));
 
@@ -315,9 +317,9 @@ describe('Encodes and decodes VdxfUniValue', () => {
     const urldata = 'd6ae5ac0571b22d161261b87c748f6e0aee0334d01140202001068747470733a2f2f76657275732e696f'
     const urlObject = new VdxfUniValue();
     urlObject.fromBuffer(Buffer.from(urldata, 'hex'));
-    expect(urlObject.toJson()).toStrictEqual(jsonData[14]);
+    expect(() => urlObject.toJson()).toThrow('only version 1');
     expect(urlObject.toBuffer().toString('hex')).toBe(urldata);
-    expect(urldata).toBe(VdxfUniValue.fromJson(jsonData[14]).toBuffer().toString('hex'));
+    expect(() => VdxfUniValue.fromJson(jsonData[14])).toThrow('only version 1');
 
     //Credential
     const credentialdata = '6d7401412e7ee923567eb8ac2d9f0c7102c2fb090151010101f503c4f232c4599167a02357c25b75d5ad3ff0177b226e616d65223a2254657374204163636f756e74227d1a7b2261646472657373223a22546573742041646472657373227d074c6162656c2031'
@@ -606,7 +608,7 @@ describe('FqnVdxfUniValue', () => {
   // Tests for lines 800 (DataByteKey: value as Buffer) and 839 (DataUint256Key: value as Buffer)
   describe('FqnVdxfUniValue DataByteKey and DataUint256Key serialization', () => {
     test('DataByteKey fromJson stores Buffer and toBuffer writes 1 raw byte', () => {
-      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: "ff" });
+      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: 255 });
 
       // getByteLength says 1; toBuffer writes 1 byte via writeSlice (no varuint prefix)
       expect(uni.getByteLength()).toBe(1);
@@ -614,14 +616,14 @@ describe('FqnVdxfUniValue', () => {
     });
 
     test('DataByteKey JSON round-trip preserves value', () => {
-      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: "ab" });
+      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: 171 });
       const json = uni.toJson() as any;
 
-      expect(json[VDXF_Data.DataByteKeyName]).toBe('ab');
+      expect(json[VDXF_Data.DataByteKeyName]).toBe(171);
     });
 
     test('DataByteKey toBuffer does not mutate the stored Buffer', () => {
-      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: "cd" });
+      const uni = FqnVdxfUniValue.fromJson({ [VDXF_Data.DataByteKeyName]: 205 });
       uni.toBuffer();
       // Second call must produce the same result
       expect(uni.toBuffer().toString('hex')).toBe('cd');

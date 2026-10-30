@@ -18,7 +18,7 @@ export interface PBaaSEvidenceRefJson {
   output: any;
   objectnum: number;
   subobject: number;
-  systemid: string;
+  systemid?: string;
   datahash?: string;
 }
 
@@ -89,7 +89,8 @@ export class PBaaSEvidenceRef extends SerializableEntityBase implements Serializ
 
   setFlags() {
     this.flags = this.flags.and(PBaaSEvidenceRef.FLAG_ISEVIDENCE);
-    if (this.systemId && this.systemId.length > 0) {
+    // Presence follows the uint160 value, not whether an address was supplied.
+    if (this.systemId && fromBase58Check(this.systemId).hash.some(byte => byte !== 0)) {
       this.flags = this.flags.or(PBaaSEvidenceRef.FLAG_HAS_SYSTEM);
     }
     if (this.hasNonNullDataHash()) {
@@ -176,8 +177,11 @@ export class PBaaSEvidenceRef extends SerializableEntityBase implements Serializ
       flags: this.flags.toNumber(),
       output: this.output.toJson(),
       objectnum: this.objectNum.toNumber(),
-      subobject: this.subObject.toNumber(),
-      systemid: this.systemId || ""
+      subobject: this.subObject.toNumber()
+    }
+
+    if (this.flags.and(PBaaSEvidenceRef.FLAG_HAS_SYSTEM).gt(new BN(0))) {
+      retval.systemid = this.systemId;
     }
 
     if (this.hasDataHash()) {

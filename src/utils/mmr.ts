@@ -1,113 +1,95 @@
 import { BN } from 'bn.js';
 
-export const GetMMRProofIndex = (pos: number, mmvSize: number, extraHashes: number): InstanceType<typeof BN> => {
-    if (
-      !Number.isSafeInteger(pos) ||
-      !Number.isSafeInteger(mmvSize) ||
-      !Number.isSafeInteger(extraHashes) ||
-      pos < 0 ||
-      mmvSize < 0 ||
-      extraHashes < 0
-    ) {
-      throw new RangeError("MMR proof index inputs must be non-negative safe integers");
+const INT32_MAX = 0x7fffffff;
+
+/**
+ * Return the daemon's uint64 direction index, or uint64(-1) for a missing leaf.
+ * Inputs must be exact JavaScript integers. Right directions beyond bit 63 are
+ * rejected because the corresponding C++ shift is undefined.
+ */
+export const GetMMRProofIndex = (
+  pos: number,
+  mmvSize: number,
+  extraHashes: number
+): InstanceType<typeof BN> => {
+  if (
+    !Number.isSafeInteger(pos) ||
+    !Number.isSafeInteger(mmvSize) ||
+    !Number.isSafeInteger(extraHashes) ||
+    pos < 0 ||
+    mmvSize < 0 ||
+    extraHashes < 0
+  ) {
+    throw new RangeError(
+      'MMR proof index inputs must be non-negative safe integers'
+    );
+  }
+  if (extraHashes > INT32_MAX) {
+    throw new RangeError(
+      'MMR extra hash count exceeds the signed 32-bit range'
+    );
+  }
+
+  if (mmvSize === 0 || pos >= mmvSize) {
+    return new BN('ffffffffffffffff', 16);
+  }
+  // The leftmost path has no right directions, including its peak path.
+  if (pos === 0) return new BN(0);
+
+  const index = new BN(0);
+  const layerSizes: number[] = [];
+  const peakHeights: number[] = [];
+  let bitPosition = extraHashes;
+
+  const appendDirection = (right: boolean): void => {
+    if (right) {
+      if (bitPosition >= 64) {
+        throw new RangeError(
+          'MMR proof direction exceeds the supported 64-bit index'
+        );
+      }
+      index.setn(bitPosition, true);
     }
 
-    let index = new BN(0);
-    let layerSizes = [];
-    let merkleSizes = [];
-    let peakIndexes = [];
-    let bitPos = 0;
-  
-    //start at the beginning
-    //create a simulation of a mmr based on size
-    if (!(pos > 0 && pos < mmvSize)) return new BN(0);
-  
-    //create an array of all the sizes
-    while (mmvSize) {
-      layerSizes.push(mmvSize);
-      mmvSize = Math.floor(mmvSize / 2)
+    // Zero directions need no uint64 shift, but the daemon's int counter must
+    // still fit. Arithmetic avoids looping once per additional hash.
+    bitPosition += 1 + extraHashes;
+    if (bitPosition > INT32_MAX) {
+      throw new RangeError(
+        'MMR proof bit counter exceeds the signed 32-bit range'
+      );
     }
-  
-    for (let height = 0; height < layerSizes.length; height++) {
-      if (height == layerSizes.length - 1 || layerSizes[height] % 2) {
-        peakIndexes.push(height);
-      }
-    }
-  
-    //array flip peak indexes
-    peakIndexes.reverse();
-  
-    let layerNum = 0;
-    let layerSize = peakIndexes.length;
-  
-    for (let passThrough = (layerSize % 2); layerNum == 0 || layerSize > 1; passThrough = (layerSize % 2), layerNum++) {
-      layerSize = Math.floor(layerSize / 2) + passThrough;
-      if (layerSize) {
-        merkleSizes.push(layerSize);
-      }
-    }
-    //flip the merklesizes
-  
-    for (let i = 0; i < extraHashes; i++) {
-      bitPos++;
-    }
-  
-    let p = pos;
-    for (let l = 0; l < layerSizes.length; l++) {
-      if (p % 2) {
-        index = index.or(new BN(1).shln(bitPos++));
-  
-        p = Math.floor(p / 2);
-  
-        for (let i = 0; i < extraHashes; i++) {
-          bitPos++;
-        }
-  
-      } else {
-        if (layerSizes[l] > (p + 1)) {
-  
-          bitPos++;
-          p = Math.floor(p / 2);
-          for (let i = 0; i < extraHashes; i++) {
-            bitPos++;
-          }
-        } else {
-  
-          for (p = 0; p < peakIndexes.length; p++) {
-  
-            if (peakIndexes[p] == l) {
-              break;
-            }
-          }
-  
-          for (let layerNum = -1, layerSize = peakIndexes.length; layerNum == -1 || layerSize > 1; layerSize = merkleSizes[++layerNum]) {
-  
-            if (p < (layerSize - 1) || (p % 2)) {
-  
-  
-              if (p % 2) {
-                // hash with the one before us
-                index = index.or(new BN(1).shln(bitPos++));
-  
-                for (let i = 0; i < extraHashes; i++) {
-                  bitPos++;
-                }
-              } else {
-                // hash with the one in front of us
-                bitPos++;
-  
-                for (let i = 0; i < extraHashes; i++) {
-                  bitPos++;
-                }
-              }
-            }
-            p = Math.floor(p / 2);
-          }
-  
-          break;
-        }
-  
-      }
-    }
-    return index;
+  };
+
+  while (mmvSize > 0) {
+    layerSizes.push(mmvSize);
+    mmvSize = Math.floor(mmvSize / 2);
   }
+  for (let height = layerSizes.length - 1; height >= 0; height--) {
+    if (height === layerSizes.length - 1 || layerSizes[height] % 2 !== 0) {
+      peakHeights.push(height);
+    }
+  }
+
+  let position = pos;
+  for (let height = 0; height < layerSizes.length; height++) {
+    if (position % 2 !== 0 || position + 1 < layerSizes[height]) {
+      appendDirection(position % 2 !== 0);
+      position = Math.floor(position / 2);
+      continue;
+    }
+
+    // Peaks are ordered by decreasing height. Select by location, never hash:
+    // distinct peaks may contain equal hashes.
+    position = peakHeights.indexOf(height);
+    for (let size = peakHeights.length; size > 1; size = Math.ceil(size / 2)) {
+      if (position % 2 !== 0 || position + 1 < size) {
+        appendDirection(position % 2 !== 0);
+      }
+      position = Math.floor(position / 2);
+    }
+    break;
+  }
+
+  return index;
+};

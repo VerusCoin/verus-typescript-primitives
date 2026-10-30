@@ -1,3 +1,21 @@
+import { ApiPrimitiveJson } from "../api/ApiPrimitive";
+import { IdentityDefinition } from "../identity/IdentityDefinition";
+import { CurrencyState } from "./CurrencyState";
+
+/** CTransferDestination JSON used for a currency's native-system identifier. */
+export type CurrencyNativeCurrencyID = {
+  type: number;
+  address?: string | { contract: string; tokenid: string };
+  identity?: IdentityDefinition;
+  currency?: RawCurrencyDefinition;
+  serializeddata?: string;
+  nestedtransfer?: ApiPrimitiveJson;
+  undefined?: string;
+  gateway?: string;
+  fees?: number;
+  auxdests?: CurrencyNativeCurrencyID[];
+};
+
 /** Fields emitted by CCurrencyDefinition::ToUniValue, without RPC metadata. */
 export type RawCurrencyDefinition = {
   version: number;
@@ -6,8 +24,9 @@ export type RawCurrencyDefinition = {
   currencyid: string;
   parent?: string;
   systemid: string;
-  maxpreconversion?: Array<number>,
-  minpreconversion?: Array<number>,
+  nativecurrencyid?: CurrencyNativeCurrencyID;
+  maxpreconversion?: Array<number>;
+  minpreconversion?: Array<number>;
   notarizationprotocol: number;
   proofprotocol: number;
   launchsystemid?: string;
@@ -18,7 +37,30 @@ export type RawCurrencyDefinition = {
   conversions?: Array<number>;
   initialsupply?: number;
   prelaunchcarveout?: number;
+  prelaunchdiscount?: number;
   initialcontributions?: Array<number>;
+  preallocations?: Array<{ [identityID: string]: number }>;
+  gateway?: string;
+  gatewayconverterid?: string;
+  gatewayconvertername?: string;
+  gatewayconverterissuance?: number;
+  notaries?: string[];
+  minnotariesconfirm?: number;
+  currencyregistrationfee?: number;
+  pbaassystemregistrationfee?: number;
+  currencyimportfee?: number;
+  transactionimportfee?: number;
+  transactionexportfee?: number;
+  initialtarget?: string;
+  blocktime?: number;
+  powaveragingwindow?: number;
+  notarizationperiod?: number;
+  eras?: Array<{
+    reward: number;
+    decay: number;
+    halving: number;
+    eraend: number;
+  }>;
   idregistrationfees: number;
   idreferrallevels: number;
   idimportfees: number;
@@ -28,69 +70,12 @@ export type RawCurrencyDefinition = {
 export type CurrencyDefinition = RawCurrencyDefinition & {
   currencyidhex: string;
   fullyqualifiedname: string;
+  magicnumber?: number;
   currencynames?: { [key: string]: string };
   definitiontxid?: string;
   definitiontxout?: number;
   bestheight: number;
   lastconfirmedheight?: number;
-  bestcurrencystate?: {
-    flags: number;
-    version: number;
-    currencyid: string;
-    reservecurrencies: Array<{
-      currencyid: string;
-      weight: number;
-      reserves: number;
-      priceinreserve: number;
-    }>;
-    initialsupply: number;
-    emitted: number;
-    supply: number;
-    currencies: {
-      [key: string]: {
-        reservein: number;
-        primarycurrencyin: number;
-        reserveout: number;
-        lastconversionprice: number;
-        viaconversionprice: number;
-        fees: number;
-        conversionfees: number;
-        priorweights: number;
-      };
-    };
-    primarycurrencyfees: number;
-    primarycurrencyconversionfees: number;
-    primarycurrencyout: number;
-    preconvertedout: number;
-  };
-  lastconfirmedcurrencystate?: {
-    flags: number;
-    version: number;
-    currencyid: string;
-    reservecurrencies: Array<{
-      currencyid: string;
-      weight: number;
-      reserves: number;
-      priceinreserve: number;
-    }>;
-    initialsupply: number;
-    emitted: number;
-    supply: number;
-    currencies: {
-      [key: string]: {
-        reservein: number;
-        primarycurrencyin: number;
-        reserveout: number;
-        lastconversionprice: number;
-        viaconversionprice: number;
-        fees: number;
-        conversionfees: number;
-        priorweights: number;
-      };
-    };
-    primarycurrencyfees: number;
-    primarycurrencyconversionfees: number;
-    primarycurrencyout: number;
-    preconvertedout: number;
-  };
-}
+  bestcurrencystate?: CurrencyState;
+  lastconfirmedcurrencystate?: CurrencyState;
+};

@@ -4,7 +4,7 @@ import { SerializableEntity } from '../utils/types/SerializableEntity';
 import { IdentityID } from './IdentityID';
 import { KeyID } from './KeyID';
 import { SaplingPaymentAddress } from './SaplingPaymentAddress';
-import { PartialMMRData, PartialMMRDataJson, SingleKeyMMRData } from './PartialMMRData';
+import { PartialMMRData, PartialMMRDataJson, PartialMMRDataCLIJson } from './PartialMMRData';
 import { AllowedHashes } from '../constants/pbaas';
 import { FqnVdxfUniValue, VdxfUniValueJson, VdxfUniValueJsonArray } from './VdxfUniValue';
 export type PartialSignDataInitData = {
@@ -46,9 +46,7 @@ type SignDataKeys = {
     messagebase64?: string;
     datahash?: string;
     vdxfdata?: VdxfUniValueJson;
-    mmrdata?: Array<SingleKeyMMRData | string | {
-        vdxfdata: VdxfUniValueJson;
-    }>;
+    mmrdata?: PartialMMRDataCLIJson['mmrdata'];
 };
 type BaseFields = {
     address?: string;
@@ -66,7 +64,6 @@ type BaseFields = {
 type MMRFields = {
     mmrsalt?: Array<string>;
     mmrhashtype?: AllowedHashes;
-    priormmr?: Array<string>;
 };
 export type PartialSignDataCLIJson = ((AtLeastOne<Omit<SignDataKeys, 'mmrdata'>> & BaseFields) | (AtLeastOne<SignDataKeys> & MMRFields & BaseFields));
 export declare class PartialSignData extends SerializableEntityBase implements SerializableEntity {
