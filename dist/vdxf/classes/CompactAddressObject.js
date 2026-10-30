@@ -199,7 +199,7 @@ class CompactXAddressObject extends CompactAddressObject {
             type: CompactAddressObject.TYPE_X_ADDRESS
         });
     }
-    static fromDataKey(xaddr, rootSystemName, nameSpace) {
+    static fromDataKey(xaddr, rootSystemName = "VRSC", nameSpace) {
         return new CompactXAddressObject({
             address: xaddr,
             nameSpace: nameSpace,
@@ -210,9 +210,28 @@ class CompactXAddressObject extends CompactAddressObject {
     toAddress() {
         return this.toXAddress();
     }
+    isValid() {
+        try {
+            if (this.version.lt(CompactAddressObject.FIRST_VERSION) ||
+                this.version.gt(CompactAddressObject.LAST_VERSION) ||
+                (!this.isFQN() && !this.isXaddress()) ||
+                typeof this.address !== "string" || this.address.trim().length === 0)
+                return false;
+            (0, address_1.decodeDestination)(this.toAddress(), vdxf_1.X_ADDR_VERSION);
+            return true;
+        }
+        catch (_a) {
+            return false;
+        }
+    }
     static fromCompactAddressObjectJson(json) {
-        const inst = CompactAddressObject.fromJson(json);
-        return inst;
+        return new CompactXAddressObject({
+            version: new bn_js_1.BN(json.version),
+            type: new bn_js_1.BN(json.type),
+            address: json.address,
+            rootSystemName: json.rootsystemname,
+            nameSpace: json.namespace
+        });
     }
 }
 exports.CompactXAddressObject = CompactXAddressObject;

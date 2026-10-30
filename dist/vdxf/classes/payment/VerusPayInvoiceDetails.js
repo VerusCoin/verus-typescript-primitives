@@ -138,7 +138,8 @@ class VerusPayInvoiceDetails extends SerializableEntityBase_1.SerializableEntity
         return this.isGTEV4() && !!(this.flags.and(exports.VERUSPAY_IS_BURN_CHANGE_PRICE).toNumber());
     }
     isValid() {
-        return (!!(this.flags.and(exports.VERUSPAY_VALID).toNumber()));
+        return (!!(this.flags.and(exports.VERUSPAY_VALID).toNumber()) &&
+            (!this.isTagged() || (this.tag != null && this.tag.isValid())));
     }
     isGTEV4() {
         return (this.verusPayVersion.gte(veruspay_1.VERUSPAY_VERSION_4));
@@ -163,7 +164,13 @@ class VerusPayInvoiceDetails extends SerializableEntityBase_1.SerializableEntity
             return reader.readVarInt();
         }
     }
+    validateTag() {
+        if (this.isTagged() && (this.tag == null || !this.tag.isValid())) {
+            throw new Error("Invalid VerusPay invoice tag");
+        }
+    }
     getByteLength() {
+        this.validateTag();
         let length = 0;
         length += this.getVarUIntEncodingLength(this.flags);
         if (!this.acceptsAnyAmount()) {
@@ -241,11 +248,12 @@ class VerusPayInvoiceDetails extends SerializableEntityBase_1.SerializableEntity
         if (this.isTagged()) {
             this.tag = new CompactAddressObject_1.CompactXAddressObject({ type: CompactAddressObject_1.CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName: _rootSystemName });
             reader.offset = this.tag.fromBuffer(reader.buffer, reader.offset);
+            this.validateTag();
         }
         return reader.offset;
     }
     static fromJson(data, verusPayVersion = veruspay_1.VERUSPAY_VERSION_CURRENT) {
-        return new VerusPayInvoiceDetails({
+        const details = new VerusPayInvoiceDetails({
             flags: new bn_js_1.BN(data.flags),
             amount: data.amount != null ? new bn_js_1.BN(data.amount) : undefined,
             destination: data.destination != null ? typeof data.destination === 'string' ? pbaas_1.SaplingPaymentAddress.fromAddressString(data.destination) : TransferDestination_1.TransferDestination.fromJson(data.destination) : undefined,
@@ -253,10 +261,13 @@ class VerusPayInvoiceDetails extends SerializableEntityBase_1.SerializableEntity
             expiryheight: data.expiryheight != null ? new bn_js_1.BN(data.expiryheight) : undefined,
             maxestimatedslippage: data.maxestimatedslippage != null ? new bn_js_1.BN(data.maxestimatedslippage) : undefined,
             acceptedsystems: data.acceptedsystems,
-            tag: data.tag ? CompactAddressObject_1.CompactAddressObject.fromJson(data.tag) : undefined
+            tag: data.tag ? CompactAddressObject_1.CompactXAddressObject.fromCompactAddressObjectJson(data.tag) : undefined
         }, verusPayVersion);
+        details.validateTag();
+        return details;
     }
     toJson() {
+        this.validateTag();
         return {
             flags: this.flags.toString(),
             amount: this.acceptsAnyAmount() ? undefined : this.amount.toString(),

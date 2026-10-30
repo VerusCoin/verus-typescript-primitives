@@ -14,7 +14,7 @@ import { BigNumber } from '../../utils/types/BigNumber';
 const { BufferReader, BufferWriter } = bufferutils;
 import { SerializableEntity } from '../../utils/types/SerializableEntity';
 import varuint from '../../utils/varuint';
-import { fromBase58Check, getDataKey, toBase58Check, toIAddress, toXAddress } from "../../utils/address";
+import { decodeDestination, fromBase58Check, getDataKey, toBase58Check, toIAddress, toXAddress } from "../../utils/address";
 import { HASH160_BYTE_LENGTH, I_ADDR_VERSION, X_ADDR_VERSION } from '../../constants/vdxf';
 import { DEFAULT_VERUS_CHAINID } from '../../constants/pbaas';
 
@@ -252,7 +252,7 @@ export class CompactXAddressObject extends CompactAddressObject<CompactAddressXV
     })
   }
 
-  static fromDataKey(xaddr: string, rootSystemName: "VRSC", nameSpace?: string): CompactXAddressObject {
+  static fromDataKey(xaddr: string, rootSystemName: string = "VRSC", nameSpace?: string): CompactXAddressObject {
     return new CompactXAddressObject({
       address: xaddr,
       nameSpace: nameSpace,
@@ -265,10 +265,30 @@ export class CompactXAddressObject extends CompactAddressObject<CompactAddressXV
     return this.toXAddress();
   }
 
-  static fromCompactAddressObjectJson(json: any): CompactXAddressObject {
-    const inst = CompactAddressObject.fromJson(json);
+  isValid(): boolean {
+    try {
+      if (
+        this.version.lt(CompactAddressObject.FIRST_VERSION) ||
+        this.version.gt(CompactAddressObject.LAST_VERSION) ||
+        (!this.isFQN() && !this.isXaddress()) ||
+        typeof this.address !== "string" || this.address.trim().length === 0
+      ) return false;
 
-    return inst as CompactXAddressObject;
+      decodeDestination(this.toAddress(), X_ADDR_VERSION);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  static fromCompactAddressObjectJson(json: CompactAddressObjectJson): CompactXAddressObject {
+    return new CompactXAddressObject({
+      version: new BN(json.version),
+      type: new BN(json.type),
+      address: json.address,
+      rootSystemName: json.rootsystemname,
+      nameSpace: json.namespace
+    });
   }
 };
 

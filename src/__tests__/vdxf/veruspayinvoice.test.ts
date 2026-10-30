@@ -321,7 +321,8 @@ describe('Serializes and deserializes VerusPay invoice', () => {
       acceptsConversion: true,
       expires: true,
       acceptsNonVerusSystems: true,
-      destinationIsSaplingPaymentAddress: true
+      destinationIsSaplingPaymentAddress: true,
+      isTagged: true
     })
 
     const inv = new VerusPayInvoice({
@@ -342,6 +343,8 @@ describe('Serializes and deserializes VerusPay invoice', () => {
     _inv.fromBuffer(invbuf)
 
     expect(_inv.toBuffer().toString('hex')).toBe(invbuf.toString('hex'));
+    expect(_inv.details.isTagged()).toBe(true);
+    expect(_inv.details.tag.toAddress()).toBe(details.tag.toAddress());
 
     const invuri = inv.toWalletDeeplinkUri()
     const _invfromuri = VerusPayInvoice.fromWalletDeeplinkUri(invuri)
@@ -356,6 +359,7 @@ describe('Serializes and deserializes VerusPay invoice', () => {
     const invFromJson = VerusPayInvoice.fromJson(inv.toJson());
 
     expect(invFromJson.toBuffer().toString('hex')).toBe(inv.toBuffer().toString('hex'));
+    expect(invFromJson.details.tag.toAddress()).toBe(details.tag.toAddress());
   }
 
   const testNoSigAcceptsAnyAmountAcceptsAnyDestPreconvert = async (version: BigNumber) => {

@@ -182,7 +182,8 @@ export class VerusPayInvoiceDetails extends SerializableEntityBase implements Se
 
   isValid () {
     return (
-      !!(this.flags.and(VERUSPAY_VALID).toNumber())
+      !!(this.flags.and(VERUSPAY_VALID).toNumber()) &&
+      (!this.isTagged() || (this.tag != null && this.tag.isValid()))
     )
   }
 
@@ -211,7 +212,14 @@ export class VerusPayInvoiceDetails extends SerializableEntityBase implements Se
     }
   }
 
+  private validateTag(): void {
+    if (this.isTagged() && (this.tag == null || !this.tag.isValid())) {
+      throw new Error("Invalid VerusPay invoice tag");
+    }
+  }
+
   getByteLength(): number {
+    this.validateTag();
     let length = 0;
 
     length += this.getVarUIntEncodingLength(this.flags);
@@ -317,13 +325,14 @@ export class VerusPayInvoiceDetails extends SerializableEntityBase implements Se
       this.tag = new CompactXAddressObject({ type: CompactAddressObject.TYPE_X_ADDRESS, address: '', rootSystemName: _rootSystemName });
 
       reader.offset = this.tag.fromBuffer(reader.buffer, reader.offset);
+      this.validateTag();
     }
 
     return reader.offset;
   }
 
   static fromJson(data: VerusPayInvoiceDetailsJson, verusPayVersion: BigNumber = VERUSPAY_VERSION_CURRENT): VerusPayInvoiceDetails {
-    return new VerusPayInvoiceDetails({
+    const details = new VerusPayInvoiceDetails({
       flags: new BN(data.flags),
       amount: data.amount != null ? new BN(data.amount) : undefined,
       destination: data.destination != null ? typeof data.destination === 'string' ? SaplingPaymentAddress.fromAddressString(data.destination) : TransferDestination.fromJson(data.destination) : undefined,
@@ -331,11 +340,14 @@ export class VerusPayInvoiceDetails extends SerializableEntityBase implements Se
       expiryheight: data.expiryheight != null ? new BN(data.expiryheight) : undefined,
       maxestimatedslippage: data.maxestimatedslippage != null ? new BN(data.maxestimatedslippage) : undefined,
       acceptedsystems: data.acceptedsystems,
-      tag: data.tag ? CompactAddressObject.fromJson(data.tag) as CompactXAddressObject : undefined
+      tag: data.tag ? CompactXAddressObject.fromCompactAddressObjectJson(data.tag) : undefined
     }, verusPayVersion)
+    details.validateTag();
+    return details;
   }
 
   toJson(): VerusPayInvoiceDetailsJson {
+    this.validateTag();
     return {
       flags: this.flags.toString(),
       amount: this.acceptsAnyAmount() ? undefined : this.amount.toString(),

@@ -80,6 +80,7 @@ export declare class VerusPayInvoiceDetails extends SerializableEntityBase imple
     private getVarUIntEncodingLength;
     private writeVarUInt;
     private readVarUInt;
+    private validateTag;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number, verusPayVersion?: BigNumber, rootSystemName?: string): number;
