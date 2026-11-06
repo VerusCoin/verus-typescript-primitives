@@ -1,20 +1,29 @@
 
 /**
- * AppEncryptionRequestDetails - Class for handling application requests for encrypted derived seeds
- * 
- * This class is used when an application is requesting an encrypted derived seed from the user's master seed,
- * using specific parameters passed by the application. The request includes:
- * - App or delegated ID making the request (mandatory)
- * - A target encryption key (zaddress format) for encrypting the reply
- * - Derivation number for seed generation
- * - Optional derivation ID (defaults to Z-address from ID signing if not present)
- * - Optional request ID for tracking
- * 
- * The user's wallet can use these parameters to derive a specific seed from their master seed
- * and encrypt it using the provided encryption key, ensuring the application receives only
- * the specific derived seed it needs without exposing the master seed.
- * 
- * The FLAG_RETURN_ESK flag can be set to signal that the Extended Spending Key should be returned.
+ * Requests a derived Sapling address and channel keys for encrypted communication
+ * and data sharing between a user and an app. Identity uploads are one use of
+ * the channel, not a requirement.
+ *
+ * The enclosing GenericRequest must have a verified signature. Its optional
+ * appOrDelegatorID defines the app scope; otherwise the signer defines the scope.
+ * An explicit appOrDelegatorID requires a signer whose signing authority the user
+ * fully controls, or an approved delegate once the delegate handshake is supported.
+ * Delegate authorization is currently unsupported and must be rejected by clients.
+ * Serialization and isValid() do not establish signature validity or authorization.
+ *
+ * First derive with fromId = the user's ID, toId = the authorized app scope, and
+ * the wallet's key material. Without derivationID, return this address and keys.
+ * With derivationID, derive again using the first result's extended spending key,
+ * fromId = the same user's ID, and toId = derivationID. Return only the second
+ * address and keys. derivationID can be any ID and never replaces the app scope
+ * in the first derivation. Clients perform these operations with zGetEncryptionAddress.
+ * The first call uses derivationNumber as its encryption index; the second uses
+ * secondaryDerivationNumber, which defaults to zero when omitted.
+ *
+ * encryptResponseToAddress optionally protects the returned channel details;
+ * it is distinct from the derived channel address. FLAG_RETURN_ESK requests the
+ * final extended spending key, not an intermediate scope key. An intermediate
+ * spending key is required internally for double derivation even without this flag.
  */
 
 import { BigNumber } from '../../../utils/types/BigNumber';
@@ -33,7 +42,10 @@ export interface AppEncryptionRequestDetailsInterface {
   flags: BigNumber;
   encryptResponseToAddress?: SaplingPaymentAddress;
   derivationNumber: BigNumber;
+  /** Optional second-stage target within the authorized app scope. */
   derivationID?: CompactIAddressObject;
+  /** Second-stage encryption index, defaulting to zero. Used only with derivationID. */
+  secondaryDerivationNumber?: BigNumber;
   requestID?: CompactIAddressObject;
 }
 
@@ -43,6 +55,7 @@ export interface AppEncryptionRequestDetailsJson {
   encryptresponsetoaddress?: string;
   derivationnumber: number;
   derivationid?: CompactAddressObjectJson;
+  secondaryderivationnumber?: number;
   requestid?: CompactAddressObjectJson;
 }
 
@@ -61,7 +74,8 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
   flags: BigNumber;
   encryptResponseToAddress?: SaplingPaymentAddress;                  // zaddress reply is encrypted to
   derivationNumber: BigNumber;
-  derivationID?: CompactIAddressObject;      // Defaults to choosing the Z-address from the ID signing if not present
+  derivationID?: CompactIAddressObject;      // Optional second derivation within the app scope
+  secondaryDerivationNumber: BigNumber;     // Second-stage encryption index; defaults to zero
   requestID?: CompactIAddressObject;                         // Unique identifier for the request
 
   constructor(data?: AppEncryptionRequestDetailsInterface) {
@@ -71,6 +85,7 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
     this.encryptResponseToAddress = data?.encryptResponseToAddress || null;
     this.derivationNumber = data?.derivationNumber || new BN(0);
     this.derivationID = data?.derivationID;
+    this.secondaryDerivationNumber = data?.secondaryDerivationNumber ?? new BN(0);
     this.requestID = data?.requestID;
 
     this.setFlags();
@@ -102,6 +117,7 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
     let valid = true;
     
     valid &&= this.derivationNumber != null && this.derivationNumber.gte(new BN(0));
+    valid &&= this.secondaryDerivationNumber != null && this.secondaryDerivationNumber.gte(new BN(0));
 
     return valid;
   }
@@ -135,6 +151,7 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
 
     if (this.hasDerivationID()) {
       length += this.derivationID.getByteLength();
+      length += varint.encodingLength(this.secondaryDerivationNumber);
     }
 
     if (this.hasRequestID()) {
@@ -159,6 +176,7 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
 
     if (this.hasDerivationID()) {
       writer.writeSlice(this.derivationID.toBuffer());
+      writer.writeVarInt(this.secondaryDerivationNumber);
     }
 
     if (this.hasRequestID()) {
@@ -188,6 +206,10 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
       const derivationIDObj = new CompactIAddressObject({ type: CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
       reader.offset = derivationIDObj.fromBuffer(reader.buffer, reader.offset);
       this.derivationID = derivationIDObj;
+      this.secondaryDerivationNumber = reader.readVarInt();
+    } else {
+      this.derivationID = undefined;
+      this.secondaryDerivationNumber = new BN(0);
     }
 
     if (this.hasRequestID()) {
@@ -205,7 +227,8 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
       flags: this.flags.toNumber(),
       encryptresponsetoaddress: this.hasEncryptResponseToAddress() ? this.encryptResponseToAddress.toAddressString() : undefined,
       derivationnumber: this.derivationNumber.toNumber(),
-      derivationid: this.derivationID?.toJson(),
+      derivationid: this.hasDerivationID() ? this.derivationID.toJson() : undefined,
+      secondaryderivationnumber: this.hasDerivationID() ? this.secondaryDerivationNumber.toNumber() : undefined,
       requestid: this.requestID?.toJson()
     };
   }
@@ -223,6 +246,7 @@ export class AppEncryptionRequestDetails extends SerializableEntityBase implemen
     
     if(instance.hasDerivationID()) {
       instance.derivationID = CompactIAddressObject.fromCompactAddressObjectJson(json?.derivationid);
+      instance.secondaryDerivationNumber = new BN(json.secondaryderivationnumber ?? 0);
     }
     
     if(instance.hasRequestID()) {

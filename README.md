@@ -40,6 +40,60 @@ Buffer parsing is single-use per instance: `fromBuffer`, `fromDataBuffer`, and `
 
 Subclasses inherit `SerializableEntityBase` and may set `this.allowRepeatedFromBuffer = true` in their constructor if they handle repeated parsing safely. Implement parser overrides as prototype methods; assigning a replacement parser function on an instance replaces its guard.
 
+### App encryption requests
+
+`AppEncryptionRequestDetails` requests a Sapling address and keys for an encrypted
+channel between a user and an app. The channel can be used for identity uploads
+or other communication and data sharing. This experimental request has one API:
+`appOrDelegatorID` on the enclosing `GenericRequest`, with
+`hasAppOrDelegatorID()`, `setHasAppOrDelegatorID()`, and
+`FLAG_HAS_APP_OR_DELEGATOR_ID`. The JSON field is also `appOrDelegatorID`.
+There are no legacy aliases.
+
+Clients must verify the request signature before resolving the app scope:
+
+| Envelope scope | Required authorization | First derivation `toId` |
+| --- | --- | --- |
+| `appOrDelegatorID` absent | Valid request signature | Request signer ID |
+| `appOrDelegatorID` present | Signer is the user's own ID or another ID whose signing authority the wallet fully controls | `appOrDelegatorID` |
+| `appOrDelegatorID` present, signer not fully controlled | Unsupported until the delegate approval handshake is implemented; reject | None |
+
+Signer equality with `appOrDelegatorID` alone does not satisfy the second row.
+An app signing its own request can omit that field. Full signing control means
+the wallet can satisfy the identity's signing threshold; a linked identity or
+one key in a higher-threshold identity is insufficient. Serialization and
+`isValid()` do not perform signature or authorization checks.
+
+The first `zGetEncryptionAddress` call uses the wallet user's ID as `fromId`,
+the authorized scope as `toId`, and the wallet's existing key material. Without
+`derivationID`, that result is the response. With `derivationID`, make a second
+call with the first result's extended spending key as key material, the same
+user's ID as `fromId`, and `derivationID` as `toId`. Return only this second
+address and its keys. The optional `derivationID` can be any ID; it never
+replaces the app scope in the first call.
+
+For the Mobile integration, use `derivationNumber` as the first call's
+`encryptionIndex`, and `secondaryDerivationNumber` as the second call's
+`encryptionIndex`. The optional secondary number defaults to zero, including
+when `secondaryderivationnumber` is omitted from JSON. It is used only when
+`derivationID` is present. Keep `hdIndex` at its current default. The first call must set
+`returnSecret: true` when a second call is needed. Decode its Bech32 spending
+key to raw hex for the second call's `extsk`; the native API has no parameter
+for the intermediate z-address. The final call's `returnSecret` follows
+`FLAG_RETURN_ESK`. Intermediate scope keys must never appear in the response.
+`encryptResponseToAddress` protects the response and is separate from the
+derived channel address; Mobile requires it when returning a spending key.
+
+Wallet authorization, native derivation, response encryption, and approval UI
+are client responsibilities. These primitives serialize the scope and details
+into the signed request and represent the final address and keys in
+`AppEncryptionResponseDetails`.
+
+On the wire, the `FLAG_HAS_DERIVATION_ID` payload contains the compact
+`derivationID` immediately followed by a VarInt `secondaryDerivationNumber`,
+including an explicit zero for the default. The optional `requestID` follows
+both fields. This is the sole format; there is no legacy decoding path.
+
 ### Creating a VerusPay Invoice
 
 You can easily create a VerusPay invoice, which can then be converted into a QR code string or a wallet deeplink.

@@ -22,7 +22,7 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
         this.details = envelope === null || envelope === void 0 ? void 0 : envelope.details;
         this.createdAt = envelope === null || envelope === void 0 ? void 0 : envelope.createdAt;
         this.salt = envelope === null || envelope === void 0 ? void 0 : envelope.salt;
-        this.appOrDelegatedID = envelope === null || envelope === void 0 ? void 0 : envelope.appOrDelegatedID;
+        this.appOrDelegatorID = envelope === null || envelope === void 0 ? void 0 : envelope.appOrDelegatorID;
         if (envelope === null || envelope === void 0 ? void 0 : envelope.flags)
             this.flags = envelope.flags;
         else
@@ -51,8 +51,8 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
     hasSalt() {
         return !!(this.flags.and(GenericEnvelope.FLAG_HAS_SALT).toNumber());
     }
-    hasAppOrDelegatedID() {
-        return !!(this.flags.and(GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID).toNumber());
+    hasAppOrDelegatorID() {
+        return !!(this.flags.and(GenericEnvelope.FLAG_HAS_APP_OR_DELEGATOR_ID).toNumber());
     }
     isTestnet() {
         return !!(this.flags.and(GenericEnvelope.FLAG_IS_TESTNET).toNumber());
@@ -75,8 +75,8 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
     setHasSalt() {
         this.flags = this.flags.or(GenericEnvelope.FLAG_HAS_SALT);
     }
-    setHasAppOrDelegatedID() {
-        this.flags = this.flags.or(GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID);
+    setHasAppOrDelegatorID() {
+        this.flags = this.flags.or(GenericEnvelope.FLAG_HAS_APP_OR_DELEGATOR_ID);
     }
     setIsTestnet() {
         this.flags = this.flags.or(GenericEnvelope.FLAG_IS_TESTNET);
@@ -93,8 +93,8 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
             this.setHasCreatedAt();
         if (this.salt)
             this.setHasSalt();
-        if (this.appOrDelegatedID)
-            this.setHasAppOrDelegatedID();
+        if (this.appOrDelegatorID)
+            this.setHasAppOrDelegatorID();
         if (this.details && this.details.length > 1)
             this.setHasMultiDetails();
     }
@@ -199,8 +199,8 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
             length += varuint_1.default.encodingLength(saltLen);
             length += saltLen;
         }
-        if (this.hasAppOrDelegatedID()) {
-            length += this.appOrDelegatedID.getByteLength();
+        if (this.hasAppOrDelegatorID()) {
+            length += this.appOrDelegatorID.getByteLength();
         }
         length += this.getDetailsBufferLength();
         return length;
@@ -216,8 +216,8 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
         if (this.hasSalt()) {
             writer.writeVarSlice(this.salt);
         }
-        if (this.hasAppOrDelegatedID()) {
-            writer.writeSlice(this.appOrDelegatedID.toBuffer());
+        if (this.hasAppOrDelegatorID()) {
+            writer.writeSlice(this.appOrDelegatorID.toBuffer());
         }
         writer.writeSlice(this.getDetailsBuffer());
         return writer.buffer;
@@ -273,9 +273,12 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
         if (this.hasSalt()) {
             this.salt = reader.readVarSlice();
         }
-        if (this.hasAppOrDelegatedID()) {
-            this.appOrDelegatedID = new CompactAddressObject_1.CompactIAddressObject({ type: CompactAddressObject_1.CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
-            reader.offset = this.appOrDelegatedID.fromBuffer(reader.buffer, reader.offset);
+        if (this.hasAppOrDelegatorID()) {
+            this.appOrDelegatorID = new CompactAddressObject_1.CompactIAddressObject({ type: CompactAddressObject_1.CompactIAddressObject.TYPE_I_ADDRESS, address: '', rootSystemName });
+            reader.offset = this.appOrDelegatorID.fromBuffer(reader.buffer, reader.offset);
+        }
+        else {
+            this.appOrDelegatorID = undefined;
         }
         reader.offset = this.setDetailsFromBuffer(reader.buffer, reader.offset);
         return reader.offset;
@@ -297,7 +300,7 @@ class GenericEnvelope extends SerializableEntityBase_1.SerializableEntityBase {
             requestid: this.hasRequestID() ? this.requestID.toJson() : undefined,
             createdat: this.hasCreatedAt() ? this.createdAt.toString() : undefined,
             salt: this.hasSalt() ? this.salt.toString('hex') : undefined,
-            appOrDelegatedID: this.hasAppOrDelegatedID() ? this.appOrDelegatedID.toJson() : undefined,
+            appOrDelegatorID: this.hasAppOrDelegatorID() ? this.appOrDelegatorID.toJson() : undefined,
             details: details
         };
     }
@@ -313,5 +316,5 @@ GenericEnvelope.FLAG_HAS_CREATED_AT = new bn_js_1.BN(4, 10);
 GenericEnvelope.FLAG_MULTI_DETAILS = new bn_js_1.BN(8, 10);
 GenericEnvelope.FLAG_IS_TESTNET = new bn_js_1.BN(16, 10);
 GenericEnvelope.FLAG_HAS_SALT = new bn_js_1.BN(32, 10);
-GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID = new bn_js_1.BN(64, 10);
+GenericEnvelope.FLAG_HAS_APP_OR_DELEGATOR_ID = new bn_js_1.BN(64, 10);
 GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED = new bn_js_1.BN(1024, 10);

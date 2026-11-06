@@ -33,7 +33,7 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
   static FLAG_MULTI_DETAILS = GenericEnvelope.FLAG_MULTI_DETAILS;
   static FLAG_IS_TESTNET = GenericEnvelope.FLAG_IS_TESTNET;
   static FLAG_HAS_SALT = GenericEnvelope.FLAG_HAS_SALT;
-  static FLAG_HAS_APP_OR_DELEGATED_ID = GenericEnvelope.FLAG_HAS_APP_OR_DELEGATED_ID;
+  static FLAG_HAS_APP_OR_DELEGATOR_ID = GenericEnvelope.FLAG_HAS_APP_OR_DELEGATOR_ID;
   static FLAG_DETAILS_ARE_ENCRYPTED = GenericEnvelope.FLAG_DETAILS_ARE_ENCRYPTED;
 
   static FLAG_HAS_REQUEST_HASH = new BN(128, 10);

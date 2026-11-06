@@ -12,6 +12,10 @@ import { SaplingExtendedSpendingKey } from '../../../pbaas/SaplingExtendedSpendi
 import { SaplingExtendedViewingKey } from '../../../pbaas/SaplingExtendedViewingKey';
 import { CompactAddressObjectJson, CompactIAddressObject } from '../CompactAddressObject';
 
+/**
+ * Final channel address and keys. When the request includes derivationID, these
+ * are the second derivation's results; the intermediate app scope key is private.
+ */
 export interface AppEncryptionResponseDetailsInterface {
   version: BigNumber;
   flags?: BigNumber;

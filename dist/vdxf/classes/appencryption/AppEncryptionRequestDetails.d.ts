@@ -1,19 +1,28 @@
 /**
- * AppEncryptionRequestDetails - Class for handling application requests for encrypted derived seeds
+ * Requests a derived Sapling address and channel keys for encrypted communication
+ * and data sharing between a user and an app. Identity uploads are one use of
+ * the channel, not a requirement.
  *
- * This class is used when an application is requesting an encrypted derived seed from the user's master seed,
- * using specific parameters passed by the application. The request includes:
- * - App or delegated ID making the request (mandatory)
- * - A target encryption key (zaddress format) for encrypting the reply
- * - Derivation number for seed generation
- * - Optional derivation ID (defaults to Z-address from ID signing if not present)
- * - Optional request ID for tracking
+ * The enclosing GenericRequest must have a verified signature. Its optional
+ * appOrDelegatorID defines the app scope; otherwise the signer defines the scope.
+ * An explicit appOrDelegatorID requires a signer whose signing authority the user
+ * fully controls, or an approved delegate once the delegate handshake is supported.
+ * Delegate authorization is currently unsupported and must be rejected by clients.
+ * Serialization and isValid() do not establish signature validity or authorization.
  *
- * The user's wallet can use these parameters to derive a specific seed from their master seed
- * and encrypt it using the provided encryption key, ensuring the application receives only
- * the specific derived seed it needs without exposing the master seed.
+ * First derive with fromId = the user's ID, toId = the authorized app scope, and
+ * the wallet's key material. Without derivationID, return this address and keys.
+ * With derivationID, derive again using the first result's extended spending key,
+ * fromId = the same user's ID, and toId = derivationID. Return only the second
+ * address and keys. derivationID can be any ID and never replaces the app scope
+ * in the first derivation. Clients perform these operations with zGetEncryptionAddress.
+ * The first call uses derivationNumber as its encryption index; the second uses
+ * secondaryDerivationNumber, which defaults to zero when omitted.
  *
- * The FLAG_RETURN_ESK flag can be set to signal that the Extended Spending Key should be returned.
+ * encryptResponseToAddress optionally protects the returned channel details;
+ * it is distinct from the derived channel address. FLAG_RETURN_ESK requests the
+ * final extended spending key, not an intermediate scope key. An intermediate
+ * spending key is required internally for double derivation even without this flag.
  */
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { SerializableEntityBase } from '../../../utils/types/SerializableEntityBase';
@@ -25,7 +34,10 @@ export interface AppEncryptionRequestDetailsInterface {
     flags: BigNumber;
     encryptResponseToAddress?: SaplingPaymentAddress;
     derivationNumber: BigNumber;
+    /** Optional second-stage target within the authorized app scope. */
     derivationID?: CompactIAddressObject;
+    /** Second-stage encryption index, defaulting to zero. Used only with derivationID. */
+    secondaryDerivationNumber?: BigNumber;
     requestID?: CompactIAddressObject;
 }
 export interface AppEncryptionRequestDetailsJson {
@@ -34,6 +46,7 @@ export interface AppEncryptionRequestDetailsJson {
     encryptresponsetoaddress?: string;
     derivationnumber: number;
     derivationid?: CompactAddressObjectJson;
+    secondaryderivationnumber?: number;
     requestid?: CompactAddressObjectJson;
 }
 export declare class AppEncryptionRequestDetails extends SerializableEntityBase implements SerializableEntity {
@@ -50,6 +63,7 @@ export declare class AppEncryptionRequestDetails extends SerializableEntityBase 
     encryptResponseToAddress?: SaplingPaymentAddress;
     derivationNumber: BigNumber;
     derivationID?: CompactIAddressObject;
+    secondaryDerivationNumber: BigNumber;
     requestID?: CompactIAddressObject;
     constructor(data?: AppEncryptionRequestDetailsInterface);
     setFlags(): void;

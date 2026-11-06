@@ -12,7 +12,14 @@ export interface GenericEnvelopeInterface {
     requestID?: CompactIAddressObject;
     createdAt?: BigNumber;
     salt?: Buffer;
-    appOrDelegatedID?: CompactIAddressObject;
+    /**
+     * Optional app/delegator identity defining the app encryption scope.
+     * When absent, the verified request signer defines that scope. When present,
+     * the wallet must authorize the signer before using this identity as toId.
+     * Until the delegate handshake is supported, only a signer whose signing
+     * authority the user fully controls may specify it.
+     */
+    appOrDelegatorID?: CompactIAddressObject;
     details: Array<OrdinalVDXFObject>;
 }
 export type GenericEnvelopeJson = {
@@ -22,7 +29,7 @@ export type GenericEnvelopeJson = {
     requestid?: CompactAddressObjectJson;
     createdat?: string;
     salt?: string;
-    appOrDelegatedID?: CompactAddressObjectJson;
+    appOrDelegatorID?: CompactAddressObjectJson;
     details: Array<OrdinalVDXFObjectJson>;
 };
 export type GenericRequestHandlerIdentifier = 0 | 1;
@@ -33,7 +40,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     requestID?: CompactIAddressObject;
     createdAt?: BigNumber;
     salt?: Buffer;
-    appOrDelegatedID?: CompactIAddressObject;
+    appOrDelegatorID?: CompactIAddressObject;
     details: Array<OrdinalVDXFObject>;
     static VERSION_CURRENT: import("bn.js");
     static VERSION_FIRSTVALID: import("bn.js");
@@ -45,7 +52,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     static FLAG_MULTI_DETAILS: import("bn.js");
     static FLAG_IS_TESTNET: import("bn.js");
     static FLAG_HAS_SALT: import("bn.js");
-    static FLAG_HAS_APP_OR_DELEGATED_ID: import("bn.js");
+    static FLAG_HAS_APP_OR_DELEGATOR_ID: import("bn.js");
     static FLAG_DETAILS_ARE_ENCRYPTED: import("bn.js");
     constructor(envelope?: GenericEnvelopeInterface);
     isValidVersion(): boolean;
@@ -54,7 +61,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     hasMultiDetails(): boolean;
     hasCreatedAt(): boolean;
     hasSalt(): boolean;
-    hasAppOrDelegatedID(): boolean;
+    hasAppOrDelegatorID(): boolean;
     isTestnet(): boolean;
     detailsAreEncrypted(): boolean;
     setSigned(): void;
@@ -62,7 +69,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     setHasMultiDetails(): void;
     setHasCreatedAt(): void;
     setHasSalt(): void;
-    setHasAppOrDelegatedID(): void;
+    setHasAppOrDelegatorID(): void;
     setIsTestnet(): void;
     setDetailsAreEncrypted(): void;
     setFlags(): void;

@@ -8,7 +8,8 @@
  * USAGE AS RESPONSE TO DIFFERENT REQUEST TYPES:
  *
  * 1. AppEncryptionRequestDetails Response:
- *    - The DataDescriptor 'data' field contains the encrypted derived seed
+ *    - The DataDescriptor contains encrypted AppEncryptionResponseDetails bytes
+ *      for the final channel address and keys, never an intermediate scope key
  *    - The requestID references the original AppEncryptionRequestDetails.requestID
  *    - Enables secure delivery of application-specific encrypted keys
  *
