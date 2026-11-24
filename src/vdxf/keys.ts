@@ -842,16 +842,6 @@ export const IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_BINDING: VDXF
   "indexid": "xUQFNMZpJsXeFKtn3n6A4GLuzM3dspL3a8"
 };
 
-export const IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_KEY: VDXFKeyInterface = {
-  "vdxfid": "iSeXMD6tNf2GGFT3zBLGVTSfpRWfJUkBpA",
-  "hash160result": "3eae4f1e749a997150e7598cc2d7c7398bfb2efe",
-  "qualifiedname": {
-    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
-    "name": "vrsc::identity.credential.application.authorization.storage.key"
-  },
-  "indexid": "xXUdp1XyDyEvtRL5qrzRTqyCr5XgBmbf7X"
-};
-
 /**
  * Permanent outer CMM key for a delegator's profile, across payload versions.
  * V1 authorization rejects its presence without decoding the stored values.

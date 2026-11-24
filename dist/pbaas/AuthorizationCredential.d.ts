@@ -1,39 +1,29 @@
 import { BigNumber } from "../utils/types/BigNumber";
 import { Credential } from "./Credential";
+/** An exact confirmed identity revision used as the approval policy baseline. */
+export interface AuthorizationIdentityRevision {
+    txid: string;
+    vout: number;
+}
 /** Persistent delegation metadata; the containing user identity supplies the user binding. */
 export interface AuthorizationCredentialData {
     version: BigNumber;
     flags: BigNumber;
     grantID: string;
-    signingSystemID: string;
-    appID: string;
-    delegateID: string;
-    originalRevision: {
-        lookupHeight: number;
-        txid: string;
-        vout: number;
-    };
+    /** Omitted on the configured VRSC/VRSCTEST root system. */
+    signingSystemID?: string;
+    delegateRevision: AuthorizationIdentityRevision;
+    delegatorRevision: AuthorizationIdentityRevision;
     storageManifestHash?: string;
 }
-/** One storage relationship and the independent user authorities required to manage it. */
+/** One storage identity associated with a grant; control is checked from current state. */
 export interface AuthorizationStorageBindingData {
     version: BigNumber;
     grantID: string;
     relationshipIndex: number;
-    storageSystemID: string;
+    /** Inherits the associated grant system, or the network root without a grant. */
+    storageSystemID?: string;
     storageID: string;
-    userKeyID: string;
-    revocationID: string;
-    recoveryID: string;
-    keyCount: number;
-}
-/** One app signing authority installed in a storage relationship. */
-export interface AuthorizationStorageKeyData {
-    version: BigNumber;
-    grantID: string;
-    relationshipIndex: number;
-    keyIndex: number;
-    keyID: string;
 }
 /**
  * Typed records use their registered VDXF credential keys by default.
@@ -50,39 +40,34 @@ declare abstract class AuthorizationRecord<T> {
     abstract toPayload(): object;
     toCredential(credentialKey?: string, label?: string): Credential;
 }
-/** The compact field names are a persisted protocol contract, not API field names. */
+/** Compact approval metadata with distinct delegate and delegator revision baselines. */
 export declare class AuthorizationCredential extends AuthorizationRecord<AuthorizationCredentialData> {
     static CREDENTIAL_KEY: string;
     static FLAGS_NONE: import("bn.js");
     static FLAG_CONTAINS_PERMISSIONS: import("bn.js");
     static FLAG_CONTAINS_STORAGE_BINDINGS: import("bn.js");
     constructor(data: AuthorizationCredentialData);
+    /** Resolve an omitted system only from the caller's configured network root. */
+    getSystemID(rootSystemID?: string): string;
     containsPermissions(): boolean;
     toPayload(): object;
     static fromCredential(record: Credential, expectedKey?: string): AuthorizationCredential;
     static fromPayload(payload: any): AuthorizationCredential;
 }
-/** Relationship headers and key records are stored separately to stay below 512 bytes. */
+/** One independently manageable storage identity, bound to its authorization grant. */
 export declare class AuthorizationStorageBindingCredential extends AuthorizationRecord<AuthorizationStorageBindingData> {
     static CREDENTIAL_KEY: string;
     constructor(data: AuthorizationStorageBindingData);
+    /** The caller supplies the resolved grant system, or the network root for an orphan. */
+    getSystemID(defaultSystemID?: string): string;
     get recordID(): string;
     toPayload(): object;
     static fromCredential(record: Credential, expectedKey?: string): AuthorizationStorageBindingCredential;
     static fromPayload(p: any): AuthorizationStorageBindingCredential;
 }
-/** Key indices identify semantic records independently of their encrypted stored copies. */
-export declare class AuthorizationStorageKeyCredential extends AuthorizationRecord<AuthorizationStorageKeyData> {
-    static CREDENTIAL_KEY: string;
-    constructor(data: AuthorizationStorageKeyData);
-    get recordID(): string;
-    toPayload(): object;
-    static fromCredential(record: Credential, expectedKey?: string): AuthorizationStorageKeyCredential;
-    static fromPayload(p: any): AuthorizationStorageKeyCredential;
-}
-export type AuthorizationStorageRecord = AuthorizationStorageBindingCredential | AuthorizationStorageKeyCredential;
-/** Validate the complete management set, collapse identical copies, and commit canonical bytes. */
-export declare function deriveAppAuthorizationStorageManifest(records: AuthorizationStorageRecord[]): string;
+export type AuthorizationStorageRecord = AuthorizationStorageBindingCredential;
+/** Validate the complete binding set, collapse identical copies, and commit canonical bytes. */
+export declare function deriveAppAuthorizationStorageManifest(records: AuthorizationStorageRecord[], defaultSystemID?: string): string;
 /** Verify the committed set against this grant, including its grant ID. */
-export declare function verifyAppAuthorizationStorageManifest(grant: AuthorizationCredential, records: AuthorizationStorageRecord[]): boolean;
+export declare function verifyAppAuthorizationStorageManifest(grant: AuthorizationCredential, records: AuthorizationStorageRecord[], rootSystemID?: string): boolean;
 export {};

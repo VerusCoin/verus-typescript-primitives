@@ -4,7 +4,6 @@ import {
   APP_AUTHORIZATION_RESPONSE_VDXF_KEY,
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION,
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_BINDING,
-  IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_KEY,
   DELEGATOR_PROFILE_VDXF_KEY,
   AppAuthorizationRequestDetails,
   AppAuthorizationResponseDetails,
@@ -12,7 +11,6 @@ import {
   AppAuthorizationResponseOrdinalVDXFObject,
   AuthorizationCredential,
   AuthorizationStorageBindingCredential,
-  AuthorizationStorageKeyCredential,
   GenericRequest,
   GenericResponse,
   OrdinalVDXFObject,
@@ -27,7 +25,6 @@ const keys = [
   APP_AUTHORIZATION_RESPONSE_VDXF_KEY,
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION,
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_BINDING,
-  IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_KEY,
   DELEGATOR_PROFILE_VDXF_KEY,
 ];
 const identity = APP_AUTHORIZATION_REQUEST_VDXF_KEY.vdxfid;
@@ -121,9 +118,8 @@ test("typed credential codecs use their distinct registered keys by default", ()
     flags: new BN(0),
     grantID: "aa".repeat(32),
     signingSystemID: identity,
-    appID: identity,
-    delegateID: identity,
-    originalRevision: { lookupHeight: 1, txid: "bb".repeat(32), vout: 0 },
+    delegateRevision: { txid: "bb".repeat(32), vout: 0 },
+    delegatorRevision: { txid: "cc".repeat(32), vout: 1 },
   });
   const binding = new AuthorizationStorageBindingCredential({
     version: new BN(1),
@@ -131,22 +127,9 @@ test("typed credential codecs use their distinct registered keys by default", ()
     relationshipIndex: 0,
     storageSystemID: identity,
     storageID: identity,
-    userKeyID: "bb".repeat(20),
-    revocationID: identity,
-    recoveryID: identity,
-    keyCount: 1,
   });
-  const key = new AuthorizationStorageKeyCredential({
-    version: new BN(1),
-    grantID: "aa".repeat(32),
-    relationshipIndex: 0,
-    keyIndex: 0,
-    keyID: "cc".repeat(20),
-  });
-
   expect(grant.toCredential().credentialKey).toBe(keys[2].vdxfid);
   expect(binding.toCredential().credentialKey).toBe(keys[3].vdxfid);
-  expect(key.toCredential().credentialKey).toBe(keys[4].vdxfid);
   expect(
     AuthorizationCredential.fromCredential(grant.toCredential()).toPayload()
   ).toEqual(grant.toPayload());
@@ -155,12 +138,7 @@ test("typed credential codecs use their distinct registered keys by default", ()
       binding.toCredential()
     ).toPayload()
   ).toEqual(binding.toPayload());
-  expect(
-    AuthorizationStorageKeyCredential.fromCredential(
-      key.toCredential()
-    ).toPayload()
-  ).toEqual(key.toPayload());
   expect(() =>
-    AuthorizationStorageKeyCredential.fromCredential(binding.toCredential())
+    AuthorizationCredential.fromCredential(binding.toCredential())
   ).toThrow();
 });

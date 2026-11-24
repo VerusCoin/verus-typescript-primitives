@@ -6,11 +6,3 @@ export declare const STORAGE_BINDING_BYTE_LENGTH: number;
 export declare class AuthorizationReader extends BoundedBufferReader {
     address(): string;
 }
-/** Immutable approval baseline; the outpoint disambiguates revisions in one block. */
-export interface IdentityRevisionReference {
-    systemID: string;
-    identityID: string;
-    lookupHeight: number;
-    txid: string;
-    vout: number;
-}

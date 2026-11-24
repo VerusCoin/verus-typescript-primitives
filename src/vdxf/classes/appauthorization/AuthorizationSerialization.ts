@@ -31,12 +31,3 @@ export class AuthorizationReader extends BoundedBufferReader {
     return identityAddress.address;
   }
 }
-
-/** Immutable approval baseline; the outpoint disambiguates revisions in one block. */
-export interface IdentityRevisionReference {
-  systemID: string;
-  identityID: string;
-  lookupHeight: number;
-  txid: string;
-  vout: number;
-}
