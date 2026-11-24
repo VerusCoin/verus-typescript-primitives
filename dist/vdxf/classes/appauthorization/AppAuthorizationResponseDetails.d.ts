@@ -63,7 +63,7 @@ export declare class AppAuthorizationResponseDetails extends SerializableEntityB
     isValid(): boolean;
     toBuffer(): Buffer;
     getByteLength(): number;
-    fromBuffer(buffer: Buffer, offset?: number): number;
+    fromBuffer(buffer: Buffer, offset?: number, rootSystemName?: string): number;
     toJson(): AppAuthorizationResponseDetailsJson;
     static fromJson(json: AppAuthorizationResponseDetailsJson): AppAuthorizationResponseDetails;
 }

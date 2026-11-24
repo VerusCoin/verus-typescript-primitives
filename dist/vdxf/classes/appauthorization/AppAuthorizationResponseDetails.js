@@ -55,6 +55,9 @@ class AppAuthorizationResponseDetails extends SerializableEntityBase_1.Serializa
                 }
             }
             this.validate();
+            if (this.grantID !== undefined) {
+                this.grantID = this.grantID.toLowerCase();
+            }
         }
     }
     /** Pass the original request requirement when validating a successful response. */
@@ -112,7 +115,7 @@ class AppAuthorizationResponseDetails extends SerializableEntityBase_1.Serializa
                 !this.storageBindings.length) {
                 throw new Error("Invalid storage binding count");
             }
-            const seen = new Set();
+            const storageIDs = new Set();
             for (const binding of this.storageBindings) {
                 (0, validation_1.rejectUnknownFields)(binding, [
                     "storageIdentity",
@@ -128,10 +131,16 @@ class AppAuthorizationResponseDetails extends SerializableEntityBase_1.Serializa
                     CompactAddressObject_1.CompactIAddressObject.validateCompactIdentityAddress(identityAddress);
                 }
                 const id = binding.storageIdentity.address;
-                if (seen.has(id)) {
+                if (storageIDs.has(id)) {
                     throw new Error("Duplicate storage binding");
                 }
-                seen.add(id);
+                storageIDs.add(id);
+            }
+            for (const binding of this.storageBindings) {
+                if (storageIDs.has(binding.revocationIdentity.address) ||
+                    storageIDs.has(binding.recoveryIdentity.address)) {
+                    throw new Error("Shared storage cannot be a revocation or recovery authority");
+                }
             }
         }
     }
@@ -173,7 +182,7 @@ class AppAuthorizationResponseDetails extends SerializableEntityBase_1.Serializa
     getByteLength() {
         return this.toBuffer().length;
     }
-    fromBuffer(buffer, offset = 0) {
+    fromBuffer(buffer, offset = 0, rootSystemName) {
         const reader = new AuthorizationSerialization_1.AuthorizationReader(buffer, offset);
         this.version = new bn_js_1.BN(reader.readCompactSize());
         if (this.version.lt(AppAuthorizationResponseDetails.VERSION_FIRST) ||
@@ -203,9 +212,9 @@ class AppAuthorizationResponseDetails extends SerializableEntityBase_1.Serializa
             this.storageBindings = [];
             for (let i = 0; i < count; i++) {
                 this.storageBindings.push({
-                    storageIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address()),
-                    revocationIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address()),
-                    recoveryIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address()),
+                    storageIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address(), rootSystemName),
+                    revocationIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address(), rootSystemName),
+                    recoveryIdentity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address(), rootSystemName),
                 });
             }
         }

@@ -19,12 +19,12 @@ const request = () =>
       { role: 2, identity: ref(2) },
     ],
   });
-const response = () =>
+const response = (grantID = "ab".repeat(32)) =>
   new Response({
     outcome: 0,
     requestSigningSystemID: address(3),
     delegateID: address(4),
-    grantID: "ab".repeat(32),
+    grantID,
     storageBindings: [
       {
         storageIdentity: ref(1),
@@ -47,7 +47,9 @@ test("request binary and JSON round trips include nested gift", () => {
 });
 
 test("response round trips preserve transaction wire byte order and selected bindings", () => {
-  const original = response();
+  const uppercaseGrantID = "AB".repeat(32);
+  const original = response(uppercaseGrantID);
+  expect(original.grantID).toBe(uppercaseGrantID.toLowerCase());
   const bytes = original.toBuffer();
   expect(bytes.subarray(-36, -4)).toEqual(
     Buffer.from(original.grantTransaction.txid, "hex").reverse()
@@ -55,10 +57,12 @@ test("response round trips preserve transaction wire byte order and selected bin
 
   const parsed = new Response();
   parsed.fromBuffer(bytes);
+  expect(parsed.grantID).toBe(original.grantID);
   expect(parsed.toJson()).toEqual(original.toJson());
-  expect(
-    Response.fromJson(JSON.parse(JSON.stringify(original.toJson()))).toBuffer()
-  ).toEqual(bytes);
+  const json = JSON.parse(JSON.stringify(original.toJson()));
+  const fromJson = Response.fromJson({ ...json, grantID: uppercaseGrantID });
+  expect(fromJson.grantID).toBe(original.grantID);
+  expect(fromJson.toBuffer()).toEqual(bytes);
   parsed.validate(true);
 });
 
@@ -202,6 +206,30 @@ test("response bindings encode S, R and C directly without reference flags", () 
     ])
   );
 });
+
+test.each(["revocationIdentity", "recoveryIdentity"] as const)(
+  "response bindings require %s to be independent of every storage identity",
+  (role) => {
+    const json = response().toJson();
+    const [first] = json.storageBindings;
+    const second = { ...first, storageIdentity: ref(5).toJson() };
+
+    // Both bindings can share an independent identity for both authority roles.
+    expect(() =>
+      Response.fromJson({ ...json, storageBindings: [first, second] })
+    ).not.toThrow();
+
+    const selfConflict = { ...first, [role]: first.storageIdentity };
+    const crossConflict = { ...first, [role]: second.storageIdentity };
+    for (const storageBindings of [
+      [selfConflict],
+      [crossConflict, second],
+      [second, crossConflict],
+    ]) {
+      expect(() => Response.fromJson({ ...json, storageBindings })).toThrow();
+    }
+  }
+);
 
 test("compact identity-address JSON rejects unsupported versions, types and system selectors", () => {
   const json = request().toJson();

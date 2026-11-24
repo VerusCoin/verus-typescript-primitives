@@ -281,6 +281,33 @@ test("an omitted binding system inherits its grant system or its orphan network 
   expect(binding().getSystemID(TESTNET_VERUS_CHAINID)).toBe(address);
 });
 
+test("decoded grant IDs match across hex casing when a binding inherits a nonroot system", () => {
+  const grantRecord = authorization().toCredential();
+  const inherited = binding();
+  delete inherited.data.storageSystemID;
+  const bindingRecord = inherited.toCredential();
+
+  grantRecord.credential = { ...grantRecord.credential, g: "AA".repeat(32) };
+  bindingRecord.credential = {
+    ...bindingRecord.credential,
+    g: "aA".repeat(32),
+  };
+  const grant = AuthorizationCredential.fromCredential(grantRecord);
+  const decodedBinding = Binding.fromCredential(bindingRecord);
+
+  expect(grant.data.grantID).toBe("aa".repeat(32));
+  const systems = new Map([[grant.data.grantID, grant.getSystemID()]]);
+  const system = systems.get(decodedBinding.data.grantID) ?? DEFAULT_VERUS_CHAINID;
+  expect(decodedBinding.getSystemID(system)).toBe(address);
+});
+
+test("canonical constructor data stays shared and mixed-case inputs can be frozen", () => {
+  const data = authorization().data;
+  expect(new AuthorizationCredential(data).data).toBe(data);
+  const mixedCase = Object.freeze({ ...data, grantID: "AA".repeat(32) });
+  expect(new AuthorizationCredential(mixedCase).data.grantID).toBe(data.grantID);
+});
+
 test.each([null, "", false, "invalid"])(
   "optional systems still reject invalid explicit values: %s",
   (systemID) => {

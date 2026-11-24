@@ -131,7 +131,7 @@ class AppAuthorizationRequestDetails extends SerializableEntityBase_1.Serializab
     getByteLength() {
         return this.toBuffer().length;
     }
-    fromBuffer(buffer, offset = 0) {
+    fromBuffer(buffer, offset = 0, rootSystemName) {
         const reader = new AuthorizationSerialization_1.AuthorizationReader(buffer, offset);
         this.version = new bn_js_1.BN(reader.readCompactSize());
         if (this.version.lt(AppAuthorizationRequestDetails.VERSION_FIRST) ||
@@ -165,7 +165,7 @@ class AppAuthorizationRequestDetails extends SerializableEntityBase_1.Serializab
             for (let i = 0; i < count; i++) {
                 this.offeredIdentities.push({
                     role: reader.readUInt8(),
-                    identity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address()),
+                    identity: CompactAddressObject_1.CompactIAddressObject.fromAddress(reader.address(), rootSystemName),
                 });
             }
         }

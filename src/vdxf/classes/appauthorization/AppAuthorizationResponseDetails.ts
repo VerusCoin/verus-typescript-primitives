@@ -133,6 +133,9 @@ export class AppAuthorizationResponseDetails extends SerializableEntityBase {
         }
       }
       this.validate();
+      if (this.grantID !== undefined) {
+        this.grantID = this.grantID.toLowerCase();
+      }
     }
   }
 
@@ -208,7 +211,7 @@ export class AppAuthorizationResponseDetails extends SerializableEntityBase {
         throw new Error("Invalid storage binding count");
       }
 
-      const seen = new Set<string>();
+      const storageIDs = new Set<string>();
 
       for (const binding of this.storageBindings) {
         rejectUnknownFields(binding, [
@@ -228,11 +231,20 @@ export class AppAuthorizationResponseDetails extends SerializableEntityBase {
 
         const id = binding.storageIdentity.address;
 
-        if (seen.has(id)) {
+        if (storageIDs.has(id)) {
           throw new Error("Duplicate storage binding");
         }
 
-        seen.add(id);
+        storageIDs.add(id);
+      }
+
+      for (const binding of this.storageBindings) {
+        if (
+          storageIDs.has(binding.revocationIdentity.address) ||
+          storageIDs.has(binding.recoveryIdentity.address)
+        ) {
+          throw new Error("Shared storage cannot be a revocation or recovery authority");
+        }
       }
     }
   }
@@ -295,7 +307,7 @@ export class AppAuthorizationResponseDetails extends SerializableEntityBase {
     return this.toBuffer().length;
   }
 
-  fromBuffer(buffer: Buffer, offset = 0): number {
+  fromBuffer(buffer: Buffer, offset = 0, rootSystemName?: string): number {
     const reader = new AuthorizationReader(buffer, offset);
 
     this.version = new BN(reader.readCompactSize());
@@ -338,11 +350,18 @@ export class AppAuthorizationResponseDetails extends SerializableEntityBase {
 
       for (let i = 0; i < count; i++) {
         this.storageBindings.push({
-          storageIdentity: CompactIAddressObject.fromAddress(reader.address()),
-          revocationIdentity: CompactIAddressObject.fromAddress(
-            reader.address()
+          storageIdentity: CompactIAddressObject.fromAddress(
+            reader.address(),
+            rootSystemName
           ),
-          recoveryIdentity: CompactIAddressObject.fromAddress(reader.address()),
+          revocationIdentity: CompactIAddressObject.fromAddress(
+            reader.address(),
+            rootSystemName
+          ),
+          recoveryIdentity: CompactIAddressObject.fromAddress(
+            reader.address(),
+            rootSystemName
+          ),
         });
       }
     }

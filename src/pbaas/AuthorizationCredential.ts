@@ -51,6 +51,11 @@ export interface AuthorizationStorageBindingData {
   storageID: string;
 }
 
+function withCanonicalGrantID<T extends { grantID: string }>(data: T): T {
+  const grantID = data.grantID.toLowerCase();
+  return grantID === data.grantID ? data : { ...data, grantID };
+}
+
 function version(value: BigNumber, first: BigNumber, last: BigNumber): number {
   if (!BN.isBN(value) || value.lt(first) || value.gt(last)) {
     throw new Error("Unsupported credential version");
@@ -147,6 +152,7 @@ export class AuthorizationCredential extends AuthorizationRecord<AuthorizationCr
   constructor(data: AuthorizationCredentialData) {
     super(data, AuthorizationCredential.CREDENTIAL_KEY);
     this.toPayload();
+    this.data = withCanonicalGrantID(data);
   }
 
   /** Resolve an omitted system only from the caller's configured network root. */
@@ -248,6 +254,7 @@ export class AuthorizationStorageBindingCredential extends AuthorizationRecord<A
   constructor(data: AuthorizationStorageBindingData) {
     super(data, AuthorizationStorageBindingCredential.CREDENTIAL_KEY);
     this.toPayload();
+    this.data = withCanonicalGrantID(data);
   }
 
   /** The caller supplies the resolved grant system, or the network root for an orphan. */

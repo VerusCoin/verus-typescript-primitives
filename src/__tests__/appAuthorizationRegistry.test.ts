@@ -5,12 +5,15 @@ import {
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION,
   IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_BINDING,
   DELEGATOR_PROFILE_VDXF_KEY,
+  AppAuthorizationOfferRole,
+  AppAuthorizationOutcome,
   AppAuthorizationRequestDetails,
   AppAuthorizationResponseDetails,
   AppAuthorizationRequestOrdinalVDXFObject,
   AppAuthorizationResponseOrdinalVDXFObject,
   AuthorizationCredential,
   AuthorizationStorageBindingCredential,
+  CompactIAddressObject,
   GenericRequest,
   GenericResponse,
   OrdinalVDXFObject,
@@ -60,15 +63,27 @@ test("catalog keys match their qualified names and RPC hash byte order", () => {
   }
 });
 
-test("registered request and response ordinals round trip through envelopes", () => {
+test.each(["VRSC", "VRSCTEST"])("registered ordinals round trip on %s", (rootSystemName) => {
+  const flags = rootSystemName === "VRSCTEST"
+    ? GenericRequest.FLAG_IS_TESTNET
+    : GenericRequest.BASE_FLAGS;
+  const [storageIdentity, revocationIdentity, recoveryIdentity] = keys
+    .slice(0, 3)
+    .map((key) => CompactIAddressObject.fromAddress(key.vdxfid, rootSystemName));
   const request = new AppAuthorizationRequestOrdinalVDXFObject({
-    data: new AppAuthorizationRequestDetails(),
+    data: new AppAuthorizationRequestDetails({
+      offeredIdentities: [
+        { role: AppAuthorizationOfferRole.STORAGE, identity: storageIdentity },
+      ],
+    }),
   });
   const response = new AppAuthorizationResponseOrdinalVDXFObject({
     data: new AppAuthorizationResponseDetails({
-      outcome: 1,
+      outcome: AppAuthorizationOutcome.SUCCESS,
       requestSigningSystemID: identity,
       delegateID: identity,
+      grantID: "aa".repeat(32),
+      storageBindings: [{ storageIdentity, revocationIdentity, recoveryIdentity }],
     }),
   });
 
@@ -93,11 +108,11 @@ test("registered request and response ordinals round trip through envelopes", ()
 
   const envelope = new GenericRequest({
     details: [request],
-    flags: GenericRequest.BASE_FLAGS,
+    flags,
   });
-  expect(GenericRequest.fromQrString(envelope.toQrString()).toBuffer()).toEqual(
-    envelope.toBuffer()
-  );
+  const decodedRequest = GenericRequest.fromQrString(envelope.toQrString());
+  expect(decodedRequest.toBuffer()).toEqual(envelope.toBuffer());
+  expect(decodedRequest.getDetails().toJson()).toEqual(request.toJson());
   expect(
     GenericRequest.fromWalletDeeplinkUri(
       envelope.toWalletDeeplinkUri()
@@ -105,11 +120,12 @@ test("registered request and response ordinals round trip through envelopes", ()
   ).toEqual(envelope.toBuffer());
   const reply = new GenericResponse({
     details: [response],
-    flags: GenericResponse.BASE_FLAGS,
+    flags,
   });
   const decodedReply = new GenericResponse();
   decodedReply.fromBuffer(reply.toBuffer());
   expect(decodedReply.toBuffer()).toEqual(reply.toBuffer());
+  expect(decodedReply.getDetails().toJson()).toEqual(response.toJson());
 });
 
 test("typed credential codecs use their distinct registered keys by default", () => {

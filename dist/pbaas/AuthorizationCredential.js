@@ -14,6 +14,10 @@ const bn_js_1 = require("bn.js");
 const hash_1 = require("../utils/hash");
 const Credential_1 = require("./Credential");
 const STORAGE_BINDING_MANIFEST_TYPE = 1;
+function withCanonicalGrantID(data) {
+    const grantID = data.grantID.toLowerCase();
+    return grantID === data.grantID ? data : Object.assign(Object.assign({}, data), { grantID });
+}
 function version(value, first, last) {
     if (!bn_js_1.BN.isBN(value) || value.lt(first) || value.gt(last)) {
         throw new Error("Unsupported credential version");
@@ -81,6 +85,7 @@ class AuthorizationCredential extends AuthorizationRecord {
     constructor(data) {
         super(data, AuthorizationCredential.CREDENTIAL_KEY);
         this.toPayload();
+        this.data = withCanonicalGrantID(data);
     }
     /** Resolve an omitted system only from the caller's configured network root. */
     getSystemID(rootSystemID) {
@@ -153,6 +158,7 @@ class AuthorizationStorageBindingCredential extends AuthorizationRecord {
     constructor(data) {
         super(data, AuthorizationStorageBindingCredential.CREDENTIAL_KEY);
         this.toPayload();
+        this.data = withCanonicalGrantID(data);
     }
     /** The caller supplies the resolved grant system, or the network root for an orphan. */
     getSystemID(defaultSystemID) {

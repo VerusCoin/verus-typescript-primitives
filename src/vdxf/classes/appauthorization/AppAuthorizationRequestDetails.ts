@@ -227,7 +227,7 @@ export class AppAuthorizationRequestDetails extends SerializableEntityBase {
     return this.toBuffer().length;
   }
 
-  fromBuffer(buffer: Buffer, offset = 0): number {
+  fromBuffer(buffer: Buffer, offset = 0, rootSystemName?: string): number {
     const reader = new AuthorizationReader(buffer, offset);
 
     this.version = new BN(reader.readCompactSize());
@@ -278,7 +278,10 @@ export class AppAuthorizationRequestDetails extends SerializableEntityBase {
       for (let i = 0; i < count; i++) {
         this.offeredIdentities.push({
           role: reader.readUInt8(),
-          identity: CompactIAddressObject.fromAddress(reader.address()),
+          identity: CompactIAddressObject.fromAddress(
+            reader.address(),
+            rootSystemName
+          ),
         });
       }
     }
