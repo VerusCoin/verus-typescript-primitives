@@ -10,8 +10,10 @@ export interface AuthorizationCredentialData {
     version: BigNumber;
     flags: BigNumber;
     grantID: string;
-    /** Omitted on the configured VRSC/VRSCTEST root system. */
-    signingSystemID?: string;
+    /** System of the delegate revision. Defaults to the configured VRSC/VRSCTEST root. */
+    delegateSystemID?: string;
+    /** System of the delegator revision. Defaults to the delegate's system. */
+    delegatorSystemID?: string;
     delegateRevision: AuthorizationIdentityRevision;
     delegatorRevision: AuthorizationIdentityRevision;
     storageManifestHash?: string;
@@ -21,7 +23,7 @@ export interface AuthorizationStorageBindingData {
     version: BigNumber;
     grantID: string;
     relationshipIndex: number;
-    /** Inherits the associated grant system, or the network root without a grant. */
+    /** Inherits the delegate's request-signing system, or the network root without a grant. */
     storageSystemID?: string;
     storageID: string;
 }
@@ -47,8 +49,8 @@ export declare class AuthorizationCredential extends AuthorizationRecord<Authori
     static FLAG_CONTAINS_PERMISSIONS: import("bn.js");
     static FLAG_CONTAINS_STORAGE_BINDINGS: import("bn.js");
     constructor(data: AuthorizationCredentialData);
-    /** Resolve an omitted system only from the caller's configured network root. */
-    getSystemID(rootSystemID?: string): string;
+    getDelegateSystemID(rootSystemID?: string): string;
+    getDelegatorSystemID(rootSystemID?: string): string;
     containsPermissions(): boolean;
     toPayload(): object;
     static fromCredential(record: Credential, expectedKey?: string): AuthorizationCredential;
@@ -58,7 +60,7 @@ export declare class AuthorizationCredential extends AuthorizationRecord<Authori
 export declare class AuthorizationStorageBindingCredential extends AuthorizationRecord<AuthorizationStorageBindingData> {
     static CREDENTIAL_KEY: string;
     constructor(data: AuthorizationStorageBindingData);
-    /** The caller supplies the resolved grant system, or the network root for an orphan. */
+    /** The caller supplies the resolved delegate system, or the network root for an orphan. */
     getSystemID(defaultSystemID?: string): string;
     get recordID(): string;
     toPayload(): object;

@@ -9,7 +9,7 @@ const serialization_1 = require("../utils/serialization");
 const varuint_1 = require("../utils/varuint");
 const address_1 = require("../utils/address");
 const vdxf_1 = require("../constants/vdxf");
-const pbaas_1 = require("../constants/pbaas");
+const AppAuthorizationGrant_1 = require("./AppAuthorizationGrant");
 const bn_js_1 = require("bn.js");
 const hash_1 = require("../utils/hash");
 const Credential_1 = require("./Credential");
@@ -87,18 +87,11 @@ class AuthorizationCredential extends AuthorizationRecord {
         this.toPayload();
         this.data = withCanonicalGrantID(data);
     }
-    /** Resolve an omitted system only from the caller's configured network root. */
-    getSystemID(rootSystemID) {
-        if (this.data.signingSystemID === undefined &&
-            rootSystemID !== pbaas_1.DEFAULT_VERUS_CHAINID &&
-            rootSystemID !== pbaas_1.TESTNET_VERUS_CHAINID) {
-            throw new Error("An explicit VRSC or VRSCTEST root system is required");
-        }
-        const systemID = this.data.signingSystemID === undefined
-            ? rootSystemID
-            : this.data.signingSystemID;
-        (0, address_1.decodeDestination)(systemID, vdxf_1.I_ADDR_VERSION);
-        return systemID;
+    getDelegateSystemID(rootSystemID) {
+        return (0, AppAuthorizationGrant_1.resolveDelegateSystemID)(this.data.delegateSystemID, rootSystemID);
+    }
+    getDelegatorSystemID(rootSystemID) {
+        return (0, AppAuthorizationGrant_1.resolveDelegatorSystemID)(this.data.delegatorSystemID, this.data.delegateSystemID, rootSystemID);
     }
     containsPermissions() {
         return !this.data.flags
@@ -111,13 +104,16 @@ class AuthorizationCredential extends AuthorizationRecord {
             "version",
             "flags",
             "grantID",
-            "signingSystemID",
+            "delegateSystemID",
+            "delegatorSystemID",
             "delegateRevision",
             "delegatorRevision",
             "storageManifestHash",
         ]);
-        if (d.signingSystemID !== undefined) {
-            (0, address_1.decodeDestination)(d.signingSystemID, vdxf_1.I_ADDR_VERSION);
+        for (const systemID of [d.delegateSystemID, d.delegatorSystemID]) {
+            if (systemID !== undefined) {
+                (0, address_1.decodeDestination)(systemID, vdxf_1.I_ADDR_VERSION);
+            }
         }
         if (!bn_js_1.BN.isBN(d.flags) ||
             (!d.flags.eq(AuthorizationCredential.FLAGS_NONE) &&
@@ -128,23 +124,27 @@ class AuthorizationCredential extends AuthorizationRecord {
                 (d.storageManifestHash !== undefined)) {
             throw new Error("Unsupported or inconsistent authorization flags");
         }
-        return Object.assign(Object.assign(Object.assign({ v: version(d.version, AuthorizationCredential.VERSION_FIRST, AuthorizationCredential.VERSION_LAST), f: d.flags.toNumber(), g: (0, validation_1.normalizeFixedLengthHex)(d.grantID, 32) }, (d.signingSystemID === undefined ? {} : { s: d.signingSystemID })), { e: revisionToPayload(d.delegateRevision), o: revisionToPayload(d.delegatorRevision) }), (d.storageManifestHash === undefined
+        return Object.assign(Object.assign(Object.assign(Object.assign({ v: version(d.version, AuthorizationCredential.VERSION_FIRST, AuthorizationCredential.VERSION_LAST), f: d.flags.toNumber(), g: (0, validation_1.normalizeFixedLengthHex)(d.grantID, 32) }, (d.delegateSystemID === undefined ? {} : { s: d.delegateSystemID })), (d.delegatorSystemID !== undefined &&
+            d.delegatorSystemID !== d.delegateSystemID
+            ? { sd: d.delegatorSystemID }
+            : {})), { de: revisionToPayload(d.delegateRevision), dr: revisionToPayload(d.delegatorRevision) }), (d.storageManifestHash === undefined
             ? {}
-            : { b: (0, validation_1.normalizeFixedLengthHex)(d.storageManifestHash, 32) }));
+            : { m: (0, validation_1.normalizeFixedLengthHex)(d.storageManifestHash, 32) }));
     }
     static fromCredential(record, expectedKey = AuthorizationCredential.CREDENTIAL_KEY) {
         return this.fromPayload(credentialPayload(record, expectedKey));
     }
     static fromPayload(payload) {
-        (0, validation_1.rejectUnknownFields)(payload, ["v", "f", "g", "s", "e", "o", "b"]);
+        (0, validation_1.rejectUnknownFields)(payload, ["v", "f", "g", "s", "sd", "de", "dr", "m"]);
         return new AuthorizationCredential({
             version: new bn_js_1.BN((0, validation_1.assertUint32)(payload.v)),
             flags: new bn_js_1.BN((0, validation_1.assertUint32)(payload.f)),
             grantID: payload.g,
-            signingSystemID: payload.s,
-            delegateRevision: revisionFromPayload(payload.e),
-            delegatorRevision: revisionFromPayload(payload.o),
-            storageManifestHash: payload.b,
+            delegateSystemID: payload.s,
+            delegatorSystemID: payload.sd,
+            delegateRevision: revisionFromPayload(payload.de),
+            delegatorRevision: revisionFromPayload(payload.dr),
+            storageManifestHash: payload.m,
         });
     }
 }
@@ -160,7 +160,7 @@ class AuthorizationStorageBindingCredential extends AuthorizationRecord {
         this.toPayload();
         this.data = withCanonicalGrantID(data);
     }
-    /** The caller supplies the resolved grant system, or the network root for an orphan. */
+    /** The caller supplies the resolved delegate system, or the network root for an orphan. */
     getSystemID(defaultSystemID) {
         const systemID = this.data.storageSystemID === undefined
             ? defaultSystemID
@@ -280,7 +280,7 @@ function verifyAppAuthorizationStorageManifest(grant, records, rootSystemID) {
             (0, validation_1.normalizeFixedLengthHex)(grant.data.grantID, 32))) {
             return false;
         }
-        return (deriveAppAuthorizationStorageManifest(records, grant.getSystemID(rootSystemID)) === (0, validation_1.normalizeFixedLengthHex)(grant.data.storageManifestHash, 32));
+        return (deriveAppAuthorizationStorageManifest(records, grant.getDelegateSystemID(rootSystemID)) === (0, validation_1.normalizeFixedLengthHex)(grant.data.storageManifestHash, 32));
     }
     catch (_a) {
         return false;

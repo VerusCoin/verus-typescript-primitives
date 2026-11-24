@@ -16,8 +16,20 @@ const derive = () =>
 
 test("grant ID matches independent SHA-256 vector with decoded address order and literal domain", () => {
   expect(derive()).toBe(
-    "e52659aba454a4e793fa5c2c53f6b4a57a80272ba59a99f8939bb89f580ad983"
+    "abf6108b0f1ac5bc5dc9e7fbe085abbd5092b3ddbe9839e25c21143c363c70a8"
   );
+});
+
+test("the delegator inherits the delegate's system unless a distinct system is specified", () => {
+  const forDelegatorSystem = (delegatorSystemID: string) =>
+    deriveAppAuthorizationGrantID(user, delegate, address(5), requestHash, delegatorSystemID);
+
+  expect(forDelegatorSystem(delegate.systemID)).toBe(derive());
+  expect(forDelegatorSystem(address(6))).toBe(
+    "dd7d99bfd47b1932a8e760bb6e5a55b1bd1601ca09ab732f9dd7b6e2f85ceda6"
+  );
+  expect(forDelegatorSystem(address(6))).not.toBe(derive());
+  expect(() => forDelegatorSystem(toBase58Check(Buffer.alloc(20), 60))).toThrow();
 });
 
 test("user and signer system bindings change the grant", () => {

@@ -19,7 +19,7 @@ const authorization = () =>
     version: new BN(1),
     flags: new BN(2),
     grantID: "aa".repeat(32),
-    signingSystemID: address,
+    delegateSystemID: address,
     delegateRevision: { txid: "bb".repeat(32), vout: 0 },
     delegatorRevision: { txid: "dd".repeat(32), vout: 1 },
     storageManifestHash: "cc".repeat(32),
@@ -47,11 +47,12 @@ test("maximum-width payloads match the shared accounting and generic binary code
   ]) {
     revision.vout = 0xffffffff;
   }
+  grant.data.delegatorSystemID = DEFAULT_VERUS_CHAINID;
   const header = binding();
   header.data.relationshipIndex = 0xffffffff;
 
   for (const [record, size] of [
-    [grant, 364],
+    [grant, 408],
     [header, 175],
   ] as const) {
     expect(Buffer.byteLength(JSON.stringify(record.toPayload()))).toBe(size);
@@ -65,9 +66,12 @@ test("maximum-width payloads match the shared accounting and generic binary code
     expect(() => record.toCredential(address, "é".repeat(257))).toThrow();
   }
 
-  delete grant.data.signingSystemID;
+  grant.data.delegatorSystemID = grant.data.delegateSystemID;
+  expect(Buffer.byteLength(JSON.stringify(grant.toPayload()))).toBe(366);
+  delete grant.data.delegatorSystemID;
+  delete grant.data.delegateSystemID;
   delete header.data.storageSystemID;
-  expect(Buffer.byteLength(JSON.stringify(grant.toPayload()))).toBe(323);
+  expect(Buffer.byteLength(JSON.stringify(grant.toPayload()))).toBe(325);
   expect(Buffer.byteLength(JSON.stringify(header.toPayload()))).toBe(134);
 
   expect(
@@ -80,11 +84,18 @@ test("maximum-width payloads match the shared accounting and generic binary code
 
 test("approval preserves distinct delegate and delegator revision baselines", () => {
   const grant = authorization();
-  const payload = grant.toPayload() as any;
+  grant.data.delegatorSystemID = TESTNET_VERUS_CHAINID;
 
-  expect(payload.e).toEqual(["bb".repeat(32), 0]);
-  expect(payload.o).toEqual(["dd".repeat(32), 1]);
-  expect(Object.keys(payload)).toEqual(["v", "f", "g", "s", "e", "o", "b"]);
+  expect(grant.toPayload()).toEqual({
+    v: 1,
+    f: 2,
+    g: "aa".repeat(32),
+    s: address,
+    sd: TESTNET_VERUS_CHAINID,
+    de: ["bb".repeat(32), 0],
+    dr: ["dd".repeat(32), 1],
+    m: "cc".repeat(32),
+  });
   expect(
     AuthorizationCredential.fromCredential(grant.toCredential()).data
   ).toEqual(grant.data);
@@ -105,7 +116,7 @@ test.each(
     ["dd".repeat(32), 0x100000000],
   ].map((revision) => ({ revision }))
 )("approval requires valid revision references: $revision", ({ revision }) => {
-  for (const field of ["e", "o"]) {
+  for (const field of ["de", "dr"]) {
     expect(() =>
       AuthorizationCredential.fromPayload({
         ...authorization().toPayload(),
@@ -238,30 +249,53 @@ test.each([DEFAULT_VERUS_CHAINID, TESTNET_VERUS_CHAINID])(
   "an omitted grant system resolves to the configured network root %s",
   (rootSystemID) => {
     const grant = authorization();
-    delete grant.data.signingSystemID;
+    delete grant.data.delegateSystemID;
 
     const parsed = AuthorizationCredential.fromCredential(grant.toCredential());
-    expect(parsed.getSystemID(rootSystemID)).toBe(rootSystemID);
-    expect(parsed.data.signingSystemID).toBeUndefined();
+    expect(parsed.getDelegateSystemID(rootSystemID)).toBe(rootSystemID);
+    expect(parsed.getDelegatorSystemID(rootSystemID)).toBe(rootSystemID);
+    expect(parsed.data.delegateSystemID).toBeUndefined();
     expect(parsed.toPayload()).not.toHaveProperty("s");
+    expect(parsed.toPayload()).not.toHaveProperty("sd");
   }
 );
 
-test("an explicit grant system is self-contained and overrides network context", () => {
+test("a delegator on the delegate system adds no bytes to the credential", () => {
   const grant = authorization();
 
-  expect(grant.getSystemID()).toBe(address);
-  expect(grant.getSystemID(TESTNET_VERUS_CHAINID)).toBe(address);
-  expect(grant.toPayload()).toHaveProperty("s", address);
+  const inherited = grant.toCredential().toBuffer();
+  grant.data.delegatorSystemID = address;
+  expect(grant.toCredential().toBuffer()).toEqual(inherited);
+  expect(grant.toPayload()).not.toHaveProperty("sd");
+  const parsed = AuthorizationCredential.fromCredential(grant.toCredential());
+  expect(parsed.getDelegateSystemID()).toBe(address);
+  expect(parsed.getDelegatorSystemID(TESTNET_VERUS_CHAINID)).toBe(address);
+  expect(parsed.toPayload()).toHaveProperty("s", address);
 });
+
+test.each([DEFAULT_VERUS_CHAINID, TESTNET_VERUS_CHAINID])(
+  "a delegator on another system round trips with a delegate on root %s",
+  (rootSystemID) => {
+    const grant = authorization();
+    delete grant.data.delegateSystemID;
+    grant.data.delegatorSystemID = address;
+
+    const parsed = AuthorizationCredential.fromCredential(grant.toCredential());
+    expect(parsed.toPayload()).not.toHaveProperty("s");
+    expect(parsed.toPayload()).toHaveProperty("sd", address);
+    expect(parsed.getDelegateSystemID(rootSystemID)).toBe(rootSystemID);
+    expect(parsed.getDelegatorSystemID()).toBe(address);
+  }
+);
 
 test.each([undefined, "", address, "invalid"])(
   "an omitted grant system rejects a missing or non-root fallback: %s",
   (rootSystemID) => {
     const grant = authorization();
-    delete grant.data.signingSystemID;
+    delete grant.data.delegateSystemID;
 
-    expect(() => grant.getSystemID(rootSystemID)).toThrow("root system");
+    expect(() => grant.getDelegateSystemID(rootSystemID)).toThrow("root system");
+    expect(() => grant.getDelegatorSystemID(rootSystemID)).toThrow("root system");
   }
 );
 
@@ -296,7 +330,7 @@ test("decoded grant IDs match across hex casing when a binding inherits a nonroo
   const decodedBinding = Binding.fromCredential(bindingRecord);
 
   expect(grant.data.grantID).toBe("aa".repeat(32));
-  const systems = new Map([[grant.data.grantID, grant.getSystemID()]]);
+  const systems = new Map([[grant.data.grantID, grant.getDelegateSystemID()]]);
   const system = systems.get(decodedBinding.data.grantID) ?? DEFAULT_VERUS_CHAINID;
   expect(decodedBinding.getSystemID(system)).toBe(address);
 });
@@ -311,12 +345,14 @@ test("canonical constructor data stays shared and mixed-case inputs can be froze
 test.each([null, "", false, "invalid"])(
   "optional systems still reject invalid explicit values: %s",
   (systemID) => {
-    expect(() =>
-      AuthorizationCredential.fromPayload({
-        ...authorization().toPayload(),
-        s: systemID,
-      })
-    ).toThrow();
+    for (const field of ["s", "sd"]) {
+      expect(() =>
+        AuthorizationCredential.fromPayload({
+          ...authorization().toPayload(),
+          [field]: systemID,
+        })
+      ).toThrow();
+    }
     expect(() =>
       Binding.fromPayload({ ...binding().toPayload(), s: systemID })
     ).toThrow();
@@ -349,7 +385,7 @@ test("manifests commit effective systems and collapse equivalent explicit and in
 
 test("grant verification resolves its root before resolving inherited storage systems", () => {
   const grant = authorization();
-  delete grant.data.signingSystemID;
+  delete grant.data.delegateSystemID;
   const record = binding();
   delete record.data.storageSystemID;
   grant.data.storageManifestHash = manifest([record], TESTNET_VERUS_CHAINID);
@@ -374,16 +410,31 @@ test("grant verification resolves its root before resolving inherited storage sy
   expect(verifyAppAuthorizationStorageManifest(grant, [record])).toBe(false);
 });
 
+test("storage bindings inherit the delegate system when the delegator is on another system", () => {
+  const grant = authorization();
+  grant.data.delegatorSystemID = TESTNET_VERUS_CHAINID;
+  const record = binding();
+  delete record.data.storageSystemID;
+  grant.data.storageManifestHash = manifest([record], address);
+  const parsed = AuthorizationCredential.fromCredential(grant.toCredential());
+
+  expect(parsed.getDelegateSystemID()).toBe(address);
+  expect(parsed.getDelegatorSystemID()).toBe(TESTNET_VERUS_CHAINID);
+  expect(verifyAppAuthorizationStorageManifest(parsed, [record])).toBe(true);
+  record.data.storageSystemID = TESTNET_VERUS_CHAINID;
+  expect(verifyAppAuthorizationStorageManifest(parsed, [record])).toBe(false);
+});
+
 test("materializing an inherited non-root system preserves the grant commitment", () => {
   const grant = authorization();
   const record = binding();
   delete record.data.storageSystemID;
-  grant.data.storageManifestHash = manifest([record], grant.getSystemID());
+  grant.data.storageManifestHash = manifest([record], grant.getDelegateSystemID());
 
   expect(verifyAppAuthorizationStorageManifest(grant, [record])).toBe(true);
 
   // Removing the last grant must preserve the inherited chain before the binding is orphaned.
-  record.data.storageSystemID = record.getSystemID(grant.getSystemID());
+  record.data.storageSystemID = record.getSystemID(grant.getDelegateSystemID());
   expect(manifest([record])).toBe(grant.data.storageManifestHash);
   expect(verifyAppAuthorizationStorageManifest(grant, [record])).toBe(true);
   expect(record.getSystemID(TESTNET_VERUS_CHAINID)).toBe(address);

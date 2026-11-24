@@ -40,6 +40,28 @@ Buffer parsing is single-use per instance: `fromBuffer`, `fromDataBuffer`, and `
 
 Subclasses inherit `SerializableEntityBase` and may set `this.allowRepeatedFromBuffer = true` in their constructor if they handle repeated parsing safely. Implement parser overrides as prototype methods; assigning a replacement parser function on an instance replaces its guard.
 
+### App authorization v1
+
+Resolve the delegate on the verified request's signing system. Resolve the delegator
+identity (`appOrDelegatorID`) on that same system unless the signed envelope
+specifies `delegatorSystemID`. A distinct delegator system adds one compact I-address
+after the delegator identity and sets `FLAG_HAS_DELEGATOR_SYSTEM_ID` (2048). A shared
+system adds no field or flag, including when both identities use a nonroot chain.
+
+`deriveAppAuthorizationGrantID(user, delegate, appID, originalRequestHash, delegatorSystemID?)`
+always hashes the resolved delegator system's 20 decoded address bytes immediately
+before the app ID. Omitting the argument and explicitly passing the delegate's
+system produce the same 32-byte grant ID.
+
+In the approval credential, `s` is the delegate system and defaults to the
+configured network root (VRSC or VRSCTEST). The optional `sd` selects a different
+system for the delegator. Read the delegate revision (`de`) on
+`getDelegateSystemID(rootSystemID)` and the delegator revision (`dr`) and profile
+on `getDelegatorSystemID(rootSystemID)`. The optional `m` holds the storage manifest hash.
+Storage bindings continue to inherit the delegate's system. On an authorization
+reply, verify `requestSigningSystemID` against the original request's signer
+before using it as the default for the delegator system.
+
 ### App encryption requests
 
 `AppEncryptionRequestDetails` requests a Sapling address and keys for an encrypted

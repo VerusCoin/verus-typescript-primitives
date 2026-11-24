@@ -10,6 +10,8 @@ import { createHash } from "crypto";
 import { VerifiableSignatureData, VerifiableSignatureDataJson } from "../VerifiableSignatureData";
 import { CompactAddressObjectJson, CompactIAddressObject } from "../CompactAddressObject";
 import { DataDescriptorOrdinalVDXFObject } from "../ordinals/DataDescriptorOrdinalVDXFObject";
+import { DEFAULT_VERUS_CHAINID, TESTNET_VERUS_CHAINID } from "../../../constants/pbaas";
+import { resolveDelegatorSystemID } from "../../../pbaas/AppAuthorizationGrant";
 
 export interface GenericEnvelopeInterface {
   version?: BigNumber;
@@ -26,6 +28,8 @@ export interface GenericEnvelopeInterface {
    * authority the user fully controls may specify it.
    */
   appOrDelegatorID?: CompactIAddressObject;
+  /** Override when the delegator identity is resolved on a different system from the delegate. */
+  delegatorSystemID?: string;
   details: Array<OrdinalVDXFObject>;
 }
 
@@ -37,6 +41,7 @@ export type GenericEnvelopeJson = {
   createdat?: string;
   salt?: string;
   appOrDelegatorID?: CompactAddressObjectJson;
+  delegatorSystemID?: string;
   details: Array<OrdinalVDXFObjectJson>;
 }
 
@@ -50,6 +55,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
   createdAt?: BigNumber;
   salt?: Buffer; // var length buffer
   appOrDelegatorID?: CompactIAddressObject;
+  delegatorSystemID?: string;
   details: Array<OrdinalVDXFObject>;
 
   static VERSION_CURRENT = new BN(1, 10)
@@ -65,6 +71,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
   static FLAG_HAS_SALT = new BN(32, 10)
   static FLAG_HAS_APP_OR_DELEGATOR_ID = new BN(64, 10);
   static FLAG_DETAILS_ARE_ENCRYPTED = new BN(1024, 10);
+  static FLAG_HAS_DELEGATOR_SYSTEM_ID = new BN(2048);
 
   constructor(
     envelope: GenericEnvelopeInterface = {
@@ -79,6 +86,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
     this.createdAt = envelope?.createdAt;
     this.salt = envelope?.salt;
     this.appOrDelegatorID = envelope?.appOrDelegatorID;
+    this.delegatorSystemID = envelope?.delegatorSystemID;
 
     if (envelope?.flags) this.flags = envelope.flags;
     else this.flags = GenericEnvelope.BASE_FLAGS;
@@ -115,6 +123,46 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
 
   hasAppOrDelegatorID() {
     return !!(this.flags.and(GenericEnvelope.FLAG_HAS_APP_OR_DELEGATOR_ID).toNumber());
+  }
+
+  hasDelegatorSystemID(): boolean {
+    return !this.flags.and(GenericEnvelope.FLAG_HAS_DELEGATOR_SYSTEM_ID).isZero();
+  }
+
+  protected defaultDelegatorSystemID(): string | undefined {
+    if (this.isSigned() && this.signature?.hasSystem()) {
+      return this.signature.systemID.toIAddress();
+    }
+    return this.isTestnet() ? TESTNET_VERUS_CHAINID : DEFAULT_VERUS_CHAINID;
+  }
+
+  /** A response without a delegate reference inherits the original request's delegate system. */
+  getDelegatorSystemID(requestDelegateSystemID?: string): string {
+    const declaredSystemID = this.defaultDelegatorSystemID();
+    if (requestDelegateSystemID !== undefined && declaredSystemID !== undefined &&
+        requestDelegateSystemID !== declaredSystemID) {
+      throw new Error("Delegate system does not match the original request");
+    }
+    const delegateSystemID = declaredSystemID ?? requestDelegateSystemID;
+    if (this.delegatorSystemID === undefined && delegateSystemID === undefined) {
+      throw new Error("The original request delegate system is required to resolve the delegator system");
+    }
+    return resolveDelegatorSystemID(this.delegatorSystemID, delegateSystemID);
+  }
+
+  private setAppScopeFlags(): void {
+    if (!this.appOrDelegatorID) {
+      if (this.delegatorSystemID !== undefined || this.hasDelegatorSystemID()) {
+        throw new Error("delegatorSystemID requires appOrDelegatorID");
+      }
+      return;
+    }
+    this.setHasAppOrDelegatorID();
+    const needsSystem = this.delegatorSystemID !== undefined &&
+      resolveDelegatorSystemID(this.delegatorSystemID) !== this.defaultDelegatorSystemID();
+    if (needsSystem !== this.hasDelegatorSystemID()) {
+      this.flags = this.flags.xor(GenericEnvelope.FLAG_HAS_DELEGATOR_SYSTEM_ID);
+    }
   }
 
   isTestnet() {
@@ -162,7 +210,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
     if (this.requestID) this.setHasRequestID();
     if (this.createdAt) this.setHasCreatedAt();
     if (this.salt) this.setHasSalt();
-    if (this.appOrDelegatorID) this.setHasAppOrDelegatorID();
+    this.setAppScopeFlags();
     if (this.details && this.details.length > 1) this.setHasMultiDetails();
   }
 
@@ -297,6 +345,9 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
     if (this.hasAppOrDelegatorID()) {
       length += this.appOrDelegatorID.getByteLength();
     }
+    if (this.hasDelegatorSystemID()) {
+      length += CompactIAddressObject.fromAddress(this.delegatorSystemID).getByteLength();
+    }
 
     length += this.getDetailsBufferLength();
 
@@ -323,6 +374,9 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
     if (this.hasAppOrDelegatorID()) {
       writer.writeSlice(this.appOrDelegatorID.toBuffer());
     }
+    if (this.hasDelegatorSystemID()) {
+      writer.writeSlice(CompactIAddressObject.fromAddress(this.delegatorSystemID).toBuffer());
+    }
 
     writer.writeSlice(this.getDetailsBuffer());
 
@@ -330,6 +384,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
   }
 
   private internalGetByteLength(includeSig = true, forHashing = false): number {
+    this.setAppScopeFlags();
     let length = 0;
 
     length += varuint.encodingLength(this.version.toNumber());
@@ -380,6 +435,9 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
 
     this.version = new BN(reader.readCompactSize());
     this.flags = new BN(reader.readCompactSize());
+    if (this.hasDelegatorSystemID() && !this.hasAppOrDelegatorID()) {
+      throw new Error("delegatorSystemID requires appOrDelegatorID");
+    }
 
     if (this.isSigned()) {
       const _sig = new VerifiableSignatureData({ isTestnet: this.isTestnet() });
@@ -411,7 +469,17 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
       this.appOrDelegatorID = undefined;
     }
 
+    this.delegatorSystemID = undefined;
+    if (this.hasDelegatorSystemID()) {
+      const selector = new CompactIAddressObject();
+      reader.offset = selector.fromBuffer(reader.buffer, reader.offset);
+      CompactIAddressObject.validateCompactIdentityAddress(selector);
+      this.delegatorSystemID = selector.address;
+    }
     reader.offset = this.setDetailsFromBuffer(reader.buffer, reader.offset);
+    if (this.hasDelegatorSystemID() && this.delegatorSystemID === this.defaultDelegatorSystemID()) {
+      throw new Error("Redundant delegator system selector");
+    }
 
     return reader.offset;
   }
@@ -421,6 +489,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
   }
 
   toJson(): GenericEnvelopeJson {
+    this.setAppScopeFlags();
     const details = [];
 
     if (this.details != null) {
@@ -437,6 +506,7 @@ export class GenericEnvelope extends SerializableEntityBase implements Serializa
       createdat: this.hasCreatedAt() ? this.createdAt.toString() : undefined,
       salt: this.hasSalt() ? this.salt.toString('hex') : undefined,
       appOrDelegatorID: this.hasAppOrDelegatorID() ? this.appOrDelegatorID.toJson() : undefined,
+      delegatorSystemID: this.hasDelegatorSystemID() ? this.delegatorSystemID : undefined,
       details: details
     };
   }

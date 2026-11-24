@@ -5,6 +5,7 @@ import bufferutils from '../../../utils/bufferutils';
 import { BigNumber } from '../../../utils/types/BigNumber';
 import { EHashTypes } from '../../../pbaas/DataDescriptor';
 import varuint from '../../../utils/varuint';
+import { AppAuthorizationResponseOrdinalVDXFObject } from '../ordinals/AppAuthorizationResponseOrdinalVDXFObject';
 
 export type GenericResponseJson = GenericEnvelopeJson & {
   requesthash?: string,
@@ -61,6 +62,14 @@ export class GenericResponse extends GenericEnvelope implements SerializableEnti
 
   hasRequestHash() {
     return !!(this.flags.and(GenericResponse.FLAG_HAS_REQUEST_HASH).toNumber());
+  }
+
+  protected defaultDelegatorSystemID(): string | undefined {
+    // The user signs the response. The authorization result identifies the original delegate system.
+    const result = this.getDetails();
+    return result instanceof AppAuthorizationResponseOrdinalVDXFObject
+      ? result.data.requestSigningSystemID
+      : undefined;
   }
 
   hasHandledBy() {

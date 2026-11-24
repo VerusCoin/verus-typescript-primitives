@@ -133,7 +133,7 @@ test("typed credential codecs use their distinct registered keys by default", ()
     version: new BN(1),
     flags: new BN(0),
     grantID: "aa".repeat(32),
-    signingSystemID: identity,
+    delegateSystemID: identity,
     delegateRevision: { txid: "bb".repeat(32), vout: 0 },
     delegatorRevision: { txid: "cc".repeat(32), vout: 1 },
   });

@@ -11,7 +11,7 @@ export declare class UnsupportedDelegatorProfileError extends Error {
  *
  * Callers must supply the complete, removal-aware content from a successful
  * current getidentitycontent read for GenericRequest.appOrDelegatorID on the
- * request-signing system. Identity/system binding, read freshness, RPC failure
+ * resolved delegator system. Identity/system binding, read freshness, RPC failure
  * handling and cache invalidation remain the caller's responsibility. Never
  * substitute an empty map for missing content or use transaction-local CMM.
  *

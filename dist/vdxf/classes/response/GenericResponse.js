@@ -6,6 +6,7 @@ const GenericEnvelope_1 = require("../envelope/GenericEnvelope");
 const bufferutils_1 = require("../../../utils/bufferutils");
 const DataDescriptor_1 = require("../../../pbaas/DataDescriptor");
 const varuint_1 = require("../../../utils/varuint");
+const AppAuthorizationResponseOrdinalVDXFObject_1 = require("../ordinals/AppAuthorizationResponseOrdinalVDXFObject");
 class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
     constructor(envelope = {
         details: [],
@@ -22,6 +23,13 @@ class GenericResponse extends GenericEnvelope_1.GenericEnvelope {
     }
     hasRequestHash() {
         return !!(this.flags.and(GenericResponse.FLAG_HAS_REQUEST_HASH).toNumber());
+    }
+    defaultDelegatorSystemID() {
+        // The user signs the response. The authorization result identifies the original delegate system.
+        const result = this.getDetails();
+        return result instanceof AppAuthorizationResponseOrdinalVDXFObject_1.AppAuthorizationResponseOrdinalVDXFObject
+            ? result.data.requestSigningSystemID
+            : undefined;
     }
     hasHandledBy() {
         return !!(this.flags.and(GenericResponse.FLAG_HAS_HANDLED_BY).toNumber());

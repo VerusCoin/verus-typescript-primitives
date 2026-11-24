@@ -14,9 +14,9 @@ import varuint from "../utils/varuint";
 import { decodeDestination } from "../utils/address";
 import { I_ADDR_VERSION } from "../constants/vdxf";
 import {
-  DEFAULT_VERUS_CHAINID,
-  TESTNET_VERUS_CHAINID,
-} from "../constants/pbaas";
+  resolveDelegatorSystemID,
+  resolveDelegateSystemID,
+} from "./AppAuthorizationGrant";
 import { BN } from "bn.js";
 import { hashData } from "../utils/hash";
 import { Credential } from "./Credential";
@@ -34,8 +34,10 @@ export interface AuthorizationCredentialData {
   version: BigNumber;
   flags: BigNumber;
   grantID: string;
-  /** Omitted on the configured VRSC/VRSCTEST root system. */
-  signingSystemID?: string;
+  /** System of the delegate revision. Defaults to the configured VRSC/VRSCTEST root. */
+  delegateSystemID?: string;
+  /** System of the delegator revision. Defaults to the delegate's system. */
+  delegatorSystemID?: string;
   delegateRevision: AuthorizationIdentityRevision;
   delegatorRevision: AuthorizationIdentityRevision;
   storageManifestHash?: string;
@@ -46,7 +48,7 @@ export interface AuthorizationStorageBindingData {
   version: BigNumber;
   grantID: string;
   relationshipIndex: number;
-  /** Inherits the associated grant system, or the network root without a grant. */
+  /** Inherits the delegate's request-signing system, or the network root without a grant. */
   storageSystemID?: string;
   storageID: string;
 }
@@ -155,23 +157,16 @@ export class AuthorizationCredential extends AuthorizationRecord<AuthorizationCr
     this.data = withCanonicalGrantID(data);
   }
 
-  /** Resolve an omitted system only from the caller's configured network root. */
-  getSystemID(rootSystemID?: string): string {
-    if (
-      this.data.signingSystemID === undefined &&
-      rootSystemID !== DEFAULT_VERUS_CHAINID &&
-      rootSystemID !== TESTNET_VERUS_CHAINID
-    ) {
-      throw new Error("An explicit VRSC or VRSCTEST root system is required");
-    }
+  getDelegateSystemID(rootSystemID?: string): string {
+    return resolveDelegateSystemID(this.data.delegateSystemID, rootSystemID);
+  }
 
-    const systemID =
-      this.data.signingSystemID === undefined
-        ? rootSystemID
-        : this.data.signingSystemID;
-    decodeDestination(systemID, I_ADDR_VERSION);
-
-    return systemID;
+  getDelegatorSystemID(rootSystemID?: string): string {
+    return resolveDelegatorSystemID(
+      this.data.delegatorSystemID,
+      this.data.delegateSystemID,
+      rootSystemID
+    );
   }
 
   containsPermissions(): boolean {
@@ -186,13 +181,16 @@ export class AuthorizationCredential extends AuthorizationRecord<AuthorizationCr
       "version",
       "flags",
       "grantID",
-      "signingSystemID",
+      "delegateSystemID",
+      "delegatorSystemID",
       "delegateRevision",
       "delegatorRevision",
       "storageManifestHash",
     ]);
-    if (d.signingSystemID !== undefined) {
-      decodeDestination(d.signingSystemID, I_ADDR_VERSION);
+    for (const systemID of [d.delegateSystemID, d.delegatorSystemID]) {
+      if (systemID !== undefined) {
+        decodeDestination(systemID, I_ADDR_VERSION);
+      }
     }
 
     if (
@@ -215,12 +213,16 @@ export class AuthorizationCredential extends AuthorizationRecord<AuthorizationCr
       ),
       f: d.flags.toNumber(),
       g: normalizeFixedLengthHex(d.grantID, 32),
-      ...(d.signingSystemID === undefined ? {} : { s: d.signingSystemID }),
-      e: revisionToPayload(d.delegateRevision),
-      o: revisionToPayload(d.delegatorRevision),
+      ...(d.delegateSystemID === undefined ? {} : { s: d.delegateSystemID }),
+      ...(d.delegatorSystemID !== undefined &&
+      d.delegatorSystemID !== d.delegateSystemID
+        ? { sd: d.delegatorSystemID }
+        : {}),
+      de: revisionToPayload(d.delegateRevision),
+      dr: revisionToPayload(d.delegatorRevision),
       ...(d.storageManifestHash === undefined
         ? {}
-        : { b: normalizeFixedLengthHex(d.storageManifestHash, 32) }),
+        : { m: normalizeFixedLengthHex(d.storageManifestHash, 32) }),
     };
   }
 
@@ -232,16 +234,17 @@ export class AuthorizationCredential extends AuthorizationRecord<AuthorizationCr
   }
 
   static fromPayload(payload: any): AuthorizationCredential {
-    rejectUnknownFields(payload, ["v", "f", "g", "s", "e", "o", "b"]);
+    rejectUnknownFields(payload, ["v", "f", "g", "s", "sd", "de", "dr", "m"]);
 
     return new AuthorizationCredential({
       version: new BN(assertUint32(payload.v)),
       flags: new BN(assertUint32(payload.f)),
       grantID: payload.g,
-      signingSystemID: payload.s,
-      delegateRevision: revisionFromPayload(payload.e),
-      delegatorRevision: revisionFromPayload(payload.o),
-      storageManifestHash: payload.b,
+      delegateSystemID: payload.s,
+      delegatorSystemID: payload.sd,
+      delegateRevision: revisionFromPayload(payload.de),
+      delegatorRevision: revisionFromPayload(payload.dr),
+      storageManifestHash: payload.m,
     });
   }
 }
@@ -257,7 +260,7 @@ export class AuthorizationStorageBindingCredential extends AuthorizationRecord<A
     this.data = withCanonicalGrantID(data);
   }
 
-  /** The caller supplies the resolved grant system, or the network root for an orphan. */
+  /** The caller supplies the resolved delegate system, or the network root for an orphan. */
   getSystemID(defaultSystemID?: string): string {
     const systemID =
       this.data.storageSystemID === undefined
@@ -453,7 +456,7 @@ export function verifyAppAuthorizationStorageManifest(
     return (
       deriveAppAuthorizationStorageManifest(
         records,
-        grant.getSystemID(rootSystemID)
+        grant.getDelegateSystemID(rootSystemID)
       ) === normalizeFixedLengthHex(grant.data.storageManifestHash, 32)
     );
   } catch {
