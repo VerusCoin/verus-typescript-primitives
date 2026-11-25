@@ -67,6 +67,10 @@ export declare class CompactXAddressObject extends CompactAddressObject<CompactA
     static fromCompactAddressObjectJson(json: CompactAddressObjectJson): CompactXAddressObject;
 }
 export declare class CompactIAddressObject extends CompactAddressObject<CompactAddressIVariant> {
+    /** Require an actual canonical I-address, excluding FQNs and alternate compact types. */
+    static validateCompactIdentityAddress(identityAddress: CompactAddressObject): void;
+    /** Parse a canonical I-address using the shared codec, rejecting FQNs and unsupported fields. */
+    static compactIdentityAddressFromJson(json: CompactAddressObjectJson): CompactIAddressObject;
     static fromAddress(iaddr: string, rootSystemName?: string, nameSpace?: string): CompactIAddressObject;
     static fromFQN(iaddr: string, rootSystemName?: string, nameSpace?: string): CompactIAddressObject;
     toAddress(): string;

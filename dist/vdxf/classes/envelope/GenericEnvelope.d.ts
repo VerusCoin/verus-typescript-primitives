@@ -20,6 +20,8 @@ export interface GenericEnvelopeInterface {
      * authority the user fully controls may specify it.
      */
     appOrDelegatorID?: CompactIAddressObject;
+    /** Override when the delegator identity is resolved on a different system from the delegate. */
+    delegatorSystemID?: string;
     details: Array<OrdinalVDXFObject>;
 }
 export type GenericEnvelopeJson = {
@@ -30,6 +32,7 @@ export type GenericEnvelopeJson = {
     createdat?: string;
     salt?: string;
     appOrDelegatorID?: CompactAddressObjectJson;
+    delegatorSystemID?: string;
     details: Array<OrdinalVDXFObjectJson>;
 };
 export type GenericRequestHandlerIdentifier = 0 | 1;
@@ -41,6 +44,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     createdAt?: BigNumber;
     salt?: Buffer;
     appOrDelegatorID?: CompactIAddressObject;
+    delegatorSystemID?: string;
     details: Array<OrdinalVDXFObject>;
     static VERSION_CURRENT: import("bn.js");
     static VERSION_FIRSTVALID: import("bn.js");
@@ -54,6 +58,7 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     static FLAG_HAS_SALT: import("bn.js");
     static FLAG_HAS_APP_OR_DELEGATOR_ID: import("bn.js");
     static FLAG_DETAILS_ARE_ENCRYPTED: import("bn.js");
+    static FLAG_HAS_DELEGATOR_SYSTEM_ID: import("bn.js");
     constructor(envelope?: GenericEnvelopeInterface);
     isValidVersion(): boolean;
     isSigned(): boolean;
@@ -62,6 +67,11 @@ export declare class GenericEnvelope extends SerializableEntityBase implements S
     hasCreatedAt(): boolean;
     hasSalt(): boolean;
     hasAppOrDelegatorID(): boolean;
+    hasDelegatorSystemID(): boolean;
+    protected defaultDelegatorSystemID(): string | undefined;
+    /** A response without a delegate reference inherits the original request's delegate system. */
+    getDelegatorSystemID(requestDelegateSystemID?: string): string;
+    private setAppScopeFlags;
     isTestnet(): boolean;
     detailsAreEncrypted(): boolean;
     setSigned(): void;

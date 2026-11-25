@@ -801,3 +801,57 @@ export const SPENDABLE_KEY_DETAILS_VDXF_KEY: VDXFKeyInterface = {
   },
   "vdxfid": "iQyEPTS4qaDNc1NPcmkW1KTrdWcEfQdm5Y"
 }
+
+export const APP_AUTHORIZATION_REQUEST_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "i3yTHY9ppNkUX37JS4NU9tu4NpvJjyLcQg",
+  "hash160result": "0b40b34097065d8b726f8a4dbec847ecd8997805",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::application.authorization.request"
+  },
+  "indexid": "x8oZkLaufgy99CzLHk2d8HRbQUwKfxhpeh"
+};
+
+export const APP_AUTHORIZATION_RESPONSE_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "i9z7VmmXMn4RaY5zvsrq68sDEuAjqGmh1H",
+  "hash160result": "6b4b9aceb28ce242531ed00bfeca3faea7406947",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::application.authorization.response"
+  },
+  "indexid": "xEpDxaCcD6H6Chy2nZWz4XPkGZBkgxYQF6"
+};
+
+export const IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION: VDXFKeyInterface = {
+  "vdxfid": "iBmZr9mUxY8U5jbNbWCheAJemWeaSzupr6",
+  "hash160result": "080a9982c61d871f07cf9388a95c7a8ff817fa5a",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::identity.credential.application.authorization"
+  },
+  "indexid": "xGbgJxCZorM8huUQTBrrcYqBoAfbR7V3ni"
+};
+
+export const IDENTITY_CREDENTIAL_APPLICATION_AUTHORIZATION_STORAGE_BINDING: VDXFKeyInterface = {
+  "vdxfid": "iPa8uZ8jTZJydA1kC6S15spNxh2cyyRyUN",
+  "hash160result": "28e0362adaecaadd5b3f24b39c82abf61d3572dc",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::identity.credential.application.authorization.storage.binding"
+  },
+  "indexid": "xUQFNMZpJsXeFKtn3n6A4GLuzM3dspL3a8"
+};
+
+/**
+ * Permanent outer CMM key for a delegator's profile, across payload versions.
+ * V1 authorization rejects its presence without decoding the stored values.
+ */
+export const DELEGATOR_PROFILE_VDXF_KEY: VDXFKeyInterface = {
+  "vdxfid": "iEt9qLvLckny1TVJz9ECTqXmktXKKM2sg9",
+  "indexid": "xKiGJ9MRU51dddNLqptMSE4JnYYLGUXGm5",
+  "hash160result": "7ae0979653435d85ca0b974ac352205d3f56217d",
+  "qualifiedname": {
+    "namespace": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "name": "vrsc::identity.profile.delegator"
+  }
+};

@@ -30,6 +30,7 @@ export declare class GenericResponse extends GenericEnvelope implements Serializ
     static FLAG_HAS_HANDLED_BY: import("bn.js");
     constructor(envelope?: GenericResponseInterface);
     hasRequestHash(): boolean;
+    protected defaultDelegatorSystemID(): string | undefined;
     hasHandledBy(): boolean;
     setHasRequestHash(): void;
     setHasHandledBy(): void;

@@ -10,6 +10,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompactIAddressObject = exports.CompactXAddressObject = exports.CompactAddressObject = void 0;
 const bn_js_1 = require("bn.js");
+const validation_1 = require("../../utils/validation");
 const SerializableEntityBase_1 = require("../../utils/types/SerializableEntityBase");
 const bufferutils_1 = require("../../utils/bufferutils");
 const { BufferReader, BufferWriter } = bufferutils_1.default;
@@ -237,6 +238,37 @@ class CompactXAddressObject extends CompactAddressObject {
 exports.CompactXAddressObject = CompactXAddressObject;
 ;
 class CompactIAddressObject extends CompactAddressObject {
+    /** Require an actual canonical I-address, excluding FQNs and alternate compact types. */
+    static validateCompactIdentityAddress(identityAddress) {
+        if (!(identityAddress instanceof CompactAddressObject) ||
+            identityAddress.version.lt(CompactIAddressObject.FIRST_VERSION) ||
+            identityAddress.version.gt(CompactIAddressObject.LAST_VERSION) ||
+            !identityAddress.isIaddress()) {
+            throw new Error("Expected compact canonical identity address");
+        }
+        (0, address_1.decodeDestination)(identityAddress.address, vdxf_1.I_ADDR_VERSION);
+    }
+    /** Parse a canonical I-address using the shared codec, rejecting FQNs and unsupported fields. */
+    static compactIdentityAddressFromJson(json) {
+        (0, validation_1.rejectUnknownFields)(json, [
+            "version",
+            "type",
+            "address",
+            "rootsystemname",
+            "namespace",
+        ]);
+        // The existing factory resets the version and converts numeric fields to BN.
+        // Check the original values first so unsupported versions/types cannot normalize away.
+        if (!Number.isInteger(json.version) ||
+            json.version < CompactIAddressObject.FIRST_VERSION.toNumber() ||
+            json.version > CompactIAddressObject.LAST_VERSION.toNumber() ||
+            json.type !== CompactIAddressObject.TYPE_I_ADDRESS.toNumber()) {
+            throw new Error("Expected compact canonical identity address");
+        }
+        const identityAddress = CompactIAddressObject.fromCompactAddressObjectJson(json);
+        CompactIAddressObject.validateCompactIdentityAddress(identityAddress);
+        return identityAddress;
+    }
     static fromAddress(iaddr, rootSystemName = "VRSC", nameSpace) {
         return new CompactIAddressObject({
             address: iaddr,

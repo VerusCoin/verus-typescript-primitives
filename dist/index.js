@@ -25,6 +25,8 @@ __exportStar(require("./vdxf/parser"), exports);
 __exportStar(require("./utils/address"), exports);
 __exportStar(require("./utils/identityRegistration"), exports);
 __exportStar(require("./utils/bufferutils"), exports);
+__exportStar(require("./utils/validation"), exports);
+__exportStar(require("./utils/serialization"), exports);
 var hash_1 = require("./utils/hash");
 Object.defineProperty(exports, "hashData", { enumerable: true, get: function () { return hash_1.hashData; } });
 __exportStar(require("./utils/varuint"), exports);

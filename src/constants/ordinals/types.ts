@@ -1,3 +1,4 @@
+import { AppAuthorizationRequestDetails, AppAuthorizationRequestDetailsJson, AppAuthorizationResponseDetails, AppAuthorizationResponseDetailsJson } from "../../vdxf/classes";
 import { DataDescriptor, DataDescriptorJson } from "../../pbaas";
 import { 
   AppEncryptionRequestDetails, 
@@ -29,7 +30,9 @@ import {
 import { VerusPayInvoiceDetailsJson } from "../../vdxf/classes/payment/VerusPayInvoiceDetails";
 import { DataResponseDetails, DataResponseDetailsJson } from "../../vdxf/classes/data/DataResponseDetails";
 
-export type OrdinalVDXFObjectReservedData = 
+export type OrdinalVDXFObjectReservedData =
+  AppAuthorizationRequestDetails |
+  AppAuthorizationResponseDetails |
   DataDescriptor | 
   VerusPayInvoiceDetails | 
   IdentityUpdateRequestDetails | 
@@ -46,7 +49,9 @@ export type OrdinalVDXFObjectReservedData =
   SpendableKeyDetails |
   AppEncryptionResponseDetails;
 
-export type OrdinalVDXFObjectReservedDataJson = 
+export type OrdinalVDXFObjectReservedDataJson =
+  AppAuthorizationRequestDetailsJson |
+  AppAuthorizationResponseDetailsJson |
   DataDescriptorJson | 
   VerusPayInvoiceDetailsJson | 
   IdentityUpdateRequestDetailsJson | 

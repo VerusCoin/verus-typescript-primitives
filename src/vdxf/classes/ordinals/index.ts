@@ -20,3 +20,7 @@ export * from './WalletBackupOrdinalVDXFObject'
 export * from './SpendableKeyDetailsOrdinalVDXFObject'
 
 registerOrdinals();
+
+export * from './AppAuthorizationRequestOrdinalVDXFObject';
+
+export * from './AppAuthorizationResponseOrdinalVDXFObject';

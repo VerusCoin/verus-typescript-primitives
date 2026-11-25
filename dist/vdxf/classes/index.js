@@ -79,3 +79,6 @@ __exportStar(require("./backup/WalletBackup"), exports);
 __exportStar(require("./backup/SpendableKeyDetails"), exports);
 __exportStar(require("./CompactAddressObject"), exports);
 __exportStar(require("./VerifiableSignatureData"), exports);
+__exportStar(require("./appauthorization/AuthorizationSerialization"), exports);
+__exportStar(require("./appauthorization/AppAuthorizationRequestDetails"), exports);
+__exportStar(require("./appauthorization/AppAuthorizationResponseDetails"), exports);

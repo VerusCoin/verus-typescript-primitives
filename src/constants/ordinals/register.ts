@@ -1,3 +1,9 @@
+import { APP_AUTHORIZATION_RESPONSE_VDXF_KEY } from "../../vdxf/keys";
+import { APP_AUTHORIZATION_RESPONSE_VDXF_ORDINAL } from "./ordinals";
+import { AppAuthorizationResponseOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppAuthorizationResponseOrdinalVDXFObject";
+import { APP_AUTHORIZATION_REQUEST_VDXF_KEY } from "../../vdxf/keys";
+import { APP_AUTHORIZATION_REQUEST_VDXF_ORDINAL } from "./ordinals";
+import { AppAuthorizationRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppAuthorizationRequestOrdinalVDXFObject";
 import { APP_ENCRYPTION_REQUEST_VDXF_KEY, APP_ENCRYPTION_RESPONSE_VDXF_KEY, CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY, DATA_RESPONSE_VDXF_KEY, DATA_DESCRIPTOR_VDXF_KEY, AUTHENTICATION_REQUEST_VDXF_KEY, AUTHENTICATION_RESPONSE_VDXF_KEY, PROVISION_IDENTITY_DETAILS_VDXF_KEY, USER_DATA_REQUEST_VDXF_KEY, DATA_PACKET_REQUEST_VDXF_KEY, VERUSPAY_INVOICE_DETAILS_VDXF_KEY, IDENTITY_UPDATE_RESPONSE_VDXF_KEY, IDENTITY_UPDATE_REQUEST_VDXF_KEY, WALLET_BACKUP, SPENDABLE_KEY_DETAILS_VDXF_KEY } from "../../vdxf";
 import { AppEncryptionRequestOrdinalVDXFObject } from "../../vdxf/classes/ordinals/AppEncryptionRequestOrdinalVDXFObject";
 import { DataDescriptorOrdinalVDXFObject } from "../../vdxf/classes/ordinals/DataDescriptorOrdinalVDXFObject";
@@ -37,4 +43,6 @@ export const registerOrdinals = () => {
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(CREATE_WALLET_BACKUP_DETAILS_VDXF_ORDINAL.toNumber(), CREATE_WALLET_BACKUP_DETAILS_VDXF_KEY.vdxfid, CreateWalletBackupDetailsOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(WALLET_BACKUP_VDXF_ORDINAL.toNumber(), WALLET_BACKUP.vdxfid, WalletBackupOrdinalVDXFObject, false);
   OrdinalVDXFObjectOrdinalMap.registerOrdinal(SPENDABLE_KEY_DETAILS_VDXF_ORDINAL.toNumber(), SPENDABLE_KEY_DETAILS_VDXF_KEY.vdxfid, SpendableKeyDetailsOrdinalVDXFObject, false);
+  OrdinalVDXFObjectOrdinalMap.registerOrdinal(APP_AUTHORIZATION_RESPONSE_VDXF_ORDINAL.toNumber(), APP_AUTHORIZATION_RESPONSE_VDXF_KEY.vdxfid, AppAuthorizationResponseOrdinalVDXFObject, false);
+  OrdinalVDXFObjectOrdinalMap.registerOrdinal(APP_AUTHORIZATION_REQUEST_VDXF_ORDINAL.toNumber(), APP_AUTHORIZATION_REQUEST_VDXF_KEY.vdxfid, AppAuthorizationRequestOrdinalVDXFObject, false);
 }

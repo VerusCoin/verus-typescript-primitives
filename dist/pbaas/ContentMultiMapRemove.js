@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentMultiMapRemove = void 0;
+const hash_1 = require("../utils/hash");
+const pbaas_1 = require("../constants/pbaas");
 const SerializableEntityBase_1 = require("../utils/types/SerializableEntityBase");
 const varint_1 = require("../utils/varint");
 const address_1 = require("../utils/address");
@@ -15,6 +17,18 @@ class ContentMultiMapRemove extends SerializableEntityBase_1.SerializableEntityB
         this.action = (data === null || data === void 0 ? void 0 : data.action) || new bn_js_1.BN(0, 10);
         this.entryKey = (data === null || data === void 0 ? void 0 : data.entryKey) || undefined;
         this.valueHash = (data === null || data === void 0 ? void 0 : data.valueHash) || undefined;
+    }
+    /** Remove every exact copy of this stored value while preserving sibling values. */
+    static removeStoredValue(entryKey, storedValue) {
+        (0, address_1.decodeDestination)(entryKey, vdxf_1.I_ADDR_VERSION);
+        if (!Buffer.isBuffer(storedValue) || storedValue.length === 0) {
+            throw new Error('Expected nonempty original stored value');
+        }
+        return new ContentMultiMapRemove({
+            action: new bn_js_1.BN(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEYVALUE),
+            entryKey,
+            valueHash: (0, hash_1.hashData)(storedValue, pbaas_1.HASH_TYPE_BLAKE2B.toNumber())
+        });
     }
     getByteLength() {
         let byteLength = 0;

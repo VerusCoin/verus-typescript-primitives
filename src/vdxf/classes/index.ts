@@ -63,3 +63,6 @@ export * from './backup/WalletBackup'
 export * from './backup/SpendableKeyDetails'
 export * from './CompactAddressObject'
 export * from './VerifiableSignatureData'
+export * from './appauthorization/AuthorizationSerialization';
+export * from './appauthorization/AppAuthorizationRequestDetails';
+export * from './appauthorization/AppAuthorizationResponseDetails';

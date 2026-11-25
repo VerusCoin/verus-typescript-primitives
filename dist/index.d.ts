@@ -8,6 +8,8 @@ export * from './vdxf/parser';
 export * from './utils/address';
 export * from './utils/identityRegistration';
 export * from './utils/bufferutils';
+export * from './utils/validation';
+export * from './utils/serialization';
 export { hashData } from './utils/hash';
 export * from './utils/varuint';
 export * from './utils/ops';

@@ -46,3 +46,6 @@ export * from './PartialSignData';
 export * from './PartialMMRData';
 export * from './SaplingExtendedSpendingKey';
 export * from './SaplingExtendedViewingKey';
+export * from './AppAuthorizationGrant';
+export * from './AuthorizationCredential';
+export * from './DelegatorProfileSupport';

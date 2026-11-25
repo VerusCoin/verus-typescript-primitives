@@ -1,7 +1,9 @@
+import { hashData } from '../utils/hash';
+import { HASH_TYPE_BLAKE2B } from '../constants/pbaas';
 import { SerializableEntityBase } from '../utils/types/SerializableEntityBase';
 import varint from '../utils/varint'
 import varuint from '../utils/varuint'
-import { fromBase58Check, toBase58Check } from "../utils/address";
+import { decodeDestination, fromBase58Check, toBase58Check } from "../utils/address";
 import bufferutils from '../utils/bufferutils'
 import { BN } from 'bn.js';
 import { BigNumber } from '../utils/types/BigNumber';
@@ -39,6 +41,21 @@ export class ContentMultiMapRemove extends SerializableEntityBase implements Ser
     this.action = data?.action || new BN(0, 10);
     this.entryKey = data?.entryKey || undefined;
     this.valueHash = data?.valueHash || undefined;
+  }
+
+  /** Remove every exact copy of this stored value while preserving sibling values. */
+  static removeStoredValue(entryKey: string, storedValue: Buffer): ContentMultiMapRemove {
+    decodeDestination(entryKey, I_ADDR_VERSION);
+
+    if (!Buffer.isBuffer(storedValue) || storedValue.length === 0) {
+      throw new Error('Expected nonempty original stored value');
+    }
+
+    return new ContentMultiMapRemove({
+      action: new BN(ContentMultiMapRemove.ACTION_REMOVE_ALL_KEYVALUE),
+      entryKey,
+      valueHash: hashData(storedValue, HASH_TYPE_BLAKE2B.toNumber())
+    });
   }
 
   getByteLength() {

@@ -28,6 +28,8 @@ export declare class ContentMultiMapRemove extends SerializableEntityBase implem
         entryKey?: string;
         valueHash?: Buffer;
     });
+    /** Remove every exact copy of this stored value while preserving sibling values. */
+    static removeStoredValue(entryKey: string, storedValue: Buffer): ContentMultiMapRemove;
     getByteLength(): number;
     toBuffer(): Buffer<ArrayBufferLike>;
     fromBuffer(buffer: Buffer, offset?: number): number;
